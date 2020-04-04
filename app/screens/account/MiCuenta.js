@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
 import { StyleSheet, View, Text } from 'react-native';
 import Cargando from '../../components/Cargando';
+import IniciarSesion from '../account/IniciarSesion';
 
 export default function MiCuenta() {
    const [login, setLogin] = useState(null);
@@ -12,25 +13,19 @@ export default function MiCuenta() {
       });
    }, []);
 
-   return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+   if (login === null) {
+      return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+   }
 
-   // if (login === null) {
-   //    return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
-   // }
+   if (login) {
+      return (
+         <View style={styles.container}>
+            <Text>Usuario Logueado</Text>
+         </View>
+      );
+   }
 
-   // if (login) {
-   //    return (
-   //       <View style={styles.container}>
-   //          <Text>Usuario Logueado</Text>
-   //       </View>
-   //    );
-   // }
-
-   // return (
-   //    <View style={styles.container}>
-   //       <Text>Usuario No Logueado</Text>
-   //    </View>
-   // );
+   return <IniciarSesion></IniciarSesion>;
 }
 const styles = StyleSheet.create({
    container: {
