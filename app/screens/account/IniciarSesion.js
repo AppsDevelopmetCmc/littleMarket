@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
-import { withNavigation } from '@react-navigation/native';
 
-export default function IniciaSesion() {
+import IniciaSesionForm from '../account/form/IniciaSesionForm';
+
+export default function IniciaSesion({ navigation }) {
    return (
       <ScrollView>
          <Image
@@ -12,8 +13,7 @@ export default function IniciaSesion() {
             resizeMode="contain"
          ></Image>
          <View style={styles.container}>
-            <Text>Form inicia sesion</Text>
-            <Text>Crear acontandor...</Text>
+            <IniciaSesionForm nav={navigation}></IniciaSesionForm>
          </View>
          <Divider style={styles.divide}></Divider>
          <View style={styles.container}>
@@ -30,8 +30,8 @@ function CrearUsuario(props) {
 
 const styles = StyleSheet.create({
    container: {
-      marginRight: 40,
-      marginLeft: 40,
+      marginRight: 5,
+      marginLeft: 5,
    },
    logo: { width: '100%', height: 150, marginTop: 150 },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },

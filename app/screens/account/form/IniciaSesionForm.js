@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
-import { validateEmail } from '../../utils/Validaciones';
+import { validateEmail } from '../../../utils/Validaciones';
 
 // Importacion a Firebase
 import * as firebase from 'firebase';
@@ -12,26 +12,26 @@ import * as firebase from 'firebase';
 import Toast from 'react-native-easy-toast';
 
 // Imnportación del componente creado Cargando
-import Cargando from '../../components/Cargando';
+import Cargando from '../../../components/Cargando';
 
 // Importacion a mapa
-import Mapa from '../map/Mapa';
+import Mapa from '../../map/Mapa';
 
-export default function Registro({ navigation }) {
+export default function IniciaSesionForm(props) {
+   const { nav } = props;
+
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
-   const [hideRepetiPassword, setHideRepitPassword] = useState(true);
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
-   const [repeatPassword, setRepeatPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
 
    // Inicializacion de la referencia con hoock para utilizarlo con toast
    const toastRef = useRef();
 
-   const register = async () => {
+   const iniciarSesion = async () => {
       setisVisibleLoading(true);
-      if (!email || !password || !repeatPassword) {
+      if (!email || !password) {
          console.log('Todos los campos son obligatorios');
          toastRef.current.show('Todos los campos son obligatorios');
       } else {
@@ -39,29 +39,23 @@ export default function Registro({ navigation }) {
             console.log('El email no es correcto');
             toastRef.current.show('El email no es correcto');
          } else {
-            if (password !== repeatPassword) {
-               console.log('Las contraseñas no son iguales');
-               toastRef.current.show('Las contraseñas no son iguales');
-            } else {
-               await firebase
-                  .auth()
-                  .createUserWithEmailAndPassword(email, password)
-                  .then(() => {
-                     navigation.navigate('Mapa');
-                  })
-                  .catch(() => {
-                     console.log(
-                        'Error al crear la cuenta, intentelo más tarde'
-                     );
-                     toastRef.current.show(
-                        'Error al crear la cuenta, intentelo más tarde'
-                     );
-                  });
-            }
+            await firebase
+               .auth()
+               .signInWithEmailAndPassword(email, password)
+               .then(() => {
+                  nav.navigate('Mapa');
+                  console.log('ok logueo');
+               })
+               .catch(() => {
+                  console.log('Email o contraseña incorrecta');
+                  toastRef.current.show('Email o contraseña incorrecta');
+               });
+            console.log('Registro Correcto');
          }
       }
       setisVisibleLoading(false);
    };
+
    return (
       <View style={styles.container}>
          <Input
@@ -93,28 +87,11 @@ export default function Registro({ navigation }) {
                ></Icon>
             }
          ></Input>
-         <Input
-            placeholder="Repetir Contraseña"
-            password={true}
-            secureTextEntry={hideRepetiPassword}
-            containerStyle={styles.inputForm}
-            onChange={e => setRepeatPassword(e.nativeEvent.text)}
-            rightIcon={
-               <Icon
-                  type="material-community"
-                  name={hideRepetiPassword ? 'eye-outline' : 'eye-off-outline'}
-                  iconStyle={styles.iconRight}
-                  onPress={() => {
-                     setHideRepitPassword(!hideRepetiPassword);
-                  }}
-               ></Icon>
-            }
-         ></Input>
          <Button
-            title="Registrarse"
+            title="Iniciar Sesion"
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}
-            onPress={register}
+            onPress={iniciarSesion}
          ></Button>
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast ref={toastRef} position="center" opacity={0.5}></Toast>
@@ -131,7 +108,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: 40,
+      marginHorizontal: 5,
    },
    inputForm: {
       width: '100%',
