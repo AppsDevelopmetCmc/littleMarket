@@ -4,7 +4,10 @@ import { StyleSheet, View, Text } from 'react-native';
 import Cargando from '../../components/Cargando';
 import IniciarSesion from '../account/IniciarSesion';
 
+import Mapa from '../map/Mapa';
+
 export default function MiCuenta() {
+   console.log('llego al balanceador');
    const [login, setLogin] = useState(null);
 
    useEffect(() => {
@@ -18,14 +21,8 @@ export default function MiCuenta() {
    }
 
    if (login) {
-      return (
-         <View style={styles.container}>
-            <Text>Usuario Logueado</Text>
-         </View>
-      );
+      return <Mapa></Mapa>;
    }
-
-   return <IniciarSesion></IniciarSesion>;
 }
 const styles = StyleSheet.create({
    container: {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, usetoastRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
@@ -8,17 +8,14 @@ import { validateEmail } from '../../../utils/Validaciones';
 // Importacion a Firebase
 import * as firebase from 'firebase';
 
-// Importacion de Toas
-import Toast from 'react-native-easy-toast';
-
 // Imnportación del componente creado Cargando
 import Cargando from '../../../components/Cargando';
 
-// Importacion a mapa
-import Mapa from '../../map/Mapa';
+// Importacion de archivo de errores
+import * as err from '../../../constants/Errores';
 
 export default function IniciaSesionForm(props) {
-   const { nav } = props;
+   const { nav, toastRef } = props;
 
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
@@ -26,31 +23,25 @@ export default function IniciaSesionForm(props) {
    const [password, setPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
 
-   // Inicializacion de la referencia con hoock para utilizarlo con toast
-   const toastRef = useRef();
+   // Inicializacion de la toastReferencia con hoock para utilizarlo con toast
 
    const iniciarSesion = async () => {
       setisVisibleLoading(true);
       if (!email || !password) {
-         console.log('Todos los campos son obligatorios');
-         toastRef.current.show('Todos los campos son obligatorios');
+         toastRef.current.show(err.Err3);
       } else {
          if (!validateEmail(email)) {
-            console.log('El email no es correcto');
-            toastRef.current.show('El email no es correcto');
+            toastRef.current.show(err.Err1);
          } else {
             await firebase
                .auth()
                .signInWithEmailAndPassword(email, password)
                .then(() => {
-                  nav.navigate('Mapa');
-                  console.log('ok logueo');
+                  nav.navigate('MiCuenta');
                })
                .catch(() => {
-                  console.log('Email o contraseña incorrecta');
-                  toastRef.current.show('Email o contraseña incorrecta');
+                  toastRef.current.show(err.Err2);
                });
-            console.log('Registro Correcto');
          }
       }
       setisVisibleLoading(false);
@@ -93,8 +84,7 @@ export default function IniciaSesionForm(props) {
             buttonStyle={styles.btnRegistrarse}
             onPress={iniciarSesion}
          ></Button>
-         {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
-         <Toast ref={toastRef} position="center" opacity={0.5}></Toast>
+
          <Cargando
             text="Creando Cuenta"
             isVisible={isVisibleLoading}
@@ -108,11 +98,12 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginHorizontal: 5,
    },
    inputForm: {
       width: '100%',
-      marginTop: 10,
+      marginTop: 20,
    },
    iconRight: { color: '#c1c1c1' },
+   btnStyles: { marginTop: 25, width: '95%' },
+   btnRegistrarse: { padding: 10 },
 });

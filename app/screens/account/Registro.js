@@ -14,8 +14,8 @@ import Toast from 'react-native-easy-toast';
 // Imnportación del componente creado Cargando
 import Cargando from '../../components/Cargando';
 
-// Importacion a mapa
-import Mapa from '../map/Mapa';
+// Importacion de archivo de errores
+import * as err from '../../constants/Errores';
 
 export default function Registro({ navigation }) {
    // Seteo de variables en el state utilizando hoock de react
@@ -32,30 +32,22 @@ export default function Registro({ navigation }) {
    const register = async () => {
       setisVisibleLoading(true);
       if (!email || !password || !repeatPassword) {
-         console.log('Todos los campos son obligatorios');
-         toastRef.current.show('Todos los campos son obligatorios');
+         toastRef.current.show(err.Err3);
       } else {
          if (!validateEmail(email)) {
-            console.log('El email no es correcto');
-            toastRef.current.show('El email no es correcto');
+            toastRef.current.show(err.Err1);
          } else {
             if (password !== repeatPassword) {
-               console.log('Las contraseñas no son iguales');
-               toastRef.current.show('Las contraseñas no son iguales');
+               toastRef.current.show(err.Err4);
             } else {
                await firebase
                   .auth()
                   .createUserWithEmailAndPassword(email, password)
                   .then(() => {
-                     navigation.navigate('Mapa');
+                     navigation.navigate('MiCuenta');
                   })
                   .catch(() => {
-                     console.log(
-                        'Error al crear la cuenta, intentelo más tarde'
-                     );
-                     toastRef.current.show(
-                        'Error al crear la cuenta, intentelo más tarde'
-                     );
+                     toastRef.current.show(err.Err5);
                   });
             }
          }

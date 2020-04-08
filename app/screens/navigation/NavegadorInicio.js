@@ -5,8 +5,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
-import Mapa from '../map/Mapa';
 import IniciaSesion from '../account/IniciarSesion';
+
+import MiCuenta from '../account/MiCuenta';
 
 const Stack = createStackNavigator();
 
@@ -22,11 +23,11 @@ function LoginStack() {
             component={PaginaInicio}
          ></Stack.Screen>
          <Stack.Screen name="Registro" component={Registro}></Stack.Screen>
-         <Stack.Screen name="Mapa" component={Mapa}></Stack.Screen>
          <Stack.Screen
             name="IniciaSesion"
             component={IniciaSesion}
          ></Stack.Screen>
+         <Stack.Screen name="MiCuenta" component={MiCuenta}></Stack.Screen>
       </Stack.Navigator>
    );
 }

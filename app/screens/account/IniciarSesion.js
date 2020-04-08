@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 
 import IniciaSesionForm from '../account/form/IniciaSesionForm';
+import IniciarSesionFacebook from '../account/IniciarSesionFacebook';
+
+// Importacion de Toas
+import Toast from 'react-native-easy-toast';
 
 export default function IniciaSesion({ navigation }) {
+   const toastRef = useRef();
+
    return (
       <ScrollView>
          <Image
@@ -13,12 +19,20 @@ export default function IniciaSesion({ navigation }) {
             resizeMode="contain"
          ></Image>
          <View style={styles.container}>
-            <IniciaSesionForm nav={navigation}></IniciaSesionForm>
+            <IniciaSesionForm
+               nav={navigation}
+               toastRef={toastRef}
+            ></IniciaSesionForm>
          </View>
          <Divider style={styles.divide}></Divider>
          <View style={styles.container}>
-            <Text>Login Facebook</Text>
+            <IniciarSesionFacebook
+               nav={navigation}
+               toastRef={toastRef}
+            ></IniciarSesionFacebook>
          </View>
+         {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
+         <Toast ref={toastRef} position="center" opacity={0.5}></Toast>
       </ScrollView>
    );
 }
@@ -30,8 +44,8 @@ function CrearUsuario(props) {
 
 const styles = StyleSheet.create({
    container: {
-      marginRight: 5,
-      marginLeft: 5,
+      marginRight: 20,
+      marginLeft: 20,
    },
    logo: { width: '100%', height: 150, marginTop: 150 },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
