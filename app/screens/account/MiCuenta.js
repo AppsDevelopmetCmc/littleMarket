@@ -14,7 +14,7 @@ export default function MiCuenta() {
       firebase.auth().onAuthStateChanged(user => {
          !user ? setLogin(false) : setLogin(true);
       });
-   }, []);
+   }, [login]);
 
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;

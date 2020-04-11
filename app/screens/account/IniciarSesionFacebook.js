@@ -20,8 +20,10 @@ export default function IniciarSesionFacebook(props) {
          permissions,
          declinedPermissions,
       } = await Facebook.logInWithReadPermissionsAsync({
-         permissions: ['public_profile'],
+         permissions: ['public_profile', 'email'],
       });
+      console.log('Expires: ' + expires);
+      console.log('Credenciales: ' + token);
 
       if (type === 'success') {
          setIsVisibleLoading(true);
@@ -32,9 +34,11 @@ export default function IniciarSesionFacebook(props) {
             .auth()
             .signInWithCredential(credentials)
             .then(() => {
-               nav.navigate('MiCuenta');
+               console.log('Ingreso con facebook');
             })
             .catch(() => {
+               console.log('Crendenciales: ', credentials);
+
                console.log('Error accediendo con facebook ');
                toastRef.current.show('Error accediendo con facebook ');
             });

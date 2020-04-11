@@ -23,8 +23,6 @@ export default function IniciaSesionForm(props) {
    const [password, setPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
 
-   // Inicializacion de la toastReferencia con hoock para utilizarlo con toast
-
    const iniciarSesion = async () => {
       setisVisibleLoading(true);
       if (!email || !password) {
@@ -37,7 +35,7 @@ export default function IniciaSesionForm(props) {
                .auth()
                .signInWithEmailAndPassword(email, password)
                .then(() => {
-                  nav.navigate('MiCuenta');
+                  console.log('Inicio Sesion con Firebase');
                })
                .catch(() => {
                   toastRef.current.show(err.Err2);

@@ -1,40 +1,68 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   Image,
+   SafeAreaView,
+   useColorScheme,
+} from 'react-native';
 import { Button } from 'react-native-elements';
-import * as firebase from 'firebase';
+import * as colores from '../constants/Colores';
 
 export default function PaginaIncio(props) {
    const { navigation } = props;
    return (
-      <View style={styles.container}>
-         <Button
-            title="Iniciar Sesión"
-            onPress={() => {
-               navigation.navigate('IniciaSesion');
-            }}
-         ></Button>
-         <Button
-            title="Registrate"
-            onPress={() => {
-               navigation.navigate('Registro');
-            }}
-         ></Button>
-         {/* boton de prueba para desloguearse */}
-         <Button
-            title="Cerrar Sesión"
-            onPress={() => {
-               firebase.auth().signOut();
-               console.log('Se cerro sesion');
-            }}
-         ></Button>
-      </View>
+      <SafeAreaView style={styles.container}>
+         <Image
+            source={require('../../assets/img/InicioImg.png')}
+            resizeMode="stretch"
+            style={styles.imgInicio}
+         ></Image>
+         <View
+            style={[styles.containerRow, { transform: [{ translateY: -50 }] }]}
+         >
+            <Button
+               title="Iniciar Sesión"
+               buttonStyle={styles.estiloBoton}
+               onPress={() => {
+                  navigation.navigate('IniciaSesion');
+               }}
+            ></Button>
+            <Button
+               title="Registrate"
+               type="outline"
+               buttonStyle={styles.estiloBotonRegistro}
+               titleStyle={styles.estiloTitulo}
+               onPress={() => {
+                  navigation.navigate('Registro');
+               }}
+            ></Button>
+         </View>
+      </SafeAreaView>
    );
 }
 
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      position: 'relative',
    },
+   containerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginHorizontal: 40,
+   },
+   imgInicio: { width: '100%' },
+   estiloBoton: {
+      backgroundColor: colores.primaryColor,
+      width: 130,
+      height: 45,
+   },
+   estiloBotonRegistro: {
+      borderColor: colores.primaryLightColor,
+      width: 130,
+      height: 45,
+   },
+   estiloTitulo: { color: colores.primaryLightColor },
 });

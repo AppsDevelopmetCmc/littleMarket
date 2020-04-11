@@ -1,4 +1,4 @@
 export const FacebookApi = {
-   application_id: '2901667516568765',
-   permissions: 'b695fb58ad133d463c2221988037ef9a',
+   application_id: '538869700099724',
+   permissions: '9eaa9ae28427f37811d84e92404cd27a',
 };
