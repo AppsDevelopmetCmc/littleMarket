@@ -3,18 +3,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default function Mapa(props) {
+export default function PerfilUsuario(props) {
    const { navigation } = props;
 
    return (
       <View style={styles.container}>
-         <Text>Página para visualizar el mapa</Text>
-         <Button
-            title="Ir a Tabs"
-            onPress={() => {
-               navigation.navigate('HomeTab');
-            }}
-         ></Button>
+         <Text>Página para llenar la información del usuario</Text>
       </View>
    );
 }

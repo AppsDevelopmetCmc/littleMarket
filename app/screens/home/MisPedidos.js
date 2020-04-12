@@ -3,18 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default function Mapa(props) {
-   const { navigation } = props;
-
+export default function MisPedidos() {
    return (
       <View style={styles.container}>
-         <Text>Página para visualizar el mapa</Text>
-         <Button
-            title="Ir a Tabs"
-            onPress={() => {
-               navigation.navigate('HomeTab');
-            }}
-         ></Button>
+         <Text>Página de Mis Pedidos</Text>
       </View>
    );
 }

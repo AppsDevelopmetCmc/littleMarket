@@ -44,7 +44,7 @@ export default function Registro({ navigation }) {
                   .auth()
                   .createUserWithEmailAndPassword(email, password)
                   .then(() => {
-                     navigation.navigate('MiCuenta');
+                     console.log('se registro correctamente');
                   })
                   .catch(() => {
                      toastRef.current.show(err.Err5);
