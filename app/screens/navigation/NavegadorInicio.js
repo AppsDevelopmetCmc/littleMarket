@@ -87,7 +87,7 @@ function LoginStack() {
 
 function DirectionStack() {
    return (
-      <StackDirection.Navigator>
+      <StackDirection.Navigator initialRouteName="HomeTab">
          <StackDirection.Screen
             name="Direcciones"
             component={Direcciones}

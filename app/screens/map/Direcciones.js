@@ -9,13 +9,7 @@ export default function Direcciones(props) {
    return (
       <View style={styles.container}>
          <Text>Direcciones para mapa</Text>
-         <Button
-            title="Cerrar Sesión"
-            onPress={() => {
-               firebase.auth().signOut();
-               console.log('Se cerro sesion');
-            }}
-         ></Button>
+
          <Button
             title="Ir a mapa"
             onPress={() => {
