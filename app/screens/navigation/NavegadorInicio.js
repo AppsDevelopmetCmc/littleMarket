@@ -13,15 +13,15 @@ import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 
 // Importaciones necesarias direcciones
-import Mapa from '../map/Mapa';
-import Direcciones from '../map/Direcciones';
+import { Mapa } from '../map/Mapa';
+import { Direcciones } from '../map/Direcciones';
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
 
 // Importaciones para el Inicio
-import PaginaPrincipal from '../../screens/home/PaginaPrincipal';
-import MisPedidos from '../../screens/home/MisPedidos';
+import { ListaPedidos } from '../ListaPedidos';
+import { ListaProductos } from '../ListaProductos';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -35,6 +35,11 @@ const navOptionHandler = isValue => ({
 
 function AuthenticationStack() {
    const [login, setLogin] = useState(null);
+   //PENDIENTE: recuperar del usuario logueado
+   /* global.direccionPrincipal = {
+      descripcion: 'Cumbaya, Urb. Real Alto',
+      tieneCobertura: true,
+   };*/
 
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
@@ -48,11 +53,27 @@ function AuthenticationStack() {
       return (
          <StackAuthentication.Navigator>
             {login ? (
-               <StackAuthentication.Screen
-                  name="HomeDraw"
-                  component={HomeDraw}
-                  options={navOptionHandler(false)}
-               ></StackAuthentication.Screen>
+               global.direccionPrincipal != null ? (
+                  global.direccionPrincipal.tieneCobertura ? (
+                     <StackAuthentication.Screen
+                        name="HomeTab"
+                        component={HomeTab}
+                        options={navOptionHandler(false)}
+                     />
+                  ) : (
+                     <StackAuthentication.Screen
+                        name="DireccionStack"
+                        component={DirectionStack}
+                        options={navOptionHandler(false)}
+                     />
+                  )
+               ) : (
+                  <StackAuthentication.Screen
+                     name="DireccionStack"
+                     component={DirectionStack}
+                     options={navOptionHandler(false)}
+                  />
+               )
             ) : (
                <StackAuthentication.Screen
                   name="LoginStack"
@@ -107,8 +128,8 @@ function DirectionStack() {
 function HomeTab() {
    return (
       <TabHome.Navigator initialRouteName="PaginaPrincipal">
-         <TabHome.Screen name="PaginaPrincipal" component={PaginaPrincipal} />
-         <TabHome.Screen name="MisPedidos" component={MisPedidos} />
+         <TabHome.Screen name="ListaProductos" component={ListaProductos} />
+         <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
       </TabHome.Navigator>
    );
 }
