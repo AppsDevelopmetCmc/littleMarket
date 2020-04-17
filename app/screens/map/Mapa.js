@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default function Mapa(props) {
+export function Mapa(props) {
    const { navigation } = props;
 
    return (
