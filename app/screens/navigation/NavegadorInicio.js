@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { cargarConfiguracion } from '../../utils/FireBase';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -29,6 +30,9 @@ const StackDirection = createStackNavigator();
 const TabHome = createBottomTabNavigator();
 const DrawerHome = createDrawerNavigator();
 
+if (!global.firebaseRegistrado) {
+   cargarConfiguracion();
+}
 const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
