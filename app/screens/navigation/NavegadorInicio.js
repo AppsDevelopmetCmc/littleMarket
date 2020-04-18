@@ -23,6 +23,9 @@ import Cargando from '../../components/Cargando';
 import PaginaPrincipal from '../../screens/home/PaginaPrincipal';
 import MisPedidos from '../../screens/home/MisPedidos';
 
+//Importando los colores
+import * as colores from '../../constants/Colores';
+
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
 const StackDirection = createStackNavigator();
@@ -80,6 +83,15 @@ function LoginStack() {
          <StackLogin.Screen
             name="IniciaSesion"
             component={IniciaSesion}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.primaryColor,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackLogin.Screen>
       </StackLogin.Navigator>
    );
