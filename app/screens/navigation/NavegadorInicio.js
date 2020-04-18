@@ -79,6 +79,15 @@ function LoginStack() {
          <StackLogin.Screen
             name="Registro"
             component={Registro}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.primaryColor,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackLogin.Screen>
          <StackLogin.Screen
             name="IniciaSesion"
