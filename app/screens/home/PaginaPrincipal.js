@@ -12,32 +12,14 @@ export default class PaginaPrincipal extends Component {
       };
    }
    componentDidMount() {
-      //global.direccionActual = 'Ladrón de Guevara y Toledo';
-      const { navigation } = this.props;
-      this.setState({
-         navigation: navigation,
-      });
+ 
    }
-   mostrarMapa = () => {
-      return (
-         _.isEmpty(global.direccionActual) && (
-            <Mapa
-               navigation={this.state.navigation}
-            ></Mapa>
-         )
-      );
-   };
    render() {
       const { navigation } = this.props;
       return (
          <View style={styles.container}>
-            {this.mostrarMapa()}
             <Button
-               title={
-                  global.direccionActual
-                     ? global.direccionActual
-                     : 'Sin Dirección'
-               }
+               title='Dirección Actual'
                onPress={() => {
                   navigation.navigate('Direcciones');
                }}
