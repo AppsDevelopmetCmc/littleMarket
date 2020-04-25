@@ -6,7 +6,7 @@ export class ListaProductos extends Component {
    render() {
       return (
          <View>
-            <Text>DIRECCION: {global.direccionPrincipal.descripcion}</Text>
+            <Text>DIRECCION: {/*global.direccionPrincipal.descripcion*/}</Text>
             <Text></Text>
             <Text>LISTA DE PRODUCTOS </Text>
             <Button

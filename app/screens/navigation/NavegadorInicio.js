@@ -23,6 +23,7 @@ import Cargando from '../../components/Cargando';
 // Importaciones para el Inicio
 import { ListaPedidos } from '../ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
+import { ListCombo } from '../combos/ListCombo';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -72,11 +73,12 @@ function AuthenticationStack() {
                      />
                   )
                ) : (
+
                   <StackAuthentication.Screen
-                     name="DireccionStack"
-                     component={DirectionStack}
-                     options={navOptionHandler(false)}
-                  />
+                  name="HomeTab"
+                  component={HomeTab}
+                  options={navOptionHandler(false)}
+               />
                )
             ) : (
                <StackAuthentication.Screen
@@ -134,6 +136,7 @@ function HomeTab() {
       <TabHome.Navigator initialRouteName="PaginaPrincipal">
          <TabHome.Screen name="ListaProductos" component={ListaProductos} />
          <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
+         <TabHome.Screen name="ListaCombos" component={ListCombo} />
       </TabHome.Navigator>
    );
 }
