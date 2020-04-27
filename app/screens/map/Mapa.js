@@ -37,22 +37,10 @@ export default class Mapa extends Component {
                   longitudeDelta: LONGITUDE_DELTA,
                },
             });
-            this.map.animateToRegion(this.state.region, 1000);
          },
          error => console.log(error.message),
          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
       );
-      this.watchID = navigator.geolocation.watchPosition(position => {
-         this.setState({
-            region: {
-               latitude: position.coords.latitude,
-               longitude: position.coords.longitude,
-               latitudeDelta: LATITUDE_DELTA,
-               longitudeDelta: LONGITUDE_DELTA,
-            },
-         });
-         this.map.animateToRegion(this.state.region, 1000);
-      });
    }
    onMapLayout = () => {
       this.setState({ isMapReady: true });
@@ -73,8 +61,8 @@ export default class Mapa extends Component {
    }
    obtenerCoords(localizacion) {
       this.actualizarLocalizacion({
-         latitude: localizacion.latitude,
-         longitude: localizacion.longitude,
+         latitude: localizacion.lat,
+         longitude: localizacion.lng,
       });
    }
 
@@ -91,9 +79,10 @@ export default class Mapa extends Component {
                   showsCompass
                   showsPointsOfInterest
                   showsBuildings
+                  showsUserLocation
+                  zoomEnabled={true}
                   ref={map => (this.map = map)}
                   onLayout={this.onMapLayout}
-                  initialRegion={this.state.region}
                   region={this.state.region}
                   loadingEnabled={true}
                   onRegionChange={region => {
@@ -103,7 +92,7 @@ export default class Mapa extends Component {
                   {this.state.isMapReady && (
                      <MapView.Marker
                         title={this.props.title}
-                        key="AIzaSyCC56lS7YmeXdq7hZo7K3O12T4oHMHnU2A"
+                        key="AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
                         coordinate={{
                            latitude: this.state.region.latitude,
                            longitude: this.state.region.longitude,
@@ -113,7 +102,8 @@ export default class Mapa extends Component {
                </MapView>
             </View>
                         
-            <MapInput notificarCambio={loc => this.obtenerCoords(loc)} />
+            <MapInput notificarCambio={
+               loc => this.obtenerCoords(loc)} />
             
               <Button
                   title="Guardar"

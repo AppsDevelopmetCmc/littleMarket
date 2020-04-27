@@ -25,10 +25,10 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "yapada.com",
+      "package": "yappando.com",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCC56lS7YmeXdq7hZo7K3O12T4oHMHnU2A"
+          "apiKey": "AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
         }
       }
     }
