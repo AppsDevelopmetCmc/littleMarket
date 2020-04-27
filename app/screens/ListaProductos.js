@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View, Button, StyleSheet} from 'react-native';
 import * as firebase from 'firebase';
 
 export class ListaProductos extends Component {
+   
    render() {
+      const { navigation } = this.props;
       return (
-         <View>
+         <View styles={styles.container}>
             <Text>DIRECCION: {/*global.direccionPrincipal.descripcion*/}</Text>
+            <Button
+               title={global.direccionPrincipal.descripcion}
+               onPress={() => {
+                  navigation.navigate('Direcciones');
+               }}
+            ></Button>
             <Text></Text>
             <Text>LISTA DE PRODUCTOS </Text>
             <Button
@@ -20,3 +28,11 @@ export class ListaProductos extends Component {
       );
    }
 }
+const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: 10,
+   },
+});

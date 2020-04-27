@@ -24,13 +24,7 @@ export function Direcciones(props) {
                : 'NO TIENE'}
          </Text>
 
-         <Button
-            title="Cerrar Sesión"
-            onPress={() => {
-               firebase.auth().signOut();
-               console.log('Se cerro sesion');
-            }}
-         ></Button>
+
          <Button
             title="Ir a mapa"
             onPress={() => {
