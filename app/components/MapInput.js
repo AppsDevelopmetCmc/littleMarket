@@ -26,24 +26,27 @@ const palette = {
        
     }
 }
-const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } }};
-const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } }};
 
 export default class MapInput extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            mostrarLista: true,
+        };
+     }
    render() {
-       let mostrar = true;
       return (
 <GooglePlacesAutocomplete
             placeholder="Buscar"
             minLength={2}
             autoFocus={false}
             returnKeyType={'search'}
-            listViewDisplayed={mostrar}
+            listViewDisplayed={this.state.mostrarLista}
             fetchDetails={true}
             
       renderDescription={row => row.description}
             onPress={(data, details = null) =>{
-                mostrar=false;
+                this.setState({mostrarLista: false})
                 this.props.notificarCambio(details.geometry.location);
             }}
             query={{

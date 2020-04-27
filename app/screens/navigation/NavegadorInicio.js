@@ -14,7 +14,7 @@ import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 
 // Importaciones necesarias direcciones
-import { Mapa } from '../map/Mapa';
+import  Mapa  from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
 
 // Splash de carga
@@ -41,10 +41,10 @@ const navOptionHandler = isValue => ({
 function AuthenticationStack() {
    const [login, setLogin] = useState(null);
    //PENDIENTE: recuperar del usuario logueado
-   /* global.direccionPrincipal = {
-      descripcion: 'Cumbaya, Urb. Real Alto',
-      tieneCobertura: true,
-   };*/
+   global.direccionPrincipal = {
+      descripcion: 'Dirección Actual',
+      tieneCobertura: false,
+   };
 
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
