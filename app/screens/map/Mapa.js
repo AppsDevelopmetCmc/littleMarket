@@ -1,9 +1,14 @@
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import React, { Component, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button } from 'react-native-elements';
+import * as firebase from 'firebase';
 import MapInput from '../../components/MapInput';
 
+export default function Mapa(props) {
+   const { navigation } = props;
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE = -1.831239;
@@ -11,6 +16,17 @@ const LONGITUDE = -78.183403;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
+   return (
+      <View style={styles.container}>
+         <Text>Página para visualizar el mapa</Text>
+         <Button
+            title="Ir a Tabs"
+            onPress={() => {
+               navigation.navigate('HomeTab');
+            }}
+         ></Button>
+      </View>
+   );
 export default class Mapa extends Component {
    constructor(props) {
       super(props);
@@ -119,6 +135,8 @@ export default class Mapa extends Component {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       paddingTop: 10,
    },
    mapStyle: {
