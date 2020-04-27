@@ -12,8 +12,7 @@ const LONGITUDE = -78.183403;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-
-export default class Mapa extends Component {
+export class Mapa extends Component {
    constructor(props) {
       super(props);
       this.state = {
@@ -49,7 +48,7 @@ export default class Mapa extends Component {
    };
 
    componentWillUnmount() {
-    //  navigator.geolocation.clearWatch(this.watchID);
+      //  navigator.geolocation.clearWatch(this.watchID);
    }
    actualizarLocalizacion(localizacion) {
       this.setState({
@@ -103,16 +102,15 @@ export default class Mapa extends Component {
                   )}
                </MapView>
             </View>
-                        
-            <MapInput notificarCambio={
-               loc => this.obtenerCoords(loc)} />
-            
-              <Button
-                  title="Guardar"
-                  onPress={() => {
-                     navigation.navigate('Direcciones');
-                  }}
-               ></Button>
+
+            <MapInput notificarCambio={loc => this.obtenerCoords(loc)} />
+
+            <Button
+               title="Guardar"
+               onPress={() => {
+                  navigation.navigate('Direcciones');
+               }}
+            ></Button>
          </View>
       );
    }

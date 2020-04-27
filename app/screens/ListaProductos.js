@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import { Text, View, Button, StyleSheet} from 'react-native';
+import { Text, View, Button, StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 
 export class ListaProductos extends Component {
-   
    render() {
       const { navigation } = this.props;
       return (
          <View styles={styles.container}>
-            <Text>DIRECCION: {/*global.direccionPrincipal.descripcion*/}</Text>
+            <Text></Text>
+            <Text>DIRECCION2: {global.tieneCobertura}</Text>
             <Button
-               title={global.direccionPrincipal.descripcion}
+               title="Direcciones"
                onPress={() => {
                   navigation.navigate('Direcciones');
                }}
             ></Button>
-            <Text></Text>
+
             <Text>LISTA DE PRODUCTOS </Text>
             <Button
                title="Cerrar Sesión"
@@ -33,6 +33,6 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingTop: 10,
+      marginTop: 60,
    },
 });
