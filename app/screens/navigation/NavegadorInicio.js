@@ -25,6 +25,7 @@ import Cargando from '../../components/Cargando';
 import { ListaPedidos } from '../ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
+import { CarroCompras } from '../carroCompras/CarroCompras';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -97,8 +98,8 @@ function HomeTab() {
    return (
       <TabHome.Navigator initialRouteName="ListaCombos">
          <TabHome.Screen name="ListaProductos" component={ListaProductos} />
-         <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
          <TabHome.Screen name="ListaCombos" component={ListCombo} />
+         <TabHome.Screen name="CarroComprasScreen" component={CarroCompras} />
       </TabHome.Navigator>
    );
 }
@@ -121,6 +122,9 @@ export default function NavegadorInicio() {
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
          !user ? setLogin(false) : setLogin(true);
+         if (user) {
+            global.usuario = user.email;
+         }
       });
    }, [login]);
 
