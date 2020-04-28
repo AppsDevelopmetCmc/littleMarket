@@ -38,10 +38,10 @@ export default function IniciarSesionFacebook(props) {
             .then(() => {
                console.log('Ingreso con facebook');
             })
-            .catch(() => {
+            .catch(error => {
                console.log('Crendenciales: ', credentials);
 
-               console.log('Error accediendo con facebook ');
+               console.log('Error accediendo con facebook ', error);
                toastRef.current.show('Error accediendo con facebook ');
             });
       } else if (type === 'cancel') {
@@ -56,8 +56,6 @@ export default function IniciarSesionFacebook(props) {
    return (
       <View style={styles.container}>
          <SocialIcon
-            title="Iniciar sesión con Facebook"
-            button
             type="facebook"
             onPress={iniciaSesionFacebook}
          ></SocialIcon>

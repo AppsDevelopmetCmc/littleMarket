@@ -12,6 +12,7 @@ import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
+import RecuperarCuenta from '../account/RecuperarCuenta';
 
 // Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
@@ -44,10 +45,10 @@ const navOptionHandler = isValue => ({
 function AuthenticationStack() {
    const [login, setLogin] = useState(null);
    //PENDIENTE: recuperar del usuario logueado
-   /* global.direccionPrincipal = {
+   global.direccionPrincipal = {
       descripcion: 'Cumbaya, Urb. Real Alto',
       tieneCobertura: true,
-   };*/
+   };
 
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
@@ -76,12 +77,11 @@ function AuthenticationStack() {
                      />
                   )
                ) : (
-
                   <StackAuthentication.Screen
-                  name="HomeTab"
-                  component={HomeTab}
-                  options={navOptionHandler(false)}
-               />
+                     name="HomeTab"
+                     component={HomeTab}
+                     options={navOptionHandler(false)}
+                  />
                )
             ) : (
                <StackAuthentication.Screen
@@ -119,6 +119,19 @@ function LoginStack() {
          <StackLogin.Screen
             name="IniciaSesion"
             component={IniciaSesion}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.primaryColor,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackLogin.Screen>
+         <StackLogin.Screen
+            name="RecuperarCuenta"
+            component={RecuperarCuenta}
             options={{
                title: '',
                headerStyle: {

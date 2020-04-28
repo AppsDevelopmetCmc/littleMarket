@@ -1,5 +1,5 @@
 import React, { useState, usetoastRef } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -93,7 +93,14 @@ export default function IniciaSesionForm(props) {
                ></Icon>
             }
          ></Input>
-         <Text style={styles.estiloTexto}>Olvidaste tu contraseña?</Text>
+         <TouchableOpacity
+            onPress={() => {
+               nav.navigate('RecuperarCuenta');
+            }}
+         >
+            <Text style={styles.estiloTexto}>Olvidaste tu contraseña?</Text>
+         </TouchableOpacity>
+
          <Button
             title="Iniciar Sesion"
             titleStyle={textEstilo(colores.whiteColor, 15, 'bold')}

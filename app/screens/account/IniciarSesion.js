@@ -11,6 +11,7 @@ import { Divider, Button } from 'react-native-elements';
 
 import IniciaSesionForm from '../account/form/IniciaSesionForm';
 import IniciarSesionFacebook from '../account/IniciarSesionFacebook';
+import IniciaSesionGoogle from '../account/IniciaSesionGoogle';
 
 // Importacion de Toas
 import Toast from 'react-native-easy-toast';
@@ -54,6 +55,10 @@ export default function IniciaSesion({ navigation }) {
                   nav={navigation}
                   toastRef={toastRef}
                ></IniciarSesionFacebook>
+               <IniciaSesionGoogle
+                  nav={navigation}
+                  toastRef={toastRef}
+               ></IniciaSesionGoogle>
             </ScrollView>
          </View>
 
