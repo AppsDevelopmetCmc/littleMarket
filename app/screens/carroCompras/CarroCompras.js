@@ -1,47 +1,63 @@
 import React, { Component } from 'react';
-import { Text, View, Button,FlatList } from 'react-native';
-import {ServicioCarroCompras} from '../../servicios/ServicioCarroCompras';
-import {ItemCarro} from '../../screens/carroCompras/componentes/ItemCarro';
+import { Text, View, Button, FlatList } from 'react-native';
+import { ServicioCarroCompras } from '../../servicios/ServicioCarroCompras';
+import { ItemCarro } from '../../screens/carroCompras/componentes/ItemCarro';
+import { StackActions } from '@react-navigation/native';
 
 export class CarroCompras extends Component {
-
-   constructor(props){
+   constructor(props) {
       super(props);
       let items = [];
       this.pintarBoton = false;
-      
-      this.state = 
-      {
-         listItems:items
-      } 
-      let srvItemsCarro=new ServicioCarroCompras();
-      srvItemsCarro.registrarEscuchaTodas(items, this.repintarLista, 'zantycb89@gmail.com');
-   }
-   
-   repintarLista = (items) =>
-   {
-      this.setState({
-          listItems: items
-      })
+
+      this.state = {
+         listItems: items,
+      };
+      let srvItemsCarro = new ServicioCarroCompras();
+      srvItemsCarro.registrarEscuchaTodas(
+         items,
+         this.repintarLista,
+         'zantycb89@gmail.com'
+      );
    }
 
-   eliminarItemCarro=(item, mail)=>
-   {
-         let srvItemsCarro = new ServicioCarroCompras();
-         srvItemsCarro.eliminarItemCarro(item, mail);
-   }
-   
-   render(){
+   repintarLista = items => {
+      this.setState({
+         listItems: items,
+      });
+   };
+
+   eliminarItemCarro = (item, mail) => {
+      let srvItemsCarro = new ServicioCarroCompras();
+      srvItemsCarro.eliminarItemCarro(item, mail);
+   };
+
+   render() {
       return (
          <View>
             <Text>TU COMPRA </Text>
-            { <FlatList                
-               data = {this.state.listItems}
-               renderItem = {(objeto)=>{return <ItemCarro item={objeto.item}                
-                                                                fnEliminarItemCarro={this.eliminarItemCarro}/>}}
-               keyExtractor = {(objetoCarro)=>{return objetoCarro.id}}
+            <Button
+               title="Seguir comprando"
+               onPress={() => {
+                  this.props.navigation.dispatch(StackActions.popToTop());
+               }}
             />
-          }
+            {
+               <FlatList
+                  data={this.state.listItems}
+                  renderItem={objeto => {
+                     return (
+                        <ItemCarro
+                           item={objeto.item}
+                           fnEliminarItemCarro={this.eliminarItemCarro}
+                        />
+                     );
+                  }}
+                  keyExtractor={objetoCarro => {
+                     return objetoCarro.id;
+                  }}
+               />
+            }
          </View>
       );
    }
