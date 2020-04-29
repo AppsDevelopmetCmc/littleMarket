@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, TextInput, FlatList } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-   crearPedidoCarro,
-   agregarItemCarro,
-} from '../../servicios/ServicioCarroCompras';
+import { agregarDisminuirItemCarro } from '../../servicios/ServicioCarroCompras';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
 import { ItemComboProducto } from '../combos/componentes/ItemComboProducto';
 
@@ -31,6 +28,7 @@ export class DetalleCombo extends Component {
       });
    };
    render() {
+      let combo = this.props.route.params.combo;
       return (
          <View style={styles.container}>
             <View style={styles.lista}>
@@ -45,50 +43,28 @@ export class DetalleCombo extends Component {
                   }}
                />
             </View>
-            <View style={styles.boton}>
-               <Button
-                  onPress={() => {
-                     let nuevaCantidad = parseInt(this.state.cantidad) - 1;
-                     if (nuevaCantidad >= 0) {
-                        this.setState({ cantidad: nuevaCantidad + '' });
-                     }
-                  }}
-                  icon={<Icon name="minus-circle" size={20} color="white" />}
-               />
-               <TextInput
-                  style={styles.caja}
-                  value={this.state.cantidad}
-                  disabled
-               />
-               <Button
-                  onPress={() => {
-                     let nuevaCantidad = parseInt(this.state.cantidad) + 1;
-                     if (nuevaCantidad < 100) {
-                        this.setState({ cantidad: nuevaCantidad + '' });
-                     }
-                  }}
-                  icon={<Icon name="plus-circle" size={20} color="white" />}
-               />
-            </View>
 
             <Button
                title="Agregar"
                onPress={() => {
-                  crearPedidoCarro(
+                  agregarDisminuirItemCarro(
                      {
                         id: combo.id,
                         alias: combo.alias,
                         precio: combo.precio,
-                        cantidad: parseInt(this.state.cantidad),
-                        subtotal: parseInt(this.state.cantidad) * combo.precio,
                      },
-                     global.usuario
+                     global.usuario,
+                     1,
+                     this.regresar
                   );
                }}
             ></Button>
          </View>
       );
    }
+   regresar = () => {
+      this.props.navigation.navigate('CarroComprasScreen');
+   };
 }
 
 const styles = StyleSheet.create({
@@ -131,7 +107,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
    },
-   lista:{
-      flex: 1 
-   }
+   lista: {
+      flex: 1,
+   },
 });

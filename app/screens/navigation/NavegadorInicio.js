@@ -52,6 +52,10 @@ function ScreensFromTabs() {
             name="DetalleComboScreen"
             component={DetalleCombo}
          ></StackFromTabs.Screen>
+         <StackDirection.Screen
+            name="CarroComprasScreen"
+            component={CarroCompras}
+         />
       </StackFromTabs.Navigator>
    );
 }
@@ -96,10 +100,9 @@ function DirectionStack() {
 }
 function HomeTab() {
    return (
-      <TabHome.Navigator initialRouteName="CarroComprasScreen">
+      <TabHome.Navigator initialRouteName="ListaCombos">
          <TabHome.Screen name="ListaProductos" component={ListaProductos} />
          <TabHome.Screen name="ListaCombos" component={ListCombo} />
-         <TabHome.Screen name="CarroComprasScreen" component={CarroCompras} />
       </TabHome.Navigator>
    );
 }
