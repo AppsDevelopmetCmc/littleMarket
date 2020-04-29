@@ -62,7 +62,6 @@ export default function IniciarSesionGoogle(props) {
 
 const styles = StyleSheet.create({
    container: {
-      flex: 1,
       marginTop: 30,
    },
 });

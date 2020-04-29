@@ -25,10 +25,10 @@ export default function Registro({ navigation }) {
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
-            <Text style={textEstilo(colores.whiteColor, 18, 'normal')}>
+            <Text style={textEstilo(colores.colorBlanco, 18, 'normal')}>
                Bienvenido
             </Text>
-            <Text style={textEstilo(colores.whiteColor, 25, 'bold')}>
+            <Text style={textEstilo(colores.colorBlanco, 25, 'bold')}>
                Regitrase
             </Text>
          </View>
@@ -53,15 +53,15 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
-   contenedorPagina: { flex: 1, backgroundColor: colores.primaryColor },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
-      backgroundColor: colores.primaryColor,
+      backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
       paddingTop: 30,
    },
    pie: {
       flex: 4,
-      backgroundColor: colores.whiteColor,
+      backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,

@@ -114,7 +114,7 @@ export default function RegistroForm(props) {
          ></Input>
          <Button
             title="Registrarse"
-            titleStyle={textEstilo(colores.whiteColor, 15, 'bold')}
+            titleStyle={textEstilo(colores.colorBlanco, 15, 'bold')}
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}
             onPress={register}
@@ -165,12 +165,12 @@ const styles = StyleSheet.create({
    },
    btnRegistrarse: {
       padding: 10,
-      backgroundColor: colores.primaryColor,
+      backgroundColor: colores.colorPrimarioVerde,
       borderRadius: 10,
    },
    estiloTexto: {
       paddingTop: 15,
       alignSelf: 'flex-end',
-      color: colores.primaryLightColor,
+      color: colores.colorClaroPrimarioVerde,
    },
 });

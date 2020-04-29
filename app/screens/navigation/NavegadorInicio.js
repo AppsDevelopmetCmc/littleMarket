@@ -109,7 +109,7 @@ function LoginStack() {
             options={{
                title: '',
                headerStyle: {
-                  backgroundColor: colores.primaryColor,
+                  backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
                   shadowOpacity: 0, //remove shadow on iOS
                },
@@ -122,7 +122,7 @@ function LoginStack() {
             options={{
                title: '',
                headerStyle: {
-                  backgroundColor: colores.primaryColor,
+                  backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
                   shadowOpacity: 0, //remove shadow on iOS
                },
@@ -135,7 +135,7 @@ function LoginStack() {
             options={{
                title: '',
                headerStyle: {
-                  backgroundColor: colores.primaryColor,
+                  backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
                   shadowOpacity: 0, //remove shadow on iOS
                },

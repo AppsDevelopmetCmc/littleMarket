@@ -62,7 +62,7 @@ export default function IniciaSesionForm(props) {
             inputStyle={styles.estiloInput}
             errorMessage={errorMesage}
             label="Correo *"
-            labelStyle={textEstilo('#333333', 15, 'normal')}
+            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             onChange={e => setEmail(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
             rightIcon={
                <Icon
@@ -75,7 +75,7 @@ export default function IniciaSesionForm(props) {
          <Input
             placeholder="******"
             label="Contraseña *"
-            labelStyle={textEstilo('#333333', 15, 'normal')}
+            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             password={true}
             secureTextEntry={hidePassword}
             containerStyle={styles.estiloContenedor2}
@@ -103,7 +103,7 @@ export default function IniciaSesionForm(props) {
 
          <Button
             title="Iniciar Sesion"
-            titleStyle={textEstilo(colores.whiteColor, 15, 'bold')}
+            titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}
             onPress={iniciarSesion}
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
    },
 
    estiloInput: { fontSize: 15 },
-   iconRight: { color: '#c1c1c1' },
+   iconRight: { color: colores.colorClaroTexto },
    btnStyles: {
       marginTop: 50,
       width: '100%',
@@ -154,12 +154,12 @@ const styles = StyleSheet.create({
    },
    btnRegistrarse: {
       padding: 10,
-      backgroundColor: colores.primaryColor,
-      borderRadius: 10,
+      backgroundColor: colores.colorPrimarioTomate,
+      borderRadius: 25,
    },
    estiloTexto: {
       paddingTop: 15,
       alignSelf: 'flex-end',
-      color: colores.primaryLightColor,
+      color: colores.colorClaroPrimarioTomate,
    },
 });

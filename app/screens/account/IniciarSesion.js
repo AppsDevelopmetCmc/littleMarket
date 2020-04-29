@@ -25,12 +25,17 @@ export default function IniciaSesion({ navigation }) {
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
-            <Text style={textEstilo(colores.whiteColor, 18, 'normal')}>
-               Bienvenido
-            </Text>
-            <Text style={textEstilo(colores.whiteColor, 25, 'bold')}>
-               Iniciar Sesión
-            </Text>
+            <View>
+               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
+                  Bienvenido
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
+                  Iniciar Sesión
+               </Text>
+            </View>
+            <Image
+               source={require('../../../assets/img/LogoBlanco.png')}
+            ></Image>
          </View>
 
          <View style={styles.pie}>
@@ -48,17 +53,23 @@ export default function IniciaSesion({ navigation }) {
                   }}
                >
                   <Divider style={styles.divide}></Divider>
-                  <Text style={textEstilo('#333333', 15, 'bold')}>o</Text>
+                  <Text
+                     style={textEstilo(colores.colorPrimarioTexto, 15, 'bold')}
+                  >
+                     o
+                  </Text>
                   <Divider style={styles.divide}></Divider>
                </View>
-               <IniciarSesionFacebook
-                  nav={navigation}
-                  toastRef={toastRef}
-               ></IniciarSesionFacebook>
-               <IniciaSesionGoogle
-                  nav={navigation}
-                  toastRef={toastRef}
-               ></IniciaSesionGoogle>
+               <View style={styles.socialIconos}>
+                  <IniciarSesionFacebook
+                     nav={navigation}
+                     toastRef={toastRef}
+                  ></IniciarSesionFacebook>
+                  <IniciaSesionGoogle
+                     nav={navigation}
+                     toastRef={toastRef}
+                  ></IniciaSesionGoogle>
+               </View>
             </ScrollView>
          </View>
 
@@ -85,15 +96,20 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
-   contenedorPagina: { flex: 1, backgroundColor: colores.primaryColor },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
-      backgroundColor: colores.primaryColor,
+      backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
       paddingTop: 30,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
    },
+
+   cabeceraTexto: {},
    pie: {
       flex: 4,
-      backgroundColor: colores.whiteColor,
+      backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
@@ -102,8 +118,15 @@ const styles = StyleSheet.create({
    logo: { width: '100%', height: 150, marginTop: 60 },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
    divide: {
-      backgroundColor: '#000',
+      backgroundColor: colores.colorPrimarioTexto,
       width: '42%',
       height: 1,
+   },
+   socialIconos: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignContent: 'center',
    },
 });

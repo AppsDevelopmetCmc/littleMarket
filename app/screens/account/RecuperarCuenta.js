@@ -46,7 +46,7 @@ export default function RecuperarCuenta() {
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
-            <Text style={textEstilo(colores.whiteColor, 25, 'bold')}>
+            <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
                Recuperar Cuenta
             </Text>
          </View>
@@ -57,7 +57,7 @@ export default function RecuperarCuenta() {
                inputContainerStyle={styles.estiloInputContenedor}
                inputStyle={styles.estiloInput}
                label="Correo *"
-               labelStyle={textEstilo('#333333', 15, 'normal')}
+               labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
                onChange={e => setCorreo(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                rightIcon={
                   <Icon
@@ -69,7 +69,7 @@ export default function RecuperarCuenta() {
             ></Input>
             <Button
                title="Recuperar Contraseña"
-               titleStyle={textEstilo(colores.whiteColor, 15, 'bold')}
+               titleStyle={textEstilo(colores.colorBlanco, 15, 'bold')}
                containerStyle={styles.btnStyles}
                buttonStyle={styles.btnRegistrarse}
                onPress={envioCorreo}
@@ -93,15 +93,15 @@ const textEstilo = (color, tamaño, tipo) => {
 
 // Define los estilos de la pantalla
 const styles = StyleSheet.create({
-   contenedorPagina: { flex: 1, backgroundColor: colores.primaryColor },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
-      backgroundColor: colores.primaryColor,
+      backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
       paddingTop: 30,
    },
    pie: {
       flex: 4,
-      backgroundColor: colores.whiteColor,
+      backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
@@ -110,11 +110,6 @@ const styles = StyleSheet.create({
    },
    logo: { width: '100%', height: 150, marginTop: 60 },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
-   divide: {
-      backgroundColor: '#000',
-      width: '42%',
-      height: 1,
-   },
    estiloContenedor1: {
       width: '100%',
       padding: 0,
@@ -125,7 +120,7 @@ const styles = StyleSheet.create({
       height: 40,
    },
    estiloInput: { fontSize: 15 },
-   iconRight: { color: '#c1c1c1' },
+   iconRight: { color: colores.colorClaroTexto },
    btnStyles: {
       marginTop: 50,
       width: '100%',
@@ -133,7 +128,7 @@ const styles = StyleSheet.create({
    },
    btnRegistrarse: {
       padding: 10,
-      backgroundColor: colores.primaryColor,
-      borderRadius: 10,
+      backgroundColor: colores.colorPrimarioTomate,
+      borderRadius: 25,
    },
 });
