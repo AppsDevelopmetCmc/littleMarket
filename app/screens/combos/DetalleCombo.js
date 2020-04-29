@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput,FlatList } from 'react-native';
+import { View, StyleSheet, TextInput, FlatList } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
    crearPedidoCarro,
    agregarItemCarro,
 } from '../../servicios/ServicioCarroCompras';
-import {ServicioCombos} from '../../servicios/ServicioCombos';
-import {ItemComboProducto} from '../combos/componentes/ItemComboProducto'
+import { ServicioCombos } from '../../servicios/ServicioCombos';
+import { ItemComboProducto } from '../combos/componentes/ItemComboProducto';
 
 export class DetalleCombo extends Component {
    constructor(props) {
@@ -16,28 +16,24 @@ export class DetalleCombo extends Component {
       let productosCombo = [];
       this.state = {
          cantidad: '0',
-         listProductosCombo: productosCombo
+         listProductosCombo: productosCombo,
       };
-
    }
 
-   componentDidMount(){
+   componentDidMount() {
       let srvCombos = new ServicioCombos();
-      srvCombos.getRecuperarComboProductos(
-         this.combo.id,
-         this.repintarLista
-      );
+      srvCombos.getRecuperarComboProductos(this.combo.id, this.repintarLista);
    }
 
    repintarLista = productosCombo => {
       this.setState({
-         listProductosCombo: productosCombo
+         listProductosCombo: productosCombo,
       });
    };
    render() {
       return (
          <View style={styles.container}>
-            <View style={{flex:1 }}>
+            <View style={styles.lista}>
                <Text style={styles.textoNegrita}>DETALLE COMBO</Text>
                <FlatList
                   data={this.state.listProductosCombo}
@@ -49,7 +45,7 @@ export class DetalleCombo extends Component {
                   }}
                />
             </View>
-            <View style={{ flexDirection: 'row', backgroundColor:'blue' ,justifyContent:'center'}}>
+            <View style={styles.boton}>
                <Button
                   onPress={() => {
                      let nuevaCantidad = parseInt(this.state.cantidad) - 1;
@@ -131,4 +127,11 @@ const styles = StyleSheet.create({
       marginTop: 0,
       marginLeft: 10,
    },
+   boton: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+   },
+   lista:{
+      flex: 1 
+   }
 });
