@@ -76,11 +76,11 @@ export class DetalleCombo extends Component {
                onPress={() => {
                   crearPedidoCarro(
                      {
-                        id: combo.id,
-                        alias: combo.alias,
-                        precio: combo.precio,
+                        id: this.combo.id,
+                        alias: this.combo.alias,
+                        precio: this.combo.precio,
                         cantidad: parseInt(this.state.cantidad),
-                        subtotal: parseInt(this.state.cantidad) * combo.precio,
+                        subtotal: parseInt(this.state.cantidad) * this.combo.precio,
                      },
                      global.usuario
                   );
