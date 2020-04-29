@@ -1,13 +1,47 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, Alert } from 'react-native';
+import { Text, View, Button,FlatList } from 'react-native';
+import {ServicioCarroCompras} from '../../servicios/ServicioCarroCompras';
+import {ItemCarro} from '../../screens/carroCompras/componentes/ItemCarro';
 
 export class CarroCompras extends Component {
-   render() {
+
+   constructor(props){
+      super(props);
+      let items = [];
+      this.pintarBoton = false;
+      
+      this.state = 
+      {
+         listItems:items
+      } 
+      let srvItemsCarro=new ServicioCarroCompras();
+      srvItemsCarro.registrarEscuchaTodas(items, this.repintarLista, 'zantycb89@gmail.com');
+   }
+   
+   repintarLista = (items) =>
+   {
+      this.setState({
+          listItems: items
+      })
+   }
+
+   eliminarItemCarro=(item, mail)=>
+   {
+         let srvItemsCarro = new ServicioCarroCompras();
+         srvItemsCarro.eliminarItemCarro(item, mail);
+   }
+   
+   render(){
       return (
          <View>
-            <Text>CARRITO COMPRAS</Text>
-            {/*PINTAR LOS ITEMS DE LA COLECCION carritos, correspondientes al usuario logueado*/}
-            {/*Estilo similar al que definio Alexander*/}
+            <Text>TU COMPRA </Text>
+            { <FlatList                
+               data = {this.state.listItems}
+               renderItem = {(objeto)=>{return <ItemCarro item={objeto.item}                
+                                                                fnEliminarItemCarro={this.eliminarItemCarro}/>}}
+               keyExtractor = {(objetoCarro)=>{return objetoCarro.id}}
+            />
+          }
          </View>
       );
    }
