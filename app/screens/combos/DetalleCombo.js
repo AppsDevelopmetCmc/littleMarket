@@ -1,28 +1,55 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native';
+import { View, StyleSheet, TextInput,FlatList } from 'react-native';
 import { Button, Text } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
    crearPedidoCarro,
    agregarItemCarro,
 } from '../../servicios/ServicioCarroCompras';
+import {ServicioCombos} from '../../servicios/ServicioCombos';
+import {ItemComboProducto} from '../combos/componentes/ItemComboProducto'
 
 export class DetalleCombo extends Component {
    constructor(props) {
       super(props);
+      this.combo = this.props.route.params.combo;
+      let productosCombo = [];
       this.state = {
          cantidad: '0',
+         listProductosCombo: productosCombo
       };
+
    }
+
+   componentDidMount(){
+      let srvCombos = new ServicioCombos();
+      srvCombos.getRecuperarComboProductos(
+         this.combo.id,
+         this.repintarLista
+      );
+   }
+
+   repintarLista = productosCombo => {
+      this.setState({
+         listProductosCombo: productosCombo
+      });
+   };
    render() {
-      let combo = this.props.route.params.combo;
       return (
          <View style={styles.container}>
-            <View>
-               <Text>DETALLE COMBO</Text>
-               {/*pitnar cada elemento del combo, con su precio. Aplicar estilo*/}
+            <View style={{flex:1 }}>
+               <Text style={styles.textoNegrita}>DETALLE COMBO</Text>
+               <FlatList
+                  data={this.state.listProductosCombo}
+                  renderItem={objeto => {
+                     return <ItemComboProducto comboProducto={objeto.item} />;
+                  }}
+                  keyExtractor={objetoComboProducto => {
+                     return objetoComboProducto.id;
+                  }}
+               />
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', backgroundColor:'blue' ,justifyContent:'center'}}>
                <Button
                   onPress={() => {
                      let nuevaCantidad = parseInt(this.state.cantidad) - 1;
@@ -72,7 +99,7 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       backgroundColor: '#fff',
-      alignItems: 'center',
+      alignItems: 'stretch',
       justifyContent: 'flex-start',
       marginTop: 80,
    },
@@ -97,5 +124,11 @@ const styles = StyleSheet.create({
       marginRight: 10,
       //  textAlign: 'right',
       paddingRight: 5,
+   },
+   textoNegrita: {
+      fontWeight: 'bold',
+      fontSize: 17,
+      marginTop: 0,
+      marginLeft: 10,
    },
 });
