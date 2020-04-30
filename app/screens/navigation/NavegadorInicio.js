@@ -162,6 +162,7 @@ export default function NavegadorInicio() {
          !user ? setLogin(false) : setLogin(true);
          if (user) {
             global.usuario = user.email;
+            global.infoUsuario = user.providerData[0];
          }
       });
    }, [login]);
