@@ -1,8 +1,19 @@
-export const primaryColor = '#009688';
-export const primaryLightColor = '#52c7b8';
-export const primaryDarkColor = '#00675b';
-export const secondaryColor = '#960b08';
-export const secondaryLightColor = '#ce4631';
-export const secondaryDarkColor = '#620000';
-export const primaryTextColor = '#ffffff';
-export const secondaryTextColor = '#ffffff';
+// Color Verde
+export const colorPrimarioVerde = '#a7e002';
+export const colorClaroPrimarioVerde = '#ddff52';
+export const colorOscuroPrimarioVerde = '#72ae00';
+
+// Color Tomate
+export const colorPrimarioTomate = '#f76f1e';
+export const colorClaroPrimarioTomate = '#ffa04f';
+export const colorOscuroPrimarioTomate = '#bd3f00';
+
+// Color Texto en la aplicación
+export const colorBlancoTexto = '#ffffff';
+export const colorOscuroTexto = '#0c0c0c';
+export const colorClaroTexto = '#c1c1c1';
+export const colorPrimarioTexto = '#333333';
+
+// Color Blanco y Negro
+export const colorBlanco = '#ffffff';
+export const colorNegro = '#000000';

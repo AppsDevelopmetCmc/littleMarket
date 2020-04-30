@@ -1,5 +1,5 @@
-import React, { useState, usetoastRef } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -17,42 +17,41 @@ import * as err from '../../../constants/Errores';
 // Importacion de colores
 import * as colores from '../../../constants/Colores';
 
-export default function IniciaSesionForm(props) {
+export default function RegistroForm(props) {
    const { nav, toastRef } = props;
-
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
+   const [hideRepetiPassword, setHideRepitPassword] = useState(true);
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
+   const [repeatPassword, setRepeatPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
-   const [errorMesage, setErrorMensage] = useState('');
 
-   const iniciarSesion = async () => {
+   const register = async () => {
       setisVisibleLoading(true);
-      if (!email || !password) {
+      if (!email || !password || !repeatPassword) {
          toastRef.current.show(err.Err3);
-         setErrorMensage('Requerido *');
-         // TO DO: Falta visualización de las validaciones en las cajas
       } else {
          if (!validateEmail(email)) {
             toastRef.current.show(err.Err1);
-            setErrorMensage(err.Err1);
          } else {
-            setErrorMensage('');
-            await firebase
-               .auth()
-               .signInWithEmailAndPassword(email, password)
-               .then(() => {
-                  console.log('Inicio Sesion con Firebase');
-               })
-               .catch(() => {
-                  toastRef.current.show(err.Err2);
-               });
+            if (password !== repeatPassword) {
+               toastRef.current.show(err.Err4);
+            } else {
+               await firebase
+                  .auth()
+                  .createUserWithEmailAndPassword(email, password)
+                  .then(() => {
+                     console.log('se registro correctamente');
+                  })
+                  .catch(() => {
+                     toastRef.current.show(err.Err5);
+                  });
+            }
          }
       }
       setisVisibleLoading(false);
    };
-
    return (
       <View style={styles.container}>
          <Input
@@ -60,9 +59,8 @@ export default function IniciaSesionForm(props) {
             containerStyle={styles.estiloContenedor1}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
-            errorMessage={errorMesage}
             label="Correo *"
-            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
+            labelStyle={textEstilo('#333333', 15, 'normal')}
             onChange={e => setEmail(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
             rightIcon={
                <Icon
@@ -75,7 +73,7 @@ export default function IniciaSesionForm(props) {
          <Input
             placeholder="******"
             label="Contraseña *"
-            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
+            labelStyle={textEstilo('#333333', 15, 'normal')}
             password={true}
             secureTextEntry={hidePassword}
             containerStyle={styles.estiloContenedor2}
@@ -93,22 +91,34 @@ export default function IniciaSesionForm(props) {
                ></Icon>
             }
          ></Input>
-         <TouchableOpacity
-            onPress={() => {
-               nav.navigate('RecuperarCuenta');
-            }}
-         >
-            <Text style={styles.estiloTexto}>Olvidaste tu contraseña?</Text>
-         </TouchableOpacity>
-
+         <Input
+            placeholder="******"
+            label="Repetir la contraseña * *"
+            labelStyle={textEstilo('#333333', 15, 'normal')}
+            password={true}
+            secureTextEntry={hideRepetiPassword}
+            containerStyle={styles.estiloContenedor2}
+            inputContainerStyle={styles.estiloInputContenedor}
+            inputStyle={styles.estiloInput}
+            onChange={e => setRepeatPassword(e.nativeEvent.text)}
+            rightIcon={
+               <Icon
+                  type="material-community"
+                  name={hideRepetiPassword ? 'eye-outline' : 'eye-off-outline'}
+                  iconStyle={styles.iconRight}
+                  onPress={() => {
+                     setHideRepitPassword(!hideRepetiPassword);
+                  }}
+               ></Icon>
+            }
+         ></Input>
          <Button
-            title="Iniciar Sesion"
-            titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
+            title="Registrarse"
+            titleStyle={textEstilo(colores.colorBlanco, 15, 'bold')}
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}
-            onPress={iniciarSesion}
+            onPress={register}
          ></Button>
-
          <Cargando
             text="Creando Cuenta"
             isVisible={isVisibleLoading}
@@ -116,6 +126,7 @@ export default function IniciaSesionForm(props) {
       </View>
    );
 }
+
 const textEstilo = (color, tamaño, tipo) => {
    return {
       color: color,
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
    },
 
    estiloInput: { fontSize: 15 },
-   iconRight: { color: colores.colorClaroTexto },
+   iconRight: { color: '#c1c1c1' },
    btnStyles: {
       marginTop: 50,
       width: '100%',
@@ -154,12 +165,12 @@ const styles = StyleSheet.create({
    },
    btnRegistrarse: {
       padding: 10,
-      backgroundColor: colores.colorPrimarioTomate,
-      borderRadius: 25,
+      backgroundColor: colores.colorPrimarioVerde,
+      borderRadius: 10,
    },
    estiloTexto: {
       paddingTop: 15,
       alignSelf: 'flex-end',
-      color: colores.colorClaroPrimarioTomate,
+      color: colores.colorClaroPrimarioVerde,
    },
 });

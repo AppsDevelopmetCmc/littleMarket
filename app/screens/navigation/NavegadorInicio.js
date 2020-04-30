@@ -13,6 +13,7 @@ import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
+import RecuperarCuenta from '../account/RecuperarCuenta';
 
 // Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
@@ -26,6 +27,9 @@ import { ListaPedidos } from '../ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
+
+//Importando los colores
+import * as colores from '../../constants/Colores';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -70,10 +74,41 @@ function LoginStack() {
          <StackLogin.Screen
             name="Registro"
             component={Registro}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackLogin.Screen>
          <StackLogin.Screen
             name="IniciaSesion"
             component={IniciaSesion}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackLogin.Screen>
+         <StackLogin.Screen
+            name="RecuperarCuenta"
+            component={RecuperarCuenta}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackLogin.Screen>
       </StackLogin.Navigator>
    );
@@ -127,6 +162,7 @@ export default function NavegadorInicio() {
          !user ? setLogin(false) : setLogin(true);
          if (user) {
             global.usuario = user.email;
+            global.infoUsuario = user.providerData[0];
          }
       });
    }, [login]);

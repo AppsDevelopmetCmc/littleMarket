@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import { FacebookApi } from '../../utils/Social';
 import Cargando from '../../components/Cargando';
+//Importacion de los colores
+import * as colores from '../../constants/Colores';
 
 export default function IniciarSesionFacebook(props) {
    const { nav, toastRef } = props;
@@ -36,10 +38,10 @@ export default function IniciarSesionFacebook(props) {
             .then(() => {
                console.log('Ingreso con facebook');
             })
-            .catch(() => {
+            .catch(error => {
                console.log('Crendenciales: ', credentials);
 
-               console.log('Error accediendo con facebook ');
+               console.log('Error accediendo con facebook ', error);
                toastRef.current.show('Error accediendo con facebook ');
             });
       } else if (type === 'cancel') {
@@ -52,10 +54,8 @@ export default function IniciarSesionFacebook(props) {
       setIsVisibleLoading(false);
    };
    return (
-      <View>
+      <View style={styles.container}>
          <SocialIcon
-            title="Iniciar sesión con Facebook"
-            button
             type="facebook"
             onPress={iniciaSesionFacebook}
          ></SocialIcon>
@@ -66,3 +66,9 @@ export default function IniciarSesionFacebook(props) {
       </View>
    );
 }
+
+const styles = StyleSheet.create({
+   container: {
+      marginTop: 30,
+   },
+});
