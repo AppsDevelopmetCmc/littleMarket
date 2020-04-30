@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert, Button,CheckBox } from 'react-native';
+import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export class ItemCombo extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         seleccionado: false
+         seleccionado: false,
       };
    }
    render() {
       return (
-         <View style={styles.fila}>
-            <View style={styles.contenido}>
+         <TouchableHighlight
+            onPress={() => {
+               this.props.nav.navigate('DetalleComboScreen', {
+                  combo: this.props.combo,
+               });
+            }}
+         >
+            <View style={styles.fila}>
+               <View style={styles.contenido}>
                   <View style={styles.subContenido}>
                      <View style={styles.imagenes}>
                         <Avatar
@@ -36,16 +45,16 @@ export class ItemCombo extends Component {
                         </View>
                      </View>
                   </View>
+               </View>
+               <View style={styles.checked}>
+                  <Icon
+                     name="arrow-right-bold-circle"
+                     size={30}
+                     color="white"
+                  />
+               </View>
             </View>
-            <View style={styles.checked}>
-            <CheckBox
-                  checked={this.state.seleccionado}
-                  onPress={() => {
-                     this.setState({ seleccionado: !this.state.seleccionado });
-                  }}
-               />
-            </View>
-         </View>
+         </TouchableHighlight>
       );
    }
 }
@@ -53,17 +62,22 @@ export class ItemCombo extends Component {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#fff',
+
       alignItems: 'stretch',
       justifyContent: 'center',
       fontWeight: 'bold',
-      backgroundColor: 'red',
+      //backgroundColor: 'red',
    },
    fila: {
       flex: 1,
       flexDirection: 'row',
-      borderBottomColor: 'gray',
-      borderBottomWidth: 1,
+      backgroundColor: 'orange',
+      //borderBottomColor: 'gray',
+      //borderBottomWidth: 1,
+      marginTop: 10,
+      marginLeft: 20,
+      borderBottomLeftRadius: 10,
+      borderTopLeftRadius: 10,
    },
    filaFlexEnd: {
       flex: 1,
@@ -72,24 +86,26 @@ const styles = StyleSheet.create({
       marginRight: 10,
    },
    contenido: {
-      flex: 2,
+      flex: 4,
       alignItems: 'stretch',
-      backgroundColor: 'pink',
+      //backgroundColor: 'pink',
    },
    checked: {
       flex: 1,
-      backgroundColor: 'yellow',
-      alignItems: 'stretch',
+      //backgroundColor: 'yellow',
+      alignItems: 'center',
       justifyContent: 'center',
    },
    subContenido: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: 'red',
+      //backgroundColor: 'red',
    },
    imagenes: {
       flex: 1,
-      backgroundColor: 'green',
+      //  backgroundColor: 'green',
+      alignItems: 'center',
+      padding: 20,
    },
    textoNegrita: {
       fontWeight: 'bold',

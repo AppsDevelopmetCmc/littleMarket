@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
+import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -25,6 +26,7 @@ import Cargando from '../../components/Cargando';
 import { ListaPedidos } from '../ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
+import { CarroCompras } from '../carroCompras/CarroCompras';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -32,6 +34,7 @@ import * as colores from '../../constants/Colores';
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
 const StackDirection = createStackNavigator();
+const StackFromTabs = createStackNavigator();
 const TabHome = createBottomTabNavigator();
 const DrawerHome = createDrawerNavigator();
 
@@ -42,59 +45,24 @@ const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
 
-function AuthenticationStack() {
-   const [login, setLogin] = useState(null);
-   //PENDIENTE: recuperar del usuario logueado
-   global.direccionPrincipal = {
-      descripcion: 'Cumbaya, Urb. Real Alto',
-      tieneCobertura: true,
-   };
-
-   useEffect(() => {
-      firebase.auth().onAuthStateChanged(user => {
-         !user ? setLogin(false) : setLogin(true);
-      });
-   }, [login]);
-
-   if (login === null) {
-      return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
-   } else {
-      return (
-         <StackAuthentication.Navigator>
-            {login ? (
-               global.direccionPrincipal != null ? (
-                  global.direccionPrincipal.tieneCobertura ? (
-                     <StackAuthentication.Screen
-                        name="HomeTab"
-                        component={HomeTab}
-                        options={navOptionHandler(false)}
-                     />
-                  ) : (
-                     <StackAuthentication.Screen
-                        name="DireccionStack"
-                        component={DirectionStack}
-                        options={navOptionHandler(false)}
-                     />
-                  )
-               ) : (
-                  <StackAuthentication.Screen
-                     name="HomeTab"
-                     component={HomeTab}
-                     options={navOptionHandler(false)}
-                  />
-               )
-            ) : (
-               <StackAuthentication.Screen
-                  name="LoginStack"
-                  component={LoginStack}
-                  options={navOptionHandler(false)}
-               ></StackAuthentication.Screen>
-            )}
-         </StackAuthentication.Navigator>
-      );
-   }
+function ScreensFromTabs() {
+   return (
+      <StackFromTabs.Navigator initialRouteName="HomeTabScreen">
+         <StackFromTabs.Screen
+            name="HomeTabScreen"
+            component={HomeTab}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="DetalleComboScreen"
+            component={DetalleCombo}
+         ></StackFromTabs.Screen>
+         <StackDirection.Screen
+            name="CarroComprasScreen"
+            component={CarroCompras}
+         />
+      </StackFromTabs.Navigator>
+   );
 }
-
 function LoginStack() {
    return (
       <StackLogin.Navigator>
@@ -167,9 +135,8 @@ function DirectionStack() {
 }
 function HomeTab() {
    return (
-      <TabHome.Navigator initialRouteName="PaginaPrincipal">
+      <TabHome.Navigator initialRouteName="ListaCombos">
          <TabHome.Screen name="ListaProductos" component={ListaProductos} />
-         <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
          <TabHome.Screen name="ListaCombos" component={ListCombo} />
       </TabHome.Navigator>
    );
@@ -177,7 +144,8 @@ function HomeTab() {
 
 function HomeDraw() {
    return (
-      <DrawerHome.Navigator initialRouteName="DirectionStack">
+      <DrawerHome.Navigator initialRouteName="HomeDrawer">
+         <DrawerHome.Screen name="HomeDrawer" component={ScreensFromTabs} />
          <DrawerHome.Screen name="DirectionStack" component={DirectionStack} />
          <DrawerHome.Screen name="PerfilUsuario" component={PerfilUsuario} />
       </DrawerHome.Navigator>
@@ -185,9 +153,46 @@ function HomeDraw() {
 }
 
 export default function NavegadorInicio() {
-   return (
-      <NavigationContainer>
-         <AuthenticationStack></AuthenticationStack>
-      </NavigationContainer>
-   );
+   const [login, setLogin] = useState(null);
+   //PENDIENTE: recuperar del usuario logueado
+   global.tieneCobertura = true;
+
+   useEffect(() => {
+      firebase.auth().onAuthStateChanged(user => {
+         !user ? setLogin(false) : setLogin(true);
+         if (user) {
+            global.usuario = user.email;
+         }
+      });
+   }, [login]);
+
+   if (login === null) {
+      return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+   } else {
+      return (
+         <NavigationContainer>
+            {login ? (
+               global.tieneCobertura ? (
+                  HomeDraw()
+               ) : (
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="DireccionStack"
+                        component={DirectionStack}
+                        options={navOptionHandler(false)}
+                     />
+                  </StackAuthentication.Navigator>
+               )
+            ) : (
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
+         </NavigationContainer>
+      );
+   }
 }

@@ -110,4 +110,24 @@ export class ServicioCombos {
             });
          });
    };
+
+   getRecuperarComboProductos = async (idCombo,fnRepintar) => {
+      global.db
+         .collection('combos')
+         .doc(idCombo).collection('productosCombo').get()
+         .then(async function(coleccionComboProd) {
+
+            let documentos = coleccionComboProd.docs;
+            let productosComboProd = [];
+            for(let i=0;i<documentos.length;i++)
+            {
+               productosComboProd.push(documentos[i].data());
+            }
+            fnRepintar(productosComboProd);
+         })
+         .catch(function(error) {
+            Alert.alert('Error catch-->' + error);
+         });
+   };
+   
 }

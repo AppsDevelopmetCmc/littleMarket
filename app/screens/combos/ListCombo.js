@@ -50,6 +50,7 @@ export class ListCombo extends Component {
                   renderItem={objeto => {
                      return (
                         <ItemCombo
+                           nav={this.props.navigation}
                            combo={objeto.item}
                         />
                      );
@@ -69,6 +70,7 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'stretch',
       justifyContent: 'flex-start',
+      marginTop: 80,
    },
    fondo: {
       fontWeight: 'bold',
@@ -96,10 +98,9 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
    },
 
-   textoNegrita :{
+   textoNegrita: {
       fontWeight: 'bold',
       fontSize: 17,
       marginTop: 0,
-
    },
 });
