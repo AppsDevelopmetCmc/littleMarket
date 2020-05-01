@@ -126,9 +126,7 @@ export default function PerfilUsuario(props) {
             >
                {telefonoUsuario}
             </Input>
-            <Button title="Guardar" onPress={actualizaInfo}>
-               {' '}
-            </Button>
+            <Button title="Guardar" onPress={actualizaInfo}></Button>
          </View>
       </SafeAreaView>
    );

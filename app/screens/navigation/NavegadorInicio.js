@@ -7,6 +7,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
+import { Button, Avatar, Input, Icon } from 'react-native-elements';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -51,6 +52,7 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="HomeTabScreen"
             component={HomeTab}
+            options={navOptionHandler(false)}
          ></StackFromTabs.Screen>
          <StackFromTabs.Screen
             name="DetalleComboScreen"
@@ -128,16 +130,45 @@ function DirectionStack() {
          <StackDirection.Screen
             name="HomeTab"
             component={HomeTab}
-            options={navOptionHandler(false)}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
 }
 function HomeTab() {
    return (
-      <TabHome.Navigator initialRouteName="ListaCombos">
-         <TabHome.Screen name="ListaProductos" component={ListaProductos} />
-         <TabHome.Screen name="ListaCombos" component={ListCombo} />
+      <TabHome.Navigator
+         initialRouteName="ListaCombos"
+         screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+               let iconName;
+               let tipo = 'material-community';
+
+               if (route.name === 'ListaCombos') {
+                  iconName = 'store';
+               } else if (route.name === 'ListaProductos') {
+                  iconName = 'basket';
+               }
+
+               return (
+                  <Icon name={iconName} size={size} color={color} type={tipo} />
+               );
+            },
+         })}
+         tabBarOptions={{
+            activeTintColor: colores.colorOscuroPrimarioVerde,
+            inactiveTintColor: colores.colorClaroTexto,
+         }}
+      >
+         <TabHome.Screen
+            name="ListaCombos"
+            component={ListCombo}
+            options={{ tabBarLabel: 'Inicio' }}
+         />
+         <TabHome.Screen
+            name="ListaProductos"
+            component={ListaProductos}
+            options={{ tabBarLabel: 'Mis Compras' }}
+         />
       </TabHome.Navigator>
    );
 }
@@ -145,9 +176,21 @@ function HomeTab() {
 function HomeDraw() {
    return (
       <DrawerHome.Navigator initialRouteName="HomeDrawer">
-         <DrawerHome.Screen name="HomeDrawer" component={ScreensFromTabs} />
-         <DrawerHome.Screen name="DirectionStack" component={DirectionStack} />
-         <DrawerHome.Screen name="PerfilUsuario" component={PerfilUsuario} />
+         <DrawerHome.Screen
+            name="HomeDrawer"
+            component={ScreensFromTabs}
+            options={{ drawerLabel: 'Inicio' }}
+         />
+         <DrawerHome.Screen
+            name="DirectionStack"
+            component={DirectionStack}
+            options={{ drawerLabel: 'Direcciones' }}
+         />
+         <DrawerHome.Screen
+            name="PerfilUsuario"
+            component={PerfilUsuario}
+            options={{ drawerLabel: 'Perfil' }}
+         />
       </DrawerHome.Navigator>
    );
 }

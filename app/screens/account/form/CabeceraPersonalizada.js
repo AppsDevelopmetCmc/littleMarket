@@ -8,12 +8,14 @@ import * as firebase from 'firebase';
 import * as colores from '../../../constants/Colores';
 
 export default function CabeceraPersonalizada(props) {
-   const { iconoComponente } = props;
+   const { iconoComponente, titulo, iconoDeTienda } = props;
    return (
       <View style={styles.cabeceraContenedor}>
          <View style={styles.cabeceraBoton}>{iconoComponente}</View>
-         <View style={styles.cabeceraTitulo}></View>
-         <View style={styles.cabeceraIcon}></View>
+         <View style={styles.cabeceraTitulo}>
+            <Text>{titulo}</Text>
+         </View>
+         <View style={styles.cabeceraIcon}>{iconoDeTienda}</View>
       </View>
    );
 }
