@@ -136,7 +136,7 @@ function DirectionStack() {
 function HomeTab() {
    return (
       <TabHome.Navigator initialRouteName="ListaCombos">
-         <TabHome.Screen name="ListaProductos" component={ListaProductos} />
+         <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
          <TabHome.Screen name="ListaCombos" component={ListCombo} />
       </TabHome.Navigator>
    );
