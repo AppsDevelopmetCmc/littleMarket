@@ -154,18 +154,69 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   //PENDIENTE: recuperar del usuario logueado
+
    global.tieneCobertura = true;
 
    useEffect(() => {
-      firebase.auth().onAuthStateChanged(user => {
-         !user ? setLogin(false) : setLogin(true);
-         if (user) {
-            global.usuario = user.email;
-            global.infoUsuario = user.providerData[0];
-         }
-      });
+      (async () => {
+         await firebase.auth().onAuthStateChanged(user => {
+            !user ? setLogin(false) : setLogin(true);
+            if (user) {
+               global.usuario = user.email;
+               global.infoUsuario = user.providerData[0];
+            }
+         });
+      })();
    }, [login]);
+
+   // Consulta si existe en la coleccion registro de usuario con el login realizado
+   useEffect(() => {
+      // utilizo una funciona anonima para poder realizar la espera de la respuesta
+      // TO DO: Verficar el funcionamiento y ajustes en pruebas
+      (async () => {
+         let documento = {};
+         await global.db
+            .collection('infoApp')
+            .doc('clientes')
+            .collection('infoUsuario')
+            .doc(global.usuario)
+            .get()
+            .then(doc => {
+               if (doc.exists) {
+                  documento = doc.data();
+                  documento.id = doc.id;
+                  global.appUsuario = documento;
+                  console.log('La informacion cargada es:', global.appUsuario);
+               } else {
+                  let infoUsuarioGuardar = {};
+                  infoUsuarioGuardar.cedula = null;
+                  infoUsuarioGuardar.imagen = global.infoUsuario.photoURL;
+                  infoUsuarioGuardar.nombreCompleto =
+                     global.infoUsuario.displayName;
+                  infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+                  global.db
+                     .collection('infoApp')
+                     .doc('clientes')
+                     .collection('infoUsuario')
+                     .doc(global.usuario)
+                     .set(infoUsuarioGuardar)
+                     .then(() => {
+                        console.log('agregado Correctamente');
+                     })
+                     .catch(error => {
+                        console.log(error);
+                     });
+
+                  infoUsuarioGuardar.id = global.usuario;
+                  global.appUsuario = infoUsuarioGuardar;
+                  console.log('La informacion guardada es:', global.appUsuario);
+               }
+            })
+            .catch(err => {
+               console.log('Error firebase', err);
+            });
+      })();
+   }, []);
 
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
