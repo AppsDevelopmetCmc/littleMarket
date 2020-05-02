@@ -8,7 +8,7 @@ import * as firebase from 'firebase';
 import * as colores from '../../constants/Colores';
 
 // Importacion de la cabecera personalizada
-import CabeceraPersonalizada from '../account/form/CabeceraPersonalizada';
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 
 export default function PerfilUsuario(props) {
    const { navigation } = props;

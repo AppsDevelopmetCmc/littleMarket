@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerActions } from '@react-navigation/native';
 
 // Importacion de Cabecera Personalizada
-import CabeceraPersonalizada from '../account/form/CabeceraPersonalizada';
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 
 // Importacion de los colores
 //Importando los colores

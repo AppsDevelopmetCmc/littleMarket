@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
@@ -26,27 +26,50 @@ export default function RegistroForm(props) {
    const [password, setPassword] = useState('');
    const [repeatPassword, setRepeatPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
+   const [errorMsgCorreo, seterrorMsgCorreo] = useState('');
+   const [errorMsgContraseña, seterrorMsgContraseña] = useState('');
+   const [errorMsgRepetirContraseña, seterrorMsgRepetirContraseña] = useState(
+      ''
+   );
+
+   const requerido = 'Campo requerido *';
 
    const register = async () => {
       setisVisibleLoading(true);
       if (!email || !password || !repeatPassword) {
-         toastRef.current.show(err.Err3);
+         toastRef.current.show(err.Err3, 600);
+         seterrorMsgCorreo(requerido);
+         seterrorMsgContraseña(requerido);
+         seterrorMsgRepetirContraseña(requerido);
       } else {
+         seterrorMsgCorreo('');
+         seterrorMsgContraseña('');
+         seterrorMsgRepetirContraseña('');
          if (!validateEmail(email)) {
-            toastRef.current.show(err.Err1);
+            toastRef.current.show(err.Err1, 600);
+            seterrorMsgCorreo(err.Err1);
          } else {
-            if (password !== repeatPassword) {
-               toastRef.current.show(err.Err4);
+            if (password.length < 6) {
+               seterrorMsgContraseña(err.Err6);
+               toastRef.current.show(err.Err6, 600);
             } else {
-               await firebase
-                  .auth()
-                  .createUserWithEmailAndPassword(email, password)
-                  .then(() => {
-                     console.log('se registro correctamente');
-                  })
-                  .catch(() => {
-                     toastRef.current.show(err.Err5);
-                  });
+               if (password !== repeatPassword) {
+                  toastRef.current.show(err.Err4, 600);
+                  seterrorMsgRepetirContraseña(err.Err4);
+               } else {
+                  seterrorMsgCorreo('');
+                  seterrorMsgContraseña('');
+                  seterrorMsgRepetirContraseña('');
+                  await firebase
+                     .auth()
+                     .createUserWithEmailAndPassword(email, password)
+                     .then(() => {
+                        console.log('se registro correctamente');
+                     })
+                     .catch(() => {
+                        toastRef.current.show(err.Err5, 600);
+                     });
+               }
             }
          }
       }
@@ -59,8 +82,9 @@ export default function RegistroForm(props) {
             containerStyle={styles.estiloContenedor1}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
+            errorMessage={errorMsgCorreo}
             label="Correo *"
-            labelStyle={textEstilo('#333333', 15, 'normal')}
+            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             onChange={e => setEmail(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
             rightIcon={
                <Icon
@@ -73,12 +97,13 @@ export default function RegistroForm(props) {
          <Input
             placeholder="******"
             label="Contraseña *"
-            labelStyle={textEstilo('#333333', 15, 'normal')}
+            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             password={true}
             secureTextEntry={hidePassword}
             containerStyle={styles.estiloContenedor2}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
+            errorMessage={errorMsgContraseña}
             onChange={e => setPassword(e.nativeEvent.text)}
             rightIcon={
                <Icon
@@ -94,12 +119,13 @@ export default function RegistroForm(props) {
          <Input
             placeholder="******"
             label="Repetir la contraseña * *"
-            labelStyle={textEstilo('#333333', 15, 'normal')}
+            labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             password={true}
             secureTextEntry={hideRepetiPassword}
             containerStyle={styles.estiloContenedor2}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
+            errorMessage={errorMsgRepetirContraseña}
             onChange={e => setRepeatPassword(e.nativeEvent.text)}
             rightIcon={
                <Icon
@@ -157,7 +183,7 @@ const styles = StyleSheet.create({
    },
 
    estiloInput: { fontSize: 15 },
-   iconRight: { color: '#c1c1c1' },
+   iconRight: { color: colores.colorClaroTexto },
    btnStyles: {
       marginTop: 50,
       width: '100%',

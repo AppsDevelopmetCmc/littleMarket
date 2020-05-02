@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as firebase from 'firebase';
 
 // Importación de los colores
-import * as colores from '../../../constants/Colores';
+import * as colores from '../constants/Colores';
 
 export default function CabeceraPersonalizada(props) {
    const { iconoComponente, titulo, iconoDeTienda } = props;
