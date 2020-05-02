@@ -5,8 +5,6 @@ import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import { FacebookApi } from '../../utils/Social';
 import Cargando from '../../components/Cargando';
-//Importacion de los colores
-import * as colores from '../../constants/Colores';
 
 export default function IniciarSesionFacebook(props) {
    const { nav, toastRef } = props;
@@ -19,8 +17,6 @@ export default function IniciarSesionFacebook(props) {
          type,
          token,
          expires,
-         permissions,
-         declinedPermissions,
       } = await Facebook.logInWithReadPermissionsAsync({
          permissions: ['public_profile', 'email'],
       });

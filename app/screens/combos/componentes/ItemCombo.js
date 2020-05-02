@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
       //borderBottomWidth: 1,
       marginTop: 10,
       marginLeft: 20,
-      borderBottomLeftRadius: 10,
-      borderTopLeftRadius: 10,
+      borderBottomLeftRadius: 20,
+      borderTopLeftRadius: 20,
    },
    filaFlexEnd: {
       flex: 1,

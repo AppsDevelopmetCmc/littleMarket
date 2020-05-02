@@ -5,8 +5,6 @@ import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import { GoogleApi } from '../../utils/Social';
 import Cargando from '../../components/Cargando';
-//Importacion de los colores
-import * as colores from '../../constants/Colores';
 
 export default function IniciarSesionGoogle(props) {
    const [isVisibleLoading, setIsVisibleLoading] = useState(false);

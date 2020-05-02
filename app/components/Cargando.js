@@ -2,18 +2,24 @@ import React from 'react';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
+// Importacion de colores
+import * as colores from '../constants/Colores';
+
 export default function Cargando(props) {
    const { isVisible, text } = props;
 
    return (
       <Overlay
          isVisible={isVisible}
-         windowBackgroundColor="rgba(0,0,0,.5)"
+         windowBackgroundColor="rgba(255,255,255,0.3)"
          overlayBackgroundColor="transparent"
          overlayStyle={styles.overlay}
       >
          <View style={styles.view}>
-            <ActivityIndicator size="large" color="#00a680" />
+            <ActivityIndicator
+               size="large"
+               color={colores.colorOscuroPrimarioTomate}
+            />
             {text && <Text style={styles.text}>{text}</Text>}
          </View>
       </Overlay>
@@ -21,27 +27,23 @@ export default function Cargando(props) {
 }
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-   },
    overlay: {
-      height: 100,
-      width: 200,
-      backgroundColor: '#fff',
-      borderColor: '#00a680',
-      borderWidth: 2,
-      borderRadius: 10,
+      height: 150,
+      width: '65%',
+      backgroundColor: colores.colorBlanco,
+      borderRadius: 15,
    },
    view: {
       flex: 1,
       alignItems: 'center',
       alignContent: 'center',
+      justifyContent: 'center',
    },
    text: {
-      color: '#00a680',
-      textTransform: 'uppercase',
+      color: colores.colorClaroPrimarioTomate,
+      fontWeight: '900',
+      // textTransform: 'uppercase',
+      marginTop: 30,
+      fontSize: 15,
    },
 });
