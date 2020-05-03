@@ -25,10 +25,11 @@ import { Direcciones } from '../map/Direcciones';
 import Cargando from '../../components/Cargando';
 
 // Importaciones para el Inicio
-import { ListaPedidos } from '../ListaPedidos';
+import {ListaPedidos} from '../pedidos/ListaPedidos'
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
+import {DetallePedido} from '../pedidos/DetallePedido'
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
@@ -71,10 +72,16 @@ function ScreensFromTabs() {
             name="CarroComprasScreen"
             component={CarroCompras}
          />
+          <StackDirection.Screen
+            name="DetallePedidoScreen"
+            component={DetallePedido}
+         />
+
          <StackDirection.Screen
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
          />
+         
       </StackFromTabs.Navigator>
    );
 }
