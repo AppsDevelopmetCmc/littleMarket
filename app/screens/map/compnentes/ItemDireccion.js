@@ -15,7 +15,7 @@ export class ItemDireccion extends Component {
    render() {
       return (
          <View style={styles.fila}>
-            <View style={{ flex: 3 }}>
+            <View style={styles.touch}>
                <TouchableHighlight
                   onPress={() => {
                      this.props.fnActualizar(this.props.direccion);
@@ -23,28 +23,28 @@ export class ItemDireccion extends Component {
                >
                   <View style={styles.contenido}>
                      <View style={styles.subContenido}>
-                        <View style={{flex:4}}>
-                        <Text style={styles.texto}>
-                           {' '}
-                           {this.props.direccion.descripcion}
-                        </Text>
+                        <View style={styles.descripcion}>
+                           <Text style={styles.texto}>
+                              {' '}
+                              {this.props.direccion.descripcion}
+                           </Text>
                         </View>
-                        <View style={{flex:1 ,alignItems:'center'}}>
-                        <Text >
-                           {this.props.direccion.tieneCobertura == 'S' ? (
-                              <Icon
-                                 name="access-point-network"
-                                 size={30}
-                                 color="black"
-                              />
-                           ) : (
-                              <Icon
-                                 name="access-point-network-off"
-                                 size={30}
-                                 color="black"
-                              />
-                           )}
-                        </Text>
+                        <View style={styles.iconos}>
+                           <Text>
+                              {this.props.direccion.tieneCobertura == 'S' ? (
+                                 <Icon
+                                    name="access-point-network"
+                                    size={30}
+                                    color="black"
+                                 />
+                              ) : (
+                                 <Icon
+                                    name="access-point-network-off"
+                                    size={30}
+                                    color="black"
+                                 />
+                              )}
+                           </Text>
                         </View>
                      </View>
                   </View>
@@ -128,5 +128,12 @@ const styles = StyleSheet.create({
       marginTop: 0,
       borderBottomColor: 'gray',
       borderBottomWidth: 1,
+   },
+   iconos: { flex: 1, alignItems: 'center' },
+   descripcion: {
+      flex: 4,
+   },
+   touch: {
+      flex: 3,
    },
 });
