@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 
-export class ItemPedido extends Component{
+export class ItemDetallePedido extends Component{
     constructor(props) {
         super(props);
      }
 
      render() {
-        return (
-        <TouchableHighlight
-            onPress={() => {
-               this.props.nav.navigate('DetallePedidoScreen', {
-                  pedido: this.props.pedido,
-               });
-            }}
-         >         
+        return (    
            <View style={styles.fila}>
               <View style={styles.contenido}>
                  <View style={styles.subContenido}>
@@ -23,48 +16,21 @@ export class ItemPedido extends Component{
                     <View style={styles.contenido}>
                        <View style={styles.container}>
                           <Text style={styles.textoNegrita}>
-                             {this.props.pedido.nombreCliente}
+                          {this.props.detallePedido.cantidad}
                           </Text>
                        </View>
                        <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Fecha del Pedido:</Text>
+                          <Text style={styles.textoNegrita}>Cantidad:</Text>
                           <Text style={styles.texto}>
-                             {this.props.pedido.fechaPedido}
+                          {this.props.detallePedido.cantidad}
                           </Text>
-                       </View>  
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Fecha de Entrega:</Text>
-                          <Text style={styles.texto}>
-                             {this.props.pedido.fechaEntrega}
-                          </Text>
-                       </View>  
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Estado:</Text>
-                          <Text style={styles.texto}>
-                             {this.props.pedido.estado}
-                          </Text>
-                       </View> 
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Direccion:</Text>
-                          <Text style={styles.texto}>
-                             {this.props.pedido.direccion}
-                          </Text>
-                       </View>  
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Total:</Text>
-                          <Text style={styles.texto}>
-                             {this.props.pedido.total}
-                          </Text>
-                       </View>              
-
+                       </View>                       
+                       
                     </View>
                  </View>
               </View>
              
-  
-             
            </View>
-           </TouchableHighlight>
         );
      }
   }

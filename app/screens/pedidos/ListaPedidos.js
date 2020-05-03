@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 import {ServicioPedidos} from '../../servicios/ServicioPedidos';
-import { StackActions } from '@react-navigation/native';
+import {ItemPedido} from './componentes/ItemPedido'
 
 export class ListaPedidos extends Component {
    constructor(props){
@@ -10,25 +10,39 @@ export class ListaPedidos extends Component {
    this.state={
       listPedidos:pedidos,
    }
+   
+}
+componentDidMount() {
    let srvServicioPedidos = new ServicioPedidos();
-   srvServicioPedidos.re
+   let pedidos=[];
+   srvServicioPedidos.registrarEscuchaTodas(
+      pedidos,
+      this.repintarLista,
+      global.usuario
+   );
 }
 
 repintarLista=(pedidos)=>{
    this.setState({listPedidos:pedidos});
 }
-
    render() {
       return (
          <View styles={styles.container}>
-            <Text>LISTA DE PRODUCTOS </Text>
-            <Button
-               title="Cerrar Sesión"
-               onPress={() => {
-                  firebase.auth().signOut();
-                  console.log('Se cerro sesion');
-               }}
-            ></Button>
+            <Text>LISTA DE PEDIDOS </Text>
+            {
+               <FlatList
+                  data={this.state.listPedidos}
+                  renderItem={objeto => {
+                     return (
+                        <ItemPedido pedido ={objeto.item}
+                        nav={this.props.navigation} />
+                     );
+                  }}
+                  keyExtractor={objeto => {
+                     return objeto.id;
+                  }}
+               />
+            }
          </View>
       );
    }
