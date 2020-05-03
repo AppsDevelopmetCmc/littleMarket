@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export class ItemCombo extends Component {
@@ -15,6 +14,7 @@ export class ItemCombo extends Component {
    render() {
       return (
          <TouchableHighlight
+            underlayColor="white"
             onPress={() => {
                this.props.nav.navigate('DetalleComboScreen', {
                   combo: this.props.combo,

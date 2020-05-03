@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
+import { consultarInformacion } from '../../servicios/ServicioUsuarios';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -28,6 +29,7 @@ import { ListaPedidos } from '../ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
+import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -61,6 +63,10 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="CarroComprasScreen"
             component={CarroCompras}
+         />
+         <StackDirection.Screen
+            name="ConfirmarCompraScreen"
+            component={ConfirmarCompra}
          />
       </StackFromTabs.Navigator>
    );
@@ -197,9 +203,7 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-
    global.tieneCobertura = true;
-
    useEffect(() => {
       (async () => {
          await firebase.auth().onAuthStateChanged(user => {
@@ -209,6 +213,9 @@ export default function NavegadorInicio() {
                global.infoUsuario = user.providerData[0];
             }
          });
+         if (global.usuario) {
+            consultarInformacion(global.usuario);
+         }
       })();
    }, [login]);
 

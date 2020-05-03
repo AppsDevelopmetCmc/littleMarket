@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { agregarDisminuirItemCarro } from '../../servicios/ServicioCarroCompras';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
 import { ItemComboProducto } from '../combos/componentes/ItemComboProducto';
+import * as colores from '../../constants/Colores';
 
 export class DetalleCombo extends Component {
    constructor(props) {
@@ -31,8 +32,30 @@ export class DetalleCombo extends Component {
       let combo = this.props.route.params.combo;
       return (
          <View style={styles.container}>
+            <View style={styles.contenedorBoton}>
+               <Button
+                  title="Agregar"
+                  onPress={() => {
+                     agregarDisminuirItemCarro(
+                        {
+                           id: combo.id,
+                           alias: combo.alias,
+                           precio: combo.precio,
+                        },
+                        global.usuario,
+                        1,
+                        this.regresar
+                     );
+                  }}
+                  icon={<Icon name="cart" size={15} color="white" />}
+                  titleStyle={this.textEstilo(colores.colorBlanco, 15, 'bold')}
+                  containerStyle={styles.btnStyles}
+                  buttonStyle={styles.btnRegistrarse}
+               ></Button>
+            </View>
             <View style={styles.lista}>
                <Text style={styles.textoNegrita}>DETALLE COMBO</Text>
+
                <FlatList
                   data={this.state.listProductosCombo}
                   renderItem={objeto => {
@@ -43,27 +66,18 @@ export class DetalleCombo extends Component {
                   }}
                />
             </View>
-
-            <Button
-               title="Agregar"
-               onPress={() => {
-                  agregarDisminuirItemCarro(
-                     {
-                        id: combo.id,
-                        alias: combo.alias,
-                        precio: combo.precio,
-                     },
-                     global.usuario,
-                     1,
-                     this.regresar
-                  );
-               }}
-            ></Button>
          </View>
       );
    }
    regresar = () => {
       this.props.navigation.navigate('CarroComprasScreen');
+   };
+   textEstilo = (color, tamaño, tipo) => {
+      return {
+         color: color,
+         fontSize: tamaño,
+         fontWeight: tipo,
+      };
    };
 }
 
@@ -109,5 +123,14 @@ const styles = StyleSheet.create({
    },
    lista: {
       flex: 1,
+   },
+   contenedorBoton: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+   },
+   btnRegistrarse: {
+      padding: 10,
+      backgroundColor: colores.colorOscuroPrimarioTomate,
+      borderRadius: 10,
    },
 });
