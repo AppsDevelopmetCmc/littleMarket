@@ -52,7 +52,7 @@ export class ListCombo extends Component {
    };
 
    abrirCarrito = () => {
-      console.log('codigo para levantar el carrito');
+      this.props.navigation.navigate('CarroComprasScreen');
    };
 
    render() {
@@ -71,11 +71,12 @@ export class ListCombo extends Component {
                }
                iconoDeTienda={
                   <Icon
-                     name="shopping"
+                     name="cart"
                      type="material-community"
                      color={colores.colorBlanco}
                      size={30}
                      onPress={this.abrirCarrito}
+                     underlayColor={colores.colorPrimarioVerde}
                   />
                }
             ></CabeceraPersonalizada>

@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
+import { consultarInformacion } from '../../servicios/ServicioUsuarios';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -24,10 +25,12 @@ import { Direcciones } from '../map/Direcciones';
 import Cargando from '../../components/Cargando';
 
 // Importaciones para el Inicio
-import { ListaPedidos } from '../ListaPedidos';
+import {ListaPedidos} from '../pedidos/ListaPedidos'
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
+import {DetallePedido} from '../pedidos/DetallePedido'
+import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -46,6 +49,13 @@ const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
 
+if (global.usuario == null) {
+   let user = firebase.auth().currentUser;
+   if (user) {
+      global.usuario = user.email;
+      global.infoUsuario = user.providerData[0];
+   }
+}
 function ScreensFromTabs() {
    return (
       <StackFromTabs.Navigator initialRouteName="HomeTabScreen">
@@ -63,6 +73,16 @@ function ScreensFromTabs() {
             name="CarroComprasScreen"
             component={CarroCompras}
          />
+          <StackDirection.Screen
+            name="DetallePedidoScreen"
+            component={DetallePedido}
+         />
+
+         <StackDirection.Screen
+            name="ConfirmarCompraScreen"
+            component={ConfirmarCompra}
+         />
+         
       </StackFromTabs.Navigator>
    );
 }
@@ -218,44 +238,44 @@ export default function NavegadorInicio() {
    };
 
    const agregaInfo = async () => {
-      let documento = {};
-      await global.db
-         .collection('infoApp')
-         .doc('clientes')
-         .collection('infoUsuario')
-         .doc(global.usuario)
-         .get()
-         .then(doc => {
-            if (doc.exists) {
-               documento = doc.data();
-               documento.id = doc.id;
-               global.appUsuario = documento;
-            } else {
-               let infoUsuarioGuardar = {};
-               infoUsuarioGuardar.cedula = null;
-               infoUsuarioGuardar.nombreCompleto =
-                  global.infoUsuario.displayName;
-               infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
-               global.db
-                  .collection('infoApp')
-                  .doc('clientes')
-                  .collection('infoUsuario')
-                  .doc(global.usuario)
-                  .set(infoUsuarioGuardar)
-                  .then(() => {
-                     console.log('agregado Correctamente');
-                  })
-                  .catch(error => {
-                     console.log(error);
-                  });
+         let documento = {};
+         await global.db
+            .collection('infoApp')
+            .doc('clientes')
+            .collection('infoUsuario')
+            .doc(global.usuario)
+            .get()
+            .then(doc => {
+               if (doc.exists) {
+                  documento = doc.data();
+                  documento.id = doc.id;
+                  global.appUsuario = documento;
+               } else {
+                  let infoUsuarioGuardar = {};
+                  infoUsuarioGuardar.cedula = null;
+                  infoUsuarioGuardar.nombreCompleto =
+                     global.infoUsuario.displayName;
+                  infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+                  global.db
+                     .collection('infoApp')
+                     .doc('clientes')
+                     .collection('infoUsuario')
+                     .doc(global.usuario)
+                     .set(infoUsuarioGuardar)
+                     .then(() => {
+                        console.log('agregado Correctamente');
+                     })
+                     .catch(error => {
+                        console.log(error);
+                     });
 
-               infoUsuarioGuardar.id = global.usuario;
-               global.appUsuario = infoUsuarioGuardar;
-            }
-         })
-         .catch(err => {
-            console.log('Error firebase', err);
-         });
+                  infoUsuarioGuardar.id = global.usuario;
+                  global.appUsuario = infoUsuarioGuardar;
+               }
+            })
+            .catch(err => {
+               console.log('Error firebase', err);
+            });
    };
 
    useEffect(() => {
