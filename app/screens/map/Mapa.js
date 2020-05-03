@@ -2,8 +2,8 @@ import React, { Component, useState } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button } from 'react-native-elements';
-import * as firebase from 'firebase';
 import MapInput from '../../components/MapInput';
+import Geocoder from 'react-native-geocoding';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -16,20 +16,39 @@ export class Mapa extends Component {
    constructor(props) {
       super(props);
       this.state = {
+         vaciar:false,
          modalVisible: true,
          isMapReady: false,
+         direccion:'',
          region: {
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
          },
+         coordinate: {
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+         },
       };
    }
+   
+   obtenerDireccion = async (latitude,longitude) => {
+      let addressComponent = '';
+      Geocoder.from(latitude, longitude)
+      .then(json => {
+         addressComponent = json.results[0].formatted_address;
+         console.log(addressComponent);
+         this.setState({direccion: addressComponent})
+      })
+      .catch(error => 
+         console.warn(error));
+   }
 
-   componentDidMount() {
+    componentDidMount() {
       navigator.geolocation.getCurrentPosition(
          position => {
+            
             this.setState({
                region: {
                   latitude: position.coords.latitude,
@@ -37,6 +56,11 @@ export class Mapa extends Component {
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                },
+               coordinate: {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+               },
+               direccion: global.direccionActual
             });
          },
          error => console.log(error.message),
@@ -47,9 +71,6 @@ export class Mapa extends Component {
       this.setState({ isMapReady: true });
    };
 
-   componentWillUnmount() {
-      //  navigator.geolocation.clearWatch(this.watchID);
-   }
    actualizarLocalizacion(localizacion) {
       this.setState({
          region: {
@@ -58,14 +79,47 @@ export class Mapa extends Component {
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
          },
+         coordinate: {
+            latitude: localizacion.latitude,
+            longitude: localizacion.longitude,
+         },
+         direccion: localizacion.descripcion
       });
    }
    obtenerCoords(localizacion) {
       this.actualizarLocalizacion({
-         latitude: localizacion.lat,
-         longitude: localizacion.lng,
+         latitude: localizacion.coord.lat,
+         longitude: localizacion.coord.lng,
+         descripcion: localizacion.descripcion
       });
    }
+
+   handleRegionChange = mapData => {
+      this.setState({
+         coordinate: {
+            latitude: mapData.latitude,
+            longitude: mapData.longitude,
+         },
+         region: mapData,
+      });
+   };
+   onMarkerDragEnd = coord => {
+      let newRegion = {
+         latitude: parseFloat(coord.latitude),
+         longitude: parseFloat(coord.longitude),
+         latitudeDelta: 0.0522,
+         longitudeDelta: 0.0321,
+      };
+      this.setState({
+         vaciar: true,
+         region: newRegion,
+         coordinate: {
+            latitude: newRegion.latitude,
+            longitude: newRegion.longitude,
+         },
+      });
+      this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
+   };
 
    render() {
       const { navigation } = this.props;
@@ -81,34 +135,37 @@ export class Mapa extends Component {
                   showsPointsOfInterest
                   showsBuildings
                   showsUserLocation
-                  zoomEnabled={true}
+                  loadingEnabled={true}
                   ref={map => (this.map = map)}
                   onLayout={this.onMapLayout}
                   region={this.state.region}
-                  loadingEnabled={true}
-                  onRegionChange={region => {
-                     this.setState({ region: region });
-                  }}
                >
                   {this.state.isMapReady && (
                      <MapView.Marker
-                        title={this.props.title}
+                        title={this.state.direccion}
                         key="AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
-                        coordinate={{
-                           latitude: this.state.region.latitude,
-                           longitude: this.state.region.longitude,
-                        }}
+                        ref={marker => {this.marker = marker}}
+                        coordinate={this.state.coordinate}
+                        draggable={true}
+                        onDragEnd={e =>
+                           this.onMarkerDragEnd(e.nativeEvent.coordinate)
+                        }
+                        onPress={() => {}}
+                        onCalloutPress={() => {
+                           this.marker.hideCallout();
+                         }}
                      />
                   )}
                </MapView>
             </View>
 
-            <MapInput notificarCambio={loc => this.obtenerCoords(loc)} />
+            <MapInput notificarCambio={loc => this.obtenerCoords(loc)}  limpiar={this.state.vaciar}/>
 
             <Button
                title="Guardar"
                onPress={() => {
-                  navigation.navigate('Direcciones');
+                  global.direccionActual=this.state.direccion
+                  navigation.navigate('Direcciones',{coord: this.state.coordinate, direccion:this.state.direccion});
                }}
             ></Button>
          </View>

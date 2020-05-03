@@ -43,11 +43,11 @@ export default class MapInput extends Component {
             returnKeyType={'search'}
             listViewDisplayed={this.state.mostrarLista}
             fetchDetails={true}
-            
-      renderDescription={row => row.description}
+            renderDescription={row => row.description}
             onPress={(data, details = null) =>{
                 this.setState({mostrarLista: false})
-                this.props.notificarCambio(details.geometry.location);
+                let localizacion = { coord: details.geometry.location, descripcion: details.formatted_address}
+                this.props.notificarCambio(localizacion);
             }}
             query={{
                key: 'AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc',
