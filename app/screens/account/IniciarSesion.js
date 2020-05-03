@@ -7,7 +7,7 @@ import {
    Image,
    SafeAreaView,
 } from 'react-native';
-import { Divider, Button } from 'react-native-elements';
+import { Divider } from 'react-native-elements';
 
 import IniciaSesionForm from '../account/form/IniciaSesionForm';
 import IniciarSesionFacebook from '../account/IniciarSesionFacebook';
@@ -74,19 +74,17 @@ export default function IniciaSesion({ navigation }) {
          </View>
 
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
-         <Toast ref={toastRef} position="center" opacity={0.5}></Toast>
+         <Toast
+            ref={toastRef}
+            position="center"
+            opacity={0.8}
+            fadeInDuration={800}
+            fadeOutDuration={1000}
+         ></Toast>
       </SafeAreaView>
    );
 }
 
-function CrearUsuario(props) {
-   const {} = props;
-   return <Text style={styles.textRegistro}>¿No tienes una cuenta?</Text>;
-}
-
-const border = color => {
-   return { borderColor: color, borderWidth: 2 };
-};
 const textEstilo = (color, tamaño, tipo) => {
    return {
       color: color,
@@ -105,8 +103,6 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       flexDirection: 'row',
    },
-
-   cabeceraTexto: {},
    pie: {
       flex: 4,
       backgroundColor: colores.colorBlanco,
@@ -115,8 +111,6 @@ const styles = StyleSheet.create({
       paddingHorizontal: 40,
       marginTop: 30,
    },
-   logo: { width: '100%', height: 150, marginTop: 60 },
-   textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
    divide: {
       backgroundColor: colores.colorPrimarioTexto,
       width: '42%',

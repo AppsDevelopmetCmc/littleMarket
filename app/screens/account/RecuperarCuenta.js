@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
@@ -15,20 +15,28 @@ import Cargando from '../../components/Cargando';
 // Importacion a Firebase
 import * as firebase from 'firebase';
 
-export default function RecuperarCuenta() {
+// Importacion de archivo de errores
+import * as err from '../../constants/Errores';
+
+export default function RecuperarCuenta(props) {
    // Seteo de variables en el state con hoock de react
    const [correo, setCorreo] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
+   const [errorMsgCorreo, seterrorMsgCorreo] = useState('');
+
+   const requerido = 'Campo requerido *';
 
    //Funcion que envia el correo
    const envioCorreo = async () => {
       setisVisibleLoading(true);
       if (!correo) {
-         console.log('Correo requerido');
+         seterrorMsgCorreo(requerido);
       } else {
          if (!validateEmail(correo)) {
-            console.log('correo no es correcto');
+            seterrorMsgCorreo(err.Err1);
          } else {
+            seterrorMsgCorreo('');
+            //TO DO: No detecta que el correo exista
             await firebase
                .auth()
                .sendPasswordResetEmail(correo)
@@ -56,6 +64,7 @@ export default function RecuperarCuenta() {
                containerStyle={styles.estiloContenedor1}
                inputContainerStyle={styles.estiloInputContenedor}
                inputStyle={styles.estiloInput}
+               errorMessage={errorMsgCorreo}
                label="Correo *"
                labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
                onChange={e => setCorreo(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
@@ -76,7 +85,7 @@ export default function RecuperarCuenta() {
             ></Button>
          </View>
          <Cargando
-            text="Enviando correo"
+            text="Enviando Correo"
             isVisible={isVisibleLoading}
          ></Cargando>
       </SafeAreaView>
@@ -108,8 +117,6 @@ const styles = StyleSheet.create({
       marginTop: 30,
       padding: 100,
    },
-   logo: { width: '100%', height: 150, marginTop: 60 },
-   textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
    estiloContenedor1: {
       width: '100%',
       padding: 0,
