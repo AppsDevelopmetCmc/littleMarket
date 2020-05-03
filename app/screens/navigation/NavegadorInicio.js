@@ -48,6 +48,13 @@ const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
 
+if (global.usuario == null) {
+   let user = firebase.auth().currentUser;
+   if (user) {
+      global.usuario = user.email;
+      global.infoUsuario = user.providerData[0];
+   }
+}
 function ScreensFromTabs() {
    return (
       <StackFromTabs.Navigator initialRouteName="HomeTabScreen">
