@@ -3,7 +3,16 @@ import { View, Text, Button, StyleSheet, FlatList, Alert } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 //import ActionButton from 'react-native-action-button';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Icon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { DrawerActions } from '@react-navigation/native';
+
+// Importacion de Cabecera Personalizada
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+
+// Importacion de los colores
+//Importando los colores
+import * as colores from '../../constants/Colores';
 
 export class ListCombo extends Component {
    constructor() {
@@ -38,39 +47,67 @@ export class ListCombo extends Component {
       });
    };*/
 
+   abrirDrawer = () => {
+      console.log(this.props.navigation.openDrawer());
+   };
+
+   abrirCarrito = () => {
+      this.props.navigation.navigate('CarroComprasScreen');
+   };
+
    render() {
       return (
-         <View style={styles.container}>
-            <View style={styles.cabecera}>
-               <Text style={styles.textoNegrita}>LISTA DE COMBOS</Text>
+         <SafeAreaView style={styles.container}>
+            <CabeceraPersonalizada
+               titulo={'Yappando'}
+               iconoComponente={
+                  <Icon
+                     name="menu"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirDrawer}
+                  />
+               }
+               iconoDeTienda={
+                  <Icon
+                     name="cart"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirCarrito}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+            ></CabeceraPersonalizada>
+            <View style={styles.contenedorDireccione}></View>
+
+            <View style={styles.pie}>
+               <View style={styles.lista}>
+                  <FlatList
+                     data={this.state.listCombos}
+                     renderItem={objeto => {
+                        return (
+                           <ItemCombo
+                              nav={this.props.navigation}
+                              combo={objeto.item}
+                           />
+                        );
+                     }}
+                     keyExtractor={objetoCombo => {
+                        return objetoCombo.id;
+                     }}
+                  />
+               </View>
             </View>
-            <View style={styles.lista}>
-               <FlatList
-                  data={this.state.listCombos}
-                  renderItem={objeto => {
-                     return (
-                        <ItemCombo
-                           nav={this.props.navigation}
-                           combo={objeto.item}
-                        />
-                     );
-                  }}
-                  keyExtractor={objetoCombo => {
-                     return objetoCombo.id;
-                  }}
-               />
-            </View>
-         </View>
+         </SafeAreaView>
       );
    }
 }
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginTop: 80,
+      backgroundColor: colores.colorPrimarioVerde,
    },
    fondo: {
       fontWeight: 'bold',
@@ -102,5 +139,20 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 17,
       marginTop: 0,
+   },
+   contenedorDireccione: {
+      marginHorizontal: 30,
+      backgroundColor: colores.colorBlanco,
+      height: 30,
+      borderRadius: 20,
+      marginTop: 15,
+   },
+   pie: {
+      flex: 3,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      paddingLeft: 10,
+      marginTop: 15,
+      paddingTop: 20,
    },
 });

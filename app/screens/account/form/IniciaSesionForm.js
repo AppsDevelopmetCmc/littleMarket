@@ -1,4 +1,4 @@
-import React, { useState, usetoastRef } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
@@ -25,29 +25,40 @@ export default function IniciaSesionForm(props) {
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
-   const [errorMesage, setErrorMensage] = useState('');
+   const [errorMsgCorreo, seterrorMsgCorreo] = useState('');
+   const [errorMsgContraseña, seterrorMsgContraseña] = useState('');
+
+   const requerido = 'Campo requerido *';
 
    const iniciarSesion = async () => {
       setisVisibleLoading(true);
       if (!email || !password) {
-         toastRef.current.show(err.Err3);
-         setErrorMensage('Requerido *');
-         // TO DO: Falta visualización de las validaciones en las cajas
+         toastRef.current.show(err.Err3, 600);
+         seterrorMsgCorreo(requerido);
+         seterrorMsgContraseña(requerido);
       } else {
+         seterrorMsgCorreo('');
+         seterrorMsgContraseña('');
          if (!validateEmail(email)) {
-            toastRef.current.show(err.Err1);
-            setErrorMensage(err.Err1);
+            toastRef.current.show(err.Err1, 600);
+            seterrorMsgCorreo(err.Err1);
          } else {
-            setErrorMensage('');
-            await firebase
-               .auth()
-               .signInWithEmailAndPassword(email, password)
-               .then(() => {
-                  console.log('Inicio Sesion con Firebase');
-               })
-               .catch(() => {
-                  toastRef.current.show(err.Err2);
-               });
+            if (password.length < 6) {
+               seterrorMsgContraseña(err.Err6);
+               toastRef.current.show(err.Err6, 600);
+            } else {
+               seterrorMsgCorreo('');
+               seterrorMsgContraseña('');
+               await firebase
+                  .auth()
+                  .signInWithEmailAndPassword(email, password)
+                  .then(() => {
+                     console.log('Inicio Sesion con Firebase');
+                  })
+                  .catch(() => {
+                     toastRef.current.show(err.Err2, 600);
+                  });
+            }
          }
       }
       setisVisibleLoading(false);
@@ -60,7 +71,7 @@ export default function IniciaSesionForm(props) {
             containerStyle={styles.estiloContenedor1}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
-            errorMessage={errorMesage}
+            errorMessage={errorMsgCorreo}
             label="Correo *"
             labelStyle={textEstilo(colores.colorPrimarioTexto, 15, 'normal')}
             onChange={e => setEmail(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
@@ -81,6 +92,7 @@ export default function IniciaSesionForm(props) {
             containerStyle={styles.estiloContenedor2}
             inputContainerStyle={styles.estiloInputContenedor}
             inputStyle={styles.estiloInput}
+            errorMessage={errorMsgContraseña}
             onChange={e => setPassword(e.nativeEvent.text)}
             rightIcon={
                <Icon
@@ -110,7 +122,7 @@ export default function IniciaSesionForm(props) {
          ></Button>
 
          <Cargando
-            text="Creando Cuenta"
+            text="Iniciando Sesión"
             isVisible={isVisibleLoading}
          ></Cargando>
       </View>
@@ -144,7 +156,6 @@ const styles = StyleSheet.create({
       padding: 0,
       height: 40,
    },
-
    estiloInput: { fontSize: 15 },
    iconRight: { color: colores.colorClaroTexto },
    btnStyles: {

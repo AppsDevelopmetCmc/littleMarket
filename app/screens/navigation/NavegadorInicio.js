@@ -7,6 +7,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
+import { Button, Avatar, Input, Icon } from 'react-native-elements';
+import { consultarInformacion } from '../../servicios/ServicioUsuarios';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -27,7 +29,11 @@ import {ListaPedidos} from '../pedidos/ListaPedidos'
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
+
 import {DetallePedido} from '../pedidos/DetallePedido'
+
+import { ConfirmarCompra } from '../compra/ConfirmarCompra';
+
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -52,6 +58,7 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="HomeTabScreen"
             component={HomeTab}
+            options={navOptionHandler(false)}
          ></StackFromTabs.Screen>
          <StackFromTabs.Screen
             name="DetalleComboScreen"
@@ -61,12 +68,14 @@ function ScreensFromTabs() {
             name="CarroComprasScreen"
             component={CarroCompras}
          />
-
          <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
          />
-
+         <StackDirection.Screen
+            name="ConfirmarCompraScreen"
+            component={ConfirmarCompra}
+         />
       </StackFromTabs.Navigator>
    );
 }
@@ -135,16 +144,47 @@ function DirectionStack() {
          <StackDirection.Screen
             name="HomeTab"
             component={HomeTab}
-            options={navOptionHandler(false)}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
 }
 function HomeTab() {
    return (
-      <TabHome.Navigator initialRouteName="ListaCombos">
-         <TabHome.Screen name="ListaPedidos" component={ListaPedidos} />
-         <TabHome.Screen name="ListaCombos" component={ListCombo} />
+
+      <TabHome.Navigator
+         initialRouteName="ListaCombos"
+         screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+               let iconName;
+               let tipo = 'material-community';
+
+               if (route.name === 'ListaCombos') {
+                  iconName = 'store';
+               } else if (route.name === 'ListaProductos') {
+                  iconName = 'basket';
+               }
+
+               return (
+                  <Icon name={iconName} size={size} color={color} type={tipo} />
+               );
+            },
+         })}
+         tabBarOptions={{
+            activeTintColor: colores.colorOscuroPrimarioVerde,
+            inactiveTintColor: colores.colorClaroTexto,
+         }}
+      >
+         <TabHome.Screen
+            name="ListaCombos"
+            component={ListCombo}
+            options={{ tabBarLabel: 'Inicio' }}
+         />
+         <TabHome.Screen
+            name="ListaProductos"
+            component={ListaProductos}
+            options={{ tabBarLabel: 'Mis Compras' }}
+         />
+
       </TabHome.Navigator>
    );
 }
@@ -152,27 +192,91 @@ function HomeTab() {
 function HomeDraw() {
    return (
       <DrawerHome.Navigator initialRouteName="HomeDrawer">
-         <DrawerHome.Screen name="HomeDrawer" component={ScreensFromTabs} />
-         <DrawerHome.Screen name="DirectionStack" component={DirectionStack} />
-         <DrawerHome.Screen name="PerfilUsuario" component={PerfilUsuario} />
+         <DrawerHome.Screen
+            name="HomeDrawer"
+            component={ScreensFromTabs}
+            options={{ drawerLabel: 'Inicio' }}
+         />
+         <DrawerHome.Screen
+            name="DirectionStack"
+            component={DirectionStack}
+            options={{ drawerLabel: 'Direcciones' }}
+         />
+         <DrawerHome.Screen
+            name="PerfilUsuario"
+            component={PerfilUsuario}
+            options={{ drawerLabel: 'Perfil' }}
+         />
       </DrawerHome.Navigator>
    );
 }
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   //PENDIENTE: recuperar del usuario logueado
    global.tieneCobertura = true;
-
    useEffect(() => {
-      firebase.auth().onAuthStateChanged(user => {
-         !user ? setLogin(false) : setLogin(true);
-         if (user) {
-            global.usuario = user.email;
-            global.infoUsuario = user.providerData[0];
+      (async () => {
+         await firebase.auth().onAuthStateChanged(user => {
+            !user ? setLogin(false) : setLogin(true);
+            if (user) {
+               global.usuario = user.email;
+               global.infoUsuario = user.providerData[0];
+            }
+         });
+         if (global.usuario) {
+            consultarInformacion(global.usuario);
          }
-      });
+      })();
    }, [login]);
+
+   // Consulta si existe en la coleccion registro de usuario con el login realizado
+   useEffect(() => {
+      // utilizo una funciona anonima para poder realizar la espera de la respuesta
+      // TO DO: Verficar el funcionamiento y ajustes en pruebas
+      (async () => {
+         let documento = {};
+         await global.db
+            .collection('infoApp')
+            .doc('clientes')
+            .collection('infoUsuario')
+            .doc(global.usuario)
+            .get()
+            .then(doc => {
+               if (doc.exists) {
+                  documento = doc.data();
+                  documento.id = doc.id;
+                  global.appUsuario = documento;
+                  console.log('La informacion cargada es:', global.appUsuario);
+               } else {
+                  let infoUsuarioGuardar = {};
+                  infoUsuarioGuardar.cedula = null;
+                  infoUsuarioGuardar.imagen = global.infoUsuario.photoURL;
+                  infoUsuarioGuardar.nombreCompleto =
+                     global.infoUsuario.displayName;
+                  infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+                  global.db
+                     .collection('infoApp')
+                     .doc('clientes')
+                     .collection('infoUsuario')
+                     .doc(global.usuario)
+                     .set(infoUsuarioGuardar)
+                     .then(() => {
+                        console.log('agregado Correctamente');
+                     })
+                     .catch(error => {
+                        console.log(error);
+                     });
+
+                  infoUsuarioGuardar.id = global.usuario;
+                  global.appUsuario = infoUsuarioGuardar;
+                  console.log('La informacion guardada es:', global.appUsuario);
+               }
+            })
+            .catch(err => {
+               console.log('Error firebase', err);
+            });
+      })();
+   }, []);
 
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;

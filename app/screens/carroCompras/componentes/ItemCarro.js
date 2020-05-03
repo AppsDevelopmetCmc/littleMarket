@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
-
+import * as colores from '../../../constants/Colores';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
    agregarDisminuirItemCarro,
@@ -72,6 +72,7 @@ export class ItemCarro extends Component {
 
             <View style={styles.boton}>
                <Button
+                  buttonStyle={styles.plusButton}
                   onPress={() => {
                      let nuevaCantidad = parseInt(this.props.item.cantidad) - 1;
                      if (nuevaCantidad > 0) {
@@ -98,6 +99,7 @@ export class ItemCarro extends Component {
                />
                <Text style={styles.caja}> {this.props.item.cantidad}</Text>
                <Button
+                  buttonStyle={styles.plusButton}
                   onPress={() => {
                      let nuevaCantidad = parseInt(this.props.item.cantidad) - 1;
                      if (nuevaCantidad < 100) {
@@ -205,5 +207,9 @@ const styles = StyleSheet.create({
       //marginRight: 10,
       //  textAlign: 'right',
       paddingRight: 5,
+      backgroundColor: 'white',
+   },
+   plusButton: {
+      backgroundColor: colores.colorOscuroPrimarioTomate,
    },
 });

@@ -1,13 +1,5 @@
 import React, { useRef } from 'react';
-import {
-   StyleSheet,
-   View,
-   ScrollView,
-   Text,
-   Image,
-   SafeAreaView,
-} from 'react-native';
-import { Input, Icon, Button } from 'react-native-elements';
+import { StyleSheet, View, Text, SafeAreaView, Image } from 'react-native';
 
 // Importacion de Toas
 import Toast from 'react-native-easy-toast';
@@ -25,12 +17,18 @@ export default function Registro({ navigation }) {
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
-            <Text style={textEstilo(colores.colorBlanco, 18, 'normal')}>
-               Bienvenido
-            </Text>
-            <Text style={textEstilo(colores.colorBlanco, 25, 'bold')}>
-               Regitrase
-            </Text>
+            <View>
+               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
+                  Bienvenido
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
+                  Regitrase
+               </Text>
+            </View>
+
+            <Image
+               source={require('../../../assets/img/LogoBlanco.png')}
+            ></Image>
          </View>
 
          <View style={styles.pie}>
@@ -38,7 +36,13 @@ export default function Registro({ navigation }) {
          </View>
 
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
-         <Toast ref={toastRef} position="center" opacity={0.5}></Toast>
+         <Toast
+            ref={toastRef}
+            position="center"
+            opacity={0.8}
+            fadeInDuration={800}
+            fadeOutDuration={1000}
+         ></Toast>
       </SafeAreaView>
    );
 }
@@ -58,6 +62,9 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
       paddingTop: 30,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
    },
    pie: {
       flex: 4,
@@ -67,7 +74,6 @@ const styles = StyleSheet.create({
       paddingHorizontal: 40,
       marginTop: 30,
    },
-   logo: { width: '100%', height: 150, marginTop: 60 },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
    divide: {
       backgroundColor: '#000',
