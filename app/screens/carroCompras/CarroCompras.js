@@ -7,17 +7,20 @@ import { StackActions } from '@react-navigation/native';
 export class CarroCompras extends Component {
    constructor(props) {
       super(props);
-      let items = [];
       this.pintarBoton = false;
-
+      let items = [];
       this.state = {
          listItems: items,
       };
+   }
+
+   componentDidMount() {
       let srvItemsCarro = new ServicioCarroCompras();
+      let items = [];
       srvItemsCarro.registrarEscuchaTodas(
          items,
          this.repintarLista,
-         'zantycb89@gmail.com'
+         global.usuario
       );
    }
 

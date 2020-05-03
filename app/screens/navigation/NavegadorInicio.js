@@ -45,6 +45,13 @@ const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
 
+if (global.usuario == null) {
+   let user = firebase.auth().currentUser;
+   if (user) {
+      global.usuario = user.email;
+      global.infoUsuario = user.providerData[0];
+   }
+}
 function ScreensFromTabs() {
    return (
       <StackFromTabs.Navigator initialRouteName="HomeTabScreen">
@@ -155,7 +162,7 @@ function HomeDraw() {
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
    //PENDIENTE: recuperar del usuario logueado
-   global.tieneCobertura = true;
+   global.tieneCobertura = false;
 
    useEffect(() => {
       firebase.auth().onAuthStateChanged(user => {
