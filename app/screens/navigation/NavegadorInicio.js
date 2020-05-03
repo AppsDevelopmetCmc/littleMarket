@@ -29,11 +29,8 @@ import {ListaPedidos} from '../pedidos/ListaPedidos'
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
-
 import {DetallePedido} from '../pedidos/DetallePedido'
-
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
-
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -68,7 +65,7 @@ function ScreensFromTabs() {
             name="CarroComprasScreen"
             component={CarroCompras}
          />
-         <StackDirection.Screen
+          <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
          />
@@ -76,6 +73,7 @@ function ScreensFromTabs() {
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
          />
+         
       </StackFromTabs.Navigator>
    );
 }
@@ -150,7 +148,6 @@ function DirectionStack() {
 }
 function HomeTab() {
    return (
-
       <TabHome.Navigator
          initialRouteName="ListaCombos"
          screenOptions={({ route }) => ({
@@ -184,7 +181,6 @@ function HomeTab() {
             component={ListaProductos}
             options={{ tabBarLabel: 'Mis Compras' }}
          />
-
       </TabHome.Navigator>
    );
 }
