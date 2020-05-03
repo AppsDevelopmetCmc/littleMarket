@@ -12,7 +12,7 @@ export class ItemComboProducto extends Component {
                <View style={styles.imagenes}>
                   <Avatar
                      rounded
-                     size={50}
+                     size={25}
                      source={{ uri: this.props.comboProducto.imagen }}
                   />
                </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       marginEnd: 20,
    },
-      subContenido: {
+   subContenido: {
       flex: 1,
       flexDirection: 'row',
       //backgroundColor: 'red',

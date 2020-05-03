@@ -6,6 +6,9 @@ import { agregarDisminuirItemCarro } from '../../servicios/ServicioCarroCompras'
 import { ServicioCombos } from '../../servicios/ServicioCombos';
 import { ItemComboProducto } from '../combos/componentes/ItemComboProducto';
 
+//Importacion de los colores
+import * as colores from '../../constants/Colores';
+
 export class DetalleCombo extends Component {
    constructor(props) {
       super(props);
@@ -31,34 +34,38 @@ export class DetalleCombo extends Component {
       let combo = this.props.route.params.combo;
       return (
          <View style={styles.container}>
-            <View style={styles.lista}>
-               <Text style={styles.textoNegrita}>DETALLE COMBO</Text>
-               <FlatList
-                  data={this.state.listProductosCombo}
-                  renderItem={objeto => {
-                     return <ItemComboProducto comboProducto={objeto.item} />;
-                  }}
-                  keyExtractor={objetoComboProducto => {
-                     return objetoComboProducto.id;
-                  }}
-               />
-            </View>
+            <View style={styles.cabecera}></View>
+            <View style={styles.pie}>
+               <View style={styles.contenedorLista}>
+                  <FlatList
+                     data={this.state.listProductosCombo}
+                     renderItem={objeto => {
+                        return (
+                           <ItemComboProducto comboProducto={objeto.item} />
+                        );
+                     }}
+                     keyExtractor={objetoComboProducto => {
+                        return objetoComboProducto.id;
+                     }}
+                  />
+               </View>
 
-            <Button
-               title="Agregar"
-               onPress={() => {
-                  agregarDisminuirItemCarro(
-                     {
-                        id: combo.id,
-                        alias: combo.alias,
-                        precio: combo.precio,
-                     },
-                     global.usuario,
-                     1,
-                     this.regresar
-                  );
-               }}
-            ></Button>
+               <Button
+                  title="Agregar"
+                  onPress={() => {
+                     agregarDisminuirItemCarro(
+                        {
+                           id: combo.id,
+                           alias: combo.alias,
+                           precio: combo.precio,
+                        },
+                        global.usuario,
+                        1,
+                        this.regresar
+                     );
+                  }}
+               ></Button>
+            </View>
          </View>
       );
    }
@@ -70,10 +77,7 @@ export class DetalleCombo extends Component {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginTop: 80,
+      backgroundColor: colores.colorPrimarioVerde,
    },
    cantidad: {
       flex: 1,
@@ -109,5 +113,30 @@ const styles = StyleSheet.create({
    },
    lista: {
       flex: 1,
+   },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 10,
+      marginTop: 30,
+   },
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 30,
+      paddingTop: 30,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      flexDirection: 'row',
+   },
+   contenedorLista: {
+      flex: 1,
+      backgroundColor: '#F8DA1E',
+      marginHorizontal: 20,
+      marginTop: 40,
+      marginBottom: 100,
+      borderRadius: 30,
    },
 });

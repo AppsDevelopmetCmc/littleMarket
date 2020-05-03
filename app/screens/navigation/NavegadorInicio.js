@@ -57,6 +57,7 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
+            options={{ title: 'Detalle Combo' }}
          ></StackFromTabs.Screen>
          <StackDirection.Screen
             name="CarroComprasScreen"
