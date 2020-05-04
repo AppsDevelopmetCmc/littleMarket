@@ -174,7 +174,7 @@ function HomeTab() {
 
                if (route.name === 'ListaCombos') {
                   iconName = 'store';
-               } else if (route.name === 'ListaProductos') {
+               } else if (route.name === 'ListaPedidos') {
                   iconName = 'basket';
                }
 
@@ -194,8 +194,8 @@ function HomeTab() {
             options={{ tabBarLabel: 'Inicio' }}
          />
          <TabHome.Screen
-            name="ListaProductos"
-            component={ListaProductos}
+            name="ListaPedidos"
+            component={ListaPedidos}
             options={{ tabBarLabel: 'Mis Compras' }}
          />
       </TabHome.Navigator>

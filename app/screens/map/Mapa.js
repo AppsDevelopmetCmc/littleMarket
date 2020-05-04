@@ -2,11 +2,13 @@ import React, { Component, useState } from 'react';
 import { View, StyleSheet, Dimensions, Alert } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button } from 'react-native-elements';
-import * as firebase from 'firebase';
 import MapInput from '../../components/MapInput';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
-import{Input} from 'react-native-elements'
-import {ServicioCobertura} from '../../servicios/ServicioCobertura'
+import { Input } from 'react-native-elements';
+import { ServicioCobertura } from '../../servicios/ServicioCobertura';
+import Geocoder from 'react-native-geocoding';
+import _ from 'lodash';
+import {apiKeyMaps} from '../../utils/ApiKey';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -26,45 +28,78 @@ export class Mapa extends Component {
       if (this.origen == 'nuevo') {
          this.pintarElemento = true;
       }
-      //Logica de Naty para pintar los puntos de referencia cuando viene por actualizar
       this.state = {
+         vaciar: false,
          modalVisible: true,
          isMapReady: false,
+         direccion: '',
          region: {
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
          },
-         latitud: 0,
-         longitud: 0,
-         tieneCobertura:''
+         coordinate: {
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+         },
+         tieneCobertura: '',
       };
    }
 
+   obtenerDireccion = async (latitude, longitude) => {
+      let addressComponent = '';
+      Geocoder.from(latitude, longitude)
+         .then(json => {
+            addressComponent = json.results[0].formatted_address;
+            console.log(addressComponent);
+            this.setState({ direccion: addressComponent });
+         })
+         .catch(error => console.warn(error));
+   };
+
    componentDidMount() {
-      navigator.geolocation.getCurrentPosition(
-         position => {
-            this.setState({
-               region: {
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
-               },
-            });
-         },
-         error => console.log(error.message),
-         { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-      );
+      if (this.origen == 'nuevo') {
+         navigator.geolocation.getCurrentPosition(
+            position => {
+               this.setState({
+                  region: {
+                     latitude: position.coords.latitude,
+                     longitude: position.coords.longitude,
+                     latitudeDelta: LATITUDE_DELTA,
+                     longitudeDelta: LONGITUDE_DELTA,
+                  },
+                  coordinate: {
+                     latitude: position.coords.latitude,
+                     longitude: position.coords.longitude,
+                  },
+               });
+               this.obtenerDireccion(position.coords.latitude,position.coords.longitude)
+            },
+            error => console.log(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+         );
+      } else {
+         this.setState({
+            region: {
+               latitude: this.direccion.latitud,
+               longitude: this.direccion.longitud,
+               latitudeDelta: LATITUDE_DELTA,
+               longitudeDelta: LONGITUDE_DELTA,
+            },
+            coordinate: {
+               latitude: this.direccion.latitud,
+               longitude: this.direccion.longitud,
+            },
+            direccion: this.direccion.descripcion,
+         });
+      }
+      
    }
    onMapLayout = () => {
       this.setState({ isMapReady: true });
    };
 
-   componentWillUnmount() {
-      //  navigator.geolocation.clearWatch(this.watchID);
-   }
    actualizarLocalizacion(localizacion) {
       this.setState({
          region: {
@@ -73,66 +108,107 @@ export class Mapa extends Component {
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA,
          },
+         coordinate: {
+            latitude: localizacion.latitude,
+            longitude: localizacion.longitude,
+         },
+         direccion: localizacion.descripcion,
       });
    }
    obtenerCoords(localizacion) {
       this.actualizarLocalizacion({
-         latitude: localizacion.lat,
-         longitude: localizacion.lng,
+         latitude: localizacion.coord.lat,
+         longitude: localizacion.coord.lng,
+         descripcion: localizacion.descripcion,
       });
    }
 
-   validarCoberturaDireccion=()=>
-   {
-      let servCobertura=new ServicioCobertura();
-      let coberturas=[];
-      servCobertura.registrarEscuchaCoberturaTodas(coberturas,this.validar)
-   }
-
-   validar=(coberturas)=>
-   {
-      this.setState({tieneCobertura:'N'});
-      let lat1=this.state.latitud;
-      let log1=this.setState.longitud;
-      for(let i=0;i<coberturas.length;i++)
-      {
-       if(parseFloat(this.getKilometros(lat1,log1,coberturas[i].longitud,coberturas[i].longitud)<5))
-       {
-          this.setState({tieneCobertura:'S'})
-          break;
-       }
-     }
-
-   }
-   getKilometros = (lat1,lon1,lat2,lon2)=>
-   {
-     rad = (x)=> {return x*Math.PI/180;}
-     let R = 6378.137; //Radio de la tierra en km
-     let dLat = rad( lat2 - lat1 );
-     let dLong = rad( lon2 - lon1 );
-     let a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
-     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-     let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
-   }
-   crearDireccion = () => {
-      let servDireccion = new ServicioDirecciones();
-      
-      servDireccion.crear(global.usuario, {
-         descripcion: 'Zabala',
-         latitud: this.setState.latitud,
-         longitud: this.state.longitud,
+   handleRegionChange = mapData => {
+      this.setState({
+         coordinate: {
+            latitude: mapData.latitude,
+            longitude: mapData.longitude,
+         },
+         region: mapData,
       });
-      this.props.navigation.goBack();
    };
 
-   actualizarDireccion = () => {
-      let servDireccion = new ServicioDirecciones();
-      servDireccion.actualizar(global.usuario, this.direccion.id, {
-         descripcion: 'Zabala2',
-         latitud: 33.98,
-         longitud: 889.66,
+   onMarkerDragEnd = coord => {
+      let newRegion = {
+         latitude: parseFloat(coord.latitude),
+         longitude: parseFloat(coord.longitude),
+         latitudeDelta: 0.0522,
+         longitudeDelta: 0.0321,
+      };
+      this.setState({
+         vaciar: true,
+         region: newRegion,
+         coordinate: {
+            latitude: newRegion.latitude,
+            longitude: newRegion.longitude,
+         },
       });
+      this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
+   };
+
+   validarCoberturaDireccion = () => {
+      let servCobertura = new ServicioCobertura();
+      let coberturas = [];
+      servCobertura.registrarEscuchaCoberturaTodas(coberturas, this.validar);
+   };
+
+   validar = coberturas => {
+      this.setState({ tieneCobertura: 'N' });
+      let lat1 = this.state.coordinate.latitud;
+      let log1 = this.state.coordinate.longitude;
+      for (let i = 0; i < coberturas.length; i++) {
+         if (
+            parseFloat(
+               this.getKilometros(
+                  lat1,
+                  log1,
+                  coberturas[i].longitud,
+                  coberturas[i].longitud
+               ) < 5
+            )
+         ) {
+            this.setState({ tieneCobertura: 'S' });
+            break;
+         }
+      }
+   };
+   getKilometros = (lat1, lon1, lat2, lon2) => {
+      rad = x => {
+         return (x * Math.PI) / 180;
+      };
+      let R = 6378.137; //Radio de la tierra en km
+      let dLat = rad(lat2 - lat1);
+      let dLong = rad(lon2 - lon1);
+      let a =
+         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+         Math.cos(rad(lat1)) *
+            Math.cos(rad(lat2)) *
+            Math.sin(dLong / 2) *
+            Math.sin(dLong / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+      return d.toFixed(3); //Retorna tres decimales
+   };
+   guardarDireccion = () => {
+      let servDireccion = new ServicioDirecciones();
+      let operacion = this.pintarElemento ? 'crear' : 'actualizar';
+      let nuevaDireccion = {
+         descripcion: this.state.direccion,
+         latitud: this.state.coordinate.latitude,
+         longitud: this.state.coordinate.longitude
+      }
+
+      if (operacion === 'crear') {
+         servDireccion.crear(global.usuario, nuevaDireccion);
+      } else {
+         servDireccion.actualizar(global.usuario, this.direccion.id, nuevaDireccion);
+      }
+      global.direccionActual = this.state.direccion;
       this.props.navigation.goBack();
    };
 
@@ -140,7 +216,7 @@ export class Mapa extends Component {
       const { navigation } = this.props;
       return (
          <View style={[styles.container]}>
-            {/*  <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
                <MapView
                   style={{ width: width, height: height - 50 }}
                   provider={PROVIDER_GOOGLE}
@@ -150,68 +226,45 @@ export class Mapa extends Component {
                   showsPointsOfInterest
                   showsBuildings
                   showsUserLocation
-                  zoomEnabled={true}
+                  loadingEnabled={true}
                   ref={map => (this.map = map)}
                   onLayout={this.onMapLayout}
                   region={this.state.region}
-                  loadingEnabled={true}
-                  onRegionChange={region => {
-                     this.setState({ region: region });
-                  }}
                >
                   {this.state.isMapReady && (
                      <MapView.Marker
-                        title={this.props.title}
-                        key="AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
-                        coordinate={{
-                           latitude: this.state.region.latitude,
-                           longitude: this.state.region.longitude,
+                        title={this.state.direccion}
+                        key={apiKeyMaps}
+                        ref={marker => {
+                           this.marker = marker;
+                        }}
+                        coordinate={this.state.coordinate}
+                        draggable={true}
+                        onDragEnd={e =>
+                           this.onMarkerDragEnd(e.nativeEvent.coordinate)
+                        }
+                        onPress={() => {}}
+                        onCalloutPress={() => {
+                           this.marker.hideCallout();
                         }}
                      />
                   )}
                </MapView>
             </View>
 
-            <MapInput notificarCambio={loc => this.obtenerCoords(loc)} />  */}
-            <View
-               style={{
-                  flex: 1,
-               }}
-            >
-               <Input
-                  value={this.state.latitud}
-                  placeholder="Latitud"
-                  label="Latitud1"
-                  onChangeText={text => {
-                     this.setState({ latitud: parseFloat( text) });
-                  }}
-               />
-               <Input
-                  value={this.state.longitud}
-                  placeholder="Longitud"
-                  label="Longitud1"
-                  onChangeText={text => {
-                     this.setState({ longitud: parseFloat(text) });
-                  }}
-               />
-            </View>
+           {(this.pintarElemento || !_.isEmpty(this.state.direccion)) && 
+              (<MapInput
+              notificarCambio={loc => this.obtenerCoords(loc)}
+              direccion={this.state.direccion}
+           />)
+           } 
 
-            {this.pintarElemento && (
-               <Button
-                  title="Guardar"
-                  onPress={() => {
-                     this.crearDireccion();
-                  }}
-               ></Button>
-            )}
-            {!this.pintarElemento && (
-               <Button
-                  title="Actualizar"
-                  onPress={() => {
-                     this.actualizarDireccion();
-                  }}
-               ></Button>
-            )}
+            <Button
+               title={this.pintarElemento ? 'GUARDAR' : 'ACTUALIZAR'}
+               onPress={() => {
+                  this.guardarDireccion();
+               }}
+            ></Button>
          </View>
       );
    }

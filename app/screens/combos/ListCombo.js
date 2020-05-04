@@ -80,7 +80,7 @@ export class ListCombo extends Component {
                   />
                }
             ></CabeceraPersonalizada>
-            <View style={styles.contenedorDireccione}></View>
+            <View style={styles.contenedorDireccione}><Text>{global.direccionActual}</Text></View>
 
             <View style={styles.pie}>
                <View style={styles.lista}>
