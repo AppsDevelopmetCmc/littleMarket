@@ -217,7 +217,7 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   global.tieneCobertura = true;
+   global.tieneCobertura = false;
    useEffect(() => {
       (async () => {
          await firebase.auth().onAuthStateChanged(user => {

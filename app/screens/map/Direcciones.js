@@ -112,8 +112,7 @@ export class Direcciones extends Component {
                   title='Nuevo'
                   onPress={() => {
                      this.props.navigation.navigate('Mapa', {
-                        origen: 'nuevo',
-                        idCliente: 'santy@gmail.com',
+                        origen: 'nuevo'
                      });
                   }}
                />

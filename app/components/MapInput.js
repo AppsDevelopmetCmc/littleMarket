@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {apiKeyMaps} from '../utils/ApiKey';
 import { Text, Image, Alert } from 'react-native';
 
 const palette = {
@@ -31,26 +32,34 @@ export default class MapInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            mostrarLista: true,
+            mostrarLista: true
         };
      }
    render() {
+       const direccion = this.props.direccion;
+       this.locationRef && this.locationRef.setAddressText(direccion);
       return (
 <GooglePlacesAutocomplete
+            ref = {(ref) => {this.locationRef = ref}}
             placeholder="Buscar"
             minLength={2}
             autoFocus={false}
             returnKeyType={'search'}
             listViewDisplayed={this.state.mostrarLista}
             fetchDetails={true}
-            
-      renderDescription={row => row.description}
+            renderDescription={row => {row.description}}
+            getDefaultValue={() => {
+                this.setState({mostrarLista: false}); 
+                console.log('default '+direccion)
+                return direccion;
+            }} 
             onPress={(data, details = null) =>{
                 this.setState({mostrarLista: false})
-                this.props.notificarCambio(details.geometry.location);
+                let localizacion = { coord: details.geometry.location, descripcion: details.formatted_address}
+                this.props.notificarCambio(localizacion);
             }}
             query={{
-               key: 'AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc',
+               key: {apiKeyMaps},
                language: 'es-419'
             }}
             GooglePlacesDetailsQuery={{
