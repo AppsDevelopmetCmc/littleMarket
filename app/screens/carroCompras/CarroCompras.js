@@ -6,6 +6,8 @@ import { ServicioCarroCompras } from '../../servicios/ServicioCarroCompras';
 import { ItemCarro } from '../../screens/carroCompras/componentes/ItemCarro';
 import { StackActions } from '@react-navigation/native';
 import * as colores from '../../constants/Colores';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 export class CarroCompras extends Component {
    constructor(props) {
       super(props);
@@ -45,27 +47,67 @@ export class CarroCompras extends Component {
    };
    render() {
       return (
-         <View>
-            <Text>TU COMPRA </Text>
-            <View style={styles.contenedorBoton}>
-               <Button
-                  title="Seguir comprando"
-                  onPress={() => {
-                     this.props.navigation.dispatch(StackActions.popToTop());
-                  }}
-                  titleStyle={this.textEstilo(colores.colorBlanco, 15, 'bold')}
-                  containerStyle={styles.btnStyles}
-                  buttonStyle={styles.btnRegistrarse}
-                  icon={
-                     <Icon
-                        name="arrow-left-bold-circle"
-                        size={20}
-                        color="white"
-                     />
-                  }
-               />
+         <SafeAreaView style={styles.contenedorPagina}>
+            <View style={styles.cabecera}>
+               <View style={styles.tituloCabecera}>
+                  <Text
+                     style={this.textEstilo(
+                        colores.colorBlancoTexto,
+                        20,
+                        'bold'
+                     )}
+                  >
+                     Tu Compra
+                  </Text>
+               </View>
+
+               <View style={styles.contenedorBoton}>
+                  <Button
+                     title="Seguir 
+                     comprando"
+                     onPress={() => {
+                        this.props.navigation.dispatch(StackActions.popToTop());
+                     }}
+                     titleStyle={this.textEstilo(
+                        colores.colorBlancoTexto,
+                        12,
+                        'normal'
+                     )}
+                     buttonStyle={styles.estiloBotonS}
+                     icon={
+                        <Icon
+                           name="arrow-left-bold-circle"
+                           size={20}
+                           color="white"
+                           style={styles.iconoIzquierda}
+                        />
+                     }
+                  />
+
+                  <Button
+                     title="Comprar"
+                     onPress={() => {
+                        this.props.navigation.navigate('ConfirmarCompraScreen');
+                     }}
+                     titleStyle={this.textEstilo(
+                        colores.colorBlanco,
+                        15,
+                        'bold'
+                     )}
+                     buttonStyle={styles.estiloBoton}
+                     iconRight
+                     icon={
+                        <Icon
+                           name="arrow-right-bold-circle"
+                           size={30}
+                           color="white"
+                           style={styles.iconoDerecha}
+                        />
+                     }
+                  />
+               </View>
             </View>
-            <View>
+            <View style={styles.pie}>
                <FlatList
                   data={this.state.listItems}
                   renderItem={objeto => {
@@ -81,84 +123,47 @@ export class CarroCompras extends Component {
                   }}
                />
             </View>
-            <View style={styles.botones}>
-               <Button
-                  title="Comprar"
-                  onPress={() => {
-                     this.props.navigation.navigate('ConfirmarCompraScreen');
-                  }}
-                  titleStyle={this.textEstilo(colores.colorBlanco, 15, 'bold')}
-                  containerStyle={styles.btnStyles}
-                  buttonStyle={styles.btnRegistrarse}
-                  icon={
-                     <Icon
-                        name="arrow-right-bold-circle"
-                        size={20}
-                        color="white"
-                     />
-                  }
-               />
-            </View>
-         </View>
+         </SafeAreaView>
       );
    }
 }
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginTop: 80,
-   },
-   cantidad: {
-      flex: 1,
-      backgroundColor: 'blue',
-      flexDirection: 'row',
-      justifyContent: 'center',
-   },
-   elemento: {
-      flex: 1,
-      alignItems: 'center',
-   },
-   caja: {
-      width: 40,
-      textAlign: 'right',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      borderColor: 'black',
-      borderWidth: 1,
-      marginLeft: 10,
-      marginRight: 10,
-      //  textAlign: 'right',
-      paddingRight: 5,
-   },
-   textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
-      marginLeft: 10,
-   },
-   boton: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-   },
-   lista: {
-      flex: 1,
-   },
    contenedorBoton: {
       flexDirection: 'row',
-      justifyContent: 'flex-end',
+      justifyContent: 'space-between',
+      alignItems: 'center',
    },
-   btnRegistrarse: {
-      padding: 10,
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 40,
+      paddingTop: 30,
+   },
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 15,
+      marginTop: 30,
+      paddingTop: 20,
+   },
+   tituloCabecera: { paddingBottom: 20 },
+   estiloBoton: {
       backgroundColor: colores.colorOscuroPrimarioTomate,
-      borderRadius: 10,
+      width: 130,
+      height: 45,
+      borderRadius: 100,
+      paddingHorizontal: 15,
    },
-   botones: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      marginTop: 10,
+   estiloBotonS: {
+      backgroundColor: colores.colorOscuroPrimarioVerde,
+      width: 130,
+      height: 45,
+      borderRadius: 100,
+      paddingHorizontal: 15,
    },
+   iconoDerecha: { paddingLeft: 5 },
+   iconoIzquierda: { paddingRight: 5 },
 });

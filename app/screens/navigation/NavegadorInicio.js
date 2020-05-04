@@ -25,11 +25,11 @@ import { Direcciones } from '../map/Direcciones';
 import Cargando from '../../components/Cargando';
 
 // Importaciones para el Inicio
-import {ListaPedidos} from '../pedidos/ListaPedidos'
+import { ListaPedidos } from '../pedidos/ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
-import {DetallePedido} from '../pedidos/DetallePedido'
+import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
@@ -67,13 +67,22 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
-            options={{ title: 'Detalle Combo' }}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackFromTabs.Screen>
          <StackDirection.Screen
             name="CarroComprasScreen"
             component={CarroCompras}
+            options={navOptionHandler(false)}
          />
-          <StackDirection.Screen
+         <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
          />
@@ -82,7 +91,6 @@ function ScreensFromTabs() {
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
          />
-         
       </StackFromTabs.Navigator>
    );
 }
@@ -238,44 +246,44 @@ export default function NavegadorInicio() {
    };
 
    const agregaInfo = async () => {
-         let documento = {};
-         await global.db
-            .collection('infoApp')
-            .doc('clientes')
-            .collection('infoUsuario')
-            .doc(global.usuario)
-            .get()
-            .then(doc => {
-               if (doc.exists) {
-                  documento = doc.data();
-                  documento.id = doc.id;
-                  global.appUsuario = documento;
-               } else {
-                  let infoUsuarioGuardar = {};
-                  infoUsuarioGuardar.cedula = null;
-                  infoUsuarioGuardar.nombreCompleto =
-                     global.infoUsuario.displayName;
-                  infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
-                  global.db
-                     .collection('infoApp')
-                     .doc('clientes')
-                     .collection('infoUsuario')
-                     .doc(global.usuario)
-                     .set(infoUsuarioGuardar)
-                     .then(() => {
-                        console.log('agregado Correctamente');
-                     })
-                     .catch(error => {
-                        console.log(error);
-                     });
+      let documento = {};
+      await global.db
+         .collection('infoApp')
+         .doc('clientes')
+         .collection('infoUsuario')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.exists) {
+               documento = doc.data();
+               documento.id = doc.id;
+               global.appUsuario = documento;
+            } else {
+               let infoUsuarioGuardar = {};
+               infoUsuarioGuardar.cedula = null;
+               infoUsuarioGuardar.nombreCompleto =
+                  global.infoUsuario.displayName;
+               infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+               global.db
+                  .collection('infoApp')
+                  .doc('clientes')
+                  .collection('infoUsuario')
+                  .doc(global.usuario)
+                  .set(infoUsuarioGuardar)
+                  .then(() => {
+                     console.log('agregado Correctamente');
+                  })
+                  .catch(error => {
+                     console.log(error);
+                  });
 
-                  infoUsuarioGuardar.id = global.usuario;
-                  global.appUsuario = infoUsuarioGuardar;
-               }
-            })
-            .catch(err => {
-               console.log('Error firebase', err);
-            });
+               infoUsuarioGuardar.id = global.usuario;
+               global.appUsuario = infoUsuarioGuardar;
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
    };
 
    useEffect(() => {
