@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as firebase from 'firebase';
 
 // Importación de los colores
 import * as colores from '../../constants/Colores';
@@ -10,11 +9,11 @@ import * as colores from '../../constants/Colores';
 // Importacion de la cabecera personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 
+// Importacion de separador de divs
+import Separador from '../../components/Separador';
+
 export default function PerfilUsuario(props) {
    const { navigation } = props;
-
-   const [informacionUsuario, setinformacionUsuario] = useState('');
-
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
@@ -24,14 +23,30 @@ export default function PerfilUsuario(props) {
       global.appUsuario.telefono
    );
 
+   // Variables de validacion
+   const [nombreValidacion, setnombreValidacion] = useState('');
+   const [cedulaValidacion, setCedulaValidacion] = useState('');
+   const [telefonoValidacion, setTelefonoValidacion] = useState('');
+
+   const requerido = 'Campo requerido *';
+
    const actualizaInfo = () => {
-      if (
-         !nombreUsuario ||
-         !correoUsuario ||
-         !cedulaUsuario ||
-         !telefonoUsuario
-      ) {
-         console.log('Campos obligatorios');
+      if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario) {
+         if (!nombreUsuario) {
+            setnombreValidacion(requerido);
+         } else {
+            setnombreValidacion('');
+         }
+         if (!cedulaUsuario) {
+            setCedulaValidacion(requerido);
+         } else {
+            setCedulaValidacion('');
+         }
+         if (!telefonoUsuario) {
+            setTelefonoValidacion(requerido);
+         } else {
+            setTelefonoValidacion('');
+         }
       } else {
          global.db
             .collection('infoApp')
@@ -67,31 +82,15 @@ export default function PerfilUsuario(props) {
             }
          ></CabeceraPersonalizada>
          <View style={styles.cabecera}>
-            <Avatar
-               rounded
-               size="xlarge"
-               containerStyle={styles.estiloAvatar}
-               source={{
-                  uri: global.appUsuario.imagen
-                     ? global.appUsuario.imagen
-                     : 'https://api.adorable.io/avatars/150/abott@adorable.png',
-               }}
-            ></Avatar>
+            <Text style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}>
+               Perfil
+            </Text>
+            <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
+               Yappando
+            </Text>
          </View>
 
          <View style={styles.pie}>
-            <Input
-               // TO DO : validar que sean solo letras / quitar espacios en blanco
-               placeholder="Ingrese su Nombre y Apellido"
-               containerStyle={styles.estiloContenedor1}
-               inputContainerStyle={styles.estiloInputContenedor}
-               inputStyle={styles.estiloInput}
-               label="Nombre y Apellido *"
-               labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
-               onChange={e => setNombreUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-            >
-               {nombreUsuario}
-            </Input>
             <Input
                placeholder="yappando@mail.com"
                containerStyle={styles.estiloContenedor1}
@@ -100,10 +99,26 @@ export default function PerfilUsuario(props) {
                label="Correo *"
                labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
                onChange={e => setcorreoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               disabled="true"
+               disabled={true}
             >
                {correoUsuario}
             </Input>
+            <Separador alto={15}></Separador>
+            <Input
+               // TO DO : validar que sean solo letras / quitar espacios en blanco
+               placeholder="Ingrese su Nombre y Apellido"
+               containerStyle={styles.estiloContenedor1}
+               inputContainerStyle={styles.estiloInputContenedor}
+               inputStyle={styles.estiloInput}
+               label="Nombre y Apellido *"
+               errorMessage={nombreValidacion}
+               labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+               onChange={e => setNombreUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+            >
+               {nombreUsuario}
+            </Input>
+            <Separador alto={15}></Separador>
+
             <Input
                // TO DO : validar que sean solo numeros
                placeholder="Ingrese su cédula"
@@ -111,22 +126,36 @@ export default function PerfilUsuario(props) {
                inputContainerStyle={styles.estiloInputContenedor}
                inputStyle={styles.estiloInput}
                label="Cédula *"
+               keyboardType="numeric"
+               maxLength={10}
+               errorMessage={cedulaValidacion}
                labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
                onChange={e => setcedulaUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
             ></Input>
+            <Separador alto={15}></Separador>
             <Input
                // TO DO : validar que sean solo numeros
                placeholder="Ingrese su número teléfonico"
                containerStyle={styles.estiloContenedor1}
                inputContainerStyle={styles.estiloInputContenedor}
                inputStyle={styles.estiloInput}
-               label="Teléfono *"
+               label="Teléfono celular *"
+               keyboardType="numeric"
+               maxLength={10}
+               errorMessage={telefonoValidacion}
                labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
                onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
             >
                {telefonoUsuario}
             </Input>
-            <Button title="Guardar" onPress={actualizaInfo}></Button>
+            <Separador alto={15}></Separador>
+            <Button
+               title="Guardar"
+               titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
+               containerStyle={styles.btnStyles}
+               buttonStyle={styles.btnGuardar}
+               onPress={actualizaInfo}
+            ></Button>
          </View>
       </SafeAreaView>
    );
@@ -141,42 +170,38 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 const styles = StyleSheet.create({
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
-   estiloAvatar: { marginRight: 20 },
    cabecera: {
-      flex: 2,
+      flex: 1,
       backgroundColor: colores.colorPrimarioVerde,
-      paddingTop: 30,
-      justifyContent: 'center',
-      alignItems: 'center',
+      paddingLeft: 40,
+      paddingTop: 10,
    },
    pie: {
-      flex: 4,
+      flex: 5,
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
       paddingTop: 50,
    },
-   cabeceraContenedor: {
-      flexDirection: 'row',
-      height: 50,
-      borderWidth: 1,
+   estiloContenedor1: {
+      width: '100%',
+      padding: 0,
+      margin: 0,
    },
-   cabeceraBoton: {
-      flex: 1,
-      borderColor: 'red',
-      borderWidth: 1,
-      justifyContent: 'center',
+   estiloInputContenedor: {
+      padding: 0,
+      height: 40,
    },
-   cabeceraTitulo: {
-      flex: 1.5,
-      justifyContent: 'center',
-      borderColor: 'red',
-      borderWidth: 1,
+   estiloInput: { fontSize: 15 },
+   btnStyles: {
+      marginTop: 50,
+      width: '100%',
+      height: 40,
    },
-   cabeceraIcon: {
-      flex: 1,
-      borderColor: 'red',
-      borderWidth: 1,
+   btnGuardar: {
+      paddingHorizontal: 40,
+      backgroundColor: colores.colorPrimarioTomate,
+      borderRadius: 25,
    },
 });
