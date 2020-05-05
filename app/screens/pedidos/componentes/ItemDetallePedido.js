@@ -16,7 +16,7 @@ export class ItemDetallePedido extends Component{
                     <View style={styles.contenido}>
                        <View style={styles.container}>
                           <Text style={styles.textoNegrita}>
-                          {this.props.detallePedido.cantidad}
+                          {this.props.detallePedido.id}
                           </Text>
                        </View>
                        <View style={styles.filaFlexEnd}>

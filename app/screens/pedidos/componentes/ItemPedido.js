@@ -21,11 +21,7 @@ export class ItemPedido extends Component{
                  <View style={styles.subContenido}>
                   
                     <View style={styles.contenido}>
-                       <View style={styles.container}>
-                          <Text style={styles.textoNegrita}>
-                             {this.props.pedido.nombreCliente}
-                          </Text>
-                       </View>
+                       
                        <View style={styles.filaFlexEnd}>
                           <Text style={styles.textoNegrita}>Fecha del Pedido:</Text>
                           <Text style={styles.texto}>
@@ -45,7 +41,7 @@ export class ItemPedido extends Component{
                           </Text>
                        </View> 
                        <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Direccion:</Text>
+                          <Text style={styles.textoNegrita}>Dirección:</Text>
                           <Text style={styles.texto}>
                              {this.props.pedido.direccion}
                           </Text>
