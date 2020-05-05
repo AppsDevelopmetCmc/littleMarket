@@ -25,11 +25,11 @@ import { Direcciones } from '../map/Direcciones';
 import Cargando from '../../components/Cargando';
 
 // Importaciones para el Inicio
-import {ListaPedidos} from '../pedidos/ListaPedidos'
+import { ListaPedidos } from '../pedidos/ListaPedidos';
 import { ListaProductos } from '../ListaProductos';
 import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
-import {DetallePedido} from '../pedidos/DetallePedido'
+import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
@@ -67,12 +67,22 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackFromTabs.Screen>
          <StackDirection.Screen
             name="CarroComprasScreen"
             component={CarroCompras}
+            options={navOptionHandler(false)}
          />
-          <StackDirection.Screen
+         <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
          />
@@ -80,8 +90,16 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
+            options={{
+               title: 'Confirmar compra',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          />
-         
       </StackFromTabs.Navigator>
    );
 }
@@ -217,70 +235,79 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   global.tieneCobertura = false;
-   useEffect(() => {
-      (async () => {
+
+   global.tieneCobertura = true;
+   
+   // Funcion para recuperar info de logue
+   const infoLogin = async () => {
+      try {
          await firebase.auth().onAuthStateChanged(user => {
             !user ? setLogin(false) : setLogin(true);
             if (user) {
                global.usuario = user.email;
                global.infoUsuario = user.providerData[0];
+               console.log(global.infoUsuario);
             }
          });
-         if (global.usuario) {
-            consultarInformacion(global.usuario);
-         }
-      })();
-   }, [login]);
+      } catch (error) {
+         console.log('error', error);
+      }
+   };
 
-   // Consulta si existe en la coleccion registro de usuario con el login realizado
+   const agregaInfo = async () => {
+      let documento = {};
+      await global.db
+         .collection('infoApp')
+         .doc('clientes')
+         .collection('infoUsuario')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.exists) {
+               documento = doc.data();
+               documento.id = doc.id;
+               global.appUsuario = documento;
+            } else {
+               let infoUsuarioGuardar = {};
+               infoUsuarioGuardar.cedula = null;
+               infoUsuarioGuardar.nombreCompleto =
+                  global.infoUsuario.displayName;
+               infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+               global.db
+                  .collection('infoApp')
+                  .doc('clientes')
+                  .collection('infoUsuario')
+                  .doc(global.usuario)
+                  .set(infoUsuarioGuardar)
+                  .then(() => {
+                     console.log('agregado Correctamente');
+                  })
+                  .catch(error => {
+                     console.log(error);
+                  });
+
+               infoUsuarioGuardar.id = global.usuario;
+               global.appUsuario = infoUsuarioGuardar;
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
+   };
+
    useEffect(() => {
-      // utilizo una funciona anonima para poder realizar la espera de la respuesta
-      // TO DO: Verficar el funcionamiento y ajustes en pruebas
-      (async () => {
-         let documento = {};
-         await global.db
-            .collection('infoApp')
-            .doc('clientes')
-            .collection('infoUsuario')
-            .doc(global.usuario)
-            .get()
-            .then(doc => {
-               if (doc.exists) {
-                  documento = doc.data();
-                  documento.id = doc.id;
-                  global.appUsuario = documento;
-                  console.log('La informacion cargada es:', global.appUsuario);
-               } else {
-                  let infoUsuarioGuardar = {};
-                  infoUsuarioGuardar.cedula = null;
-                  infoUsuarioGuardar.imagen = global.infoUsuario.photoURL;
-                  infoUsuarioGuardar.nombreCompleto =
-                     global.infoUsuario.displayName;
-                  infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
-                  global.db
-                     .collection('infoApp')
-                     .doc('clientes')
-                     .collection('infoUsuario')
-                     .doc(global.usuario)
-                     .set(infoUsuarioGuardar)
-                     .then(() => {
-                        console.log('agregado Correctamente');
-                     })
-                     .catch(error => {
-                        console.log(error);
-                     });
+      infoLogin();
+      if (login) {
+         agregaInfo();
+      }
 
-                  infoUsuarioGuardar.id = global.usuario;
-                  global.appUsuario = infoUsuarioGuardar;
-                  console.log('La informacion guardada es:', global.appUsuario);
-               }
-            })
-            .catch(err => {
-               console.log('Error firebase', err);
-            });
-      })();
-   }, []);
+      return function cleanup() {
+         infoLogin();
+         if (login) {
+            agregaInfo();
+         }
+      };
+   }, [login]);
 
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;

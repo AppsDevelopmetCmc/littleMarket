@@ -28,43 +28,89 @@ export class DetalleCombo extends Component {
          listProductosCombo: productosCombo,
       });
    };
+   flatListItemSeparator = () => {
+      return (
+         <View
+            style={{
+               width: '100%',
+
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+            }}
+         >
+            <View
+               style={{
+                  height: 2,
+                  width: '80%',
+                  backgroundColor: colores.colorOscuroPrimarioAmarillo,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+               }}
+            ></View>
+         </View>
+      );
+   };
    render() {
       let combo = this.props.route.params.combo;
       return (
          <View style={styles.container}>
-            <View style={styles.contenedorBoton}>
-               <Button
-                  title="Agregar"
-                  onPress={() => {
-                     agregarDisminuirItemCarro(
-                        {
-                           id: combo.id,
-                           alias: combo.alias,
-                           precio: combo.precio,
-                        },
-                        global.usuario,
-                        1,
-                        this.regresar
-                     );
-                  }}
-                  icon={<Icon name="cart" size={15} color="white" />}
-                  titleStyle={this.textEstilo(colores.colorBlanco, 15, 'bold')}
-                  containerStyle={styles.btnStyles}
-                  buttonStyle={styles.btnRegistrarse}
-               ></Button>
+            <View style={styles.cabecera}>
+               {/* TO DO: Falta el nombre del combo */}
+               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
+                  Detalle
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
+                  Nombre del combo
+               </Text>
             </View>
-            <View style={styles.lista}>
-               <Text style={styles.textoNegrita}>DETALLE COMBO</Text>
-
-               <FlatList
-                  data={this.state.listProductosCombo}
-                  renderItem={objeto => {
-                     return <ItemComboProducto comboProducto={objeto.item} />;
-                  }}
-                  keyExtractor={objetoComboProducto => {
-                     return objetoComboProducto.id;
-                  }}
-               />
+            <View style={styles.pie}>
+               <View style={styles.contenedorLista}>
+                  <FlatList
+                     data={this.state.listProductosCombo}
+                     renderItem={objeto => {
+                        return (
+                           <ItemComboProducto comboProducto={objeto.item} />
+                        );
+                     }}
+                     keyExtractor={objetoComboProducto => {
+                        return objetoComboProducto.id;
+                     }}
+                     ItemSeparatorComponent={this.flatListItemSeparator}
+                  />
+               </View>
+               <View style={styles.contenedorBoton}>
+                  <Button
+                     title="Agregar"
+                     buttonStyle={styles.btnRegistrarse}
+                     titleStyle={this.textEstilo(
+                        colores.colorBlanco,
+                        18,
+                        'bold'
+                     )}
+                     onPress={() => {
+                        agregarDisminuirItemCarro(
+                           {
+                              id: combo.id,
+                              alias: combo.alias,
+                              precio: combo.precio,
+                           },
+                           global.usuario,
+                           1,
+                           this.regresar
+                        );
+                     }}
+                     icon={
+                        <Icon
+                           name="cart"
+                           size={25}
+                           color="white"
+                           style={styles.iconoStilos}
+                        />
+                     }
+                  ></Button>
+               </View>
             </View>
          </View>
       );
@@ -84,10 +130,7 @@ export class DetalleCombo extends Component {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginTop: 80,
+      backgroundColor: colores.colorPrimarioVerde,
    },
    cantidad: {
       flex: 1,
@@ -95,42 +138,49 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'center',
    },
-   elemento: {
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 10,
+      marginTop: 30,
+   },
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 30,
+
+      justifyContent: 'space-between',
+   },
+   contenedorLista: {
       flex: 1,
-      alignItems: 'center',
-   },
-   caja: {
-      width: 40,
-      textAlign: 'right',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      borderColor: 'black',
-      borderWidth: 1,
-      marginLeft: 10,
-      marginRight: 10,
-      //  textAlign: 'right',
-      paddingRight: 5,
-   },
-   textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
-      marginLeft: 10,
-   },
-   boton: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-   },
-   lista: {
-      flex: 1,
-   },
-   contenedorBoton: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
+      backgroundColor: '#F8DA1E',
+      marginHorizontal: 10,
+      marginTop: 20,
+      marginBottom: 15,
+      borderRadius: 30,
+      paddingTop: 25,
    },
    btnRegistrarse: {
-      padding: 10,
-      backgroundColor: colores.colorOscuroPrimarioTomate,
-      borderRadius: 10,
+      backgroundColor: colores.colorPrimarioTomate,
+      width: 200,
+      height: 45,
+      borderRadius: 25,
+      marginBottom: 50,
    },
+   contenedorBoton: {
+      alignItems: 'center',
+   },
+   iconoStilos: { paddingRight: 15 },
+   contenedorContador: {
+      height: 50,
+      width: 50,
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colores.colorBlanco,
+      flexDirection: 'row',
+   },
+   contenedorAgregar: { alignItems: 'center' },
+   btnSumar: { width: 40, backgroundColor: colores.colorPrimarioTomate },
 });
