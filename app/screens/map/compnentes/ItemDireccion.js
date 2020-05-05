@@ -31,7 +31,7 @@ export class ItemDireccion extends Component {
                         </View>
                         <View style={styles.iconos}>
                            <Text>
-                              {this.props.direccion.tieneCobertura == 'S' ? (
+                              {this.props.direccion.tieneCoberturaDireccion == 'S' ? (
                                  <Icon
                                     name="access-point-network"
                                     size={30}
