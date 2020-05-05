@@ -90,6 +90,15 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
+            options={{
+               title: 'Confirmar compra',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          />
       </StackFromTabs.Navigator>
    );
