@@ -25,9 +25,9 @@ export class ListCombo extends Component {
       srvCombos.registrarEscuchaTodas(combos, this.repintarLista);
    }
 
-   repintarLista = combos => {
-      global.combos=combos;
-      this.setState({         
+   repintarLista = combos => 
+      global.combos=combos
+      this.setState({
          listCombos: combos,
       });
    };
