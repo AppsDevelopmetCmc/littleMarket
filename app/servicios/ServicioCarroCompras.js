@@ -22,6 +22,33 @@ export class ServicioCarroCompras {
             });
          });
    };
+   eliminarCarro = async (mail) => {
+      //console.log('Ingresa a eliminar carro')
+      
+      global.db
+      .collection('carritos')
+      .doc(mail)
+      .collection('items')
+      .get().then(async function(coleccion) {
+      let coleccionItems=coleccion.docs
+      for(let i=0;i<coleccionItems.length;i++)
+      {
+      await global.db
+      .collection('carritos')
+      .doc(mail)
+      .collection('items').doc(coleccionItems[i].data().id)
+      .delete()
+      .then(function() {
+      console.log('Eliminado')
+      })
+      .catch(function(error) {
+      console.error('Error removing document: ', error);
+      });
+      }
+      
+      }
+      )};
+
 }
 export const eliminarItemCarro = (itemCarro, mail) => {
    global.db

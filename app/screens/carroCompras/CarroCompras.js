@@ -34,6 +34,11 @@ export class CarroCompras extends Component {
       });
    };
 
+   eliminarCarro = (mail) => {
+      let srvItemsCarro = new ServicioCarroCompras();
+      srvItemsCarro.eliminarCarro(mail);
+   };
+
    eliminarItemCarro = (item, mail) => {
       let srvItemsCarro = new ServicioCarroCompras();
       srvItemsCarro.eliminarItemCarro(item, mail);
@@ -59,9 +64,35 @@ export class CarroCompras extends Component {
                   >
                      Tu Compra
                   </Text>
+                  <View style={styles.contenedorBoton}>
+			      <Button
+                     title="Vaciar"
+                  onPress={() => {
+                    this.eliminarCarro(global.usuario)
+                    this.props.navigation.goBack()
+                  }}
+                     titleStyle={this.textEstilo(
+                        colores.colorBlancoTexto,
+                        12,
+                        'normal'
+                     )}
+                     buttonStyle={styles.estiloBotonS}
+                     icon={
+                        <Icon
+                           name="cart-remove"
+                           size={20}
+                           color="white"
+                           style={styles.iconoIzquierda}
+                        />
+                     }
+                  />
                </View>
-
+               </View>
+               
+			   
+            
                <View style={styles.contenedorBoton}>
+			      
                   <Button
                      title="Seguir 
                      comprando"

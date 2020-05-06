@@ -26,7 +26,8 @@ export class ListCombo extends Component {
    }
 
    repintarLista = combos => {
-      this.setState({
+      global.combos=combos;
+      this.setState({         
          listCombos: combos,
       });
    };
