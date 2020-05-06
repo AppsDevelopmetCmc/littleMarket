@@ -49,7 +49,7 @@ export class ListCombo extends Component {
    };*/
 
    abrirDrawer = () => {
-      console.log(this.props.navigation.openDrawer());
+      this.props.navigation.openDrawer();
    };
 
    abrirCarrito = () => {
@@ -81,7 +81,9 @@ export class ListCombo extends Component {
                   />
                }
             ></CabeceraPersonalizada>
-            <View style={styles.contenedorDireccione}><Text>{global.direccionActual}</Text></View>
+            <View style={styles.contenedorDireccione}>
+               <Text>{global.direccionActual}</Text>
+            </View>
 
             <View style={styles.pie}>
                <View style={styles.lista}>
