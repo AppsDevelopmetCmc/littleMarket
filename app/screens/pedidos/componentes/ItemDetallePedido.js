@@ -5,8 +5,25 @@ import { View, Text, StyleSheet } from 'react-native';
 export class ItemDetallePedido extends Component{
     constructor(props) {
         super(props);
+        this.alias='';
+        this.precio='';
+        this.recuperarDatosCombo();
+        
      }
 
+     recuperarDatosCombo=()=>{
+      for (let index = 0; index < global.combos.length; index++) {
+         const element = global.combos[index];
+         console.log("antes "+element.id);
+         if(global.combos[index].id === this.props.detallePedido.id){
+            console.log("despues "+ global.combos[index].alias);
+            this.alias= global.combos[index].alias;
+            break;
+         }
+         
+      }
+
+     }
      render() {
         return (    
            <View style={styles.fila}>
@@ -16,7 +33,7 @@ export class ItemDetallePedido extends Component{
                     <View style={styles.contenido}>
                        <View style={styles.container}>
                           <Text style={styles.textoNegrita}>
-                          {this.props.detallePedido.id}
+                              {this.alias}
                           </Text>
                        </View>
                        <View style={styles.filaFlexEnd}>
@@ -24,7 +41,13 @@ export class ItemDetallePedido extends Component{
                           <Text style={styles.texto}>
                           {this.props.detallePedido.cantidad}
                           </Text>
-                       </View>                       
+                       </View> 
+                       <View style={styles.filaFlexEnd}>
+                          <Text style={styles.textoNegrita}>Precio:</Text>
+                          <Text style={styles.texto}>
+                              {this.precio}
+                          </Text>
+                       </View>                      
                        
                     </View>
                  </View>
