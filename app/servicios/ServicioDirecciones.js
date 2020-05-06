@@ -81,16 +81,16 @@ export class ServicioDirecciones {
          .get();
       let documentos = coleccion.docs;
       for (let i = 0; i < documentos.length; i++) {
-         console.log('Pato' + documentos[i].data().tieneCoberturaDireccion);
          if (documentos[i].data().tieneCoberturaDireccion !== undefined) {
-            console.log('Ingresa Pato1' + i);
             if (documentos[i].data().tieneCoberturaDireccion === 'S')
             {
                coberturaGlobalDireccion = true;
+               
                break;
             }
          }
       }
+      console.log('coberturaGlobalDireccion' + coberturaGlobalDireccion);
       return coberturaGlobalDireccion;
    };
 }

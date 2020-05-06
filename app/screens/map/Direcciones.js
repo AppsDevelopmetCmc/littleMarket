@@ -61,9 +61,8 @@ export class Direcciones extends Component {
       let coberturaDireccion=await servDirecciones.getValidarCoberturaGlobal(global.usuario);
       if(coberturaDireccion==true)
       {
-         console.log('cobertura Global 0 '+ global.tieneCobertura);
         global.tieneCobertura=true;
-        console.log('cobertura Global 1 '+ global.tieneCobertura);
+        console.log('cobertura Global '+ global.tieneCobertura);
       }
       else{
          Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura')
@@ -138,6 +137,7 @@ export class Direcciones extends Component {
                   }
                />
             </View>
+            <View style={styles.btnViewContinuar}>
             <Button
                buttonStyle={styles.btnContinuar}
                   title='Continuar'
@@ -145,6 +145,7 @@ export class Direcciones extends Component {
                         this.validarCoberturaGlobalDireccion();
                   }}
                />
+             </View>  
 
          </View>
       );
@@ -192,6 +193,10 @@ const styles = StyleSheet.create({
       flex: 2,
       //backgroundColor: 'yellow',
       alignItems: 'center',
+   },
+   btnViewContinuar: {
+      flex: 1,
+      alignItems: 'flex-end',
    },
    btnRegistrarse: {
       backgroundColor: colores.colorPrimarioTomate,
