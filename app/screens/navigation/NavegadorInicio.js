@@ -237,7 +237,7 @@ export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
 
    global.tieneCobertura = true;
-   
+
    // Funcion para recuperar info de logue
    const infoLogin = async () => {
       try {

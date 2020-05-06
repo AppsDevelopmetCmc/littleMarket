@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import{ServicioParametros} from '../../servicios/ServicioParametros'
 import { ItemDireccion } from './compnentes/ItemDireccion';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as colores from '../../constants/Colores'
 
 
 export class Direcciones extends Component {
@@ -33,9 +34,6 @@ export class Direcciones extends Component {
          this.repintarLista,
          global.usuario
       );
-      let parametros=[];
-      let srvParametros= new ServicioParametros();
-      srvParametros.registrarEscuchaParametrosTodas(parametros,this.obtenerParametros)
 
    }
 
@@ -56,11 +54,25 @@ export class Direcciones extends Component {
          listaDirecciones: direcciones,
       });
    };
-   obtenerParametros(parametros)
+
+   validarCoberturaGlobalDireccion=async()=>
    {
-      global.listaParametros=parametros;
-      console.log('parametros'+global.listaParametros)
+      let servDirecciones=new ServicioDirecciones();
+      let coberturaDireccion=await servDirecciones.getValidarCoberturaGlobal(global.usuario);
+      if(coberturaDireccion==true)
+      {
+         console.log('cobertura Global 0 '+ global.tieneCobertura);
+        global.tieneCobertura=true;
+        console.log('cobertura Global 1 '+ global.tieneCobertura);
+      }
+      else{
+         Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura')
+      }
+
    }
+
+
+
    render() {
       return (
          <View style={styles.container}>
@@ -109,14 +121,31 @@ export class Direcciones extends Component {
             </View>
             <View style={styles.boton}>
                <Button
+               buttonStyle={styles.btnRegistrarse}
                   title='Nuevo'
                   onPress={() => {
                      this.props.navigation.navigate('Mapa', {
                         origen: 'nuevo'
                      });
                   }}
+                  icon={
+                     <Icon
+                        name="map-plus"
+                        size={25}
+                        color="white"
+                        style={styles.iconoStilos}
+                     />
+                  }
                />
             </View>
+            <Button
+               buttonStyle={styles.btnContinuar}
+                  title='Continuar'
+                  onPress={() => {
+                        this.validarCoberturaGlobalDireccion();
+                  }}
+               />
+
          </View>
       );
    }
@@ -164,4 +193,20 @@ const styles = StyleSheet.create({
       //backgroundColor: 'yellow',
       alignItems: 'center',
    },
+   btnRegistrarse: {
+      backgroundColor: colores.colorPrimarioTomate,
+      width: 200,
+      height: 45,
+      borderRadius: 25,
+      marginBottom: 50,
+   },
+   btnContinuar: {
+      backgroundColor: colores.colorPrimarioTomate,
+      width: 200,
+      height: 45,
+      borderRadius: 25,
+      marginBottom: 50,
+   },
+   iconoStilos: { alignItems: 'center' },
+   
 });

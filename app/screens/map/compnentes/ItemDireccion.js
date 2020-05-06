@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
+import { View, Text, StyleSheet, Alert, CheckBox } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { Button } from 'react-native-elements';
+import * as colores from '../../../constants/Colores'
 export class ItemDireccion extends Component {
    constructor(props) {
       super(props);
@@ -52,10 +53,18 @@ export class ItemDireccion extends Component {
             </View>
             <View style={styles.boton}>
                <Button
-                  title="Eliminar"
                   onPress={() => {
                      this.props.fnEliminar(this.props.direccion.id);
                   }}
+                  icon={
+                     <Icon
+                        name="delete"
+                        size={25}
+                        color="white"
+                        style={styles.iconoStilos}
+                     />
+                  }
+
                />
             </View>
          </View>
@@ -75,7 +84,7 @@ const styles = StyleSheet.create({
    fila: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: 'orange',
+      backgroundColor: colores.colorPrimarioTomate,
       //borderBottomColor: 'gray',
       //borderBottomWidth: 1,
       marginTop: 10,
@@ -98,7 +107,7 @@ const styles = StyleSheet.create({
       flex: 1,
       //backgroundColor: 'yellow',
       alignItems: 'stretch',
-      justifyContent: 'flex-end',
+      justifyContent: 'center',
    },
    subContenido: {
       flex: 1,
@@ -136,4 +145,6 @@ const styles = StyleSheet.create({
    touch: {
       flex: 3,
    },
+   iconoStilos: { alignItems: 'center' },
+
 });
