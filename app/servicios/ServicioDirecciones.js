@@ -2,7 +2,7 @@ import { ArregloUtil } from '../utils/utils';
 import { Alert } from 'react-native';
 
 export class ServicioDirecciones {
-   crear = (idCliente,direccion) => {
+   crear = (idCliente, direccion) => {
       global.db
          .collection('clientes')
          .doc(idCliente)
@@ -16,7 +16,7 @@ export class ServicioDirecciones {
          });
    };
 
-   actualizar = (idCLiente,idDireccion,direccion) => {
+   actualizar = (idCLiente, idDireccion, direccion) => {
       global.db
          .collection('clientes')
          .doc(idCLiente)
@@ -34,8 +34,7 @@ export class ServicioDirecciones {
             Alert.alert('error' + error);
          });
    };
-   eliminar=(idCliente,idDireccion)=>
-   {
+   eliminar = (idCliente, idDireccion) => {
       global.db
          .collection('clientes')
          .doc(idCliente)
@@ -48,7 +47,7 @@ export class ServicioDirecciones {
          .catch(function(error) {
             Alert.alert('error' + error);
          });
-   }
+   };
 
    registrarEscuchaDireccionesTodas = (arreglo, fnRepintar, idCliente) => {
       let arregloUtil = new ArregloUtil(arreglo);
@@ -58,8 +57,8 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .onSnapshot(function(snapShot) {
             snapShot.docChanges().forEach(function(change) {
-               let direccion=change.doc.data();
-               direccion.id=change.doc.id;
+               let direccion = change.doc.data();
+               direccion.id = change.doc.id;
                if (change.type == 'added') {
                   arregloUtil.agregar(direccion, fnRepintar);
                }
@@ -73,6 +72,25 @@ export class ServicioDirecciones {
          });
    };
 
-
-   
+   getValidarCoberturaGlobal = async idCliente => {
+      let coberturaGlobalDireccion = false;
+      let coleccion = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .get();
+      let documentos = coleccion.docs;
+      for (let i = 0; i < documentos.length; i++) {
+         if (documentos[i].data().tieneCoberturaDireccion !== undefined) {
+            if (documentos[i].data().tieneCoberturaDireccion === 'S')
+            {
+               coberturaGlobalDireccion = true;
+               
+               break;
+            }
+         }
+      }
+      console.log('coberturaGlobalDireccion' + coberturaGlobalDireccion);
+      return coberturaGlobalDireccion;
+   };
 }

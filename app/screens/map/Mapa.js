@@ -8,7 +8,8 @@ import { Input } from 'react-native-elements';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import Geocoder from 'react-native-geocoding';
 import _ from 'lodash';
-import {apiKeyMaps} from '../../utils/ApiKey';
+import { apiKeyMaps } from '../../utils/ApiKey';
+import { ServicioParametros } from '../../servicios/ServicioParametros';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -25,6 +26,7 @@ export class Mapa extends Component {
       this.origen = this.props.route.params.origen;
       this.direccion = this.props.route.params.direccion;
       this.pintarElemento = false;
+      this.tieneCoberturaDireccion = 'N';
       if (this.origen == 'nuevo') {
          this.pintarElemento = true;
       }
@@ -43,8 +45,13 @@ export class Mapa extends Component {
             latitude: LATITUDE,
             longitude: LONGITUDE,
          },
-         tieneCobertura: '',
       };
+      let servCobertura = new ServicioCobertura();
+      servCobertura.getRegistrarCoberturaTodas();
+      
+      let servParametros = new ServicioParametros();
+     servParametros.getRegistrarParametrosTodas();
+      
    }
 
    obtenerDireccion = async (latitude, longitude) => {
@@ -74,7 +81,10 @@ export class Mapa extends Component {
                      longitude: position.coords.longitude,
                   },
                });
-               this.obtenerDireccion(position.coords.latitude,position.coords.longitude)
+               this.obtenerDireccion(
+                  position.coords.latitude,
+                  position.coords.longitude
+               );
             },
             error => console.log(error.message),
             { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
@@ -92,9 +102,9 @@ export class Mapa extends Component {
                longitude: this.direccion.longitud,
             },
             direccion: this.direccion.descripcion,
+            tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
          });
       }
-      
    }
    onMapLayout = () => {
       this.setState({ isMapReady: true });
@@ -151,62 +161,66 @@ export class Mapa extends Component {
       this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
    };
 
-   validarCoberturaDireccion = () => {
-      let servCobertura = new ServicioCobertura();
-      let coberturas = [];
-      servCobertura.registrarEscuchaCoberturaTodas(coberturas, this.validar);
-   };
-
-   validar = coberturas => {
-      this.setState({ tieneCobertura: 'N' });
-      let lat1 = this.state.coordinate.latitud;
+   validar = () => {
+      let lat1 = this.state.coordinate.latitude;
       let log1 = this.state.coordinate.longitude;
-      for (let i = 0; i < coberturas.length; i++) {
-         if (
-            parseFloat(
-               this.getKilometros(
-                  lat1,
-                  log1,
-                  coberturas[i].longitud,
-                  coberturas[i].longitud
-               ) < 5
+      for (let i = 0; i < global.coberturas.length; i++) {
+         let distancia = 0;
+         distancia = parseFloat(
+            this.getKilometros(
+               lat1,
+               log1,
+               global.coberturas[i].latitud,
+               global.coberturas[i].longitud
             )
-         ) {
-            this.setState({ tieneCobertura: 'S' });
+         );
+         console.log('Kilomeros' + distancia);
+         if (distancia < global.parametros[0].cobertura) {
+            console.log('Ingresa');
+            this.tieneCoberturaDireccion = 'S';
             break;
          }
       }
    };
+
+   rad = x => {
+      return (x * Math.PI) / 180;
+   };
+
    getKilometros = (lat1, lon1, lat2, lon2) => {
-      rad = x => {
-         return (x * Math.PI) / 180;
-      };
       let R = 6378.137; //Radio de la tierra en km
-      let dLat = rad(lat2 - lat1);
-      let dLong = rad(lon2 - lon1);
+      let dLat = this.rad(lat2 - lat1);
+      console.log('rad1' + this.rad(lat2 - lat1));
+      let dLong = this.rad(lon2 - lon1);
       let a =
          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(rad(lat1)) *
-            Math.cos(rad(lat2)) *
+         Math.cos(this.rad(lat1)) *
+            Math.cos(this.rad(lat2)) *
             Math.sin(dLong / 2) *
             Math.sin(dLong / 2);
       let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
    };
+
    guardarDireccion = () => {
       let servDireccion = new ServicioDirecciones();
       let operacion = this.pintarElemento ? 'crear' : 'actualizar';
+      this.validar();
       let nuevaDireccion = {
          descripcion: this.state.direccion,
          latitud: this.state.coordinate.latitude,
-         longitud: this.state.coordinate.longitude
-      }
-
+         longitud: this.state.coordinate.longitude,
+         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+      };
       if (operacion === 'crear') {
          servDireccion.crear(global.usuario, nuevaDireccion);
       } else {
-         servDireccion.actualizar(global.usuario, this.direccion.id, nuevaDireccion);
+         servDireccion.actualizar(
+            global.usuario,
+            this.direccion.id,
+            nuevaDireccion
+         );
       }
       global.direccionActual = this.state.direccion;
       this.props.navigation.goBack();
@@ -252,12 +266,12 @@ export class Mapa extends Component {
                </MapView>
             </View>
 
-           {(this.pintarElemento || !_.isEmpty(this.state.direccion)) && 
-              (<MapInput
-              notificarCambio={loc => this.obtenerCoords(loc)}
-              direccion={this.state.direccion}
-           />)
-           } 
+            {(this.pintarElemento || !_.isEmpty(this.state.direccion)) && (
+               <MapInput
+                  notificarCambio={loc => this.obtenerCoords(loc)}
+                  direccion={this.state.direccion}
+               />
+            )}
 
             <Button
                title={this.pintarElemento ? 'GUARDAR' : 'ACTUALIZAR'}

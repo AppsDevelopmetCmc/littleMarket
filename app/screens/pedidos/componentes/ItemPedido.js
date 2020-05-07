@@ -39,7 +39,7 @@ export class ItemPedido extends Component {
                   </View>
                   <Separador alto={30}></Separador>
                   <View style={styles.contenidoDetalle}>
-                     <Text style={styles.texto}>Direccion</Text>
+                     <Text style={styles.texto}>Dirección</Text>
                      <Text
                         style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}
                      >
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
       flexDirection: 'row',
    },
-
+   
    textoNegrita: {
       fontWeight: 'bold',
       fontSize: 14,

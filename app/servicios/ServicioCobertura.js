@@ -24,22 +24,19 @@ export class ServicioCobertura {
          });
    };
 
-   getRegistrarParametrosTodas = async(fnObtener) => {
+   getRegistrarCoberturaTodas = async() => {
 
-      global.db
-         .collection('parametros')
-         .get()
-         .then(async function(coleccion) {
-            let documentos = coleccion.docs;
+     let coleccion=await global.db
+         .collection('coberturas')
+         .get();
+         let documentos = coleccion.docs;
             let coberturas = [];
             for (let i = 0; i < documentos.length; i++) {
                coberturas.push(documentos[i].data());
-               fnObtener(coberturas);
+               
             }
-         })
-         .catch(function(error) {
-            console.log('Error getting document:', error);
-         });
+            global.coberturas=coberturas;
+
    };
    
 }
