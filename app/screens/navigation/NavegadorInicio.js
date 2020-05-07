@@ -160,6 +160,7 @@ function DirectionStack() {
          <StackDirection.Screen
             name="Direcciones"
             component={Direcciones}
+            options={navOptionHandler(false)}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="Mapa"

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert, CheckBox } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
-import { Avatar } from 'react-native-elements';
+import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-elements';
-import * as colores from '../../../constants/Colores'
+import * as colores from '../../../constants/Colores';
 export class ItemDireccion extends Component {
    constructor(props) {
       super(props);
@@ -17,54 +16,54 @@ export class ItemDireccion extends Component {
       return (
          <View style={styles.fila}>
             <View style={styles.touch}>
-               <TouchableHighlight
+               <TouchableOpacity
                   onPress={() => {
                      this.props.fnActualizar(this.props.direccion);
                   }}
                >
                   <View style={styles.contenido}>
                      <View style={styles.subContenido}>
-                        <View style={styles.descripcion}>
-                           <Text style={styles.texto}>
-                              {' '}
-                              {this.props.direccion.descripcion}
-                           </Text>
+                        <View style={styles.estiloIconoCobertura}>
+                           {this.props.direccion.tieneCoberturaDireccion ==
+                           'S' ? (
+                              <Icon
+                                 name="access-point-network"
+                                 size={25}
+                                 color={colores.colorOscuroPrimarioTomate}
+                              />
+                           ) : (
+                              <Icon
+                                 name="access-point-network-off"
+                                 size={25}
+                                 color={colores.colorClaroTexto}
+                              />
+                           )}
                         </View>
-                        <View style={styles.iconos}>
-                           <Text>
-                              {this.props.direccion.tieneCoberturaDireccion == 'S' ? (
-                                 <Icon
-                                    name="access-point-network"
-                                    size={30}
-                                    color="black"
-                                 />
-                              ) : (
-                                 <Icon
-                                    name="access-point-network-off"
-                                    size={30}
-                                    color="black"
-                                 />
-                              )}
+                        <View style={styles.descripcion}>
+                           <Text style={styles.texto}>Mi casa</Text>
+                           <Text style={styles.texto}>
+                              {'Arturo Tipanguano y Luis Chipantiza '}
+                              {this.props.direccion.descripcion}
                            </Text>
                         </View>
                      </View>
                   </View>
-               </TouchableHighlight>
+               </TouchableOpacity>
             </View>
-            <View style={styles.boton}>
+            <View style={styles.contenedorEliminar}>
                <Button
+                  buttonStyle={styles.estiloBotonEliminar}
                   onPress={() => {
                      this.props.fnEliminar(this.props.direccion.id);
                   }}
                   icon={
                      <Icon
                         name="delete"
-                        size={25}
-                        color="white"
+                        size={15}
+                        color={colores.colorBlanco}
                         style={styles.iconoStilos}
                      />
                   }
-
                />
             </View>
          </View>
@@ -73,78 +72,45 @@ export class ItemDireccion extends Component {
 }
 
 const styles = StyleSheet.create({
-   container: {
-      flex: 1,
-
-      alignItems: 'stretch',
-      justifyContent: 'center',
-      fontWeight: 'bold',
-      //backgroundColor: 'red',
-   },
    fila: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: colores.colorPrimarioTomate,
-      //borderBottomColor: 'gray',
-      //borderBottomWidth: 1,
-      marginTop: 10,
-      marginLeft: 20,
-      borderBottomLeftRadius: 10,
-      borderTopLeftRadius: 10,
+      backgroundColor: colores.colorBlanco,
+      marginTop: 5,
+      borderRadius: 15,
    },
-   filaFlexEnd: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginRight: 10,
-   },
+
    contenido: {
-      flex: 8,
-      alignItems: 'stretch',
-      //backgroundColor: 'pink',
+      width: '100%',
    },
-   boton: {
+   contenedorEliminar: {
       flex: 1,
-      //backgroundColor: 'yellow',
-      alignItems: 'stretch',
       justifyContent: 'center',
+      alignItems: 'flex-end',
+      paddingRight: 10,
    },
    subContenido: {
-      flex: 1,
       flexDirection: 'row',
-      //backgroundColor: 'red',
-   },
-   imagenes: {
-      flex: 1,
-      //  backgroundColor: 'green',
+      paddingLeft: 10,
+      paddingVertical: 15,
       alignItems: 'center',
-      padding: 20,
    },
-   textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
-      marginLeft: 10,
-   },
+
    texto: {
-      fontSize: 15,
-      marginTop: 0,
-      marginLeft: 10,
-   },
-   textoNegritaSubrayado: {
+      fontSize: 13,
       fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
-      borderBottomColor: 'gray',
-      borderBottomWidth: 1,
    },
-   iconos: { flex: 1, alignItems: 'center' },
    descripcion: {
       flex: 4,
    },
    touch: {
       flex: 3,
    },
-   iconoStilos: { alignItems: 'center' },
-
+   estiloIconoCobertura: { marginRight: 15 },
+   estiloBotonEliminar: {
+      width: 30,
+      height: 30,
+      borderRadius: 10,
+      backgroundColor: colores.colorPrimarioTomate,
+   },
 });
