@@ -80,15 +80,6 @@ export class Direcciones extends Component {
                <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
                   {msg.msg1}
                </Text>
-               {/* <Separador alto={15}></Separador> */}
-
-               {/* <Button
-                  title="Cerrar Sesión"
-                  onPress={() => {
-                     firebase.auth().signOut();
-                     console.log('Se cerro sesion');
-                  }}
-               ></Button> */}
             </View>
 
             <View style={styles.pie}>
@@ -166,6 +157,14 @@ export class Direcciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
+               <Button
+                  title="Cerrar Sesión"
+                  onPress={() => {
+                     firebase.auth().signOut();
+                     console.log('Se cerro sesion');
+                  }}
+               ></Button>
+               {/*                
                <View style={styles.btnViewContinuar}>
                   <Button
                      buttonStyle={styles.btnContinuar}
@@ -174,7 +173,7 @@ export class Direcciones extends Component {
                         this.validarCoberturaGlobalDireccion();
                      }}
                   />
-               </View>
+               </View> */}
             </View>
          </SafeAreaView>
       );
