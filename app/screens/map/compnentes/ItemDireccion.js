@@ -50,7 +50,7 @@ export class ItemDireccion extends Component {
                   </View>
                </TouchableOpacity>
             </View>
-            <View style={styles.contenedorEliminar}>
+            {/* <View style={styles.contenedorEliminar}>
                <Button
                   buttonStyle={styles.estiloBotonEliminar}
                   onPress={() => {
@@ -65,7 +65,7 @@ export class ItemDireccion extends Component {
                      />
                   }
                />
-            </View>
+            </View> */}
          </View>
       );
    }

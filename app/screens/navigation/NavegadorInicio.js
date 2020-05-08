@@ -3,7 +3,10 @@ import * as firebase from 'firebase';
 import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+   createDrawerNavigator,
+   DrawerItemList,
+} from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
@@ -34,6 +37,9 @@ import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
+import { SafeAreaContext, SafeAreaView } from 'react-native-safe-area-context';
+
+import { Menu } from '../menu/Menu';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -214,7 +220,7 @@ function HomeTab() {
 
 function HomeDraw() {
    return (
-      <DrawerHome.Navigator initialRouteName="HomeDrawer">
+      <DrawerHome.Navigator drawerContent={props => <Menu {...props} />}>
          <DrawerHome.Screen
             name="HomeDrawer"
             component={ScreensFromTabs}

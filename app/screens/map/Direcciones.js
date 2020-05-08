@@ -127,6 +127,29 @@ export class Direcciones extends Component {
                         />
                      }
                   />
+                  <Button
+                     buttonStyle={styles.estiloBotonBlanco}
+                     titleStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        13,
+                        'bold'
+                     )}
+                     containerStyle={styles.estiloContenedor}
+                     title="Usar ubicación actual"
+                     onPress={() => {
+                        Alert.alert(
+                           'Se debe color la lógica para obtener la ubicación actual'
+                        );
+                     }}
+                     icon={
+                        <Icon
+                           name="crosshairs-gps"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
+                        />
+                     }
+                  />
                </View>
 
                <View style={styles.contenedorTituloSubr}>
@@ -157,13 +180,7 @@ export class Direcciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
-               <Button
-                  title="Cerrar Sesión"
-                  onPress={() => {
-                     firebase.auth().signOut();
-                     console.log('Se cerro sesion');
-                  }}
-               ></Button>
+
                {/*                
                <View style={styles.btnViewContinuar}>
                   <Button
