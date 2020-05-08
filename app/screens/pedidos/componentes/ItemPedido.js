@@ -21,7 +21,7 @@ export class ItemPedido extends Component {
                <View style={styles.contenido}>
                   <View style={styles.contenidoDetalle}>
                      <Text style={styles.textoNegrita}>
-                        Order: 0000000000001
+                        Orden: 0000000000001
                      </Text>
                      <Text style={styles.textoNegrita}>
                         {this.props.pedido.fechaPedido + ' | 12:00 pm'}
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
       flexDirection: 'row',
    },
-   
+
    textoNegrita: {
       fontWeight: 'bold',
       fontSize: 14,

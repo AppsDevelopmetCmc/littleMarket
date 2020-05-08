@@ -3,11 +3,18 @@ import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
-import{ServicioParametros} from '../../servicios/ServicioParametros'
+import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { ItemDireccion } from './compnentes/ItemDireccion';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import * as colores from '../../constants/Colores'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Importacion de mensajes en la aplicacion label y text
+import * as msg from '../../constants/Mensajes';
+
+//Importacion de los colores
+import * as colores from '../../constants/Colores';
+import Separador from '../../components/Separador';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export class Direcciones extends Component {
    constructor(props) {
@@ -34,7 +41,6 @@ export class Direcciones extends Component {
          this.repintarLista,
          global.usuario
       );
-
    }
 
    actualizar = direccion => {
@@ -43,11 +49,10 @@ export class Direcciones extends Component {
          direccion: direccion,
       });
    };
-   eliminar=(idDireccion)=>
-   {
-      let servDirecciones=new ServicioDirecciones()
-      servDirecciones.eliminar(global.usuario,idDireccion)
-   }
+   eliminar = idDireccion => {
+      let servDirecciones = new ServicioDirecciones();
+      servDirecciones.eliminar(global.usuario, idDireccion);
+   };
 
    repintarLista = direcciones => {
       this.setState({
@@ -55,108 +60,180 @@ export class Direcciones extends Component {
       });
    };
 
-   validarCoberturaGlobalDireccion=async()=>
-   {
-      let servDirecciones=new ServicioDirecciones();
-      let coberturaDireccion=await servDirecciones.getValidarCoberturaGlobal(global.usuario);
-      if(coberturaDireccion==true)
-      {
-        global.tieneCobertura=true;
-        console.log('cobertura Global '+ global.tieneCobertura);
+   validarCoberturaGlobalDireccion = async () => {
+      let servDirecciones = new ServicioDirecciones();
+      let coberturaDireccion = await servDirecciones.getValidarCoberturaGlobal(
+         global.usuario
+      );
+      if (coberturaDireccion == true) {
+         global.tieneCobertura = true;
+         console.log('cobertura Global ' + global.tieneCobertura);
+      } else {
+         Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura');
       }
-      else{
-         Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura')
-      }
-
-   }
-
-
+   };
 
    render() {
       return (
-         <View style={styles.container}>
-            <Text>Ingresar Direccion</Text>
-            <Text>
-               Tiene Cobertura:
-               {global.direccionPrincipal != null
-                  ? global.direccionPrincipal.tieneCobertura
-                     ? 'SI'
-                     : 'NO'
-                  : 'NO'}
-            </Text>
-            <Text>
-               Dirección Principal:{' '}
-               {global.direccionPrincipal != null
-                  ? global.direccionPrincipal.descripcion
-                  : 'NO TIENE'}
-            </Text>
-            <Button
-               title="Cerrar Sesión"
-               onPress={() => {
-                  firebase.auth().signOut();
-                  console.log('Se cerro sesion');
-               }}
-            ></Button>
-
-            <View style={styles.cabecera}>
-               <Text style={styles.textoNegrita}>LISTA DE DIRECCIONES</Text>
+         <SafeAreaView style={styles.container}>
+            <View style={styles.cabeceraApp}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
+                  {msg.msg1}
+               </Text>
             </View>
-            <View style={styles.lista}>
-               <FlatList
-                  data={this.state.listaDirecciones}
-                  renderItem={objeto => {
-                     return (
-                        <ItemDireccion
-                           direccion={objeto.item}
-                           fnActualizar={this.actualizar}
-                           fnEliminar={this.eliminar}
+
+            <View style={styles.pie}>
+               <Text style={textEstilo(colores.colorOscuroTexto, 14, 'normal')}>
+                  {msg.msg2}
+               </Text>
+               {/* <View>
+                  <Text>
+                     Tiene Cobertura:
+                     {global.direccionPrincipal != null
+                        ? global.direccionPrincipal.tieneCobertura
+                           ? 'SI'
+                           : 'NO'
+                        : 'NO'}
+                  </Text>
+                  <Text>
+                     Dirección Principal:{' '}
+                     {global.direccionPrincipal != null
+                        ? global.direccionPrincipal.descripcion
+                        : 'NO TIENE'}
+                  </Text>
+               </View> */}
+
+               <View style={styles.boton}>
+                  <Button
+                     buttonStyle={styles.estiloBotonBlanco}
+                     titleStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        13,
+                        'bold'
+                     )}
+                     containerStyle={styles.estiloContenedor}
+                     title="Usar una nueva ubicación"
+                     onPress={() => {
+                        this.props.navigation.navigate('Mapa', {
+                           origen: 'nuevo',
+                        });
+                     }}
+                     icon={
+                        <Icon
+                           name="map-marker"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
                         />
-                     );
-                  }}
-                  keyExtractor={objetoCombo => {
-                     return objetoCombo.id;
-                  }}
-               />
-            </View>
-            <View style={styles.boton}>
-               <Button
-               buttonStyle={styles.btnRegistrarse}
-                  title='Nuevo'
-                  onPress={() => {
-                     this.props.navigation.navigate('Mapa', {
-                        origen: 'nuevo'
-                     });
-                  }}
-                  icon={
-                     <Icon
-                        name="map-plus"
-                        size={25}
-                        color="white"
-                        style={styles.iconoStilos}
-                     />
-                  }
-               />
-            </View>
-            <View style={styles.btnViewContinuar}>
-            <Button
-               buttonStyle={styles.btnContinuar}
-                  title='Continuar'
-                  onPress={() => {
-                        this.validarCoberturaGlobalDireccion();
-                  }}
-               />
-             </View>  
+                     }
+                  />
+                  <Button
+                     buttonStyle={styles.estiloBotonBlanco}
+                     titleStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        13,
+                        'bold'
+                     )}
+                     containerStyle={styles.estiloContenedor}
+                     title="Usar ubicación actual"
+                     onPress={() => {
+                        Alert.alert(
+                           'Se debe color la lógica para obtener la ubicación actual'
+                        );
+                     }}
+                     icon={
+                        <Icon
+                           name="crosshairs-gps"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
+                        />
+                     }
+                  />
+               </View>
 
-         </View>
+               <View style={styles.contenedorTituloSubr}>
+                  <Text
+                     style={[
+                        textEstilo(colores.colorOscuroTexto, 13, 'bold'),
+                        styles.estiloContenedorTitulo,
+                     ]}
+                  >
+                     Mis Direcciones
+                  </Text>
+               </View>
+               <View style={styles.lista}>
+                  <FlatList
+                     data={this.state.listaDirecciones}
+                     renderItem={objeto => {
+                        return (
+                           <ItemDireccion
+                              direccion={objeto.item}
+                              fnActualizar={this.actualizar}
+                              fnEliminar={this.eliminar}
+                           />
+                        );
+                     }}
+                     keyExtractor={objetoCombo => {
+                        return objetoCombo.id;
+                     }}
+                     ItemSeparatorComponent={flatListItemSeparator}
+                  />
+               </View>
+
+               {/*                
+               <View style={styles.btnViewContinuar}>
+                  <Button
+                     buttonStyle={styles.btnContinuar}
+                     title="Continuar"
+                     onPress={() => {
+                        this.validarCoberturaGlobalDireccion();
+                     }}
+                  />
+               </View> */}
+            </View>
+         </SafeAreaView>
       );
    }
 }
+const flatListItemSeparator = () => {
+   return (
+      <View
+         style={{
+            width: '100%',
+
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+         }}
+      >
+         <View
+            style={{
+               height: 0.5,
+               width: '100%',
+               backgroundColor: colores.colorOscuroTexto,
+
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+            }}
+         ></View>
+      </View>
+   );
+};
+
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
 
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'stretch',
+      backgroundColor: colores.colorPrimarioVerde,
    },
    fondo: {
       fontWeight: 'bold',
@@ -168,14 +245,11 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       textAlign: 'center',
    },
-   cabecera: {
-      flex: 1,
-      borderBottomColor: 'gray',
+   contenedorTituloSubr: {
+      borderBottomColor: colores.colorOscuroTexto,
       borderBottomWidth: 1,
    },
-   lista: {
-      flex: 8,
-   },
+
    textoNegritaSubrayado: {
       fontWeight: 'bold',
       fontSize: 17,
@@ -184,26 +258,26 @@ const styles = StyleSheet.create({
       borderBottomWidth: 1,
    },
 
-   textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
+   estiloContenedorTitulo: {
+      paddingBottom: 10,
    },
    boton: {
-      flex: 2,
-      //backgroundColor: 'yellow',
       alignItems: 'center',
+      paddingBottom: 30,
+      paddingTop: 30,
    },
    btnViewContinuar: {
       flex: 1,
       alignItems: 'flex-end',
+      flexDirection: 'row',
    },
-   btnRegistrarse: {
-      backgroundColor: colores.colorPrimarioTomate,
-      width: 200,
-      height: 45,
-      borderRadius: 25,
-      marginBottom: 50,
+   estiloBotonBlanco: {
+      backgroundColor: colores.colorBlanco,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      padding: 0,
+      margin: 0,
    },
    btnContinuar: {
       backgroundColor: colores.colorPrimarioTomate,
@@ -212,6 +286,24 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       marginBottom: 50,
    },
-   iconoStilos: { alignItems: 'center' },
-   
+   cabeceraApp: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 20,
+      paddingTop: 30,
+   },
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 20,
+      marginTop: 30,
+      paddingTop: 30,
+   },
+   estiloContenedor: {
+      width: '100%',
+      padding: 0,
+      margin: 0,
+   },
+   iconos: { marginRight: 10 },
 });
