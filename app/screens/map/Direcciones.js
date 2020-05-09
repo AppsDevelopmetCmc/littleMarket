@@ -123,7 +123,7 @@ export class Direcciones extends Component {
                buttonStyle={styles.btnRegistrarse}
                   title='Nuevo'
                   onPress={() => {
-                     this.props.navigation.navigate('Mapa', {
+                     this.props.navigation.navigate('BusquedaDireccionesScreen', {
                         origen: 'nuevo'
                      });
                   }}
@@ -137,7 +137,7 @@ export class Direcciones extends Component {
                   }
                />
             </View>
-            <View style={styles.btnViewContinuar}>
+
             <Button
                buttonStyle={styles.btnContinuar}
                   title='Continuar'
@@ -145,7 +145,7 @@ export class Direcciones extends Component {
                         this.validarCoberturaGlobalDireccion();
                   }}
                />
-             </View>  
+
 
          </View>
       );
