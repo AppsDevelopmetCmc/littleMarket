@@ -335,7 +335,7 @@ export class Mapa extends Component {
                   >
                      <MapView.Marker
                         title={this.state.direccion}
-                        Key={'AIzaSyBeK8BWXsKDTMtwV_bC2FI4GADQklc-nuA'}
+                        Key={APIKEY}
                         ref={marker => {
                            this.marker = marker;
                         }}
