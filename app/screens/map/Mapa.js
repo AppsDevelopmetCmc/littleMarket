@@ -8,7 +8,7 @@ import { Input } from 'react-native-elements';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import Geocoder from 'react-native-geocoding';
 import _ from 'lodash';
-import { apiKeyMaps } from '../../utils/ApiKey';
+import { apiKeyMaps,APIKEY } from '../../utils/ApiKey';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
 import * as Location from 'expo-location';
 
