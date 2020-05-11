@@ -8,10 +8,10 @@ export class ServicioDirecciones {
          .doc(idCliente)
          .collection('direcciones')
          .add(direccion)
-         .then(function() {
+         .then(function () {
             Alert.alert('Direccion Agregado');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
@@ -27,10 +27,10 @@ export class ServicioDirecciones {
             latitud: direccion.latitud,
             longitud: direccion.longitud,
          })
-         .then(function() {
+         .then(function () {
             Alert.alert('Direccion Actualizado');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
@@ -41,10 +41,10 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .doc(idDireccion)
          .delete()
-         .then(function() {
+         .then(function () {
             Alert.alert('Direccion Eliminada');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
@@ -55,8 +55,8 @@ export class ServicioDirecciones {
          .collection('clientes')
          .doc(idCliente)
          .collection('direcciones')
-         .onSnapshot(function(snapShot) {
-            snapShot.docChanges().forEach(function(change) {
+         .onSnapshot(function (snapShot) {
+            snapShot.docChanges().forEach(function (change) {
                let direccion = change.doc.data();
                direccion.id = change.doc.id;
                if (change.type == 'added') {
@@ -82,15 +82,31 @@ export class ServicioDirecciones {
       let documentos = coleccion.docs;
       for (let i = 0; i < documentos.length; i++) {
          if (documentos[i].data().tieneCoberturaDireccion !== undefined) {
-            if (documentos[i].data().tieneCoberturaDireccion === 'S')
-            {
+            if (documentos[i].data().tieneCoberturaDireccion === 'S') {
                coberturaGlobalDireccion = true;
-               
+
                break;
             }
          }
       }
       console.log('coberturaGlobalDireccion' + coberturaGlobalDireccion);
       return coberturaGlobalDireccion;
+   };
+
+   tieneCobertura = async (idCliente, fnRecuperarCobertura) => {
+      console.log('consulta tiene cobertura:' + idCliente);
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .where('tieneCoberturaDireccion', '==', 'S')
+         .get();
+
+      if (respuesta.docs && respuesta.docs.length > 0) {
+         global.activarCobertura();
+      } else {
+         console.log('no tiene cobertura');
+      }
+      fnRecuperarCobertura(true);
    };
 }
