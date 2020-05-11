@@ -12,6 +12,7 @@ import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { consultarInformacion } from '../../servicios/ServicioUsuarios';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -23,7 +24,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 // Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
-import {BusquedaDirecciones} from '../map/BusquedaDirecciones'
+import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -35,7 +36,6 @@ import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
-
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -248,18 +248,33 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
+   const [tieneCobertura, setTieneCobertura] = useState(false);
+   const [recuperaCobertura, setRecuperaCobertura] = useState(false);
+   /* useEffect(() => {
+      new ServicioDirecciones().tieneCobertura(global.usuario);
+   }, [login]);*/
 
-   global.tieneCobertura = false;
+   global.activarCobertura = () => {
+      setTieneCobertura(true);
+   };
+
+   //Disparar un proceso de consulta y que muestre cargando
+   //hasta terminar de traer la info del usuario en caso
+   //de que esté logueado, junto con la info de dirección
 
    // Funcion para recuperar info de logue
    const infoLogin = async () => {
       try {
-         await firebase.auth().onAuthStateChanged(user => {
+         await firebase.auth().onAuthStateChanged(async user => {
             !user ? setLogin(false) : setLogin(true);
             if (user) {
                global.usuario = user.email;
                global.infoUsuario = user.providerData[0];
                console.log(global.infoUsuario);
+               new ServicioDirecciones().tieneCobertura(
+                  global.usuario,
+                  setRecuperaCobertura
+               );
             }
          });
       } catch (error) {
@@ -325,10 +340,13 @@ export default function NavegadorInicio() {
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
    } else {
+      if (!recuperaCobertura) {
+         return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+      }
       return (
          <NavigationContainer>
             {login ? (
-               global.tieneCobertura ? (
+               tieneCobertura ? (
                   HomeDraw()
                ) : (
                   <StackAuthentication.Navigator>
