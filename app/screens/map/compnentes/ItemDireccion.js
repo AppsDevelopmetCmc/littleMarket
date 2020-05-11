@@ -42,7 +42,6 @@ export class ItemDireccion extends Component {
                         <View style={styles.descripcion}>
                            <Text style={styles.texto}>Mi casa</Text>
                            <Text style={styles.texto}>
-                              {'Arturo Tipanguano y Luis Chipantiza '}
                               {this.props.direccion.descripcion}
                            </Text>
                         </View>

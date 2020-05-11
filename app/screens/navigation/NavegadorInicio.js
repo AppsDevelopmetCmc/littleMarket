@@ -23,6 +23,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 // Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
+import {BusquedaDirecciones} from '../map/BusquedaDirecciones'
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -34,6 +35,7 @@ import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
+
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -173,6 +175,10 @@ function DirectionStack() {
             component={Mapa}
          ></StackDirection.Screen>
          <StackDirection.Screen
+            name="BusquedaDireccionesScreen"
+            component={BusquedaDirecciones}
+         ></StackDirection.Screen>
+         <StackDirection.Screen
             name="HomeTab"
             component={HomeTab}
          ></StackDirection.Screen>
@@ -243,7 +249,7 @@ function HomeDraw() {
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
 
-   global.tieneCobertura = true;
+   global.tieneCobertura = false;
 
    // Funcion para recuperar info de logue
    const infoLogin = async () => {

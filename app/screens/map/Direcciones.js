@@ -114,7 +114,7 @@ export class Direcciones extends Component {
                      containerStyle={styles.estiloContenedor}
                      title="Usar una nueva ubicación"
                      onPress={() => {
-                        this.props.navigation.navigate('Mapa', {
+                        this.props.navigation.navigate('BusquedaDireccionesScreen', {
                            origen: 'nuevo',
                         });
                      }}
