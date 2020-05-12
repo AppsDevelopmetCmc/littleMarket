@@ -102,11 +102,27 @@ export class ServicioDirecciones {
          .where('tieneCoberturaDireccion', '==', 'S')
          .get();
 
-      if (respuesta.docs && respuesta.docs.length > 0) {
+      if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
          global.activarCobertura();
       } else {
          console.log('no tiene cobertura');
       }
       fnRecuperarCobertura(true);
+   };
+
+   recuperarPrincipal = async (idCliente, fnRefrescarDireccion) => {
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .where('principal', '==', 'S')
+         .get();
+      if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
+         global.direccionPedido = respuesta.docs[0].data();
+         console.log('direccion pedido:', global.direccionPedido);
+         fnRefrescarDireccion();
+      } else {
+         console.log('no tiene cobertura');
+      }
    };
 }
