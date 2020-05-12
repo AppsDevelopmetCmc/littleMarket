@@ -25,6 +25,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
 import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
+import {DireccionesCrud} from '../map/DireccionesCrud'
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -177,6 +178,10 @@ function DirectionStack() {
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+         ></StackDirection.Screen>
+                  <StackDirection.Screen
+            name="BusquedaDireccionesCrudScreen"
+            component={DireccionesCrud}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="HomeTab"

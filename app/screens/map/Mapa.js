@@ -41,6 +41,11 @@ export class Mapa extends Component {
             latitude: 0,
             longitude: 0,
          },
+         mostrarModal:false,
+         alias:'',
+         referencia:'',
+         direccionPrincipal:false,
+
       };
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
@@ -220,6 +225,7 @@ export class Mapa extends Component {
       };
       if (operacion === 'crear') {
          servDireccion.crear(global.usuario, nuevaDireccion);
+         this.setState({mostrarModal:true})
          this.props.navigation.navigate('Direcciones');
       } else {
          servDireccion.actualizar(
@@ -347,6 +353,46 @@ export class Mapa extends Component {
                      <Text>Cargando</Text>
                   )}
             </View>
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarModal}>
+               <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                     <Input
+                        value={this.state.alias}
+                        placeholder="Casa/Oficina"
+                        label="Alias"
+                        onChangeText={text => {
+                           this.setState({ alias: text });
+                        }}
+                     />
+                     <Input
+                        value={this.state.referencia}
+                        placeholder="Color de casa/ N- Oficina"
+                        label="Referencia"
+                        onChangeText={text => {
+                           this.setState({ referencia: text });
+                        }}
+                     />
+
+                     <CheckBox
+                        title='Dirección Principal'
+                        checked={this.state.direccionPrincipal}
+                        onPress={() => this.setState({direccionPrincipal: !this.state.direccionPrincipal})}
+                     />
+
+                     <Button title='OK' onPress={() => {
+                        this.setState({ mostrarModal: false })
+                     }}></Button>
+
+                  </View>
+
+
+
+               </View>
+
+            </Modal>
 
             <Button
                title={this.pintarElemento ? 'GUARDAR' : 'ACTUALIZAR'}

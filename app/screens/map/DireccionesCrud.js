@@ -16,8 +16,9 @@ import * as colores from '../../constants/Colores';
 import Separador from '../../components/Separador';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
+import { ItemDireccionCrud } from './compnentes/ItemDireccionCrud';
 
-export class Direcciones extends Component {
+export class DireccionesCrud extends Component {
    constructor(props) {
       super(props);
       const { navigation } = props;
@@ -44,7 +45,7 @@ export class Direcciones extends Component {
          global.usuario
       );
 
-    //  this.obtenerCoordenadas();
+      this.obtenerCoordenadas();
 
    }
 
@@ -114,23 +115,6 @@ export class Direcciones extends Component {
                <Text style={textEstilo(colores.colorOscuroTexto, 14, 'normal')}>
                   {msg.msg2}
                </Text>
-               {/* <View>
-                  <Text>
-                     Tiene Cobertura:
-                     {global.direccionPrincipal != null
-                        ? global.direccionPrincipal.tieneCobertura
-                           ? 'SI'
-                           : 'NO'
-                        : 'NO'}
-                  </Text>
-                  <Text>
-                     Dirección Principal:{' '}
-                     {global.direccionPrincipal != null
-                        ? global.direccionPrincipal.descripcion
-                        : 'NO TIENE'}
-                  </Text>
-               </View> */}
-
                <View style={styles.boton}>
                   <Button
                      buttonStyle={styles.estiloBotonBlanco}
@@ -196,7 +180,7 @@ export class Direcciones extends Component {
                      data={this.state.listaDirecciones}
                      renderItem={objeto => {
                         return (
-                           <ItemDireccion
+                           <ItemDireccionCrud
                               direccion={objeto.item}
                               fnActualizar={this.actualizar}
                               fnEliminar={this.eliminar}
@@ -209,7 +193,6 @@ export class Direcciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
-
             </View>
          </SafeAreaView>
       );

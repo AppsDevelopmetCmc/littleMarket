@@ -17,7 +17,7 @@ import Separador from '../../components/Separador';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 
-export class Direcciones extends Component {
+export class DireccionesConsultaCobertura extends Component {
    constructor(props) {
       super(props);
       const { navigation } = props;
@@ -44,7 +44,7 @@ export class Direcciones extends Component {
          global.usuario
       );
 
-    //  this.obtenerCoordenadas();
+      this.obtenerCoordenadas();
 
    }
 
@@ -210,6 +210,16 @@ export class Direcciones extends Component {
                   />
                </View>
 
+               {/*                
+               <View style={styles.btnViewContinuar}>
+                  <Button
+                     buttonStyle={styles.btnContinuar}
+                     title="Continuar"
+                     onPress={() => {
+                        this.validarCoberturaGlobalDireccion();
+                     }}
+                  />
+               </View> */}
             </View>
          </SafeAreaView>
       );
