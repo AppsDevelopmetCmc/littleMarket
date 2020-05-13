@@ -12,9 +12,8 @@ export class CarroCompras extends Component {
    constructor(props) {
       super(props);
       this.pintarBoton = false;
-      let items = [];
       this.state = {
-         listItems: items,
+         listItems: [],
          subtotal: '0',
          delivery: '1.5',
          total: '0',
@@ -63,6 +62,10 @@ export class CarroCompras extends Component {
       };
    };
    render() {
+      let items = [];
+      if (this.state.listItems) {
+         items = this.state.listItems;
+      }
       return (
          <SafeAreaView style={styles.contenedorPagina}>
             <View style={styles.cabecera}>
