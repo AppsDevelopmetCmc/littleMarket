@@ -13,6 +13,7 @@ import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 // Importacion de los colores
 //Importando los colores
 import * as colores from '../../constants/Colores';
+import { AsociadoCalifica } from '../calificacion/AsociadoCalifica';
 
 export class ListCombo extends Component {
    constructor() {
@@ -20,13 +21,19 @@ export class ListCombo extends Component {
       let combos = [];
       this.state = {
          listCombos: combos,
+         pedidoCalifica: null,
+         estadocalifica: false,
       };
       let srvCombos = new ServicioCombos();
       srvCombos.registrarEscuchaTodas(combos, this.repintarLista);
    }
 
+   cambioVisibleCalifica = visible => {
+      this.setState({ estadocalifica: visible });
+   };
+
    repintarLista = combos => {
-      global.combos=combos
+      global.combos = combos;
       this.setState({
          listCombos: combos,
       });
@@ -47,6 +54,29 @@ export class ListCombo extends Component {
          },
       });
    };*/
+   componentDidMount() {
+      this.obtenerPedidoCalifica(global.usuario);
+   }
+
+   obtenerPedidoCalifica = mail => {
+      global.db
+         .collection('pedidos')
+         .where('mail', '==', mail)
+         .where('estado', '==', 'PE')
+         .get()
+         .then(querySnapshot => {
+            let pedido = {};
+            querySnapshot.forEach(doc => {
+               pedido = doc.data();
+               pedido.id = doc.id;
+               this.setState({ estadocalifica: true });
+            });
+            this.setState({ pedidoCalifica: pedido, estadocalifica: true });
+         })
+         .catch(error => {
+            console.log(error);
+         });
+   };
 
    abrirDrawer = () => {
       this.props.navigation.openDrawer();
@@ -103,6 +133,12 @@ export class ListCombo extends Component {
                   />
                </View>
             </View>
+            <AsociadoCalifica
+               text="Iniciando Sesión con Facebook"
+               isVisible={this.state.estadocalifica}
+               pedido={this.state.pedidoCalifica}
+               cambioVisibleCalifica={this.cambioVisibleCalifica}
+            ></AsociadoCalifica>
          </SafeAreaView>
       );
    }
