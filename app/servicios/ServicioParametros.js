@@ -31,4 +31,9 @@ export class ServicioParametros {
 
       global.parametros = listaParametros;
    };
+
+   getObtenerParametroId = async (IdParametro,fnObtenrDato) => {
+      let metadata = await global.db.collection('parametros').doc(IdParametro).get();
+      fnObtenrDato(metadata.data());
+   };
 }

@@ -4,7 +4,6 @@ import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
-import { ItemDireccion } from './compnentes/ItemDireccion';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -17,6 +16,8 @@ import Separador from '../../components/Separador';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import { ItemDireccionCrud } from './compnentes/ItemDireccionCrud';
+import Geocoder from 'react-native-geocoding';
+import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
 export class DireccionesCrud extends Component {
    constructor(props) {
@@ -24,6 +25,9 @@ export class DireccionesCrud extends Component {
       const { navigation } = props;
       this.localizacionActual = [];
       let direcciones = [];
+      if (this.props.route.params != null) {
+         this.notienecobertura = this.props.route.params.notienecobertura;
+      }
       this.state = {
          listaDirecciones: direcciones,
       };
@@ -47,35 +51,42 @@ export class DireccionesCrud extends Component {
 
       this.obtenerCoordenadas();
 
+      //  this.notienecobertura=this.props.route.params.notienecobertura1
+      if (this.notienecobertura == 'N') {
+         Alert.alert("No existe Cobertura para la Direccion ")
+      }
+
    }
 
    obtenerCoordenadas = async () => {
       Geocoder.init(APIKEY);
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Error al otorgar el permiso');
+         setErrorMsg('Error al otorgar el permiso');
       }
-  
+
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
       this.localizacionActual = location;
-    }
+   }
 
-    obtenerUbicacionActual=()=>{
+   obtenerUbicacionActual = () => {
       this.props.navigation.navigate(
          'Mapa',
          {
-            origen: 'nuevo',
-            coordenadasBusqueda: this.localizacionActual
+            origen: 'actual',
+            coordenadasActuales: this.localizacionActual,
+            pantallaOrigen: 'Crud'
          }
       );
 
-    }
+   }
 
    actualizar = direccion => {
       this.props.navigation.navigate('Mapa', {
          origen: 'actualizar',
          direccion: direccion,
+         pantallaOrigen: 'Crud'
       });
    };
    eliminar = idDireccion => {
@@ -130,6 +141,7 @@ export class DireccionesCrud extends Component {
                            'BusquedaDireccionesScreen',
                            {
                               origen: 'nuevo',
+                              pantallaOrigen: 'Crud'
                            }
                         );
                      }}

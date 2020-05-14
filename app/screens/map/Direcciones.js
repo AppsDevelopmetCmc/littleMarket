@@ -16,11 +16,16 @@ import * as colores from '../../constants/Colores';
 import Separador from '../../components/Separador';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
+import Geocoder from 'react-native-geocoding';
+import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
 export class Direcciones extends Component {
    constructor(props) {
       super(props);
       const { navigation } = props;
+      if (this.props.route.params != null) {
+         this.notienecobertura = this.props.route.params.notienecobertura;
+      }
       this.localizacionActual = [];
       let direcciones = [];
       this.state = {
@@ -44,7 +49,11 @@ export class Direcciones extends Component {
          global.usuario
       );
 
-    //  this.obtenerCoordenadas();
+      this.obtenerCoordenadas();
+      //  this.notienecobertura=this.props.route.params.notienecobertura1
+      if (this.notienecobertura == 'N') {
+         Alert.alert("No existe Cobertura para la Direccion ")
+      }
 
    }
 
@@ -52,24 +61,25 @@ export class Direcciones extends Component {
       Geocoder.init(APIKEY);
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Error al otorgar el permiso');
+         setErrorMsg('Error al otorgar el permiso');
       }
-  
+
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
       this.localizacionActual = location;
-    }
+   }
 
-    obtenerUbicacionActual=()=>{
+   obtenerUbicacionActual = () => {
       this.props.navigation.navigate(
          'Mapa',
          {
-            origen: 'nuevo',
-            coordenadasBusqueda: this.localizacionActual
+            origen: 'actual',
+            coordenadasActuales: this.localizacionActual,
+            pantallaOrigen: 'Direcciones'
          }
       );
 
-    }
+   }
 
    actualizar = direccion => {
       this.props.navigation.navigate('Mapa', {
@@ -114,23 +124,6 @@ export class Direcciones extends Component {
                <Text style={textEstilo(colores.colorOscuroTexto, 14, 'normal')}>
                   {msg.msg2}
                </Text>
-               {/* <View>
-                  <Text>
-                     Tiene Cobertura:
-                     {global.direccionPrincipal != null
-                        ? global.direccionPrincipal.tieneCobertura
-                           ? 'SI'
-                           : 'NO'
-                        : 'NO'}
-                  </Text>
-                  <Text>
-                     Dirección Principal:{' '}
-                     {global.direccionPrincipal != null
-                        ? global.direccionPrincipal.descripcion
-                        : 'NO TIENE'}
-                  </Text>
-               </View> */}
-
                <View style={styles.boton}>
                   <Button
                      buttonStyle={styles.estiloBotonBlanco}
@@ -146,6 +139,7 @@ export class Direcciones extends Component {
                            'BusquedaDireccionesScreen',
                            {
                               origen: 'nuevo',
+                              pantallaOrigen: 'Direcciones'
                            }
                         );
                      }}
@@ -198,8 +192,6 @@ export class Direcciones extends Component {
                         return (
                            <ItemDireccion
                               direccion={objeto.item}
-                              fnActualizar={this.actualizar}
-                              fnEliminar={this.eliminar}
                            />
                         );
                      }}
