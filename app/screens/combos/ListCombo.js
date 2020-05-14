@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
+import { View, Text, Button, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox } from 'react-native-elements';
+import { CheckBox, Icon  } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerActions } from '@react-navigation/native';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+import {
+   recuperarPrincipal,
+   ServicioDirecciones,
+} from '../../servicios/ServicioDirecciones';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -46,6 +50,10 @@ export class ListCombo extends Component {
       if (this.notienecobertura == 'N') {
          Alert.alert("No existe Cobertura para la Direccion ")
       }
+      new ServicioDirecciones().recuperarPrincipal(
+         global.usuario,
+         this.refrescarDireccion
+      );
    }
 
    obtenerCoordenadas = async () => {
@@ -80,22 +88,6 @@ export class ListCombo extends Component {
          listCombos: combos,
       });
    };
-
-   /*eliminar = combo => {
-      let srvCombos = new ServicioCombos();
-      srvCombos.eliminar(combo.id);
-   };
-   actualizar = combo => {
-      this.props.navigation.navigate('ComboScreen', {
-         origen: 'actualizar',
-         combo: {
-            id: combo.id,
-            imagen: combo.imagen,
-            precio: combo.precio,
-            alias: combo.alias,
-         },
-      });
-   };*/
 
    abrirDrawer = () => {
       this.props.navigation.openDrawer();

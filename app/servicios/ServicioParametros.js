@@ -1,4 +1,5 @@
-import { ArregloUtil } from '../utils/utils';
+import { ArregloUtil, DateUtil } from '../utils/utils';
+import { formatearFechaCompleta } from '../utils/DateUtil';
 import { Alert } from 'react-native';
 
 export class ServicioParametros {
@@ -32,8 +33,34 @@ export class ServicioParametros {
       global.parametros = listaParametros;
    };
 
-   getObtenerParametroId = async (IdParametro,fnObtenrDato) => {
+   obtenerParamsFechas = async fnCargarComboFechas => {
+      let respuesta = await global.db
+         .collection('parametros')
+         .doc('fechas')
+         .get();
+      let comboFechas = [];
+      let comboHorarios = [];
+      let proximas = respuesta.data().proximas;
+      let horarios = respuesta.data().horarios;
+      console.log('tamanio:', proximas.length);
+      for (let i = 0; i < proximas.length; i++) {
+         comboFechas.push({
+            label: formatearFechaCompleta(proximas[i]),
+            value: proximas[i],
+         });
+      }
+      for (let i = 0; i < horarios.length; i++) {
+         comboHorarios.push({
+            label: horarios[i],
+            value: horarios[i],
+         });
+      }
+      fnCargarComboFechas(comboFechas, comboHorarios);
+      console.log('parametros', respuesta.data());
+   };
+
+   getObtenerParametroId = async (IdParametro,fnObtenerDato) => {
       let metadata = await global.db.collection('parametros').doc(IdParametro).get();
-      fnObtenrDato(metadata.data());
+      fnObtenerDato(metadata.data());
    };
 }

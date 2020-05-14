@@ -13,6 +13,8 @@ import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { consultarInformacion } from '../../servicios/ServicioUsuarios';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import { Transferencia } from '../compra/Transferencia';
+import { CargarImagen } from '../compra/CargarImagen';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -76,6 +78,32 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="TransferenciaScreen"
+            component={Transferencia}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="CargarImagenScreen"
+            component={CargarImagen}
             options={{
                title: '',
                headerStyle: {
@@ -316,6 +344,8 @@ export default function NavegadorInicio() {
                   global.usuario,
                   setRecuperaCobertura
                );
+            } else {
+               setRecuperaCobertura(true);
             }
             else {
                setRecuperaCobertura(true);

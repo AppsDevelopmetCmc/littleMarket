@@ -5,43 +5,78 @@ import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
 import RNPickerSelect from 'react-native-picker-select';
+import RadioForm, {
+   RadioButton,
+   RadioButtonInput,
+   RadioButtonLabel,
+} from 'react-native-simple-radio-button';
 
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
 
 import Separador from '../../components/Separador';
-
+import { ServicioParametros } from '../../servicios/ServicioParametros';
+import { formatearFechaISO } from '../../utils/DateUtil';
 export class ConfirmarCompra extends Component {
    constructor() {
       super();
       this.state = {
-         fechaSeleccionada: '06/05/2020',
-         horarioSeleccionado: '09-10',
-
-         fechas: [
-            { value: '06/05/2020', label: 'Martes 6 de Mayo 2020' },
-            { value: '09/05/2020', label: 'Jueves 9 de Mayo 2020' },
-            { value: '12/05/2020', label: 'Sábado 12 de Mayo 2020' },
-         ],
-         horarios: [
-            { value: '09-10', label: '09h00-10h00' },
-            { value: '10-11', label: '10h00-11h00' },
-            { value: '16-17', label: '16h00-17h00' },
-         ],
+         fechaSeleccionada: global.fechaSeleccionada,
+         horarioSeleccionado: global.horarioSeleccionado,
+         fechas: [],
+         horarios: [],
+         direccion: global.direccionPedido.descripcion,
+         pagoSeleccionado: global.pagoSeleccionado == 'TR' ? 1 : 0,
+         deshabilitado: true,
       };
+      this.radio_props = [
+         { label: 'Efectivo   ', value: 'EF' },
+         { label: 'Transferencia', value: 'TR' },
+      ];
    }
-   formatearFecha = date => {
-      let dd = date.getDate();
-      let mm = date.getMonth() + 1;
-      let yy = date.getFullYear();
-      if (dd < 10) {
-         dd = '0' + dd;
+
+   componentDidUpdate(prevProps, prevState) {
+      if (prevState.deshabilitado) {
+         if (this.state.horarioSeleccionado && this.state.fechaSeleccionada) {
+            if (global.pagoSeleccionado == 'EF') {
+               this.setState({ deshabilitado: false });
+            } else if (
+               global.pagoSeleccionado == 'TR' &&
+               global.transferencia
+            ) {
+               this.setState({ deshabilitado: false });
+            }
+         }
       }
-      if (mm < 10) {
-         mm = '0' + mm;
+      if (
+         this.state.horarioSeleccionado != prevState.horarioSeleccionado &&
+         !prevState.deshabilitado
+      ) {
+         if (!this.state.horarioSeleccionado) {
+            this.setState({ deshabilitado: true });
+         }
       }
 
-      return dd + '/' + mm + '/' + yy;
+      if (
+         this.state.fechaSeleccionada != prevState.fechaSeleccionada &&
+         !prevState.deshabilitado
+      ) {
+         if (!this.state.fechaSeleccionada) {
+            this.setState({ deshabilitado: true });
+         }
+      }
+   }
+   refrescarDireccion = () => {
+      this.setState({ direccion: global.direccionPedido });
+   };
+   cargarCombos = (fechas, horarios) => {
+      this.setState({ fechas: fechas, horarios: horarios });
+   };
+   componentDidMount() {
+      new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
+   }
+   cerrarPantalla = () => {
+      this.props.navigation.popToTop();
    };
    render() {
       let fechaActual = new Date();
@@ -62,38 +97,38 @@ export class ConfirmarCompra extends Component {
                      >
                         <View style={styles.contenedorFechas}>
                            <View>
-                              <Text>Fecha de entrega</Text>
                               <RNPickerSelect
                                  onValueChange={value => console.log(value)}
                                  items={this.state.fechas}
                                  value={this.state.fechaSeleccionada}
                                  style={pickerSelectStyles}
                                  placeholder={{
-                                    label: 'Elija la fecha de entrega',
+                                    label: 'Elija la fecha',
                                     value: null,
                                  }}
                                  onValueChange={value => {
                                     this.setState({
                                        fechaSeleccionada: value,
                                     });
+                                    global.fechaSeleccionada = value;
                                  }}
                               />
                            </View>
                            <View>
-                              <Text>Horario de entrega</Text>
                               <RNPickerSelect
                                  onValueChange={value => console.log(value)}
                                  items={this.state.horarios}
                                  value={this.state.horarioSeleccionado}
                                  style={pickerSelectStyles}
                                  placeholder={{
-                                    label: 'Elija la hora de entrega',
+                                    label: 'Elija el horario',
                                     value: null,
                                  }}
                                  onValueChange={value => {
                                     this.setState({
                                        horarioSeleccionado: value,
                                     });
+                                    global.horarioSeleccionado = value;
                                  }}
                               />
                            </View>
@@ -103,23 +138,35 @@ export class ConfirmarCompra extends Component {
                         title="Verifique su dirección"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>DIRECCION</Text>
-                        <Text>DIRECCION ACTUAL</Text>
-                        <Text>CAMBIAR DIRECCION</Text>
+                        <Text>{this.state.direccion}</Text>
+                        <Button title="Cambiar"></Button>
                      </Card>
                      <Card
                         title="Seleccione su forma de pago"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>FORMA DE PAGO</Text>
-                        <Text>ELIJA FORMA DE PAGO</Text>
+                        <RadioForm
+                           radio_props={this.radio_props}
+                           initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
+                           formHorizontal={true}
+                           buttonSize={15}
+                           buttonOuterSize={25}
+                           onPress={value => {
+                              this.setState({ pagoSeleccionado: value });
+                              global.pagoSeleccionado = value;
+                              if (value == 'TR') {
+                                 this.props.navigation.navigate(
+                                    'TransferenciaScreen'
+                                 );
+                              }
+                           }}
+                        />
                      </Card>
                      <Card
                         title="Detalle del pago"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>TOTAL</Text>
-                        <Text>VALOR TOTAL</Text>
+                        <Text>TOTAL: USD {global.total}</Text>
                      </Card>
                   </View>
 
@@ -129,18 +176,33 @@ export class ConfirmarCompra extends Component {
                         containerStyle={styles.contenedorEstiloBoton}
                         buttonStyle={styles.estiloBoton}
                         titleStyle={styles.estiloTitulo}
+                        disabled={this.state.deshabilitado}
                         onPress={() => {
-                           crearPedido({
-                              fechaPedido: this.formatearFecha(new Date()),
-                              fechaEntrega: this.state.fechaSeleccionada,
-                              horarioEntrega: this.state.horarioSeleccionado,
-                              estado: 'I',
-                              mail: global.usuario,
-                              nombreCliente: global.appUsuario.nombreCompleto,
-                              direccion: 'Tomar del front',
-                              telefono: global.appUsuario.telefono,
-                              total: 34.56,
-                           });
+                           crearPedido(
+                              {
+                                 fechaPedido: formatearFechaISO(new Date()),
+                                 fechaEntrega: this.state.fechaSeleccionada,
+                                 horarioEntrega: this.state.horarioSeleccionado,
+                                 estado:
+                                    global.pagoSeleccionado == 'TR'
+                                       ? 'CT'
+                                       : 'CE',
+                                 mail: global.usuario,
+                                 nombreCliente:
+                                    global.appUsuario.nombreCompleto,
+                                 direccion: global.direccionPedido.descripcion,
+                                 latitud: global.direccionPedido.latitud,
+                                 longitud: global.direccionPedido.longitud,
+                                 telefono: global.appUsuario.telefono,
+                                 total: global.total,
+                                 transferencia:
+                                    global.pagoSeleccionado == 'TR'
+                                       ? global.transferencia
+                                       : '',
+                              },
+                              items,
+                              this.cerrarPantalla
+                           );
                         }}
                      ></Button>
                   </View>
@@ -193,7 +255,7 @@ const styles = StyleSheet.create({
       borderRadius: 15,
    },
    contenedorFechas: {
-      flexDirection: 'row',
+      flexDirection: 'column',
       justifyContent: 'space-between',
       paddingHorizontal: 5,
    },

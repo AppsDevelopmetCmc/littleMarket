@@ -19,24 +19,6 @@ export class ServicioDirecciones {
       return id;
    };
 
-   guardarReferencia = (idCliente, idDireccion, referenciaDireccion) => {
-      global.db
-         .collection('clientes')
-         .doc(idCliente)
-         .collection('direcciones')
-         .doc(idDireccion)
-         .update({
-            referencia: referenciaDireccion.referencia,
-            alias: referenciaDireccion.alias,
-            principal: referenciaDireccion.principal,
-         })
-         .then(function () {
-            Alert.alert('Direccion Actualizado');
-         })
-         .catch(function (error) {
-            Alert.alert('error' + error);
-         });
-   }
 
    actualizar = (idCliente, idDireccion, direccion) => {
       global.db
@@ -126,12 +108,28 @@ export class ServicioDirecciones {
          .where('tieneCoberturaDireccion', '==', 'S')
          .get();
 
-      if (respuesta.docs && respuesta.docs.length > 0) {
+      if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
          global.activarCobertura();
       } else {
          console.log('no tiene cobertura');
       }
       fnRecuperarCobertura(true);
+   };
+
+   recuperarPrincipal = async (idCliente, fnRefrescarDireccion) => {
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .where('principal', '==', 'S')
+         .get();
+      if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
+         global.direccionPedido = respuesta.docs[0].data();
+         console.log('direccion pedido:', global.direccionPedido);
+         fnRefrescarDireccion();
+      } else {
+         console.log('no tiene cobertura');
+      }
    };
 
    getTieneCobertura = async (idCliente, fnRepintarDireccion) => {
@@ -155,6 +153,25 @@ export class ServicioDirecciones {
       }
       fnRepintarDireccion(listaDirecciones);
    };
+
+   guardarReferencia = (idCliente, idDireccion, referenciaDireccion) => {
+      global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .doc(idDireccion)
+         .update({
+            referencia: referenciaDireccion.referencia,
+            alias: referenciaDireccion.alias,
+            principal: referenciaDireccion.principal,
+         })
+         .then(function () {
+            Alert.alert('Direccion Actualizado');
+         })
+         .catch(function (error) {
+            Alert.alert('error' + error);
+         });
+   }
 
    actualizarPrincipalTodosNo = async (idCliente) => {
       let respuesta = await global.db
