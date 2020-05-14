@@ -347,9 +347,6 @@ export default function NavegadorInicio() {
             } else {
                setRecuperaCobertura(true);
             }
-            else {
-               setRecuperaCobertura(true);
-            }
          });
       } catch (error) {
          console.log('error', error);

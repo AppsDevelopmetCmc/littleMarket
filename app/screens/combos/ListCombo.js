@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, Alert, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox, Icon  } from 'react-native-elements';
+import { CheckBox  } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerActions } from '@react-navigation/native';
 
@@ -16,7 +16,6 @@ import {
 //Importando los colores
 import * as colores from '../../constants/Colores';
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion'
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
