@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 import { Overlay, Button } from 'react-native-elements';
 import { Rating } from 'react-native-elements';
-import CheckboxGroup from 'react-native-checkbox-group';
+import RadioForm, {
+   RadioButton,
+   RadioButtonInput,
+   RadioButtonLabel,
+} from 'react-native-simple-radio-button';
 
 // Importacion de colores
 import * as colores from '../../constants/Colores';
@@ -11,6 +15,12 @@ import * as msg from '../../constants/Mensajes';
 export function AsociadoCalifica(props) {
    const { isVisible, pedido, cambioVisibleCalifica } = props;
    const [puntuacion, setPuntuacion] = useState(4);
+   const [radio_props, setRadio_Props] = useState([
+      { label: 'No cumplio las medidas de bioseguridad', value: 0 },
+      { label: 'Hora de entrega atrasada', value: 1 },
+      { label: 'No respeto a su cliente', value: 2 },
+      { label: 'Otra', value: 3 },
+   ]);
 
    console.log('pedido', pedido);
 
@@ -46,40 +56,37 @@ export function AsociadoCalifica(props) {
                   onFinishRating={ratingCompleted}
                ></Rating>
             </View>
-         </View>
-         <View style={{ paddingVertical: 50 }}>
-            {puntuacion <= 3.5 && (
-               <View style={{ borderWidth: 1, height: 200 }}>
-                  <CheckboxGroup
-                     callback={selected => {
-                        console.log(selected);
+
+            <View style={{ paddingVertical: 25 }}>
+               {puntuacion <= 3.5 && (
+                  <View
+                     style={{
+                        borderWidth: 1,
+                        paddingVertical: 10,
+                        borderRadius: 15,
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        paddingHorizontal: 15,
                      }}
-                     iconColor={'#00a2dd'}
-                     iconSize={30}
-                     checkedIcon="ios-checkbox-outline"
-                     uncheckedIcon="ios-square-outline"
-                     checkboxes={[
-                        {
-                           label: 'primero', // label for checkbox item
-                           value: 1, // selected value for item, if selected, what value should be sent?
-                           selected: true, // if the item is selected by default or not.
-                        },
-                        {
-                           label: 'segundo',
-                           value: 2,
-                        },
-                     ]}
-                     labelStyle={{
-                        color: '#333',
-                        paddingHorizontal: 50,
-                     }}
-                     rowStyle={{
-                        flexDirection: 'row',
-                     }}
-                     rowDirection={'column'}
-                  />
-               </View>
-            )}
+                  >
+                     <RadioForm
+                        radio_props={radio_props}
+                        initial={0}
+                        formHorizontal={false}
+                        labelHorizontal={true}
+                        buttonColor={colores.colorPrimarioTomate}
+                        selectedButtonColor={colores.colorPrimarioVerde}
+                        buttonSize={15}
+                        buttonOuterSize={25}
+                        animation={true}
+                        onPress={value => {
+                           console.log(value);
+                        }}
+                        wrapStyle={styles.contenedorWrap}
+                     />
+                  </View>
+               )}
+            </View>
          </View>
 
          <Button
@@ -116,6 +123,6 @@ const styles = StyleSheet.create({
       fontWeight: 'normal',
       fontSize: 13,
    },
-   puntuacionEstilo: {},
    contenedorViews: { paddingVertical: 10 },
+   contenedorWrap: { marginVertical: 5 },
 });
