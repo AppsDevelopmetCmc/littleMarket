@@ -1,14 +1,14 @@
 import React, { Component, useState } from 'react';
-import { View, StyleSheet, Dimensions, Alert, Text } from 'react-native';
+import { View, StyleSheet, Dimensions, Alert, Modal } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { Button } from 'react-native-elements';
+import { Button, CheckBox, Text } from 'react-native-elements';
 import MapInput from '../../components/MapInput';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Input } from 'react-native-elements';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import Geocoder from 'react-native-geocoding';
 import _ from 'lodash';
-import { apiKeyMaps,APIKEY } from '../../utils/ApiKey';
+import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
 import * as Location from 'expo-location';
 
@@ -27,9 +27,12 @@ export class Mapa extends Component {
       this.origen = this.props.route.params.origen;
       this.direccion = this.props.route.params.direccion;
       this.coordenadasBusqueda = this.props.route.params.coordenadasBusqueda
+      this.coordenadasActuales = this.props.route.params.coordenadasActuales
+      this.pantallaOrigen = this.props.route.params.pantallaOrigen
       this.pintarElemento = false;
       this.tieneCoberturaDireccion = 'N';
-      if (this.origen == 'nuevo') {
+      this.idDireccion = '';
+      if (this.origen == 'nuevo' || this.origen == 'actual') {
          this.pintarElemento = true;
       }
       this.state = {
@@ -41,30 +44,44 @@ export class Mapa extends Component {
             latitude: 0,
             longitude: 0,
          },
+         mostrarModal: false,
+         alias: '',
+         referencia: '',
+         principal: false,
+
       };
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
 
       let servParametros = new ServicioParametros();
-      servParametros.getRegistrarParametrosTodas();
+      servParametros.getObtenerParametroId("geo", this.obtenerParametroCobertura);
+   }
+
+   obtenerParametroCobertura = (parametro) => {
+      global.parametrosGeo = parametro;
+      console.log('parametrosGeo', global.parametrosGeo.cobertura)
+
    }
 
    obtenerCoordenadas = async () => {
       /*Geocoder.init('AIzaSyBeK8BWXsKDTMtwV_bC2FI4GADQklc-nuA');*/
+      if (this.origen == 'actual') {
+         this.setState({
+            region: {
+               latitude: this.coordenadasActuales.coords.latitude,
+               longitude: this.coordenadasActuales.coords.longitude,
+               latitudeDelta: LATITUDE_DELTA,
+               longitudeDelta: LONGITUDE_DELTA,
+            },
+            coordinate: {
+               latitude: this.coordenadasActuales.coords.latitude,
+               longitude: this.coordenadasActuales.coords.longitude,
+            },
+         });
+
+      }
+
       if (this.origen == 'nuevo') {
-         /* let { status } = await Location.requestPermissionsAsync();
-          if (status !== 'granted') {
-             setErrorMsg('Error al otorgar el permiso');
-          }
- 
-          let location = await Location.getCurrentPositionAsync({});
-          console.log('actual location:', location);
- 
-          let response = await Geocoder.from(
-             location.coords.latitude,
-             location.coords.longitude
-          );
-          console.log(response.results[0].formatted_address);*/
          this.setState({
             region: {
                latitude: this.coordenadasBusqueda.lat,
@@ -78,7 +95,8 @@ export class Mapa extends Component {
             },
             // direccion: response.results[0].formatted_address,
          });
-      } else {
+      }
+      if (this.origen == 'actualizar') {
          this.setState({
             region: {
                latitude: this.direccion.latitud,
@@ -92,6 +110,9 @@ export class Mapa extends Component {
             },
             direccion: this.direccion.descripcion,
             tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
+            alias: this.direccion.alias,
+            referencia: this.direccion.referencia,
+            principal: this.direccion.principal,
          });
       }
    };
@@ -180,7 +201,7 @@ export class Mapa extends Component {
             )
          );
          console.log('Kilomeros' + distancia);
-         if (distancia < global.parametros[0].cobertura) {
+         if (distancia <  global.parametrosGeo.cobertura) {
             console.log('Ingresa');
             this.tieneCoberturaDireccion = 'S';
             break;
@@ -208,7 +229,7 @@ export class Mapa extends Component {
       return d.toFixed(3); //Retorna tres decimales
    };
 
-   guardarDireccion = () => {
+   guardarDireccion = async () => {
       let servDireccion = new ServicioDirecciones();
       let operacion = this.pintarElemento ? 'crear' : 'actualizar';
       this.validar();
@@ -219,19 +240,85 @@ export class Mapa extends Component {
          tieneCoberturaDireccion: this.tieneCoberturaDireccion,
       };
       if (operacion === 'crear') {
-         servDireccion.crear(global.usuario, nuevaDireccion);
-         this.props.navigation.navigate('Direcciones');
+         let idDireccionCreada = await servDireccion.crear(global.usuario, nuevaDireccion);
+         console.log("idDireccionCreada", idDireccionCreada)
+         this.idDireccion = idDireccionCreada;
+         console.log("idDireccion", this.idDireccion)
+         if (this.idDireccion != undefined) {
+            this.setState({ mostrarModal: true })
+         }
+         //this.props.navigation.navigate('Direcciones');
       } else {
          servDireccion.actualizar(
             global.usuario,
             this.direccion.id,
             nuevaDireccion
          );
-         this.props.navigation.goBack();
+         this.setState({ mostrarModal: true })
+         //this.props.navigation.goBack();
       }
       global.direccionActual = this.state.direccion;
+      global.direccionPedido.descripcion = this.state.direccion
 
    };
+   guardarDatosReferencia = async () => {
+      let servDireccion = new ServicioDirecciones();
+      let operacion = this.pintarElemento ? 'crear' : 'actualizar';
+      let principal = this.state.principal ? 'S' : 'N';
+      if (principal == 'S') {
+         await servDireccion.actualizarPrincipalTodosNo(global.usuario);
+      }
+      if (operacion === 'crear') {
+         console.log("this.idDireccion", this.idDireccion)
+
+         servDireccion.guardarReferencia(global.usuario, this.idDireccion,
+            {
+               referencia: this.state.referencia,
+               alias: this.state.alias,
+               principal: principal
+            })
+      }
+      else {
+         servDireccion.guardarReferencia(global.usuario, this.direccion.id,
+            {
+               referencia: this.state.referencia,
+               alias: this.state.alias,
+               principal: principal
+            })
+      }
+      this.setState({ mostrarModal: false })
+      if (this.tieneCoberturaDireccion == 'S') {
+         global.activarCobertura();
+      } else {
+         //Cuando no ingresa al sistema devolver a la pantalla origen
+         if (this.pantallaOrigen == 'Direcciones') {
+            this.props.navigation.navigate(
+               'Direcciones',
+               {
+                  notienecobertura: this.tieneCoberturaDireccion
+               }
+            );
+         }
+         if (this.pantallaOrigen == 'Crud') {
+            this.props.navigation.navigate(
+               'DireccionesCrudScreen',
+               {
+                  notienecobertura: this.tieneCoberturaDireccion
+               }
+            );
+         }
+
+         if (this.pantallaOrigen == 'lsCombo') {
+            this.props.navigation.navigate(
+               'ListaCombos',
+               {
+                  notienecobertura: this.tieneCoberturaDireccion
+               }
+            );
+         }
+
+      }
+   }
    onRegionChangeComplete = async region => {
       this.nueva = new Date().getTime();
       setTimeout(async () => {
@@ -306,6 +393,8 @@ export class Mapa extends Component {
       this.setState({ direccion: nombreDireccion });
    };
 
+
+
    render() {
       const { navigation } = this.props;
       return (
@@ -347,6 +436,48 @@ export class Mapa extends Component {
                      <Text>Cargando</Text>
                   )}
             </View>
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarModal}>
+               <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                     <Text h4>Dirección</Text>
+                     <Text >{this.state.direccion}</Text>
+                     <Input
+                        value={this.state.alias}
+                        placeholder="Casa/Oficina"
+                        label="Alias"
+                        onChangeText={text => {
+                           this.setState({ alias: text });
+                        }}
+                     />
+                     <Input
+                        value={this.state.referencia}
+                        placeholder="Color de casa/ N- Oficina"
+                        label="Referencia"
+                        onChangeText={text => {
+                           this.setState({ referencia: text });
+                        }}
+                     />
+
+                     <CheckBox
+                        title='Dirección Principal'
+                        checked={this.state.principal}
+                        onPress={() => this.setState({ principal: !this.state.principal })}
+                     />
+
+                     <Button title='OK' onPress={() => {
+                        this.guardarDatosReferencia();
+                     }}></Button>
+
+                  </View>
+
+
+
+               </View>
+
+            </Modal>
 
             <Button
                title={this.pintarElemento ? 'GUARDAR' : 'ACTUALIZAR'}
@@ -368,5 +499,26 @@ const styles = StyleSheet.create({
    mapStyle: {
       flex: 3,
       width: '100%',
+   },
+   centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "stretch",
+      marginTop: 22
+   },
+   modalView: {
+      margin: 20,
+      backgroundColor: "white",
+      borderRadius: 20,
+      padding: 35,
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: {
+         width: 0,
+         height: 2
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5
    },
 });

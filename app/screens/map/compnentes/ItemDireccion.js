@@ -16,11 +16,6 @@ export class ItemDireccion extends Component {
       return (
          <View style={styles.fila}>
             <View style={styles.touch}>
-               <TouchableOpacity
-                  onPress={() => {
-                     this.props.fnActualizar(this.props.direccion);
-                  }}
-               >
                   <View style={styles.contenido}>
                      <View style={styles.subContenido}>
                         <View style={styles.estiloIconoCobertura}>
@@ -47,24 +42,8 @@ export class ItemDireccion extends Component {
                         </View>
                      </View>
                   </View>
-               </TouchableOpacity>
+
             </View>
-            {/* <View style={styles.contenedorEliminar}>
-               <Button
-                  buttonStyle={styles.estiloBotonEliminar}
-                  onPress={() => {
-                     this.props.fnEliminar(this.props.direccion.id);
-                  }}
-                  icon={
-                     <Icon
-                        name="delete"
-                        size={15}
-                        color={colores.colorBlanco}
-                        style={styles.iconoStilos}
-                     />
-                  }
-               />
-            </View> */}
          </View>
       );
    }

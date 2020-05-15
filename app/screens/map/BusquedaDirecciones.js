@@ -10,6 +10,7 @@ export class BusquedaDirecciones extends Component {
   constructor(props) {
     super(props);
     this.origen = this.props.route.params.origen;
+    this.pantallaOrigen =this.props.route.params.pantallaOrigen
     this.localizacionInicial = [];
     this.state = {
       search: "",
@@ -75,7 +76,8 @@ export class BusquedaDirecciones extends Component {
     console.log("coordenadas", coordenadas);
     this.props.navigation.navigate('Mapa', {
       origen: 'nuevo',
-      coordenadasBusqueda: coordenadas
+      coordenadasBusqueda: coordenadas,
+      pantallaOrigen:this.pantallaOrigen
 
     });
     this.sessionToken = 0
