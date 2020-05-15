@@ -39,12 +39,12 @@ export class ItemPedido extends Component {
                   </View>
                   <Separador alto={30}></Separador>
                   <View style={styles.contenidoDetalle}>
-                     <Text style={styles.texto}>Dirección</Text>
+                     {/* <Text style={styles.texto}>Dirección</Text>
                      <Text
                         style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}
                      >
                         {this.props.pedido.direccion}
-                     </Text>
+                     </Text> */}
 
                      <View style={styles.contenedorPares}>
                         <Text style={styles.texto}>Estado</Text>

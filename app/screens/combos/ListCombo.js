@@ -18,6 +18,21 @@ import {
 //Importando los colores
 import * as colores from '../../constants/Colores';
 
+
+import * as Permisos from 'expo-permissions';
+import {Notificaciones} from 'expo';
+
+const getToken= async()=>{
+   const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
+   if(status !== "granted"){
+      return;
+   }
+   const token = await Notificaciones.getExpoPushTokenAsync();
+   console.log(token);
+   return token;
+
+}
+
 export class ListCombo extends Component {
    constructor() {
       super();
@@ -53,7 +68,17 @@ export class ListCombo extends Component {
          global.usuario,
          this.refrescarDireccion
       );
+      getToken();
    }
+
+   abrirMonedero = () => {
+      //mostrar el valor 
+      //this.props.navigation.navigate('CarroComprasScreen');
+   };
+
+   abrirNotificacion = () => {
+      this.props.navigation.navigate('NotificacionScreen');
+   };
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -66,6 +91,28 @@ export class ListCombo extends Component {
                      color={colores.colorBlanco}
                      size={30}
                      onPress={this.abrirDrawer}
+                  />
+               }
+               
+               iconoMonedero={
+                  <Icon
+                     name="coin"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirMonedero}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+
+               iconoNotificacion={
+                  <Icon
+                     name="bell-circle-outline"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirNotificacion}
+                     underlayColor={colores.colorPrimarioVerde}
                   />
                }
                iconoDeTienda={

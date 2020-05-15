@@ -38,6 +38,7 @@ import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
+import {Notificacion} from '../notificaciones/Notificacion';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -119,10 +120,14 @@ function ScreensFromTabs() {
             options={navOptionHandler(false)}
          />
          <StackDirection.Screen
+            name="NotificacionScreen"
+            component={Notificacion}
+            options={navOptionHandler(false)}
+         />         
+         <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
          />
-
          <StackDirection.Screen
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
@@ -343,7 +348,7 @@ export default function NavegadorInicio() {
                   .catch(error => {
                      console.log(error);
                   });
-
+                  //llamar a otro global db para guardar el referido x priemra vez
                infoUsuarioGuardar.id = global.usuario;
                global.appUsuario = infoUsuarioGuardar;
             }

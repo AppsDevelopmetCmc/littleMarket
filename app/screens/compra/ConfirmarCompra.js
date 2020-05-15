@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, FlatList, StyleSheet, ScrollView } from 'react-native';
-import { Button, Card } from 'react-native-elements';
+import { Icon, Input,Button, Card } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -162,6 +162,41 @@ export class ConfirmarCompra extends Component {
                            }}
                         />
                      </Card>
+                     <Card
+                        title="Registrar Referidos:"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <Input
+                           placeholder="Ingrese código promo"
+                           containerStyle={styles.estiloContenedor1}
+                           inputContainerStyle={styles.estiloInputContenedor}
+                           inputStyle={styles.estiloInput}               
+                        
+                           labelStyle={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+                           
+                           rightIcon={
+                              <Icon
+                                 type="material-community"
+                                 name="coin"
+                                 iconStyle={styles.iconRight}
+                              ></Icon>
+                           }
+                        ></Input>
+                        <Text> </Text>
+                        <Button title="Registrar"></Button>
+                     </Card>
+                     <Text> </Text>
+                     <View style={styles.contenedorBoton}>
+                     <Button
+                        title="Usar Monedero"
+                        containerStyle={styles.EstiloBoton}
+                        buttonStyle={styles.estiloBoton}
+                        titleStyle={styles.estiloTitulo}
+                        onPress={() => {}}
+                     ></Button>
+                     </View>
+
+
                      <Card
                         title="Detalle del pago"
                         containerStyle={styles.contenedorTarjetas}

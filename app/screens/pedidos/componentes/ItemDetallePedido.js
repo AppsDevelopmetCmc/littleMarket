@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
+import * as colores from '../../../constants/Colores';
+import Separador from '../../../components/Separador';
 
 export class ItemDetallePedido extends Component{
     constructor(props) {
         super(props);
         this.alias='';
         this.precio='';
+        this.subtotal='';
         this.recuperarDatosCombo();
         
      }
@@ -18,129 +20,109 @@ export class ItemDetallePedido extends Component{
          if(global.combos[index].id === this.props.detallePedido.id){
             console.log("despues "+ global.combos[index].alias);
             this.alias= global.combos[index].alias;
+            this.precio= global.combos[index].precio;
+            
+            
             break;
-         }
-         
+         }         
       }
 
      }
      render() {
         return (    
-           <View style={styles.fila}>
-              <View style={styles.contenido}>
-                 <View style={styles.subContenido}>
-                  
-                    <View style={styles.contenido}>
-                       <View style={styles.container}>
-                          <Text style={styles.textoNegrita}>
-                              {this.alias}
-                          </Text>
-                       </View>
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Cantidad:</Text>
-                          <Text style={styles.texto}>
-                          {this.props.detallePedido.cantidad}
-                          </Text>
-                       </View> 
-                       <View style={styles.filaFlexEnd}>
-                          <Text style={styles.textoNegrita}>Precio:</Text>
-                          <Text style={styles.texto}>
-                              {this.precio}
-                          </Text>
-                       </View>                      
-                       
-                    </View>
-                 </View>
-              </View>
-             
-           </View>
+         <View style={styles.fila}>
+         <View style={styles.contenido}>
+            <View style={styles.contenidoDetalle}>
+               <Text style={styles.textoNegrita}>
+                  {this.alias}
+               </Text>
+               <Text style={styles.texto}>Cantidad</Text>
+               <Text style={styles.textoNegrita}>
+                  {this.props.detallePedido.cantidad}
+               </Text>
+               <View style={styles.contenedorPares}>
+                  <Text style={styles.texto}>Precio</Text>
+                  <Text style={styles.textoNegrita}>
+                     {this.precio}
+                  </Text>
+               </View>
+               
+            </View>
+            <Separador alto={30}></Separador>
+            <View style={styles.contenidoDetalle}>
+               <Text style={styles.texto}>Dirección</Text>
+               <Text
+                  style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}
+               >
+                 {/*  {this.props.pedido.direccion} */}
+               </Text> 
+
+               
+               <View style={styles.contenedorPares}>
+                  <Text style={styles.texto}>Sub Total:</Text>
+                  <Text
+                     style={textEstilo(
+                        colores.colorOscuroTexto,
+                        20,
+                        'bold'
+                     )}
+                  >
+                    {this.subtotal}
+                  </Text>
+               </View>
+
+            </View>
+         </View>
+      </View>
         );
      }
   }
   
-  const styles = StyleSheet.create({
-     container: {
-        flex: 1,
-  
-        alignItems: 'stretch',
-        justifyContent: 'center',
-        fontWeight: 'bold',
-        //backgroundColor: 'red',
-     },
-     fila: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: 'orange',
-        //borderBottomColor: 'gray',
-        //borderBottomWidth: 1,
-        marginTop: 10,
-        marginLeft: 20,
-        borderBottomLeftRadius: 10,
-        borderTopLeftRadius: 10,
-     },
-     filaFlexEnd: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginRight: 10,
-     },
-     contenido: {
-        flex: 4,
-        alignItems: 'stretch',
-        //backgroundColor: 'pink',
-     },
-     checked: {
-        flex: 1,
-        //backgroundColor: 'yellow',
-        alignItems: 'center',
-        justifyContent: 'center',
-     },
-     subContenido: {
-        flex: 1,
-        flexDirection: 'row',
-        //backgroundColor: 'red',
-     },
-     imagenes: {
-        flex: 1,
-        //  backgroundColor: 'green',
-        alignItems: 'center',
-        padding: 20,
-     },
-     textoNegrita: {
-        fontWeight: 'bold',
-        fontSize: 17,
-        marginTop: 0,
-        marginLeft: 10,
-     },
-     texto: {
-        fontSize: 15,
-        marginTop: 0,
-        marginLeft: 10,
-     },
-     textoNegritaSubrayado: {
-        fontWeight: 'bold',
-        fontSize: 17,
-        marginTop: 0,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1,
-     },
-     boton: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'flex-end',
-     },
-     caja: {
-        width: 40,
-        height: 35,
-        textAlign: 'center',
-        textAlignVertical: 'center',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'black',
-        borderWidth: 1,
-        // marginLeft: 10,
-        //marginRight: 10,
-        //  textAlign: 'right',
-        paddingRight: 5,
-     },
-  });
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
+
+const styles = StyleSheet.create({
+   fila: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: colores.colorPrimarioAmarillo,
+      marginTop: 5,
+      borderTopStartRadius: 30,
+      borderBottomStartRadius: 30,
+   },
+
+   contenido: {
+      paddingVertical: 10,
+      flex: 1,
+      paddingHorizontal: 10,
+      flexDirection: 'row',
+   },
+   
+   textoNegrita: {
+      fontWeight: 'bold',
+      fontSize: 14,
+   },
+   texto: {
+      fontSize: 13,
+   },
+   contenidoDetalle: {
+      paddingVertical: 10,
+      justifyContent: 'center',
+      paddingHorizontal: 10,
+   },
+   contenedorPares: { marginTop: 15 },
+   estiloEstado: {
+      backgroundColor: colores.colorOscuroPrimarioTomate,
+      width: 100,
+      height: 25,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignItems: 'center',
+   },
+});
