@@ -4,7 +4,6 @@ import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
-import { ItemDireccion } from './compnentes/ItemDireccion';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,18 +15,19 @@ import * as colores from '../../constants/Colores';
 import Separador from '../../components/Separador';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
+import { ItemDireccionCrud } from './compnentes/ItemDireccionCrud';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
-export class Direcciones extends Component {
+export class DireccionesCrud extends Component {
    constructor(props) {
       super(props);
       const { navigation } = props;
+      this.localizacionActual = [];
+      let direcciones = [];
       if (this.props.route.params != null) {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }
-      this.localizacionActual = [];
-      let direcciones = [];
       this.state = {
          listaDirecciones: direcciones,
       };
@@ -50,6 +50,7 @@ export class Direcciones extends Component {
       );
 
       this.obtenerCoordenadas();
+
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
          Alert.alert("No existe Cobertura para la Direccion ")
@@ -75,7 +76,7 @@ export class Direcciones extends Component {
          {
             origen: 'actual',
             coordenadasActuales: this.localizacionActual,
-            pantallaOrigen: 'Direcciones'
+            pantallaOrigen: 'Crud'
          }
       );
 
@@ -85,6 +86,7 @@ export class Direcciones extends Component {
       this.props.navigation.navigate('Mapa', {
          origen: 'actualizar',
          direccion: direccion,
+         pantallaOrigen: 'Crud'
       });
    };
    eliminar = idDireccion => {
@@ -139,7 +141,7 @@ export class Direcciones extends Component {
                            'BusquedaDireccionesScreen',
                            {
                               origen: 'nuevo',
-                              pantallaOrigen: 'Direcciones'
+                              pantallaOrigen: 'Crud'
                            }
                         );
                      }}
@@ -190,8 +192,10 @@ export class Direcciones extends Component {
                      data={this.state.listaDirecciones}
                      renderItem={objeto => {
                         return (
-                           <ItemDireccion
+                           <ItemDireccionCrud
                               direccion={objeto.item}
+                              fnActualizar={this.actualizar}
+                              fnEliminar={this.eliminar}
                            />
                         );
                      }}
@@ -201,7 +205,6 @@ export class Direcciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
-
             </View>
          </SafeAreaView>
       );

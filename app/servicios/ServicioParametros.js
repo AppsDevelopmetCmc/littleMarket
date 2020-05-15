@@ -5,8 +5,8 @@ import { Alert } from 'react-native';
 export class ServicioParametros {
    registrarEscuchaParametrosTodas = (arreglo, fnObtener) => {
       let arregloUtil = new ArregloUtil(arreglo);
-      global.db.collection('parametros').onSnapshot(function (snapShot) {
-         snapShot.docChanges().forEach(function (change) {
+      global.db.collection('parametros').onSnapshot(function(snapShot) {
+         snapShot.docChanges().forEach(function(change) {
             let parametros = change.doc.data();
             parametros.id = change.doc.id;
             if (change.type == 'added') {
@@ -57,5 +57,10 @@ export class ServicioParametros {
       }
       fnCargarComboFechas(comboFechas, comboHorarios);
       console.log('parametros', respuesta.data());
+   };
+
+   getObtenerParametroId = async (IdParametro,fnObtenerDato) => {
+      let metadata = await global.db.collection('parametros').doc(IdParametro).get();
+      fnObtenerDato(metadata.data());
    };
 }

@@ -78,8 +78,8 @@ export function Menu(props) {
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
                   nombreIcono="map-marker"
-                  tituloNombre="Direcciones"
-                  navegador={() => props.navigation.navigate('DirectionStack')}
+                  tituloNombre="Direcciones2"
+                  navegador={() => props.navigation.navigate('DirectionCrudStack')}
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado

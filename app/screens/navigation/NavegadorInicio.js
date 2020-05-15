@@ -27,6 +27,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
 import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
+import { DireccionesCrud } from '../map/DireccionesCrud'
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -141,6 +142,18 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
+         <StackDirection.Screen
+            name="Mapa"
+            component={Mapa}
+         />
+         <StackDirection.Screen
+            name="Direcciones"
+            component={Direcciones}
+         />
+         <StackDirection.Screen
+            name="BusquedaDireccionesScreen"
+            component={BusquedaDirecciones}
+         />
       </StackFromTabs.Navigator>
    );
 }
@@ -212,8 +225,31 @@ function DirectionStack() {
             component={BusquedaDirecciones}
          ></StackDirection.Screen>
          <StackDirection.Screen
+            name="DireccionesCrudScreen"
+            component={DireccionesCrud}
+         ></StackDirection.Screen>
+         <StackDirection.Screen
             name="HomeTab"
             component={HomeTab}
+         ></StackDirection.Screen>
+      </StackDirection.Navigator>
+   );
+}
+
+function DirectionCrudStack() {
+   return (
+      <StackDirection.Navigator initialRouteName='DireccionesCrudScreen'>
+         <StackDirection.Screen
+            name="Mapa"
+            component={Mapa}
+         ></StackDirection.Screen>
+         <StackDirection.Screen
+            name="BusquedaDireccionesScreen"
+            component={BusquedaDirecciones}
+         ></StackDirection.Screen>
+         <StackDirection.Screen
+            name="DireccionesCrudScreen"
+            component={DireccionesCrud}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
@@ -269,6 +305,11 @@ function HomeDraw() {
             name="DirectionStack"
             component={DirectionStack}
             options={{ drawerLabel: 'Direcciones' }}
+         />
+         <DrawerHome.Screen
+            name="DirectionCrudStack"
+            component={DirectionCrudStack}
+            options={{ drawerLabel: 'DireccionesCrudScreen' }}
          />
          <DrawerHome.Screen
             name="PerfilUsuario"
@@ -384,23 +425,23 @@ export default function NavegadorInicio() {
                tieneCobertura ? (
                   HomeDraw()
                ) : (
+                     <StackAuthentication.Navigator>
+                        <StackAuthentication.Screen
+                           name="DireccionStack"
+                           component={DirectionStack}
+                           options={navOptionHandler(false)}
+                        />
+                     </StackAuthentication.Navigator>
+                  )
+            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="DireccionStack"
-                        component={DirectionStack}
+                        name="LoginStack"
+                        component={LoginStack}
                         options={navOptionHandler(false)}
-                     />
+                     ></StackAuthentication.Screen>
                   </StackAuthentication.Navigator>
-               )
-            ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+               )}
          </NavigationContainer>
       );
    }
