@@ -22,6 +22,21 @@ import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
+
+import * as Permisos from 'expo-permissions';
+import {Notificaciones} from 'expo';
+
+const getToken= async()=>{
+   const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
+   if(status !== "granted"){
+      return;
+   }
+   const token = await Notificaciones.getExpoPushTokenAsync();
+   console.log(token);
+   return token;
+
+}
+
 export class ListCombo extends Component {
    constructor(props) {
       super(props);
@@ -53,6 +68,7 @@ export class ListCombo extends Component {
          global.usuario,
          this.refrescarDireccion
       );
+          getToken();
    }
 
    obtenerCoordenadas = async () => {
@@ -96,7 +112,17 @@ export class ListCombo extends Component {
       this.props.navigation.navigate('CarroComprasScreen');
    };
 
-   recuperarCobertura = () => {
+   abrirMonedero = () => {
+      //mostrar el valor 
+      //this.props.navigation.navigate('CarroComprasScreen');
+      
+   };
+
+   abrirNotificacion = () => {
+      this.props.navigation.navigate('NotificacionScreen');
+   };
+
+ recuperarCobertura = () => {
       let servDirecciones = new ServicioDirecciones();
       servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion)
    }
@@ -120,6 +146,7 @@ export class ListCombo extends Component {
       });
    };
 
+
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -132,6 +159,29 @@ export class ListCombo extends Component {
                      color={colores.colorBlanco}
                      size={30}
                      onPress={this.abrirDrawer}
+                  />
+               }
+               
+               iconoMonedero={
+                  <Icon
+                     name="coin"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     openDrawer={this.abrirMonedero}
+                     //onPress={this.abrirMonedero}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+
+               iconoNotificacion={
+                  <Icon
+                     name="bell-circle-outline"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirNotificacion}
+                     underlayColor={colores.colorPrimarioVerde}
                   />
                }
                iconoDeTienda={

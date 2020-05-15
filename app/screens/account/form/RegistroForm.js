@@ -18,6 +18,10 @@ import * as err from '../../../constants/Errores';
 import * as colores from '../../../constants/Colores';
 
 export default function RegistroForm(props) {
+   this.state = {
+      numero: 1,
+      codigoReferido:'',
+    }
    const { nav, toastRef } = props;
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
@@ -32,10 +36,13 @@ export default function RegistroForm(props) {
       ''
    );
 
+   
+
    const requerido = 'Campo requerido *';
 
    const register = async () => {
       setisVisibleLoading(true);
+      console.log('>>>>>1');
       if (!email || !password || !repeatPassword) {
          toastRef.current.show(err.Err3, 600);
          seterrorMsgCorreo(requerido);
@@ -64,17 +71,27 @@ export default function RegistroForm(props) {
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
                      .then(() => {
-                        console.log('se registro correctamente');
+                       
+                        this.generarNumeroRandom();
+                        console.log('se registro correctamente' +codigoReferido);
                      })
                      .catch(() => {
                         toastRef.current.show(err.Err5, 600);
                      });
                }
             }
+            console.log('zzzzzzIse');
          }
       }
       setisVisibleLoading(false);
    };
+   generarNumeroRandom = () => {
+      var numeroRandom = Math.floor(Math.random() * 100) + 1;
+      this.setState({numero: numeroRandom})
+      this.setState({codigoReferido:global.usuario.substring(0,1)+global.usuario.substring(3,4)+numeroRandom})
+      console.log('random.... '+codigoReferido)
+    }
+
    return (
       <View style={styles.container}>
          <Input

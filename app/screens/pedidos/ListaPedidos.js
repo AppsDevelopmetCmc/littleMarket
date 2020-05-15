@@ -40,6 +40,10 @@ export class ListaPedidos extends Component {
       this.props.navigation.navigate('CarroComprasScreen');
    };
 
+   abrirMonedero = () => {
+      this.props.navigation.navigate('ReferidosScreen');
+   };
+
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -52,6 +56,26 @@ export class ListaPedidos extends Component {
                      color={colores.colorBlanco}
                      size={30}
                      onPress={this.abrirDrawer}
+                  />
+               }
+               iconoMonedero={
+                  <Icon
+                     name="coin"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirMonedero}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+               iconoNotificacion={
+                  <Icon
+                     name="bell-circle-outline"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirNotificacion}
+                     underlayColor={colores.colorPrimarioVerde}
                   />
                }
                iconoDeTienda={

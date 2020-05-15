@@ -8,6 +8,13 @@ import { StackActions } from '@react-navigation/native';
 import * as colores from '../../constants/Colores';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Importacion de Cabecera Personalizada
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+import {
+   recuperarPrincipal,
+   ServicioDirecciones,
+} from '../../servicios/ServicioDirecciones';
+
 export class CarroCompras extends Component {
    constructor(props) {
       super(props);
@@ -61,6 +68,14 @@ export class CarroCompras extends Component {
          fontWeight: tipo,
       };
    };
+   abrirMonedero = () => {
+      //mostrar el valor 
+      //this.props.navigation.navigate('CarroComprasScreen');
+   };
+
+   abrirNotificacion = () => {
+      this.props.navigation.navigate('NotificacionScreen');
+   };
    render() {
       let items = [];
       if (this.state.listItems) {
@@ -68,17 +83,40 @@ export class CarroCompras extends Component {
       }
       return (
          <SafeAreaView style={styles.contenedorPagina}>
-            <View style={styles.cabecera}>
-               <View style={styles.tituloCabecera}>
-                  <Text
-                     style={this.textEstilo(
-                        colores.colorBlancoTexto,
-                        20,
-                        'bold'
-                     )}
-                  >
-                     Tu Compra
-                  </Text>
+            <CabeceraPersonalizada
+               titulo={'Tu Compra'}
+               iconoComponente={
+                  <Icon
+                     name="menu"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirDrawer}
+                  />
+               }
+               
+               iconoMonedero={
+                  <Icon
+                     name="coin"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirMonedero}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+
+               iconoNotificacion={
+                  <Icon
+                     name="bell-circle-outline"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirNotificacion}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+            ></CabeceraPersonalizada>
                   <View style={styles.contenedorBoton}>
                      {items.length > 0 ? (
                         <Button
@@ -106,7 +144,7 @@ export class CarroCompras extends Component {
                         <Text></Text>
                      )}
                   </View>
-               </View>
+         
 
                <View style={styles.contenedorBoton}>
                   <Button
@@ -133,7 +171,7 @@ export class CarroCompras extends Component {
 
                   {items.length > 0 ? (
                      <Button
-                        title="Comprar"
+                        title="Confirmar"
                         onPress={() => {
                            this.props.navigation.navigate(
                               'ConfirmarCompraScreen'
@@ -159,7 +197,7 @@ export class CarroCompras extends Component {
                      <Text></Text>
                   )}
                </View>
-            </View>
+            
             <View style={styles.pie}>
                {items.length > 0 ? (
                   <View>

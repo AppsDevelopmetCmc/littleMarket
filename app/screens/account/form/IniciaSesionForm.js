@@ -29,7 +29,7 @@ export default function IniciaSesionForm(props) {
    const [errorMsgContraseña, seterrorMsgContraseña] = useState('');
 
    const requerido = 'Campo requerido *';
-
+    
    const iniciarSesion = async () => {
       setisVisibleLoading(true);
       if (!email || !password) {
@@ -54,16 +54,15 @@ export default function IniciaSesionForm(props) {
                   .signInWithEmailAndPassword(email, password)
                   .then(() => {
                      console.log('Inicio Sesion con Firebase');
-                  })
+                  })                  
                   .catch(() => {
                      toastRef.current.show(err.Err2, 600);
                   });
-            }
          }
       }
       setisVisibleLoading(false);
    };
-
+   }
    return (
       <View style={styles.container}>
          <Input
