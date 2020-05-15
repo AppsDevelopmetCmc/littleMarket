@@ -74,6 +74,7 @@ export class ListCombo extends Component {
    abrirMonedero = () => {
       //mostrar el valor 
       //this.props.navigation.navigate('CarroComprasScreen');
+      
    };
 
    abrirNotificacion = () => {
@@ -100,7 +101,8 @@ export class ListCombo extends Component {
                      type="material-community"
                      color={colores.colorBlanco}
                      size={30}
-                     onPress={this.abrirMonedero}
+                     openDrawer={this.abrirMonedero}
+                     //onPress={this.abrirMonedero}
                      underlayColor={colores.colorPrimarioVerde}
                   />
                }

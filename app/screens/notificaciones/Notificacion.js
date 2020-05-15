@@ -81,7 +81,7 @@ export class Notificacion extends Component {
 
             </View>   
 
-            <View style={styles.pie}>
+            {/* <View style={styles.pie}>
             <Input
                placeholder="Ingrese codigo promo"
                containerStyle={styles.estiloContenedor1}
@@ -128,7 +128,7 @@ export class Notificacion extends Component {
             ></Button>
             </View>
             
-         </View>
+         </View> */}
                
               
 
