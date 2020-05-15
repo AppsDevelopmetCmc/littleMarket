@@ -55,6 +55,7 @@ export class Direcciones extends Component {
    };
 
    repintarLista = direcciones => {
+      //  this.validarCoberturaGlobalDireccion();
       this.setState({
          listaDirecciones: direcciones,
       });
@@ -66,8 +67,7 @@ export class Direcciones extends Component {
          global.usuario
       );
       if (coberturaDireccion == true) {
-         global.tieneCobertura = true;
-         console.log('cobertura Global ' + global.tieneCobertura);
+         global.activarCobertura();
       } else {
          Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura');
       }
@@ -114,9 +114,12 @@ export class Direcciones extends Component {
                      containerStyle={styles.estiloContenedor}
                      title="Usar una nueva ubicación"
                      onPress={() => {
-                        this.props.navigation.navigate('Mapa', {
-                           origen: 'nuevo',
-                        });
+                        this.props.navigation.navigate(
+                           'BusquedaDireccionesScreen',
+                           {
+                              origen: 'nuevo',
+                           }
+                        );
                      }}
                      icon={
                         <Icon

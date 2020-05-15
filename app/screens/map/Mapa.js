@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { View, StyleSheet, Dimensions, Alert } from 'react-native';
+import { View, StyleSheet, Dimensions, Alert, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import MapInput from '../../components/MapInput';
@@ -8,8 +8,9 @@ import { Input } from 'react-native-elements';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import Geocoder from 'react-native-geocoding';
 import _ from 'lodash';
-import { apiKeyMaps } from '../../utils/ApiKey';
+import { apiKeyMaps,APIKEY } from '../../utils/ApiKey';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
+import * as Location from 'expo-location';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -25,6 +26,7 @@ export class Mapa extends Component {
       //direccion seleccionada
       this.origen = this.props.route.params.origen;
       this.direccion = this.props.route.params.direccion;
+      this.coordenadasBusqueda = this.props.route.params.coordenadasBusqueda
       this.pintarElemento = false;
       this.tieneCoberturaDireccion = 'N';
       if (this.origen == 'nuevo') {
@@ -35,60 +37,47 @@ export class Mapa extends Component {
          modalVisible: true,
          isMapReady: false,
          direccion: '',
-         region: {
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-         },
          coordinate: {
-            latitude: LATITUDE,
-            longitude: LONGITUDE,
+            latitude: 0,
+            longitude: 0,
          },
       };
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
-      
+
       let servParametros = new ServicioParametros();
-     servParametros.getRegistrarParametrosTodas();
-      
+      servParametros.getRegistrarParametrosTodas();
    }
 
-   obtenerDireccion = async (latitude, longitude) => {
-      let addressComponent = '';
-      Geocoder.from(latitude, longitude)
-         .then(json => {
-            addressComponent = json.results[0].formatted_address;
-            console.log(addressComponent);
-            this.setState({ direccion: addressComponent });
-         })
-         .catch(error => console.warn(error));
-   };
-
-   componentDidMount() {
+   obtenerCoordenadas = async () => {
+      /*Geocoder.init('AIzaSyBeK8BWXsKDTMtwV_bC2FI4GADQklc-nuA');*/
       if (this.origen == 'nuevo') {
-         navigator.geolocation.getCurrentPosition(
-            position => {
-               this.setState({
-                  region: {
-                     latitude: position.coords.latitude,
-                     longitude: position.coords.longitude,
-                     latitudeDelta: LATITUDE_DELTA,
-                     longitudeDelta: LONGITUDE_DELTA,
-                  },
-                  coordinate: {
-                     latitude: position.coords.latitude,
-                     longitude: position.coords.longitude,
-                  },
-               });
-               this.obtenerDireccion(
-                  position.coords.latitude,
-                  position.coords.longitude
-               );
+         /* let { status } = await Location.requestPermissionsAsync();
+          if (status !== 'granted') {
+             setErrorMsg('Error al otorgar el permiso');
+          }
+ 
+          let location = await Location.getCurrentPositionAsync({});
+          console.log('actual location:', location);
+ 
+          let response = await Geocoder.from(
+             location.coords.latitude,
+             location.coords.longitude
+          );
+          console.log(response.results[0].formatted_address);*/
+         this.setState({
+            region: {
+               latitude: this.coordenadasBusqueda.lat,
+               longitude: this.coordenadasBusqueda.lng,
+               latitudeDelta: LATITUDE_DELTA,
+               longitudeDelta: LONGITUDE_DELTA,
             },
-            error => console.log(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-         );
+            coordinate: {
+               latitude: this.coordenadasBusqueda.lat,
+               longitude: this.coordenadasBusqueda.lng,
+            },
+            // direccion: response.results[0].formatted_address,
+         });
       } else {
          this.setState({
             region: {
@@ -105,7 +94,23 @@ export class Mapa extends Component {
             tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
          });
       }
+   };
+
+   componentDidMount() {
+      this.obtenerCoordenadas();
    }
+
+   obtenerDireccion = async (latitude, longitude) => {
+      let addressComponent = '';
+      Geocoder.from(latitude, longitude)
+         .then(json => {
+            addressComponent = json.results[0].formatted_address;
+            console.log(addressComponent);
+            this.setState({ direccion: addressComponent });
+         })
+         .catch(error => console.warn(error));
+   };
+
    onMapLayout = () => {
       this.setState({ isMapReady: true });
    };
@@ -195,9 +200,9 @@ export class Mapa extends Component {
       let a =
          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
          Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
+         Math.cos(this.rad(lat2)) *
+         Math.sin(dLong / 2) *
+         Math.sin(dLong / 2);
       let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
@@ -215,15 +220,90 @@ export class Mapa extends Component {
       };
       if (operacion === 'crear') {
          servDireccion.crear(global.usuario, nuevaDireccion);
+         this.props.navigation.navigate('Direcciones');
       } else {
          servDireccion.actualizar(
             global.usuario,
             this.direccion.id,
             nuevaDireccion
          );
+         this.props.navigation.goBack();
       }
       global.direccionActual = this.state.direccion;
-      this.props.navigation.goBack();
+
+   };
+   onRegionChangeComplete = async region => {
+      this.nueva = new Date().getTime();
+      setTimeout(async () => {
+         if (new Date().getTime() - this.nueva > 1000) {
+            let response = await Geocoder.from(
+               region.latitude,
+               region.longitude
+            );
+            this.generarDireccion(response.results[0]);
+         }
+      }, 1000);
+   };
+
+   onRegionChange = region => {
+      this.setState({
+         coordinate: { latitude: region.latitude, longitude: region.longitude },
+      });
+   };
+   generarDireccion = info => {
+      console.log('info', info.address_components);
+      let componentes = info.address_components;
+      let direccionName = {};
+      if (componentes) {
+         for (let i = 0; i < componentes.length; i++) {
+            let componente = componentes[i];
+            console.log('componente', componente);
+            for (let j = 0; j < componente.types.length; j++) {
+               if (componente.types[j] == 'route') {
+                  direccionName.route = componente.short_name;
+               }
+               if (componente.types[j] == 'point_of_interest') {
+                  direccionName.point_of_interest = componente.short_name;
+               }
+               if (componente.types[j] == 'street_number') {
+                  direccionName.street_number = componente.short_name;
+               }
+               if (componente.types[j] == 'sublocality') {
+                  direccionName.sublocality = componente.short_name;
+               }
+               if (componente.types[j] == 'locality') {
+                  direccionName.locality = componente.short_name;
+               }
+               if (componente.types[j] == 'country') {
+                  direccionName.country = componente.long_name;
+               }
+            }
+         }
+      }
+      //point_of_interest, route street_number, sublocality, locality
+      console.log('direccion===>', direccionName);
+      let nombreDireccion = '';
+
+      if (direccionName) {
+         let numeroCalle =
+            direccionName.route + ' ' + direccionName.street_number;
+         let resNumeroCalle = numeroCalle.replace(/undefined/gi, '');
+         let str =
+            direccionName.point_of_interest +
+            ',' +
+            resNumeroCalle +
+            ',' +
+            direccionName.sublocality +
+            ',' +
+            direccionName.locality +
+            ',' +
+            direccionName.country;
+         let res = str.replace(/, ,/gi, ',');
+         nombreDireccion = res.replace(/undefined,/gi, '');
+      }
+
+      console.log('direccionName===>', nombreDireccion);
+      this.setState({ direccion: nombreDireccion });
    };
 
    render() {
@@ -231,47 +311,42 @@ export class Mapa extends Component {
       return (
          <View style={[styles.container]}>
             <View style={{ flex: 1 }}>
-               <MapView
-                  style={{ width: width, height: height - 50 }}
-                  provider={PROVIDER_GOOGLE}
-                  mapType="standard"
-                  showsScale
-                  showsCompass
-                  showsPointsOfInterest
-                  showsBuildings
-                  showsUserLocation
-                  loadingEnabled={true}
-                  ref={map => (this.map = map)}
-                  onLayout={this.onMapLayout}
-                  region={this.state.region}
-               >
-                  {this.state.isMapReady && (
+               <Text>{this.state.direccion}</Text>
+               {this.state.region ? (
+                  <MapView
+                     style={{ width: width, height: height - 50 }}
+                     provider={PROVIDER_GOOGLE}
+                     mapType="standard"
+                     showsScale
+                     showsCompass
+                     showsPointsOfInterest
+                     showsBuildings
+                     showsUserLocation
+                     loadingEnabled={true}
+                     ref={map => (this.map = map)}
+                     onLayout={this.onMapLayout}
+                     initialRegion={this.state.region}
+                     onRegionChangeComplete={region => {
+                        this.onRegionChangeComplete(region);
+                     }}
+                     onRegionChange={region => {
+                        this.onRegionChange(region);
+                     }}
+                  >
                      <MapView.Marker
                         title={this.state.direccion}
-                        key={apiKeyMaps}
+                        Key={APIKEY}
                         ref={marker => {
                            this.marker = marker;
                         }}
                         coordinate={this.state.coordinate}
                         draggable={true}
-                        onDragEnd={e =>
-                           this.onMarkerDragEnd(e.nativeEvent.coordinate)
-                        }
-                        onPress={() => {}}
-                        onCalloutPress={() => {
-                           this.marker.hideCallout();
-                        }}
                      />
+                  </MapView>
+               ) : (
+                     <Text>Cargando</Text>
                   )}
-               </MapView>
             </View>
-
-            {(this.pintarElemento || !_.isEmpty(this.state.direccion)) && (
-               <MapInput
-                  notificarCambio={loc => this.obtenerCoords(loc)}
-                  direccion={this.state.direccion}
-               />
-            )}
 
             <Button
                title={this.pintarElemento ? 'GUARDAR' : 'ACTUALIZAR'}

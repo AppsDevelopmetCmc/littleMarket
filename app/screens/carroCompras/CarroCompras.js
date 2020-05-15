@@ -12,9 +12,11 @@ export class CarroCompras extends Component {
    constructor(props) {
       super(props);
       this.pintarBoton = false;
-      let items = [];
       this.state = {
-         listItems: items,
+         listItems: [],
+         subtotal: '0',
+         delivery: '1.5',
+         total: '0',
       };
    }
 
@@ -29,12 +31,21 @@ export class CarroCompras extends Component {
    }
 
    repintarLista = items => {
+      let subtotal = 0;
+      let delivery = 1.5;
+      global.items = items;
+      for (let i = 0; i < items.length; i++) {
+         subtotal += items[i].subtotal;
+      }
+      global.total = subtotal + delivery;
       this.setState({
          listItems: items,
+         subtotal: subtotal,
+         total: subtotal + delivery,
       });
    };
 
-   eliminarCarro = (mail) => {
+   eliminarCarro = mail => {
       let srvItemsCarro = new ServicioCarroCompras();
       srvItemsCarro.eliminarCarro(mail);
    };
@@ -51,6 +62,10 @@ export class CarroCompras extends Component {
       };
    };
    render() {
+      let items = [];
+      if (this.state.listItems) {
+         items = this.state.listItems;
+      }
       return (
          <SafeAreaView style={styles.contenedorPagina}>
             <View style={styles.cabecera}>
@@ -65,34 +80,35 @@ export class CarroCompras extends Component {
                      Tu Compra
                   </Text>
                   <View style={styles.contenedorBoton}>
-			      <Button
-                     title="Vaciar"
-                  onPress={() => {
-                    this.eliminarCarro(global.usuario)
-                    this.props.navigation.goBack()
-                  }}
-                     titleStyle={this.textEstilo(
-                        colores.colorBlancoTexto,
-                        12,
-                        'normal'
-                     )}
-                     buttonStyle={styles.estiloBotonS}
-                     icon={
-                        <Icon
-                           name="cart-remove"
-                           size={20}
-                           color="white"
-                           style={styles.iconoIzquierda}
+                     {items.length > 0 ? (
+                        <Button
+                           title="Vaciar"
+                           onPress={() => {
+                              this.eliminarCarro(global.usuario);
+                              this.props.navigation.goBack();
+                           }}
+                           titleStyle={this.textEstilo(
+                              colores.colorBlancoTexto,
+                              12,
+                              'normal'
+                           )}
+                           buttonStyle={styles.estiloBotonS}
+                           icon={
+                              <Icon
+                                 name="cart-remove"
+                                 size={20}
+                                 color="white"
+                                 style={styles.iconoIzquierda}
+                              />
+                           }
                         />
-                     }
-                  />
+                     ) : (
+                        <Text></Text>
+                     )}
+                  </View>
                </View>
-               </View>
-               
-			   
-            
+
                <View style={styles.contenedorBoton}>
-			      
                   <Button
                      title="Seguir 
                      comprando"
@@ -115,30 +131,45 @@ export class CarroCompras extends Component {
                      }
                   />
 
-                  <Button
-                     title="Comprar"
-                     onPress={() => {
-                        this.props.navigation.navigate('ConfirmarCompraScreen');
-                     }}
-                     titleStyle={this.textEstilo(
-                        colores.colorBlanco,
-                        15,
-                        'bold'
-                     )}
-                     buttonStyle={styles.estiloBoton}
-                     iconRight
-                     icon={
-                        <Icon
-                           name="arrow-right-bold-circle"
-                           size={30}
-                           color="white"
-                           style={styles.iconoDerecha}
-                        />
-                     }
-                  />
+                  {items.length > 0 ? (
+                     <Button
+                        title="Comprar"
+                        onPress={() => {
+                           this.props.navigation.navigate(
+                              'ConfirmarCompraScreen'
+                           );
+                        }}
+                        titleStyle={this.textEstilo(
+                           colores.colorBlanco,
+                           15,
+                           'bold'
+                        )}
+                        buttonStyle={styles.estiloBoton}
+                        iconRight
+                        icon={
+                           <Icon
+                              name="arrow-right-bold-circle"
+                              size={30}
+                              color="white"
+                              style={styles.iconoDerecha}
+                           />
+                        }
+                     />
+                  ) : (
+                     <Text></Text>
+                  )}
                </View>
             </View>
             <View style={styles.pie}>
+               {items.length > 0 ? (
+                  <View>
+                     <Text>SUBTOTAL:{this.state.subtotal}</Text>
+                     <Text>DELIVERY:{this.state.delivery}</Text>
+                     <Text>TOTAL:{this.state.total}</Text>
+                  </View>
+               ) : (
+                  <Text>No tiene items</Text>
+               )}
                <FlatList
                   data={this.state.listItems}
                   renderItem={objeto => {

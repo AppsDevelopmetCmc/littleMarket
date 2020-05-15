@@ -12,6 +12,9 @@ import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { consultarInformacion } from '../../servicios/ServicioUsuarios';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import { Transferencia } from '../compra/Transferencia';
+import { CargarImagen } from '../compra/CargarImagen';
 
 // Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
@@ -23,6 +26,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 // Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
+import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -73,6 +77,32 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="TransferenciaScreen"
+            component={Transferencia}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="CargarImagenScreen"
+            component={CargarImagen}
             options={{
                title: '',
                headerStyle: {
@@ -173,6 +203,10 @@ function DirectionStack() {
             component={Mapa}
          ></StackDirection.Screen>
          <StackDirection.Screen
+            name="BusquedaDireccionesScreen"
+            component={BusquedaDirecciones}
+         ></StackDirection.Screen>
+         <StackDirection.Screen
             name="HomeTab"
             component={HomeTab}
          ></StackDirection.Screen>
@@ -242,18 +276,35 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
+   const [tieneCobertura, setTieneCobertura] = useState(false);
+   const [recuperaCobertura, setRecuperaCobertura] = useState(false);
+   /* useEffect(() => {
+      new ServicioDirecciones().tieneCobertura(global.usuario);
+   }, [login]);*/
 
-   global.tieneCobertura = true;
+   global.activarCobertura = () => {
+      setTieneCobertura(true);
+   };
+
+   //Disparar un proceso de consulta y que muestre cargando
+   //hasta terminar de traer la info del usuario en caso
+   //de que esté logueado, junto con la info de dirección
 
    // Funcion para recuperar info de logue
    const infoLogin = async () => {
       try {
-         await firebase.auth().onAuthStateChanged(user => {
+         await firebase.auth().onAuthStateChanged(async user => {
             !user ? setLogin(false) : setLogin(true);
             if (user) {
                global.usuario = user.email;
                global.infoUsuario = user.providerData[0];
                console.log(global.infoUsuario);
+               new ServicioDirecciones().tieneCobertura(
+                  global.usuario,
+                  setRecuperaCobertura
+               );
+            } else {
+               setRecuperaCobertura(true);
             }
          });
       } catch (error) {
@@ -319,10 +370,13 @@ export default function NavegadorInicio() {
    if (login === null) {
       return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
    } else {
+      if (!recuperaCobertura) {
+         return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+      }
       return (
          <NavigationContainer>
             {login ? (
-               global.tieneCobertura ? (
+               tieneCobertura ? (
                   HomeDraw()
                ) : (
                   <StackAuthentication.Navigator>

@@ -9,6 +9,10 @@ import { DrawerActions } from '@react-navigation/native';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+import {
+   recuperarPrincipal,
+   ServicioDirecciones,
+} from '../../servicios/ServicioDirecciones';
 
 // Importacion de los colores
 //Importando los colores
@@ -21,6 +25,7 @@ export class ListCombo extends Component {
       let combos = [];
       this.state = {
          listCombos: combos,
+         direccionPedido: null,
          pedidoCalifica: null,
          estadocalifica: false,
       };
@@ -38,27 +43,11 @@ export class ListCombo extends Component {
          listCombos: combos,
       });
    };
-
-   /*eliminar = combo => {
-      let srvCombos = new ServicioCombos();
-      srvCombos.eliminar(combo.id);
+   refrescarDireccion = () => {
+      this.setState({ direccionPedido: global.direccionPedido.descripcion });
    };
-   actualizar = combo => {
-      this.props.navigation.navigate('ComboScreen', {
-         origen: 'actualizar',
-         combo: {
-            id: combo.id,
-            imagen: combo.imagen,
-            precio: combo.precio,
-            alias: combo.alias,
-         },
-      });
-   };*/
-   componentDidMount() {
-      this.obtenerPedidoCalifica(global.usuario);
-   }
 
-   obtenerPedidoCalifica = mail => {
+obtenerPedidoCalifica = mail => {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
@@ -86,6 +75,13 @@ export class ListCombo extends Component {
       this.props.navigation.navigate('CarroComprasScreen');
    };
 
+   componentDidMount() {
+this.obtenerPedidoCalifica(global.usuario);
+      new ServicioDirecciones().recuperarPrincipal(
+         global.usuario,
+         this.refrescarDireccion
+      );
+   }
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -112,7 +108,7 @@ export class ListCombo extends Component {
                }
             ></CabeceraPersonalizada>
             <View style={styles.contenedorDireccione}>
-               <Text>{global.direccionActual}</Text>
+               <Text>{this.state.direccionPedido}</Text>
             </View>
 
             <View style={styles.pie}>
