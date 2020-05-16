@@ -1,27 +1,7 @@
 import { Alert } from 'react-native';
-import { ArregloUtil } from '../utils/utils';
+import { ArregloUtil, actualizar, eliminar } from '../utils/utils';
 
 export class ServicioCarroCompras {
-   registrarEscuchaTodas = (itemCarro, fnRepintar, mail) => {
-      let arregloUtil = new ArregloUtil(itemCarro);
-      global.db
-         .collection('carritos')
-         .doc(mail)
-         .collection('items')
-         .onSnapshot(function (snapShot) {
-            snapShot.docChanges().forEach(function (change) {
-               if (change.type == 'added') {
-                  arregloUtil.agregar(change.doc.data(), fnRepintar);
-               }
-               if (change.type == 'modified') {
-                  arregloUtil.actualizar(change.doc.data(), fnRepintar);
-               }
-               if (change.type == 'removed') {
-                  arregloUtil.eliminar(change.doc.data(), fnRepintar);
-               }
-            });
-         });
-   };
    eliminarCarro = async mail => {
       //console.log('Ingresa a eliminar carro')
 
@@ -63,7 +43,33 @@ export const eliminarItemCarro = (itemCarro, mail) => {
          Alert.alert('Error ' + error.message);
       });
 };
-
+export const registrarEscucha = (mail, fnRepintar) => {
+   global.fnRepintar = fnRepintar;
+   if (!global.items) {
+      console.log('ServicioCarroCompras registrarEscucha ');
+      global.items = [];
+      global.db
+         .collection('carritos')
+         .doc(mail)
+         .collection('items')
+         .onSnapshot(function (snapShot) {
+            snapShot.docChanges().forEach(function (change) {
+               if (change.type == 'added') {
+                  //arregloUtil.agregar(change.doc.data(), fnRepintar);
+                  global.items.push(change.doc.data());
+                  global.fnRepintar();
+               }
+               if (change.type == 'modified') {
+                  console.log('dispara modified');
+                  actualizar(change.doc.data(), global.fnRepintar);
+               }
+               if (change.type == 'removed') {
+                  eliminar(change.doc.data(), global.fnRepintar);
+               }
+            });
+         });
+   }
+};
 export const agregarDisminuirItemCarro = (
    itemCarro,
    mail,

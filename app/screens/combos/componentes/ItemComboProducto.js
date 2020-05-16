@@ -60,7 +60,7 @@ export class ItemComboProducto extends Component {
    }
 }
 
-textEstilo = (color, tamaño, tipo) => {
+const textEstilo = (color, tamaño, tipo) => {
    return {
       color: color,
       fontSize: tamaño,

@@ -31,3 +31,30 @@ export class ArregloUtil {
       fnRepintar(this.arreglo);
    };
 }
+
+export const buscar = objeto => {
+   let indice = -1;
+   for (let i = 0; i < global.items.length; i++) {
+      if (objeto.id == global.items[i].id) {
+         indice = i;
+         break;
+      }
+   }
+   return indice;
+};
+export const actualizar = (objeto, fnRepintar) => {
+   let posicion = buscar(objeto);
+   if (posicion != -1) {
+      global.items[posicion] = objeto;
+   }
+   console.log('luego de actualizar smo:', global.items);
+   fnRepintar();
+};
+
+export const eliminar = (objeto, fnRepintar) => {
+   let posicion = buscar(objeto);
+   if (posicion != -1) {
+      global.items.splice(posicion, 1);
+   }
+   fnRepintar();
+};

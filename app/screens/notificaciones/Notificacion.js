@@ -1,67 +1,53 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
-import { Input,Button, Icon } from 'react-native-elements';
+import { Input, Button, Icon } from 'react-native-elements';
 import * as colores from '../../constants/Colores';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export class Notificacion extends Component {
+   constructor() {
+      super();
 
-  constructor() {
-    super();
-
-    this.state = {
-      numero: 1,
-      codigoReferido:'',
-    }
-
-  }
-
-  generarNumeroRandom = () => {
-    var numeroRandom = Math.floor(Math.random() * 100) + 1;
-    this.setState({numero: numeroRandom})
-    this.setState({codigoReferido:global.usuario.substring(0,1)+global.usuario.substring(3,4)+numeroRandom})
-  }
-  textEstilo = (color, tamaño, tipo) => {
-      return {
-         color: color,
-         fontSize: tamaño,
-         fontWeight: tipo,
+      this.state = {
+         numero: 1,
+         codigoReferido: '',
       };
+   }
+
+   generarNumeroRandom = () => {
+      var numeroRandom = Math.floor(Math.random() * 100) + 1;
+      this.setState({ numero: numeroRandom });
+      this.setState({
+         codigoReferido:
+            global.usuario.substring(0, 1) +
+            global.usuario.substring(3, 4) +
+            numeroRandom,
+      });
    };
-   textEstilo = (color, tamaño, tipo) => {
-    return {
-       color: color,
-       fontSize: tamaño,
-       fontWeight: tipo,
-    };
- };
-  render() {
-    return (
-        
-        <SafeAreaView style={styles.contenedorPagina}>
+
+   render() {
+      return (
+         <SafeAreaView style={styles.contenedorPagina}>
             <View style={styles.cabecera}>
                <View style={styles.tituloCabecera}>
                   <Text
-                     style={this.textEstilo(
-                        colores.colorBlancoTexto,
-                        20,
-                        'bold'
-                     )}
+                     style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}
                   >
                      Notificaciones
                   </Text>
-                  <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}
+                  >
                      {global.usuario}
                   </Text>
-               </View>  
+               </View>
                <View style={styles.contenedorBoton}>
-
-                   <Button
+                  <Button
                      title="Regresar"
                      onPress={() => {
-                        this.props.navigation.goBack()
-                      }}
-                     titleStyle={this.textEstilo(
+                        this.props.navigation.goBack();
+                     }}
+                     titleStyle={textEstilo(
                         colores.colorBlancoTexto,
                         12,
                         'normal'
@@ -75,11 +61,9 @@ export class Notificacion extends Component {
                            style={styles.iconoIzquierda}
                         />
                      }
-                   />
+                  />
                </View>
-               
-
-            </View>   
+            </View>
 
             {/* <View style={styles.pie}>
             <Input
@@ -129,65 +113,51 @@ export class Notificacion extends Component {
             </View>
             
          </View> */}
-               
-              
-
-               
-               
-              
-               
-            
-            
          </SafeAreaView>
-
-        
-
-
-    );
-  }
+      );
+   }
 }
 
-
 const styles = StyleSheet.create({
-    contenedorBoton: {
-       flexDirection: 'row',
-       justifyContent: 'space-between',
-       alignItems: 'center',
-    },
-    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
-    cabecera: {
-       backgroundColor: colores.colorPrimarioVerde,
-       paddingHorizontal: 40,
-       paddingTop: 30,
-    },
-    pie: {
-       flex: 4,
-       backgroundColor: colores.colorBlanco,
-       borderTopStartRadius: 30,
-       borderTopEndRadius: 30,
-       paddingHorizontal: 15,
-       marginTop: 30,
-       paddingTop: 20,
-    },
-    tituloCabecera: { paddingBottom: 20 },
-    estiloBoton: {
-       backgroundColor: colores.colorOscuroPrimarioTomate,
-       width: 130,
-       height: 45,
-       borderRadius: 100,
-       paddingHorizontal: 15,
-    },
-    estiloBotonS: {
-       backgroundColor: colores.colorOscuroPrimarioVerde,
-       width: 130,
-       height: 45,
-       borderRadius: 100,
-       paddingHorizontal: 15,
-    },
-    iconoDerecha: { paddingLeft: 5 },
-    iconoIzquierda: { paddingRight: 5 },
-    
-    estiloInput: { fontSize: 15 },
+   contenedorBoton: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+   },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 40,
+      paddingTop: 30,
+   },
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 15,
+      marginTop: 30,
+      paddingTop: 20,
+   },
+   tituloCabecera: { paddingBottom: 20 },
+   estiloBoton: {
+      backgroundColor: colores.colorOscuroPrimarioTomate,
+      width: 130,
+      height: 45,
+      borderRadius: 100,
+      paddingHorizontal: 15,
+   },
+   estiloBotonS: {
+      backgroundColor: colores.colorOscuroPrimarioVerde,
+      width: 130,
+      height: 45,
+      borderRadius: 100,
+      paddingHorizontal: 15,
+   },
+   iconoDerecha: { paddingLeft: 5 },
+   iconoIzquierda: { paddingRight: 5 },
+
+   estiloInput: { fontSize: 15 },
    iconRight: { color: colores.colorClaroTexto },
    btnStyles: {
       marginTop: 50,
@@ -199,5 +169,11 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioTomate,
       borderRadius: 25,
    },
- });
- 
+});
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};

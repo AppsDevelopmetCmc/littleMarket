@@ -19,7 +19,6 @@ export class ServicioDirecciones {
       return id;
    };
 
-
    actualizar = (idCliente, idDireccion, direccion) => {
       global.db
          .collection('clientes')
@@ -30,8 +29,7 @@ export class ServicioDirecciones {
             descripcion: direccion.descripcion,
             latitud: direccion.latitud,
             longitud: direccion.longitud,
-            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion
-
+            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
             Alert.alert('Direccion Actualizado');
@@ -99,7 +97,7 @@ export class ServicioDirecciones {
       return coberturaGlobalDireccion;
    };
 
-   tieneCobertura = async (idCliente, fnRecuperarCobertura) => {
+   tieneCobertura = async idCliente => {
       console.log('consulta tiene cobertura:' + idCliente);
       let respuesta = await global.db
          .collection('clientes')
@@ -109,11 +107,10 @@ export class ServicioDirecciones {
          .get();
 
       if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
-         global.activarCobertura();
+         global.activarCobertura(true);
       } else {
-         console.log('no tiene cobertura');
+         global.activarCobertura(false);
       }
-      fnRecuperarCobertura(true);
    };
 
    recuperarPrincipal = async (idCliente, fnRefrescarDireccion) => {
@@ -145,9 +142,8 @@ export class ServicioDirecciones {
             let direccion = [];
             direccion = respuesta.docs[i].data();
             direccion.id = respuesta.docs[i].id;
-            listaDirecciones.push(direccion)
+            listaDirecciones.push(direccion);
          }
-
       } else {
          console.log('No tiene Direcciones con Cobertura');
       }
@@ -171,9 +167,9 @@ export class ServicioDirecciones {
          .catch(function (error) {
             Alert.alert('error' + error);
          });
-   }
+   };
 
-   actualizarPrincipalTodosNo = async (idCliente) => {
+   actualizarPrincipalTodosNo = async idCliente => {
       let respuesta = await global.db
          .collection('clientes')
          .doc(idCliente)
@@ -182,14 +178,13 @@ export class ServicioDirecciones {
          .get();
       if (respuesta.docs && respuesta.docs.length > 0) {
          for (let i = 0; i < respuesta.docs.length; i++) {
-
-           await global.db
+            await global.db
                .collection('clientes')
                .doc(idCliente)
                .collection('direcciones')
                .doc(respuesta.docs[i].id)
                .update({
-                  principal: 'N'
+                  principal: 'N',
                })
                .then(function () {
                   console.log('Direccion principal Actualizado');
@@ -197,9 +192,7 @@ export class ServicioDirecciones {
                .catch(function (error) {
                   Alert.alert('error' + error);
                });
-
          }
       }
-
-   }
+   };
 }
