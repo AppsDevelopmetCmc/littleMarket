@@ -127,7 +127,7 @@ export class DireccionesCrud extends Component {
                   {msg.msg2}
                </Text>
                <View style={styles.boton}>
-                  <Button
+               <Button
                      buttonStyle={styles.estiloBotonBlanco}
                      titleStyle={textEstilo(
                         colores.colorOscuroTexto,
@@ -135,19 +135,13 @@ export class DireccionesCrud extends Component {
                         'bold'
                      )}
                      containerStyle={styles.estiloContenedor}
-                     title="Usar una nueva ubicación"
+                     title="Agregar ubicación actual"
                      onPress={() => {
-                        this.props.navigation.navigate(
-                           'BusquedaDireccionesScreen',
-                           {
-                              origen: 'nuevo',
-                              pantallaOrigen: 'Crud'
-                           }
-                        );
+                        this.obtenerUbicacionActual();
                      }}
                      icon={
                         <Icon
-                           name="map-marker"
+                           name="crosshairs-gps"
                            size={20}
                            color={colores.colorPrimarioTomate}
                            style={styles.iconos}
@@ -162,13 +156,19 @@ export class DireccionesCrud extends Component {
                         'bold'
                      )}
                      containerStyle={styles.estiloContenedor}
-                     title="Usar ubicación actual"
+                     title="Agregar nueva ubicación"
                      onPress={() => {
-                        this.obtenerUbicacionActual();
+                        this.props.navigation.navigate(
+                           'BusquedaDireccionesScreen',
+                           {
+                              origen: 'nuevo',
+                              pantallaOrigen: 'Crud'
+                           }
+                        );
                      }}
                      icon={
                         <Icon
-                           name="crosshairs-gps"
+                           name="map-marker"
                            size={20}
                            color={colores.colorPrimarioTomate}
                            style={styles.iconos}

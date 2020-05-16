@@ -85,6 +85,7 @@ export class Direcciones extends Component {
       this.props.navigation.navigate('Mapa', {
          origen: 'actualizar',
          direccion: direccion,
+         pantallaOrigen: 'Direcciones'
       });
    };
    eliminar = idDireccion => {
@@ -133,19 +134,13 @@ export class Direcciones extends Component {
                         'bold'
                      )}
                      containerStyle={styles.estiloContenedor}
-                     title="Usar una nueva ubicación"
+                     title="Agregar ubicación actual"
                      onPress={() => {
-                        this.props.navigation.navigate(
-                           'BusquedaDireccionesScreen',
-                           {
-                              origen: 'nuevo',
-                              pantallaOrigen: 'Direcciones'
-                           }
-                        );
+                        this.obtenerUbicacionActual();
                      }}
                      icon={
                         <Icon
-                           name="map-marker"
+                           name="crosshairs-gps"
                            size={20}
                            color={colores.colorPrimarioTomate}
                            style={styles.iconos}
@@ -160,13 +155,19 @@ export class Direcciones extends Component {
                         'bold'
                      )}
                      containerStyle={styles.estiloContenedor}
-                     title="Usar ubicación actual"
+                     title="Agregar nueva ubicación"
                      onPress={() => {
-                        this.obtenerUbicacionActual();
+                        this.props.navigation.navigate(
+                           'BusquedaDireccionesScreen',
+                           {
+                              origen: 'nuevo',
+                              pantallaOrigen: 'Direcciones'
+                           }
+                        );
                      }}
                      icon={
                         <Icon
-                           name="crosshairs-gps"
+                           name="map-marker"
                            size={20}
                            color={colores.colorPrimarioTomate}
                            style={styles.iconos}
@@ -192,6 +193,8 @@ export class Direcciones extends Component {
                         return (
                            <ItemDireccion
                               direccion={objeto.item}
+                              fnActualizar={this.actualizar}
+                              fnEliminar={this.eliminar}
                            />
                         );
                      }}

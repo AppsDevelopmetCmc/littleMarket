@@ -1,24 +1,49 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet ,Alert,TouchableHighlight} from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableHighlight } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-elements';
 import * as colores from '../../../constants/Colores';
 export class ItemDireccionSeleccion extends Component {
    constructor(props) {
       super(props);
+      this.cobertura = false;
+      if (this.props.direccion.tieneCobertura == 'S') {
+         this.cobertura = true;
+      }
    }
    render() {
       return (
          <View styles={styles.fila}>
             <View style={styles.touch}>
-            <TouchableHighlight
+               <TouchableHighlight
                   onPress={() => {
                      this.props.fnSelecionar(this.props.direccion);
                   }}
                >
-               <View style={styles.contenido}>
-                        <Text style={styles.texto}>{this.props.direccion.descripcion}</Text>
-               </View>
+                  <View style={styles.contenido}>
+                     <View style={styles.subContenido}>
+                        <View style={styles.estiloIconoCobertura}>
+                           {this.props.direccion.tieneCoberturaDireccion ==
+                              'S' ? (
+                                 <Icon
+                                    name="access-point-network"
+                                    size={25}
+                                    color={colores.colorOscuroPrimarioTomate}
+                                 />
+                              ) : (
+                                 <Icon
+                                    name="access-point-network-off"
+                                    size={25}
+                                    color={colores.colorClaroTexto}
+                                 />
+                              )}
+                        </View>
+
+                        <View style={styles.contenido}>
+                           <Text style={styles.texto}>{this.props.direccion.descripcion}</Text>
+                        </View>
+                     </View>
+                  </View>
                </TouchableHighlight>
             </View>
          </View>
@@ -72,5 +97,5 @@ const styles = StyleSheet.create({
       color: "white",
       fontWeight: "bold",
       textAlign: "center"
-    },
+   },
 });

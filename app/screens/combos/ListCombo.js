@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox  } from 'react-native-elements';
+import { CheckBox } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerActions } from '@react-navigation/native';
 
@@ -24,11 +24,11 @@ import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
 
 import * as Permisos from 'expo-permissions';
-import {Notificaciones} from 'expo';
+import { Notificaciones } from 'expo';
 
-const getToken= async()=>{
-   const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
-   if(status !== "granted"){
+const getToken = async () => {
+   const { status } = await Permisos.getAsync(Permisos.NOTIFICATIONS);
+   if (status !== "granted") {
       return;
    }
    const token = await Notificaciones.getExpoPushTokenAsync();
@@ -68,7 +68,7 @@ export class ListCombo extends Component {
          global.usuario,
          this.refrescarDireccion
       );
-          getToken();
+      getToken();
    }
 
    obtenerCoordenadas = async () => {
@@ -92,7 +92,7 @@ export class ListCombo extends Component {
             pantallaOrigen: 'lsCombo'
          }
       );
-      this.setState({mostrarModalDirecciones:false});
+      this.setState({ mostrarModalDirecciones: false });
 
    }
 
@@ -115,14 +115,14 @@ export class ListCombo extends Component {
    abrirMonedero = () => {
       //mostrar el valor 
       //this.props.navigation.navigate('CarroComprasScreen');
-      
+
    };
 
    abrirNotificacion = () => {
       this.props.navigation.navigate('NotificacionScreen');
    };
 
- recuperarCobertura = () => {
+   recuperarCobertura = () => {
       let servDirecciones = new ServicioDirecciones();
       servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion)
    }
@@ -135,14 +135,19 @@ export class ListCombo extends Component {
    };
 
    seleccionarDireccion = (direccion) => {
-      global.direccionPedido = direccion;
-      this.refrescarDireccion();
+      if (direccion.tieneCoberturaDireccion == 'S') {
+         global.direccionPedido = direccion;
+         this.refrescarDireccion();
+      }
+      else {
+         Alert.alert("La Direccion Seleccionada no tiene Cobertura")
+      }
+      this.setState({ mostrarModalDirecciones: false })
    }
 
    refrescarDireccion = () => {
       this.setState({
-         direccionPedido: global.direccionPedido.descripcion,
-         mostrarModalDirecciones: false
+         direccionPedido: global.direccionPedido.descripcion
       });
    };
 
@@ -161,7 +166,7 @@ export class ListCombo extends Component {
                      onPress={this.abrirDrawer}
                   />
                }
-               
+
                iconoMonedero={
                   <Icon
                      name="coin"
@@ -236,20 +241,13 @@ export class ListCombo extends Component {
                               'bold'
                            )}
                            containerStyle={styles.estiloContenedor}
-                           title="Usar una nueva ubicación"
+                           title="Agregar ubicación actual"
                            onPress={() => {
-                              this.props.navigation.navigate(
-                                 'BusquedaDireccionesScreen',
-                                 {
-                                    origen: 'nuevo',
-                                    pantallaOrigen: 'lsCombo'
-                                 }
-                              );
-                              this.setState({ mostrarModalDirecciones: false })
+                              this.obtenerUbicacionActual();
                            }}
                            icon={
                               <Icon
-                                 name="map-marker"
+                                 name="crosshairs-gps"
                                  size={20}
                                  color={colores.colorPrimarioTomate}
                                  style={styles.iconos}
@@ -264,13 +262,20 @@ export class ListCombo extends Component {
                               'bold'
                            )}
                            containerStyle={styles.estiloContenedor}
-                           title="Usar ubicación actual"
+                           title="Agregar nueva ubicación"
                            onPress={() => {
-                              this.obtenerUbicacionActual();
+                              this.props.navigation.navigate(
+                                 'BusquedaDireccionesScreen',
+                                 {
+                                    origen: 'nuevo',
+                                    pantallaOrigen: 'lsCombo'
+                                 }
+                              );
+                              this.setState({ mostrarModalDirecciones: false })
                            }}
                            icon={
                               <Icon
-                                 name="crosshairs-gps"
+                                 name="map-marker"
                                  size={20}
                                  color={colores.colorPrimarioTomate}
                                  style={styles.iconos}

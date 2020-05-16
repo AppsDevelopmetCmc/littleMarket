@@ -289,6 +289,7 @@ export class Mapa extends Component {
       this.setState({ mostrarModal: false })
       if (this.tieneCoberturaDireccion == 'S') {
          global.activarCobertura();
+         this.props.navigation.popToTop
       } else {
          //Cuando no ingresa al sistema devolver a la pantalla origen
          if (this.pantallaOrigen == 'Direcciones') {

@@ -137,7 +137,7 @@ export class ServicioDirecciones {
          .collection('clientes')
          .doc(idCliente)
          .collection('direcciones')
-         .where('tieneCoberturaDireccion', '==', 'S')
+         //.where('tieneCoberturaDireccion', '==', 'S')
          .get();
       let listaDirecciones = [];
       if (respuesta.docs && respuesta.docs.length > 0) {
@@ -149,7 +149,7 @@ export class ServicioDirecciones {
          }
 
       } else {
-         console.log('No tiene Direcciones con Cobertura');
+         console.log('No tiene Direccciones');
       }
       fnRepintarDireccion(listaDirecciones);
    };
