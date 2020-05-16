@@ -15,27 +15,26 @@ import {
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
-import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion'
+import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
-
 import * as Permisos from 'expo-permissions';
 import { Notificaciones } from 'expo';
 
-const getToken = async () => {
-   const { status } = await Permisos.getAsync(Permisos.NOTIFICATIONS);
-   if (status !== "granted") {
+/*const getToken= async()=>{
+   const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
+   if(status !== "granted"){
       return;
    }
    const token = await Notificaciones.getExpoPushTokenAsync();
    console.log(token);
    return token;
 
-}
+}*/
 
 export class ListCombo extends Component {
    constructor(props) {
@@ -68,7 +67,7 @@ export class ListCombo extends Component {
          global.usuario,
          this.refrescarDireccion
       );
-      getToken();
+      // getToken();
    }
 
    obtenerCoordenadas = async () => {
@@ -98,7 +97,7 @@ export class ListCombo extends Component {
 
 
    repintarLista = combos => {
-      global.combos = combos
+      global.combos = combos;
       this.setState({
          listCombos: combos,
       });
@@ -113,7 +112,7 @@ export class ListCombo extends Component {
    };
 
    abrirMonedero = () => {
-      //mostrar el valor 
+      //mostrar el valor
       //this.props.navigation.navigate('CarroComprasScreen');
 
    };
@@ -124,13 +123,13 @@ export class ListCombo extends Component {
 
    recuperarCobertura = () => {
       let servDirecciones = new ServicioDirecciones();
-      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion)
-   }
+      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
+   };
 
    repintarDireccion = direcciones => {
       this.setState({
          listaDireccionesCobertura: direcciones,
-         mostrarModalDirecciones: true
+         mostrarModalDirecciones: true,
       });
    };
 
@@ -151,7 +150,6 @@ export class ListCombo extends Component {
       });
    };
 
-
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -166,7 +164,6 @@ export class ListCombo extends Component {
                      onPress={this.abrirDrawer}
                   />
                }
-
                iconoMonedero={
                   <Icon
                      name="coin"
@@ -178,7 +175,6 @@ export class ListCombo extends Component {
                      underlayColor={colores.colorPrimarioVerde}
                   />
                }
-
                iconoNotificacion={
                   <Icon
                      name="bell-circle-outline"
@@ -211,7 +207,6 @@ export class ListCombo extends Component {
                   title="Cambiar de  Dirección" onPress={() => {
                      this.recuperarCobertura();
                   }
-
                   }
                   icon={
                      <Icon
@@ -293,7 +288,7 @@ export class ListCombo extends Component {
                            Mis Direcciones
                   </Text>
                      </View>
-                     <View >
+                     <View>
                         <FlatList
                            data={this.state.listaDireccionesCobertura}
                            renderItem={objeto => {
