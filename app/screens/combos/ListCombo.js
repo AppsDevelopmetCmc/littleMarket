@@ -140,7 +140,7 @@ export class ListCombo extends Component {
          this.refrescarDireccion();
       }
       else {
-         Alert.alert("La Direccion Seleccionada no tiene Cobertura")
+         Alert.alert("La Dirección Seleccionada no tiene Cobertura")
       }
       this.setState({ mostrarModalDirecciones: false })
    }
