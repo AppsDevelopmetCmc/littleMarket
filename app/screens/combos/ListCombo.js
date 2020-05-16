@@ -17,7 +17,7 @@ import {
 // Importacion de los colores
 //Importando los colores
 import * as colores from '../../constants/Colores';
-import { AsociadoCalifica } from '../calificacion/AsociadoCalifica';
+import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 
 export class ListCombo extends Component {
    constructor() {
@@ -47,7 +47,7 @@ export class ListCombo extends Component {
       this.setState({ direccionPedido: global.direccionPedido.descripcion });
    };
 
-obtenerPedidoCalifica = mail => {
+   obtenerPedidoCalifica = mail => {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
@@ -76,7 +76,7 @@ obtenerPedidoCalifica = mail => {
    };
 
    componentDidMount() {
-this.obtenerPedidoCalifica(global.usuario);
+      this.obtenerPedidoCalifica(global.usuario);
       new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
          this.refrescarDireccion
@@ -129,12 +129,12 @@ this.obtenerPedidoCalifica(global.usuario);
                   />
                </View>
             </View>
-            <AsociadoCalifica
+            <PopupCalificaciones
                text="Iniciando Sesión con Facebook"
                isVisible={this.state.estadocalifica}
                pedido={this.state.pedidoCalifica}
                cambioVisibleCalifica={this.cambioVisibleCalifica}
-            ></AsociadoCalifica>
+            ></PopupCalificaciones>
          </SafeAreaView>
       );
    }
