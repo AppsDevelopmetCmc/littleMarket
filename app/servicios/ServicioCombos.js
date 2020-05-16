@@ -7,10 +7,10 @@ export class ServicioCombos {
          .collection('combos')
          .doc(combo.id)
          .set(combo)
-         .then(function() {
+         .then(function () {
             Alert.alert('Combo agregado');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
@@ -22,25 +22,25 @@ export class ServicioCombos {
          .collection('productosCombo')
          .doc(producto.id)
          .set(producto)
-         .then(function() {
+         .then(function () {
             Alert.alert('Producto Combo agregado');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
 
-   eliminarComboProducto = (idCombo,idProd) => {
+   eliminarComboProducto = (idCombo, idProd) => {
       global.db
          .collection('combos')
          .doc(idCombo)
          .collection('productosCombo')
          .doc(idProd)
          .delete()
-         .then(function() {
+         .then(function () {
             console.log('Document successfully deleted!');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             console.error('Error removing document: ', error);
          });
    };
@@ -49,10 +49,10 @@ export class ServicioCombos {
          .collection('combos')
          .doc(id)
          .delete()
-         .then(function() {
+         .then(function () {
             console.log('Document successfully deleted!');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             console.error('Error removing document: ', error);
          });
    };
@@ -65,18 +65,18 @@ export class ServicioCombos {
             precio: objeto.precio,
             alias: objeto.alias,
          })
-         .then(function() {
+         .then(function () {
             Alert.alert('Combo Actualizado');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
 
    registrarEscuchaTodas = (arreglo, fnRepintar) => {
       let arregloUtil = new ArregloUtil(arreglo);
-      global.db.collection('combos').onSnapshot(function(snapShot) {
-         snapShot.docChanges().forEach(function(change) {
+      global.db.collection('combos').onSnapshot(function (snapShot) {
+         snapShot.docChanges().forEach(function (change) {
             if (change.type == 'added') {
                arregloUtil.agregar(change.doc.data(), fnRepintar);
             }
@@ -96,8 +96,8 @@ export class ServicioCombos {
          .collection('combos')
          .doc(idCombo)
          .collection('productosCombo')
-         .onSnapshot(function(snapShot) {
-            snapShot.docChanges().forEach(function(change) {
+         .onSnapshot(function (snapShot) {
+            snapShot.docChanges().forEach(function (change) {
                if (change.type == 'added') {
                   arregloUtil.agregar(change.doc.data(), fnRepintar);
                }
@@ -111,23 +111,57 @@ export class ServicioCombos {
          });
    };
 
-   getRecuperarComboProductos = async (idCombo,fnRepintar) => {
+   getRecuperarComboProductos = async (idCombo, fnRepintar) => {
       global.db
          .collection('combos')
-         .doc(idCombo).collection('productosCombo').get()
-         .then(async function(coleccionComboProd) {
-
+         .doc(idCombo)
+         .collection('productosCombo')
+         .get()
+         .then(async function (coleccionComboProd) {
             let documentos = coleccionComboProd.docs;
             let productosComboProd = [];
-            for(let i=0;i<documentos.length;i++)
-            {
+            for (let i = 0; i < documentos.length; i++) {
                productosComboProd.push(documentos[i].data());
             }
             fnRepintar(productosComboProd);
          })
-         .catch(function(error) {
+         .catch(function (error) {
             Alert.alert('Error catch-->' + error);
          });
    };
-   
+
+   recuperarCombos = fnRepintar => {
+      global.db
+         .collection('combos')
+         .get()
+         .then(querySnapShot => {
+            let documentos = querySnapShot.docs;
+            let combos = [];
+            for (let i = 0; i < documentos.length; i++) {
+               combos.push(documentos[i].data());
+            }
+            fnRepintar(combos);
+            for (let i = 0; i < combos.length; i++) {
+               this.recuperarComboProductos(combos[i].id);
+            }
+         });
+   };
+   recuperarComboProductos = async idCombo => {
+      global.db
+         .collection('combos')
+         .doc(idCombo)
+         .collection('productosCombo')
+         .get()
+         .then(async function (coleccionComboProd) {
+            let documentos = coleccionComboProd.docs;
+            let productosComboProd = [];
+            for (let i = 0; i < documentos.length; i++) {
+               productosComboProd.push(documentos[i].data());
+            }
+            global.combos[idCombo] = productosComboProd;
+         })
+         .catch(function (error) {
+            Alert.alert('Error catch-->' + error);
+         });
+   };
 }

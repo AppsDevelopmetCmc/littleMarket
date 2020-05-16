@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox  } from 'react-native-elements';
+import { CheckBox } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerActions } from '@react-navigation/native';
 
@@ -15,18 +15,17 @@ import {
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
-import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion'
+import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
-
 import * as Permisos from 'expo-permissions';
-import {Notificaciones} from 'expo';
+import { Notificaciones } from 'expo';
 
-const getToken= async()=>{
+/*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
       return;
@@ -35,7 +34,7 @@ const getToken= async()=>{
    console.log(token);
    return token;
 
-}
+}*/
 
 export class ListCombo extends Component {
    constructor(props) {
@@ -51,24 +50,23 @@ export class ListCombo extends Component {
          mostrarModalDirecciones: false,
          direccionPedido: null,
       };
-
-
+      let srvCombos = new ServicioCombos();
+      srvCombos.recuperarCombos(this.repintarLista);
    }
 
    componentDidMount() {
-      let srvCombos = new ServicioCombos();
       let combos = [];
-      srvCombos.registrarEscuchaTodas(combos, this.repintarLista);
+
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
-         Alert.alert("No existe Cobertura para la Direccion ")
+         Alert.alert('No existe Cobertura para la Direccion ');
       }
       new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
          this.refrescarDireccion
       );
-          getToken();
+      // getToken();
    }
 
    obtenerCoordenadas = async () => {
@@ -81,24 +79,19 @@ export class ListCombo extends Component {
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
       this.localizacionActual = location;
-   }
+   };
 
    obtenerUbicacionActual = () => {
-      this.props.navigation.navigate(
-         'Mapa',
-         {
-            origen: 'actual',
-            coordenadasActuales: this.localizacionActual,
-            pantallaOrigen: 'lsCombo'
-         }
-      );
-      this.setState({mostrarModalDirecciones:false});
-
-   }
-
+      this.props.navigation.navigate('Mapa', {
+         origen: 'actual',
+         coordenadasActuales: this.localizacionActual,
+         pantallaOrigen: 'lsCombo',
+      });
+      this.setState({ mostrarModalDirecciones: false });
+   };
 
    repintarLista = combos => {
-      global.combos = combos
+      global.combos = combos;
       this.setState({
          listCombos: combos,
       });
@@ -113,39 +106,37 @@ export class ListCombo extends Component {
    };
 
    abrirMonedero = () => {
-      //mostrar el valor 
+      //mostrar el valor
       //this.props.navigation.navigate('CarroComprasScreen');
-      
    };
 
    abrirNotificacion = () => {
       this.props.navigation.navigate('NotificacionScreen');
    };
 
- recuperarCobertura = () => {
+   recuperarCobertura = () => {
       let servDirecciones = new ServicioDirecciones();
-      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion)
-   }
+      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
+   };
 
    repintarDireccion = direcciones => {
       this.setState({
          listaDireccionesCobertura: direcciones,
-         mostrarModalDirecciones: true
+         mostrarModalDirecciones: true,
       });
    };
 
-   seleccionarDireccion = (direccion) => {
+   seleccionarDireccion = direccion => {
       global.direccionPedido = direccion;
       this.refrescarDireccion();
-   }
+   };
 
    refrescarDireccion = () => {
       this.setState({
          direccionPedido: global.direccionPedido.descripcion,
-         mostrarModalDirecciones: false
+         mostrarModalDirecciones: false,
       });
    };
-
 
    render() {
       return (
@@ -161,7 +152,6 @@ export class ListCombo extends Component {
                      onPress={this.abrirDrawer}
                   />
                }
-               
                iconoMonedero={
                   <Icon
                      name="coin"
@@ -173,7 +163,6 @@ export class ListCombo extends Component {
                      underlayColor={colores.colorPrimarioVerde}
                   />
                }
-
                iconoNotificacion={
                   <Icon
                      name="bell-circle-outline"
@@ -195,19 +184,15 @@ export class ListCombo extends Component {
                   />
                }
             ></CabeceraPersonalizada>
-            <View >
-               <Button buttonStyle={styles.estiloBotonVerde}
-                  titleStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     13,
-                     'bold'
-                  )}
+            <View>
+               <Button
+                  buttonStyle={styles.estiloBotonVerde}
+                  titleStyle={textEstilo(colores.colorOscuroTexto, 13, 'bold')}
                   containerStyle={styles.estiloContenedor}
-                  title="Cambiar de  Dirección" onPress={() => {
+                  title="Cambiar de  Dirección"
+                  onPress={() => {
                      this.recuperarCobertura();
-                  }
-
-                  }
+                  }}
                   icon={
                      <Icon
                         name="map-marker"
@@ -215,7 +200,8 @@ export class ListCombo extends Component {
                         color={colores.colorPrimarioTomate}
                         style={styles.iconos}
                      />
-                  } />
+                  }
+               />
             </View>
             <View style={styles.contenedorDireccione}>
                <Text>{this.state.direccionPedido}</Text>
@@ -224,7 +210,8 @@ export class ListCombo extends Component {
             <Modal
                animationType="slide"
                transparent={true}
-               visible={this.state.mostrarModalDirecciones}>
+               visible={this.state.mostrarModalDirecciones}
+            >
                <View style={styles.centeredView}>
                   <View style={styles.modalView}>
                      <View style={styles.boton}>
@@ -242,10 +229,10 @@ export class ListCombo extends Component {
                                  'BusquedaDireccionesScreen',
                                  {
                                     origen: 'nuevo',
-                                    pantallaOrigen: 'lsCombo'
+                                    pantallaOrigen: 'lsCombo',
                                  }
                               );
-                              this.setState({ mostrarModalDirecciones: false })
+                              this.setState({ mostrarModalDirecciones: false });
                            }}
                            icon={
                               <Icon
@@ -286,9 +273,9 @@ export class ListCombo extends Component {
                            ]}
                         >
                            Mis Direcciones
-                  </Text>
+                        </Text>
                      </View>
-                     <View >
+                     <View>
                         <FlatList
                            data={this.state.listaDireccionesCobertura}
                            renderItem={objeto => {
@@ -306,12 +293,11 @@ export class ListCombo extends Component {
                         />
                      </View>
                      <View style={{ marginTop: 20 }}>
-                        <Button title='Cancelar'
+                        <Button
+                           title="Cancelar"
                            onPress={() => {
-                              this.setState({ mostrarModalDirecciones: false })
-                           }
-
-                           }
+                              this.setState({ mostrarModalDirecciones: false });
+                           }}
                         />
                      </View>
                   </View>
@@ -377,8 +363,8 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    centeredView: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "stretch",
+      justifyContent: 'center',
+      alignItems: 'stretch',
       marginTop: 10,
    },
    modalView: {
@@ -386,8 +372,8 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioAmarillo,
       borderRadius: 20,
       padding: 35,
-      alignItems: "stretch",
-      shadowColor: "#000",
+      alignItems: 'stretch',
+      shadowColor: '#000',
    },
    container: {
       flex: 1,
@@ -472,5 +458,4 @@ const styles = StyleSheet.create({
       margin: 0,
    },
    iconos: { marginRight: 10 },
-
 });

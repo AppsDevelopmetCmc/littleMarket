@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
-import { View, Text } from 'react-native';
+import { AsyncStorage, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -27,7 +27,7 @@ import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
 import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
-import { DireccionesCrud } from '../map/DireccionesCrud'
+import { DireccionesCrud } from '../map/DireccionesCrud';
 
 // Splash de carga
 import Cargando from '../../components/Cargando';
@@ -39,7 +39,7 @@ import { ListCombo } from '../combos/ListCombo';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
-import {Notificacion} from '../notificaciones/Notificacion';
+import { Notificacion } from '../notificaciones/Notificacion';
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -124,7 +124,7 @@ function ScreensFromTabs() {
             name="NotificacionScreen"
             component={Notificacion}
             options={navOptionHandler(false)}
-         />         
+         />
          <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
@@ -142,14 +142,8 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
-            name="Mapa"
-            component={Mapa}
-         />
-         <StackDirection.Screen
-            name="Direcciones"
-            component={Direcciones}
-         />
+         <StackDirection.Screen name="Mapa" component={Mapa} />
+         <StackDirection.Screen name="Direcciones" component={Direcciones} />
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
@@ -238,7 +232,7 @@ function DirectionStack() {
 
 function DirectionCrudStack() {
    return (
-      <StackDirection.Navigator initialRouteName='DireccionesCrudScreen'>
+      <StackDirection.Navigator initialRouteName="DireccionesCrudScreen">
          <StackDirection.Screen
             name="Mapa"
             component={Mapa}
@@ -322,35 +316,58 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   const [tieneCobertura, setTieneCobertura] = useState(false);
-   const [recuperaCobertura, setRecuperaCobertura] = useState(false);
-   /* useEffect(() => {
-      new ServicioDirecciones().tieneCobertura(global.usuario);
-   }, [login]);*/
+   const [tieneCobertura, setTieneCobertura] = useState(null);
+   console.log('***NavegadorInicio render *****');
+   if (!global.empiezaCarga) {
+      global.empiezaCarga = new Date().getTime();
+   }
 
-   global.activarCobertura = () => {
-      setTieneCobertura(true);
+   global.activarCobertura = async bandera => {
+      console.log('ACTIVAR COBERTURA');
+      try {
+         console.log('GUARDA en el storage:');
+         await AsyncStorage.setItem('cobertura_' + global.usuario, bandera);
+      } catch (error) {
+         // Error saving data
+      }
+      setTieneCobertura(bandera);
    };
-
-   //Disparar un proceso de consulta y que muestre cargando
-   //hasta terminar de traer la info del usuario en caso
-   //de que esté logueado, junto con la info de dirección
-
    // Funcion para recuperar info de logue
    const infoLogin = async () => {
       try {
-         await firebase.auth().onAuthStateChanged(async user => {
+         firebase.auth().onAuthStateChanged(async user => {
             !user ? setLogin(false) : setLogin(true);
+
             if (user) {
                global.usuario = user.email;
                global.infoUsuario = user.providerData[0];
-               console.log(global.infoUsuario);
-               new ServicioDirecciones().tieneCobertura(
-                  global.usuario,
-                  setRecuperaCobertura
+               console.log(
+                  '***NavegadorInicio info usuario:',
+                  new Date().getTime() - global.empiezaCarga,
+                  global.infoUsuario
                );
-            } else {
-               setRecuperaCobertura(true);
+
+               try {
+                  const value = await AsyncStorage.getItem(
+                     'cobertura_' + global.usuario
+                  );
+                  if (value == 'S') {
+                     // We have data!!
+                     console.log('recupera del storage:', value);
+                     //  setRecuperaCobertura(true);
+                     setTieneCobertura(true);
+                  } else if (value == 'N') {
+                     //setRecuperaCobertura(true);
+                     setTieneCobertura(false);
+                  } else {
+                     console.log('NO recupera del storage:', value);
+                     new ServicioDirecciones().tieneCobertura(global.usuario);
+                  }
+               } catch (error) {
+                  // Error retrieving data
+               }
+
+               agregaInfo();
             }
          });
       } catch (error) {
@@ -389,7 +406,7 @@ export default function NavegadorInicio() {
                   .catch(error => {
                      console.log(error);
                   });
-                  //llamar a otro global db para guardar el referido x priemra vez
+               //llamar a otro global db para guardar el referido x priemra vez
                infoUsuarioGuardar.id = global.usuario;
                global.appUsuario = infoUsuarioGuardar;
             }
@@ -400,48 +417,55 @@ export default function NavegadorInicio() {
    };
 
    useEffect(() => {
-      infoLogin();
-      if (login) {
-         agregaInfo();
-      }
-
-      return function cleanup() {
+      if (login === null) {
+         console.log(
+            '*** SMO *** dispara useEffect',
+            new Date().getTime() - global.empiezaCarga
+         );
          infoLogin();
-         if (login) {
-            agregaInfo();
-         }
-      };
+      }
    }, [login]);
 
    if (login === null) {
-      return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+      console.log(
+         '*** SMO *** login es null',
+         new Date().getTime() - global.empiezaCarga
+      );
+      return <Cargando isVisible={true} text="Cargando"></Cargando>;
    } else {
-      if (!recuperaCobertura) {
-         return <Cargando isVisible={true} text="Cargando ..."></Cargando>;
+      console.log(
+         '*** SMO *** login no es null / tieneCobertura',
+         new Date().getTime() - global.empiezaCarga,
+         tieneCobertura
+      );
+
+      if (tieneCobertura == null && login) {
+         return <Cargando isVisible={true} text="Cargando"></Cargando>;
       }
+
       return (
          <NavigationContainer>
             {login ? (
                tieneCobertura ? (
                   HomeDraw()
                ) : (
-                     <StackAuthentication.Navigator>
-                        <StackAuthentication.Screen
-                           name="DireccionStack"
-                           component={DirectionStack}
-                           options={navOptionHandler(false)}
-                        />
-                     </StackAuthentication.Navigator>
-                  )
-            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
+                        name="DireccionStack"
+                        component={DirectionStack}
                         options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
+                     />
                   </StackAuthentication.Navigator>
-               )}
+               )
+            ) : (
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
