@@ -19,8 +19,8 @@ export class DetalleCombo extends Component {
    }
 
    componentDidMount() {
-      let srvCombos = new ServicioCombos();
-      srvCombos.getRecuperarComboProductos(this.combo.id, this.repintarLista);
+      //  let srvCombos = new ServicioCombos();
+      // srvCombos.getRecuperarComboProductos(this.combo.id, this.repintarLista);
    }
 
    repintarLista = productosCombo => {
@@ -68,7 +68,7 @@ export class DetalleCombo extends Component {
             <View style={styles.pie}>
                <View style={styles.contenedorLista}>
                   <FlatList
-                     data={this.state.listProductosCombo}
+                     data={global.combos[this.combo.id]}
                      renderItem={objeto => {
                         return (
                            <ItemComboProducto comboProducto={objeto.item} />
@@ -127,6 +127,13 @@ export class DetalleCombo extends Component {
    };
 }
 
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
 const styles = StyleSheet.create({
    container: {
       flex: 1,

@@ -2,30 +2,34 @@ import { ArregloUtil } from '../utils/utils';
 import { Alert } from 'react-native';
 
 export class ServicioDirecciones {
-   crear = (idCliente, direccion) => {
-      global.db
+   crear = async (idCliente, direccion) => {
+      let id = '';
+      await global.db
          .collection('clientes')
          .doc(idCliente)
          .collection('direcciones')
          .add(direccion)
-         .then(function () {
-            Alert.alert('Direccion Agregado');
+         .then(async function (dataDireccion) {
+            Alert.alert('Direccion1 Agregado');
+            id = dataDireccion.id;
          })
          .catch(function (error) {
             Alert.alert('error' + error);
          });
+      return id;
    };
 
-   actualizar = (idCLiente, idDireccion, direccion) => {
+   actualizar = (idCliente, idDireccion, direccion) => {
       global.db
          .collection('clientes')
-         .doc(idCLiente)
+         .doc(idCliente)
          .collection('direcciones')
          .doc(idDireccion)
          .update({
             descripcion: direccion.descripcion,
             latitud: direccion.latitud,
             longitud: direccion.longitud,
+            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
             Alert.alert('Direccion Actualizado');
@@ -93,7 +97,7 @@ export class ServicioDirecciones {
       return coberturaGlobalDireccion;
    };
 
-   tieneCobertura = async (idCliente, fnRecuperarCobertura) => {
+   tieneCobertura = async idCliente => {
       console.log('consulta tiene cobertura:' + idCliente);
       let respuesta = await global.db
          .collection('clientes')
@@ -103,11 +107,10 @@ export class ServicioDirecciones {
          .get();
 
       if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
-         global.activarCobertura();
+         global.activarCobertura(true);
       } else {
-         console.log('no tiene cobertura');
+         global.activarCobertura(false);
       }
-      fnRecuperarCobertura(true);
    };
 
    recuperarPrincipal = async (idCliente, fnRefrescarDireccion) => {
@@ -123,6 +126,73 @@ export class ServicioDirecciones {
          fnRefrescarDireccion();
       } else {
          console.log('no tiene cobertura');
+      }
+   };
+
+   getTieneCobertura = async (idCliente, fnRepintarDireccion) => {
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .where('tieneCoberturaDireccion', '==', 'S')
+         .get();
+      let listaDirecciones = [];
+      if (respuesta.docs && respuesta.docs.length > 0) {
+         for (let i = 0; i < respuesta.docs.length; i++) {
+            let direccion = [];
+            direccion = respuesta.docs[i].data();
+            direccion.id = respuesta.docs[i].id;
+            listaDirecciones.push(direccion);
+         }
+      } else {
+         console.log('No tiene Direcciones con Cobertura');
+      }
+      fnRepintarDireccion(listaDirecciones);
+   };
+
+   guardarReferencia = (idCliente, idDireccion, referenciaDireccion) => {
+      global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .doc(idDireccion)
+         .update({
+            referencia: referenciaDireccion.referencia,
+            alias: referenciaDireccion.alias,
+            principal: referenciaDireccion.principal,
+         })
+         .then(function () {
+            Alert.alert('Direccion Actualizado');
+         })
+         .catch(function (error) {
+            Alert.alert('error' + error);
+         });
+   };
+
+   actualizarPrincipalTodosNo = async idCliente => {
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .where('principal', '==', 'S')
+         .get();
+      if (respuesta.docs && respuesta.docs.length > 0) {
+         for (let i = 0; i < respuesta.docs.length; i++) {
+            await global.db
+               .collection('clientes')
+               .doc(idCliente)
+               .collection('direcciones')
+               .doc(respuesta.docs[i].id)
+               .update({
+                  principal: 'N',
+               })
+               .then(function () {
+                  console.log('Direccion principal Actualizado');
+               })
+               .catch(function (error) {
+                  Alert.alert('error' + error);
+               });
+         }
       }
    };
 }

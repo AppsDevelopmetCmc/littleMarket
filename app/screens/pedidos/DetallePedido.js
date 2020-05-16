@@ -3,6 +3,14 @@ import { View, StyleSheet, FlatList } from 'react-native';
 import {Text } from 'react-native-elements';
 import { ServicioPedidos } from '../../servicios/ServicioPedidos';
 import {ItemDetallePedido} from './componentes/ItemDetallePedido'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Icon } from 'react-native-elements';
+
+//Importacion de los colores
+import * as colores from '../../constants/Colores';
+// Importacion de Cabecera Personalizada
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -33,9 +41,35 @@ export class DetallePedido extends Component {
    render() {
       //let combo = this.props.route.params.pedido;
       return (
-        <View styles={styles.container}>
-            <Text>DETALLE DE PEDIDOS </Text>
-            {
+         <SafeAreaView style={styles.container}>
+            <CabeceraPersonalizada
+               titulo={'Yappando'}
+               iconoComponente={
+                  <Icon
+                     name="menu"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirDrawer}
+                  />
+               }
+               iconoDeTienda={
+                  <Icon
+                     name="cart"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={30}
+                     onPress={this.abrirCarrito}
+                     underlayColor={colores.colorPrimarioVerde}
+                  />
+               }
+            ></CabeceraPersonalizada>
+            <View style={styles.cabecera}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
+                  DETALLE DE PEDIDOS
+               </Text>
+            </View>
+            <View style={styles.pie}>
                <FlatList
                   data={this.state.listDetallePedido}
                   renderItem={objeto => {
@@ -48,53 +82,39 @@ export class DetallePedido extends Component {
                      return objeto.id;
                   }}
                />
-            }
          </View>
+         </SafeAreaView>
+
       );
    }
 }
 
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'stretch',
-      justifyContent: 'flex-start',
-      marginTop: 80,
+      backgroundColor: colores.colorPrimarioVerde,
    },
-   cantidad: {
-      flex: 1,
-      backgroundColor: 'blue',
-      flexDirection: 'row',
-      justifyContent: 'center',
+   pie: {
+      flex: 3,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      paddingLeft: 25,
+      marginTop: 15,
+      paddingTop: 20,
    },
-   elemento: {
-      flex: 1,
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 25,
+      paddingVertical: 10,
       alignItems: 'center',
-   },
-   caja: {
-      width: 40,
-      textAlign: 'right',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start',
-      borderColor: 'black',
-      borderWidth: 1,
-      marginLeft: 10,
-      marginRight: 10,
-      //  textAlign: 'right',
-      paddingRight: 5,
-   },
-   textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
-      marginTop: 0,
-      marginLeft: 10,
-   },
-   boton: {
       flexDirection: 'row',
-      justifyContent: 'center',
-   },
-   lista: {
-      flex: 1,
    },
 });
+ 

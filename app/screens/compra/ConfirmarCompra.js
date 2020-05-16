@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, StyleSheet, ScrollView } from 'react-native';
+import {
+   Text,
+   View,
+   FlatList,
+   StyleSheet,
+   ScrollView,
+   Linking,
+   Alert,
+} from 'react-native';
 import { Button, Card } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
@@ -20,6 +28,9 @@ import { formatearFechaISO } from '../../utils/DateUtil';
 export class ConfirmarCompra extends Component {
    constructor() {
       super();
+      if (!global.pagoSeleccionado) {
+         global.pagoSeleccionado = 'EF';
+      }
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -38,31 +49,24 @@ export class ConfirmarCompra extends Component {
    componentDidUpdate(prevProps, prevState) {
       if (prevState.deshabilitado) {
          if (this.state.horarioSeleccionado && this.state.fechaSeleccionada) {
-            if (global.pagoSeleccionado == 'EF') {
-               this.setState({ deshabilitado: false });
-            } else if (
-               global.pagoSeleccionado == 'TR' &&
-               global.transferencia
-            ) {
-               this.setState({ deshabilitado: false });
+            this.setState({ deshabilitado: false });
+         }
+         if (
+            this.state.horarioSeleccionado != prevState.horarioSeleccionado &&
+            !prevState.deshabilitado
+         ) {
+            if (!this.state.horarioSeleccionado) {
+               this.setState({ deshabilitado: true });
             }
          }
-      }
-      if (
-         this.state.horarioSeleccionado != prevState.horarioSeleccionado &&
-         !prevState.deshabilitado
-      ) {
-         if (!this.state.horarioSeleccionado) {
-            this.setState({ deshabilitado: true });
-         }
-      }
 
-      if (
-         this.state.fechaSeleccionada != prevState.fechaSeleccionada &&
-         !prevState.deshabilitado
-      ) {
-         if (!this.state.fechaSeleccionada) {
-            this.setState({ deshabilitado: true });
+         if (
+            this.state.fechaSeleccionada != prevState.fechaSeleccionada &&
+            !prevState.deshabilitado
+         ) {
+            if (!this.state.fechaSeleccionada) {
+               this.setState({ deshabilitado: true });
+            }
          }
       }
    }
@@ -154,11 +158,11 @@ export class ConfirmarCompra extends Component {
                            onPress={value => {
                               this.setState({ pagoSeleccionado: value });
                               global.pagoSeleccionado = value;
-                              if (value == 'TR') {
+                              /* if (value == 'TR') {
                                  this.props.navigation.navigate(
                                     'TransferenciaScreen'
                                  );
-                              }
+                              }*/
                            }}
                         />
                      </Card>
@@ -195,14 +199,21 @@ export class ConfirmarCompra extends Component {
                                  longitud: global.direccionPedido.longitud,
                                  telefono: global.appUsuario.telefono,
                                  total: global.total,
-                                 transferencia:
-                                    global.pagoSeleccionado == 'TR'
-                                       ? global.transferencia
-                                       : '',
                               },
                               items,
                               this.cerrarPantalla
                            );
+                           if (global.pagoSeleccionado == 'TR') {
+                              let text =
+                                 'He completado mi pedido, solicito información para transferencia';
+                              let numero = '593992920306';
+                              Linking.openURL(
+                                 'whatsapp://send?text=' +
+                                    text +
+                                    '&phone=' +
+                                    numero
+                              );
+                           }
                         }}
                      ></Button>
                   </View>

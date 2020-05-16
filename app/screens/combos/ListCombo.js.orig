@@ -15,6 +15,9 @@ import {
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
+<<<<<<< HEAD
+import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
+=======
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,8 +27,6 @@ import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
 import * as Permisos from 'expo-permissions';
 import { Notificaciones } from 'expo';
-
-import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
@@ -37,6 +38,7 @@ import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
    return token;
 
 }*/
+>>>>>>> master
 
 export class ListCombo extends Component {
    constructor(props) {
@@ -57,14 +59,13 @@ export class ListCombo extends Component {
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarCombos(this.repintarLista);
    }
-cambioVisibleCalifica = visible => {
-      this.setState({ estadocalifica: visible });
-   };
 
+<<<<<<< HEAD
+   cambioVisibleCalifica = visible => {
+      this.setState({ estadocalifica: visible });
+=======
    componentDidMount() {
       let combos = [];
-
-       this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
@@ -97,6 +98,7 @@ cambioVisibleCalifica = visible => {
          pantallaOrigen: 'lsCombo',
       });
       this.setState({ mostrarModalDirecciones: false });
+>>>>>>> master
    };
 
    repintarLista = combos => {
@@ -106,7 +108,7 @@ cambioVisibleCalifica = visible => {
       });
    };
 
-obtenerPedidoCalifica = mail => {
+   obtenerPedidoCalifica = mail => {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
@@ -134,6 +136,15 @@ obtenerPedidoCalifica = mail => {
       this.props.navigation.navigate('CarroComprasScreen');
    };
 
+<<<<<<< HEAD
+   componentDidMount() {
+      this.obtenerPedidoCalifica(global.usuario);
+      new ServicioDirecciones().recuperarPrincipal(
+         global.usuario,
+         this.refrescarDireccion
+      );
+   }
+=======
    abrirMonedero = () => {
       //mostrar el valor
       //this.props.navigation.navigate('CarroComprasScreen');
@@ -167,6 +178,7 @@ obtenerPedidoCalifica = mail => {
       });
    };
 
+>>>>>>> master
    render() {
       return (
          <SafeAreaView style={styles.container}>
