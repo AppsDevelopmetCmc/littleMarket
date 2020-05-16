@@ -57,14 +57,14 @@ export class ListCombo extends Component {
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarCombos(this.repintarLista);
    }
-cambioVisibleCalifica = visible => {
+   cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
    };
 
    componentDidMount() {
       let combos = [];
 
-       this.obtenerPedidoCalifica(global.usuario);
+      this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
@@ -106,7 +106,7 @@ cambioVisibleCalifica = visible => {
       });
    };
 
-obtenerPedidoCalifica = mail => {
+   obtenerPedidoCalifica = mail => {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
