@@ -107,7 +107,7 @@ export class DireccionesCrud extends Component {
          global.usuario
       );
       if (coberturaDireccion == true) {
-         global.activarCobertura();
+         global.activarCobertura(true);
       } else {
          Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura');
       }

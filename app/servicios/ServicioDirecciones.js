@@ -10,7 +10,7 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .add(direccion)
          .then(async function (dataDireccion) {
-            Alert.alert('Direccion1 Agregado');
+            Alert.alert('Dirección Agregado');
             id = dataDireccion.id;
          })
          .catch(function (error) {
@@ -32,7 +32,7 @@ export class ServicioDirecciones {
             tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
-            Alert.alert('Direccion Actualizado');
+            Alert.alert('Dirección Actualizada');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
@@ -46,7 +46,7 @@ export class ServicioDirecciones {
          .doc(idDireccion)
          .delete()
          .then(function () {
-            Alert.alert('Direccion Eliminada');
+            Alert.alert('Dirección Eliminada');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
@@ -162,7 +162,7 @@ export class ServicioDirecciones {
             principal: referenciaDireccion.principal,
          })
          .then(function () {
-            Alert.alert('Direccion Actualizado');
+            Alert.alert('Datos de Referencia Actualizado');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
@@ -187,7 +187,7 @@ export class ServicioDirecciones {
                   principal: 'N',
                })
                .then(function () {
-                  console.log('Direccion principal Actualizado');
+                  console.log('Dirección principal Actualizado');
                })
                .catch(function (error) {
                   Alert.alert('error' + error);
