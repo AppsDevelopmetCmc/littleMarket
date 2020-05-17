@@ -31,6 +31,10 @@ export function FormCalificacionesProductos(props) {
       titulo,
       parrafo,
       placeholderComentario,
+      idPedido,
+      itemLista,
+      numeroEstrellas,
+      validacionEstrellas,
    } = props;
 
    // Metodo que calcula el valor de las strellas
@@ -54,23 +58,26 @@ export function FormCalificacionesProductos(props) {
             <View style={styles.view}>
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoTitulo}>{titulo}</Text>
+                  <Text style={styles.estiloTextoSubTitulo}>{idPedido}</Text>
                </View>
+
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoParrafo}>{parrafo}</Text>
                </View>
                <View style={styles.contenedorViews}>
                   <Rating
+                     type="custom"
                      styles={styles.puntuacionEstilo}
                      imageSize={30}
-                     startingValue={4}
+                     startingValue={numeroEstrellas}
                      fractions={2}
-                     ratingColor={colores.colorPrimarioTomate}
+                     ratingColor={colores.colorPrimarioAmarillo}
                      onFinishRating={ratingCompleted}
                   ></Rating>
                </View>
 
                <View style={{ paddingVertical: 25 }}>
-                  {puntuacion <= 3.5 && (
+                  {puntuacion <= validacionEstrellas && (
                      <View
                         style={{
                            paddingVertical: 10,
@@ -82,7 +89,7 @@ export function FormCalificacionesProductos(props) {
                      >
                         <RadioForm
                            radio_props={radio_props}
-                           initial={-1}
+                           initial={itemLista}
                            formHorizontal={false}
                            labelHorizontal={true}
                            buttonColor={colores.colorPrimarioTomate}
@@ -106,6 +113,7 @@ export function FormCalificacionesProductos(props) {
                      alignContent: 'center',
                      justifyContent: 'center',
                      paddingHorizontal: 10,
+                     paddingBottom: 30,
                   }}
                >
                   <Text
@@ -146,7 +154,6 @@ const styles = StyleSheet.create({
       borderRadius: 15,
    },
    view: {
-      flex: 1,
       alignItems: 'center',
       alignContent: 'center',
       justifyContent: 'center',
@@ -156,14 +163,14 @@ const styles = StyleSheet.create({
       color: colores.colorPrimarioTomate,
       fontWeight: 'bold',
       textTransform: 'uppercase',
-      fontSize: 14,
+      fontSize: 17,
    },
    estiloTextoParrafo: {
       color: colores.colorOscuroTexto,
       fontWeight: 'normal',
       fontSize: 13,
    },
-   contenedorViews: { paddingVertical: 10 },
+   contenedorViews: { paddingVertical: 10, alignItems: 'center' },
    contenedorWrap: { marginVertical: 5 },
    btnStyles: {
       marginTop: 50,
@@ -175,5 +182,11 @@ const styles = StyleSheet.create({
       padding: 10,
       backgroundColor: colores.colorBlanco,
       borderRadius: 25,
+   },
+   estiloTextoSubTitulo: {
+      color: colores.colorOscuroTexto,
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      fontSize: 10,
    },
 });

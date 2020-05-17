@@ -51,7 +51,7 @@ export class ListCombo extends Component {
          listaDireccionesCobertura: direcciones,
          mostrarModalDirecciones: false,
          direccionPedido: null,
-         pedidoCalifica: null,
+         pedidoCalifica: {},
          estadocalifica: false,
       };
       let srvCombos = new ServicioCombos();
@@ -106,8 +106,11 @@ export class ListCombo extends Component {
       });
    };
 
-   obtenerPedidoCalifica = mail => {
-      global.db
+   obtenerPedidoCalifica = async mail => {
+      console.log('mail', mail);
+      console.log('Ingreso a recuperar el pedido');
+
+      await global.db
          .collection('pedidos')
          .where('mail', '==', mail)
          .where('estado', '==', 'PE')
@@ -115,11 +118,16 @@ export class ListCombo extends Component {
          .then(querySnapshot => {
             let pedido = {};
             querySnapshot.forEach(doc => {
-               pedido = doc.data();
-               pedido.id = doc.id;
-               this.setState({ estadocalifica: true });
+               console.log('doc', doc);
+               if (doc.exists) {
+                  pedido = doc.data();
+                  pedido.id = doc.id;
+                  this.setState({
+                     pedidoCalifica: pedido,
+                     estadocalifica: true,
+                  });
+               }
             });
-            this.setState({ pedidoCalifica: pedido, estadocalifica: true });
          })
          .catch(error => {
             console.log(error);

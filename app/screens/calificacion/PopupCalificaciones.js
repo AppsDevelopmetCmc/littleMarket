@@ -31,28 +31,22 @@ export function PopupCalificaciones(props) {
    const [varPresentacion, setVarPresentacion] = useState(0);
    const varItemDefault = -1;
    const varEstrellaDefault = 4;
+
+   const [validacionEstrellas, setValidacionEstrellas] = useState();
    // Calificacion Pedido
    const [puntuacionPedido, setPuntuacionPedido] = useState(4);
-   const [radio_propsPedio, setRadio_PropsPedido] = useState([
-      { label: 'No cumplio las medidas de bioseguridad', value: 0 },
-      { label: 'Hora de entrega atrasada', value: 1 },
-      { label: 'No respeto a su cliente', value: 2 },
-      { label: 'Otra', value: 3 },
-   ]);
+   const [radio_propsPedio, setRadio_PropsPedido] = useState([]);
 
    const [quejaPedido, setQuejaPedido] = useState(-1);
    const [detallePedido, setDetallePedido] = useState('');
 
    // Calificacion  del producto
-   const [radio_propsProducto, setRadio_PropsProducto] = useState([
-      { label: 'El producto esta pasado', value: 0 },
-      { label: 'El producto no esta sanitizado', value: 1 },
-      { label: 'No es lo que esperaba del producto', value: 2 },
-      { label: 'Otra', value: 3 },
-   ]);
+   const [radio_propsProducto, setRadio_PropsProducto] = useState([]);
    const [puntuacionProducto, setPuntuacionProducto] = useState(4);
    const [quejaProducto, setQuejaProducto] = useState(-1);
    const [detalleProducto, setDetalleProducto] = useState('');
+
+   console.log('Pedido', pedido);
 
    console.log('------------------------------------------');
    console.log('calificación Pedido', puntuacionPedido);
@@ -62,6 +56,13 @@ export function PopupCalificaciones(props) {
    console.log('calificación Producto', puntuacionProducto);
    console.log('queja codigo producto', quejaProducto);
    console.log('detalle producto', detalleProducto);
+   console.log('listaPedido', radio_propsPedio);
+   console.log('listaProducto', radio_propsProducto);
+
+   // se utiliza el useEffect
+   useEffect(() => {
+      infoIncial();
+   }, []);
 
    // Metodo que valida el cambio de pantalla
    const validacionSiguiente = () => {
@@ -88,6 +89,48 @@ export function PopupCalificaciones(props) {
       }
    };
 
+   const manejoResp = (listaPedidos, listaProductos) => {
+      let listaRespuestaPed = [];
+      let listaRespuestaProd = [];
+      listaPedidos.forEach(elemento => {
+         let objetoRespuesta = {};
+         let elemt = elemento.split('|');
+         objetoRespuesta.value = elemt[0];
+         objetoRespuesta.label = elemt[1];
+         listaRespuestaPed.push(objetoRespuesta);
+      });
+      listaProductos.forEach(elemento => {
+         let objetoRespuesta = {};
+         let elemt = elemento.split('|');
+         objetoRespuesta.value = elemt[0];
+         objetoRespuesta.label = elemt[1];
+         listaRespuestaProd.push(objetoRespuesta);
+      });
+      setRadio_PropsPedido(listaRespuestaPed);
+      setRadio_PropsProducto(listaRespuestaProd);
+   };
+
+   const infoIncial = async () => {
+      console.log('ingreso a traer la info incial');
+
+      await global.db
+         .collection('parametros')
+         .doc('calificacion')
+         .get()
+         .then(doc => {
+            if (doc.exists) {
+               console.log('Document data:', doc.data());
+               manejoResp(doc.data().respPedido, doc.data().respProducto);
+               setValidacionEstrellas(doc.data().minimo);
+            } else {
+               console.log('No such document!');
+            }
+         })
+         .catch(error => {
+            console.log('Error al obtener el documento:', error);
+         });
+   };
+
    return (
       <Overlay
          isVisible={isVisible}
@@ -108,6 +151,8 @@ export function PopupCalificaciones(props) {
                   placeholderComentario={'El pedido estuvo perfecto'}
                   itemLista={varItemDefault}
                   numeroEstrellas={varEstrellaDefault}
+                  idPedido={pedido.id}
+                  validacionEstrellas={validacionEstrellas}
                />
                <View style={{ alignItems: 'flex-end', paddingBottom: 20 }}>
                   <Button
@@ -142,6 +187,10 @@ export function PopupCalificaciones(props) {
                   titulo={'Califica tu Producto'}
                   parrafo={msg.msg4}
                   placeholderComentario={'El producto estuvo perfecto'}
+                  itemLista={varItemDefault}
+                  numeroEstrellas={varEstrellaDefault}
+                  idPedido={pedido.id}
+                  validacionEstrellas={validacionEstrellas}
                />
                <View style={{ alignItems: 'center', paddingBottom: 20 }}>
                   <Button
