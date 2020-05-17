@@ -16,6 +16,11 @@ export class ItemDireccion extends Component {
       return (
          <View style={styles.fila}>
             <View style={styles.touch}>
+               <TouchableOpacity
+                  onPress={() => {
+                     this.props.fnActualizar(this.props.direccion);
+                  }}
+               >
                   <View style={styles.contenido}>
                      <View style={styles.subContenido}>
                         <View style={styles.estiloIconoCobertura}>
@@ -35,14 +40,30 @@ export class ItemDireccion extends Component {
                            )}
                         </View>
                         <View style={styles.descripcion}>
-                           <Text style={styles.texto}>Mi casa</Text>
+                           <Text style={styles.texto}>{this.props.direccion.alias}</Text>
                            <Text style={styles.texto}>
                               {this.props.direccion.descripcion}
                            </Text>
                         </View>
                      </View>
                   </View>
-
+               </TouchableOpacity>
+            </View>
+            <View style={styles.contenedorEliminar}>
+               <Button
+                  buttonStyle={styles.estiloBotonEliminar}
+                  onPress={() => {
+                     this.props.fnEliminar(this.props.direccion.id);
+                  }}
+                  icon={
+                     <Icon
+                        name="delete"
+                        size={15}
+                        color={colores.colorBlanco}
+                        style={styles.iconoStilos}
+                     />
+                  }
+               />
             </View>
          </View>
       );
