@@ -15,6 +15,9 @@ import {
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
+<<<<<<< HEAD
+import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
+=======
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -24,8 +27,6 @@ import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
 import * as Permisos from 'expo-permissions';
 import { Notificaciones } from 'expo';
-
-import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
@@ -37,6 +38,7 @@ import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
    return token;
 
 }*/
+>>>>>>> master
 
 export class ListCombo extends Component {
    constructor(props) {
@@ -51,20 +53,19 @@ export class ListCombo extends Component {
          listaDireccionesCobertura: direcciones,
          mostrarModalDirecciones: false,
          direccionPedido: null,
-         pedidoCalifica: {},
+         pedidoCalifica: null,
          estadocalifica: false,
       };
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarCombos(this.repintarLista);
    }
+
+<<<<<<< HEAD
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
-   };
-
+=======
    componentDidMount() {
       let combos = [];
-
-      this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
@@ -97,6 +98,7 @@ export class ListCombo extends Component {
          pantallaOrigen: 'lsCombo',
       });
       this.setState({ mostrarModalDirecciones: false });
+>>>>>>> master
    };
 
    repintarLista = combos => {
@@ -106,11 +108,8 @@ export class ListCombo extends Component {
       });
    };
 
-   obtenerPedidoCalifica = async mail => {
-      console.log('mail', mail);
-      console.log('Ingreso a recuperar el pedido');
-
-      await global.db
+   obtenerPedidoCalifica = mail => {
+      global.db
          .collection('pedidos')
          .where('mail', '==', mail)
          .where('estado', '==', 'PE')
@@ -118,16 +117,11 @@ export class ListCombo extends Component {
          .then(querySnapshot => {
             let pedido = {};
             querySnapshot.forEach(doc => {
-               console.log('doc', doc);
-               if (doc.exists) {
-                  pedido = doc.data();
-                  pedido.id = doc.id;
-                  this.setState({
-                     pedidoCalifica: pedido,
-                     estadocalifica: true,
-                  });
-               }
+               pedido = doc.data();
+               pedido.id = doc.id;
+               this.setState({ estadocalifica: true });
             });
+            this.setState({ pedidoCalifica: pedido, estadocalifica: true });
          })
          .catch(error => {
             console.log(error);
@@ -142,6 +136,15 @@ export class ListCombo extends Component {
       this.props.navigation.navigate('CarroComprasScreen');
    };
 
+<<<<<<< HEAD
+   componentDidMount() {
+      this.obtenerPedidoCalifica(global.usuario);
+      new ServicioDirecciones().recuperarPrincipal(
+         global.usuario,
+         this.refrescarDireccion
+      );
+   }
+=======
    abrirMonedero = () => {
       //mostrar el valor
       //this.props.navigation.navigate('CarroComprasScreen');
@@ -175,6 +178,7 @@ export class ListCombo extends Component {
       });
    };
 
+>>>>>>> master
    render() {
       return (
          <SafeAreaView style={styles.container}>
