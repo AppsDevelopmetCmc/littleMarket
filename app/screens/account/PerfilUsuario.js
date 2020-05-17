@@ -49,9 +49,7 @@ export default function PerfilUsuario(props) {
          }
       } else {
          global.db
-            .collection('infoApp')
-            .doc('clientes')
-            .collection('infoUsuario')
+            .collection('clientes')
             .doc(correoUsuario)
             .update({
                cedula: cedulaUsuario,

@@ -376,15 +376,15 @@ export default function NavegadorInicio() {
    };
 
    const agregaInfo = async () => {
+      console.log('ingreso a cargar la info del perfil');
+
       let documento = {};
       await global.db
-         .collection('infoApp')
-         .doc('clientes')
-         .collection('infoUsuario')
+         .collection('clientes')
          .doc(global.usuario)
          .get()
          .then(doc => {
-            if (doc.exists) {
+            if (doc.data().nombreCompleto) {
                documento = doc.data();
                documento.id = doc.id;
                global.appUsuario = documento;
@@ -395,9 +395,7 @@ export default function NavegadorInicio() {
                   global.infoUsuario.displayName;
                infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
                global.db
-                  .collection('infoApp')
-                  .doc('clientes')
-                  .collection('infoUsuario')
+                  .collection('clientes')
                   .doc(global.usuario)
                   .set(infoUsuarioGuardar)
                   .then(() => {

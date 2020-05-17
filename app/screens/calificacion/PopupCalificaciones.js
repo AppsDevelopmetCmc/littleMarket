@@ -1,45 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import {
-   StyleSheet,
-   View,
-   Text,
-   ActivityIndicator,
-   TextInput,
-   ScrollView,
-   Alert,
-} from 'react-native';
-import { Overlay, Button, Input } from 'react-native-elements';
-import { Rating } from 'react-native-elements';
-import RadioForm, {
-   RadioButton,
-   RadioButtonInput,
-   RadioButtonLabel,
-} from 'react-native-simple-radio-button';
+import { StyleSheet, View, Alert } from 'react-native';
+import { Overlay, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 
-// Importacion de colores
+// Importacion personalizadas
 import * as colores from '../../constants/Colores';
 import * as msg from '../../constants/Mensajes';
-
-// importacion navegacion
 import { FormCalificaciones } from './FormCalificaciones';
 import { FormCalificacionesProductos } from './FormCalificacionesProductos';
+import Cargando from '../../components/Cargando';
 
 export function PopupCalificaciones(props) {
-   const { isVisible, pedido, cambioVisibleCalifica } = props;
-   const [varPresentacion, setVarPresentacion] = useState(0);
+   //Constantes
    const varItemDefault = -1;
    const varEstrellaDefault = 4;
 
+   //Variables
+   const { isVisible, pedido, cambioVisibleCalifica } = props;
+   const [isLoading, setIsLoading] = useState(false);
+   const [varPresentacion, setVarPresentacion] = useState(0);
    const [validacionEstrellas, setValidacionEstrellas] = useState();
    // Calificacion Pedido
    const [puntuacionPedido, setPuntuacionPedido] = useState(4);
    const [radio_propsPedio, setRadio_PropsPedido] = useState([]);
-
    const [quejaPedido, setQuejaPedido] = useState(-1);
    const [detallePedido, setDetallePedido] = useState('');
-
    // Calificacion  del producto
    const [radio_propsProducto, setRadio_PropsProducto] = useState([]);
    const [puntuacionProducto, setPuntuacionProducto] = useState(4);
@@ -82,10 +67,10 @@ export function PopupCalificaciones(props) {
          if (quejaProducto == -1) {
             Alert.alert('Debe seleccionar una razón');
          } else {
-            cambioVisibleCalifica(!isVisible);
+            guardarFirebase();
          }
       } else {
-         cambioVisibleCalifica(!isVisible);
+         guardarFirebase();
       }
    };
 
@@ -128,6 +113,42 @@ export function PopupCalificaciones(props) {
          })
          .catch(error => {
             console.log('Error al obtener el documento:', error);
+         });
+   };
+
+   const guardarFirebase = async () => {
+      setIsLoading(true);
+      await global.db
+         .collection('asociados')
+         .doc(pedido.asociado)
+         .collection('pedidos')
+         .doc(pedido.id)
+         .set({
+            califPed: puntuacionPedido,
+            detallePed: detallePedido,
+            codQuejaPed: quejaPedido,
+            califProd: puntuacionProducto,
+            detalleProd: detalleProducto,
+            codQuejaProd: quejaProducto,
+         })
+         .then(() => {
+            global.db
+               .collection('pedidos')
+               .doc(pedido.id)
+               .update({
+                  estado: 'PC',
+               })
+               .then(() => {
+                  console.log('guardo correctamente');
+                  cambioVisibleCalifica(!isVisible);
+                  setIsLoading(false);
+               })
+               .catch(error => {
+                  console.log(error);
+               });
+         })
+         .catch(error => {
+            console.log(error);
          });
    };
 
@@ -205,6 +226,10 @@ export function PopupCalificaciones(props) {
                      onPress={validacionSalir}
                   ></Button>
                </View>
+               <Cargando
+                  text="Gracias por su calificación, estamos guardando su respuesta espere un momento"
+                  isVisible={isLoading}
+               ></Cargando>
             </View>
          )}
       </Overlay>
@@ -226,26 +251,6 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       borderRadius: 15,
    },
-   view: {
-      flex: 1,
-      alignItems: 'center',
-      alignContent: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 30,
-   },
-   estiloTextoTitulo: {
-      color: colores.colorPrimarioTomate,
-      fontWeight: 'bold',
-      textTransform: 'uppercase',
-      fontSize: 14,
-   },
-   estiloTextoParrafo: {
-      color: colores.colorOscuroTexto,
-      fontWeight: 'normal',
-      fontSize: 13,
-   },
-   contenedorViews: { paddingVertical: 10 },
-   contenedorWrap: { marginVertical: 5 },
    btnStyles: {
       marginTop: 50,
       width: '50%',
