@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
-import { CheckBox } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { DrawerActions } from '@react-navigation/native';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
@@ -18,6 +16,7 @@ import * as colores from '../../constants/Colores';
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/FontAwesome5';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
@@ -26,7 +25,7 @@ import * as Permisos from 'expo-permissions';
 import { Notificaciones } from 'expo';
 
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
-
+import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -55,25 +54,21 @@ export class ListCombo extends Component {
          estadocalifica: false,
       };
 
-
+      let srvCombos = new ServicioCombos();
+      srvCombos.recuperarCombos(this.repintarLista);
    }
+
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
    };
 
    componentDidMount() {
-      let srvCombos = new ServicioCombos();
-      let combos = [];
-
-      srvCombos.registrarEscuchaTodas(combos, this.repintarLista);
-
-
       this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
-         Alert.alert("No existe Cobertura para la Direccion ")
+         Alert.alert('No existe Cobertura para la Direccion ');
       }
       new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
@@ -92,21 +87,7 @@ export class ListCombo extends Component {
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
       this.localizacionActual = location;
-   }
-
-   obtenerUbicacionActual = () => {
-      this.props.navigation.navigate(
-         'Mapa',
-         {
-            origen: 'actual',
-            coordenadasActuales: this.localizacionActual,
-            pantallaOrigen: 'lsCombo'
-         }
-      );
-      this.setState({ mostrarModalDirecciones: false });
-
-   }
-
+   };
 
    repintarLista = combos => {
       global.combos = combos;
@@ -154,7 +135,6 @@ export class ListCombo extends Component {
    abrirMonedero = () => {
       //mostrar el valor
       //this.props.navigation.navigate('CarroComprasScreen');
-
    };
 
    abrirNotificacion = () => {
@@ -173,23 +153,25 @@ export class ListCombo extends Component {
       });
    };
 
-   seleccionarDireccion = (direccion) => {
+   seleccionarDireccion = direccion => {
       if (direccion.tieneCoberturaDireccion == 'S') {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
+      } else {
+         Alert.alert('La Dirección Seleccionada no tiene Cobertura');
       }
-      else {
-         Alert.alert("La Dirección Seleccionada no tiene Cobertura")
-      }
-      this.setState({ mostrarModalDirecciones: false })
-   }
+      this.setState({ mostrarModalDirecciones: false });
+   };
 
    refrescarDireccion = () => {
       this.setState({
-         direccionPedido: global.direccionPedido.descripcion
+         direccionPedido: global.direccionPedido.descripcion,
       });
    };
 
+   mostrarModal = bandera => {
+      this.setState({ mostrarModalDirecciones: bandera });
+   };
    render() {
       return (
          <SafeAreaView style={styles.container}>
@@ -236,126 +218,66 @@ export class ListCombo extends Component {
                   />
                }
             ></CabeceraPersonalizada>
-            <View >
-               <Button buttonStyle={styles.estiloBotonVerde}
-                  titleStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     13,
-                     'bold'
-                  )}
-                  containerStyle={styles.estiloContenedor}
-                  title="Cambiar de  Dirección" onPress={() => {
-                     this.recuperarCobertura();
-                  }
-                  }
-                  icon={
-                     <Icon
-                        name="map-marker"
-                        size={20}
-                        color={colores.colorPrimarioTomate}
-                        style={styles.iconos}
-                     />
-                  } />
-            </View>
-            <View style={styles.contenedorDireccione}>
-               <Text>{this.state.direccionPedido}</Text>
-            </View>
+
+            {this.state.direccionPedido ? (
+               <View>
+                  <Text style={{ marginLeft: 20, color: 'gray' }}>
+                     Dirección de Entrega
+                  </Text>
+
+                  <View style={styles.contenedorDireccione}>
+                     <View style={{ flex: 1 }}>
+                        <Icon
+                           name="map-marker"
+                           size={20}
+                           color="black"
+                           style={styles.iconos}
+                        />
+                     </View>
+                     <View style={{ flex: 10 }}>
+                        <Text>{this.state.direccionPedido}</Text>
+                     </View>
+                     <View style={{ flex: 2 }}>
+                        <Button
+                           onPress={() => {
+                              this.recuperarCobertura();
+                           }}
+                           buttonStyle={{
+                              backgroundColor: 'white',
+                           }}
+                           icon={
+                              <Icon
+                                 name="pencil"
+                                 size={20}
+                                 color={colores.colorPrimarioTomate}
+                                 style={styles.iconos}
+                              />
+                           }
+                        ></Button>
+                     </View>
+                  </View>
+               </View>
+            ) : (
+               <View>
+                  <Text style={{ marginLeft: 20, color: 'gray' }}>
+                     Dirección de Entrega
+                  </Text>
+                  <View style={styles.contenedorDireccione}>
+                     <Text></Text>
+                  </View>
+               </View>
+            )}
 
             <Modal
                animationType="slide"
                transparent={true}
-               visible={this.state.mostrarModalDirecciones}>
-               <View style={styles.centeredView}>
-                  <View style={styles.modalView}>
-                     <View style={styles.boton}>
-                        <Button
-                           buttonStyle={styles.estiloBotonBlanco}
-                           titleStyle={textEstilo(
-                              colores.colorOscuroTexto,
-                              13,
-                              'bold'
-                           )}
-                           containerStyle={styles.estiloContenedor}
-                           title="Agregar ubicación actual"
-                           onPress={() => {
-                              this.obtenerUbicacionActual();
-                           }}
-                           icon={
-                              <Icon
-                                 name="crosshairs-gps"
-                                 size={20}
-                                 color={colores.colorPrimarioTomate}
-                                 style={styles.iconos}
-                              />
-                           }
-                        />
-                        <Button
-                           buttonStyle={styles.estiloBotonBlanco}
-                           titleStyle={textEstilo(
-                              colores.colorOscuroTexto,
-                              13,
-                              'bold'
-                           )}
-                           containerStyle={styles.estiloContenedor}
-                           title="Agregar nueva ubicación"
-                           onPress={() => {
-                              this.props.navigation.navigate(
-                                 'BusquedaDireccionesScreen',
-                                 {
-                                    origen: 'nuevo',
-                                    pantallaOrigen: 'lsCombo'
-                                 }
-                              );
-                              this.setState({ mostrarModalDirecciones: false })
-                           }}
-                           icon={
-                              <Icon
-                                 name="map-marker"
-                                 size={20}
-                                 color={colores.colorPrimarioTomate}
-                                 style={styles.iconos}
-                              />
-                           }
-                        />
-                     </View>
-                     <View style={styles.contenedorTituloSubr}>
-                        <Text
-                           style={[
-                              textEstilo(colores.colorOscuroTexto, 13, 'bold'),
-                              styles.estiloContenedorTitulo,
-                           ]}
-                        >
-                           Mis Direcciones
-                  </Text>
-                     </View>
-                     <View>
-                        <FlatList
-                           data={this.state.listaDireccionesCobertura}
-                           renderItem={objeto => {
-                              return (
-                                 <ItemDireccionSeleccion
-                                    direccion={objeto.item}
-                                    fnSelecionar={this.seleccionarDireccion}
-                                 />
-                              );
-                           }}
-                           keyExtractor={objetoCombo => {
-                              return objetoCombo.id;
-                           }}
-                           ItemSeparatorComponent={flatListItemSeparator}
-                        />
-                     </View>
-                     <View style={{ marginTop: 20 }}>
-                        <Button title='Cancelar'
-                           onPress={() => {
-                              this.setState({ mostrarModalDirecciones: false })
-                           }
-
-                           }
-                        />
-                     </View>
-                  </View>
-               </View>
+               visible={this.state.mostrarModalDirecciones}
+            >
+               <SeleccionarDireccion
+                  mostrarModal={this.mostrarModal}
+                  fnSeleccionar={this.seleccionarDireccion}
+                  navigation={this.props.navigation}
+               />
             </Modal>
 
             <View style={styles.pie}>
@@ -423,17 +345,24 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    centeredView: {
       flex: 1,
-      justifyContent: "center",
-      alignItems: "stretch",
+      justifyContent: 'center',
+      alignItems: 'stretch',
       marginTop: 10,
    },
    modalView: {
       margin: 20,
-      backgroundColor: colores.colorPrimarioAmarillo,
+      backgroundColor: 'white',
       borderRadius: 20,
       padding: 35,
-      alignItems: "stretch",
-      shadowColor: "#000",
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
    },
    container: {
       flex: 1,
@@ -471,11 +400,15 @@ const styles = StyleSheet.create({
       marginTop: 0,
    },
    contenedorDireccione: {
-      marginHorizontal: 30,
+      marginHorizontal: 20,
       backgroundColor: colores.colorBlanco,
-      height: 30,
-      borderRadius: 20,
-      marginTop: 15,
+      height: 40,
+      borderRadius: 10,
+      //justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 3,
+      flexDirection: 'row',
+      // backgroundColor: 'red',
    },
    pie: {
       flex: 3,
@@ -517,6 +450,5 @@ const styles = StyleSheet.create({
       padding: 0,
       margin: 0,
    },
-   iconos: { marginRight: 10 },
-
+   iconos: { marginRight: 0 },
 });

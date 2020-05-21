@@ -33,7 +33,7 @@ export default function PaginaIncio(props) {
                   }}
                ></Button>
                <Button
-                  title="Registrate"
+                  title="Regístrate"
                   buttonStyle={styles.estiloBoton}
                   titleStyle={styles.estiloTitulo}
                   onPress={() => {

@@ -22,7 +22,7 @@ export default function Registro({ navigation }) {
                   Bienvenido
                </Text>
                <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
-                  Regitrase
+                  Registro
                </Text>
             </View>
 

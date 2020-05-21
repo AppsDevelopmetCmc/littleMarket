@@ -18,11 +18,6 @@ export class DetalleCombo extends Component {
       };
    }
 
-   componentDidMount() {
-      //  let srvCombos = new ServicioCombos();
-      // srvCombos.getRecuperarComboProductos(this.combo.id, this.repintarLista);
-   }
-
    repintarLista = productosCombo => {
       this.setState({
          listProductosCombo: productosCombo,
@@ -62,7 +57,7 @@ export class DetalleCombo extends Component {
                   Detalle
                </Text>
                <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
-                  Nombre del combo
+                  {combo.alias}
                </Text>
             </View>
             <View style={styles.pie}>
