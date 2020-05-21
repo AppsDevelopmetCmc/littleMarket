@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableHighlight } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   Alert,
+   TouchableHighlight,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-elements';
 import * as colores from '../../../constants/Colores';
@@ -16,31 +22,45 @@ export class ItemDireccionSeleccion extends Component {
          <View styles={styles.fila}>
             <View style={styles.touch}>
                <TouchableHighlight
+                  underlayColor={colores.colorBlanco}
                   onPress={() => {
-                     this.props.fnSelecionar(this.props.direccion);
+                     this.props.fnSeleccionar(this.props.direccion);
                   }}
                >
                   <View style={styles.contenido}>
                      <View style={styles.subContenido}>
                         <View style={styles.estiloIconoCobertura}>
                            {this.props.direccion.tieneCoberturaDireccion ==
-                              'S' ? (
-                                 <Icon
-                                    name="access-point-network"
-                                    size={25}
-                                    color={colores.colorOscuroPrimarioTomate}
-                                 />
-                              ) : (
-                                 <Icon
-                                    name="access-point-network-off"
-                                    size={25}
-                                    color={colores.colorClaroTexto}
-                                 />
-                              )}
+                           'S' ? (
+                              <Icon
+                                 name="access-point-network"
+                                 size={25}
+                                 color={colores.colorOscuroPrimarioTomate}
+                              />
+                           ) : (
+                              <Icon
+                                 name="access-point-network-off"
+                                 size={25}
+                                 color={colores.colorClaroTexto}
+                              />
+                           )}
                         </View>
 
-                        <View style={styles.contenido}>
-                           <Text style={styles.texto}>{this.props.direccion.descripcion}</Text>
+                        <View>
+                           {this.props.direccion.alias ? (
+                              <Text
+                                 style={{ fontSize: 13, fontWeight: 'bold' }}
+                              >
+                                 {' '}
+                                 {this.props.direccion.alias}
+                              </Text>
+                           ) : (
+                              <View></View>
+                           )}
+
+                           <Text style={styles.texto}>
+                              {this.props.direccion.descripcion}
+                           </Text>
                         </View>
                      </View>
                   </View>
@@ -57,7 +77,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'red',
       marginTop: 5,
       borderRadius: 15,
-      alignItems: "stretch",
+      alignItems: 'stretch',
    },
 
    contenido: {
@@ -78,7 +98,7 @@ const styles = StyleSheet.create({
 
    texto: {
       fontSize: 13,
-      fontWeight: 'bold',
+      //fontWeight: 'bold',
    },
    descripcion: {
       flex: 4,
@@ -94,8 +114,8 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioTomate,
    },
    textStyle: {
-      color: "white",
-      fontWeight: "bold",
-      textAlign: "center"
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
    },
 });

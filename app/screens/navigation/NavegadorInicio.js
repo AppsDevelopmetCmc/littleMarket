@@ -142,11 +142,32 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen name="Mapa" component={Mapa} />
+         <StackDirection.Screen
+            name="Mapa"
+            component={Mapa}
+            options={{
+               title: 'Seleccionar Ubicación',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         />
          <StackDirection.Screen name="Direcciones" component={Direcciones} />
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          />
       </StackFromTabs.Navigator>
    );
@@ -213,14 +234,41 @@ function DirectionStack() {
          <StackDirection.Screen
             name="Mapa"
             component={Mapa}
+            options={{
+               title: 'Mapa',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="DireccionesCrudScreen"
             component={DireccionesCrud}
+            options={{
+               title: 'Direcciones',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="HomeTab"
@@ -236,14 +284,41 @@ function DirectionCrudStack() {
          <StackDirection.Screen
             name="Mapa"
             component={Mapa}
+            options={{
+               title: 'Mapa',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="DireccionesCrudScreen"
             component={DireccionesCrud}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
@@ -303,7 +378,7 @@ function HomeDraw() {
          <DrawerHome.Screen
             name="DirectionCrudStack"
             component={DirectionCrudStack}
-            options={{ drawerLabel: 'DireccionesCrudScreen' }}
+            options={{ drawerLabel: 'Direcciones' }}
          />
          <DrawerHome.Screen
             name="PerfilUsuario"
@@ -324,9 +399,13 @@ export default function NavegadorInicio() {
 
    global.activarCobertura = async bandera => {
       console.log('ACTIVAR COBERTURA');
+      let banderaCobertura = bandera ? 'S' : 'N';
       try {
-         console.log('GUARDA en el storage:');
-         await AsyncStorage.setItem('cobertura_' + global.usuario, bandera);
+         console.log('GUARDA en el storage: cobertura_' + global.usuario);
+         await AsyncStorage.setItem(
+            'cobertura_' + global.usuario,
+            banderaCobertura
+         );
       } catch (error) {
          // Error saving data
       }
@@ -351,9 +430,13 @@ export default function NavegadorInicio() {
                   const value = await AsyncStorage.getItem(
                      'cobertura_' + global.usuario
                   );
+                  console.log(
+                     'recupera del storage: cobertura_' + global.usuario,
+                     value
+                  );
                   if (value == 'S') {
                      // We have data!!
-                     console.log('recupera del storage:', value);
+
                      //  setRecuperaCobertura(true);
                      setTieneCobertura(true);
                   } else if (value == 'N') {
@@ -384,7 +467,7 @@ export default function NavegadorInicio() {
          .doc(global.usuario)
          .get()
          .then(doc => {
-            if (doc.data().nombreCompleto) {
+            if (doc.data()) {
                documento = doc.data();
                documento.id = doc.id;
                global.appUsuario = documento;

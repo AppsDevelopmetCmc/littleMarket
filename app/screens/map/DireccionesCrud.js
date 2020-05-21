@@ -19,6 +19,8 @@ import { ItemDireccionCrud } from './compnentes/ItemDireccionCrud';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
+import * as estilos from '../../estilos/estilos';
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 export class DireccionesCrud extends Component {
    constructor(props) {
       super(props);
@@ -41,21 +43,18 @@ export class DireccionesCrud extends Component {
             global.infoUsuario = user.providerData[0];
          }
       }
-      let srvDirecciones = new ServicioDirecciones();
-      let direcciones = [];
-      srvDirecciones.registrarEscuchaDireccionesTodas(
-         direcciones,
-         this.repintarLista,
-         global.usuario
+      new ServicioDirecciones().registrarEscucha(
+         global.usuario,
+         this.repintarLista
       );
 
       this.obtenerCoordenadas();
-
+      console.log('DireccionesCrud: ' + global.direcciones);
+      if (global.direcciones) this.repintarLista();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
-         Alert.alert("No existe Cobertura para la Direccion ")
+         Alert.alert('No existe Cobertura para la Direccion ');
       }
-
    }
 
    obtenerCoordenadas = async () => {
@@ -67,37 +66,33 @@ export class DireccionesCrud extends Component {
 
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
-      this.localizacionActual = location;
-   }
+      global.localizacionActual = location;
+   };
 
    obtenerUbicacionActual = () => {
-      this.props.navigation.navigate(
-         'Mapa',
-         {
-            origen: 'actual',
-            coordenadasActuales: this.localizacionActual,
-            pantallaOrigen: 'Crud'
-         }
-      );
-
-   }
+      this.props.navigation.navigate('Mapa', {
+         origen: 'actual',
+         coordenadasActuales: this.localizacionActual,
+         pantallaOrigen: 'Crud',
+      });
+   };
 
    actualizar = direccion => {
       this.props.navigation.navigate('Mapa', {
          origen: 'actualizar',
          direccion: direccion,
-         pantallaOrigen: 'Crud'
+         pantallaOrigen: 'Crud',
       });
    };
    eliminar = idDireccion => {
+      console.log('ELIMINA:', idDireccion);
       let servDirecciones = new ServicioDirecciones();
-      servDirecciones.eliminar(global.usuario, idDireccion);
+      servDirecciones.eliminarDir(global.usuario, idDireccion);
    };
 
-   repintarLista = direcciones => {
-      //  this.validarCoberturaGlobalDireccion();
+   repintarLista = () => {
       this.setState({
-         listaDirecciones: direcciones,
+         listaDirecciones: global.direcciones,
       });
    };
 
@@ -112,29 +107,37 @@ export class DireccionesCrud extends Component {
          Alert.alert('Ninguna de las Direcciones Ingresadas tiene Cobertura');
       }
    };
-
+   regresoPagina = () => {
+      this.props.navigation.goBack();
+   };
    render() {
       return (
-         <SafeAreaView style={styles.container}>
-            <View style={styles.cabeceraApp}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
-                  {msg.msg1}
+         <SafeAreaView style={styles.contenedorPagina}>
+            <CabeceraPersonalizada
+               iconoComponente={
+                  <Icon
+                     name="arrow-left"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={24}
+                     onPress={this.regresoPagina}
+                  />
+               }
+            ></CabeceraPersonalizada>
+            <View style={styles.cabecera}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}>
+                  Direcciones
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
+                  Yappando
                </Text>
             </View>
 
             <View style={styles.pie}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 14, 'normal')}>
-                  {msg.msg2}
-               </Text>
                <View style={styles.boton}>
-               <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={textEstilo(
-                        colores.colorOscuroTexto,
-                        13,
-                        'bold'
-                     )}
-                     containerStyle={styles.estiloContenedor}
+                  <Button
+                     buttonStyle={estilos.botones.blanco}
+                     titleStyle={estilos.textos.botonBlanco}
                      title="Agregar ubicación actual"
                      onPress={() => {
                         this.obtenerUbicacionActual();
@@ -149,20 +152,15 @@ export class DireccionesCrud extends Component {
                      }
                   />
                   <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={textEstilo(
-                        colores.colorOscuroTexto,
-                        13,
-                        'bold'
-                     )}
-                     containerStyle={styles.estiloContenedor}
+                     buttonStyle={estilos.botones.blanco}
+                     titleStyle={estilos.textos.botonBlanco}
                      title="Agregar nueva ubicación"
                      onPress={() => {
                         this.props.navigation.navigate(
                            'BusquedaDireccionesScreen',
                            {
                               origen: 'nuevo',
-                              pantallaOrigen: 'Crud'
+                              pantallaOrigen: 'Crud',
                            }
                         );
                      }}
@@ -249,6 +247,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: colores.colorPrimarioVerde,
    },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    fondo: {
       fontWeight: 'bold',
       fontSize: 18,
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
    },
    boton: {
-      alignItems: 'center',
+      alignItems: 'stretch',
       paddingBottom: 30,
       paddingTop: 30,
    },
@@ -305,6 +304,12 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20,
       paddingTop: 30,
    },
+   cabecera: {
+      flex: 1,
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingLeft: 40,
+      paddingTop: 10,
+   },
    pie: {
       flex: 4,
       backgroundColor: colores.colorBlanco,
@@ -312,7 +317,7 @@ const styles = StyleSheet.create({
       borderTopEndRadius: 30,
       paddingHorizontal: 20,
       marginTop: 30,
-      paddingTop: 30,
+      // paddingTop: 30,
    },
    estiloContenedor: {
       width: '100%',

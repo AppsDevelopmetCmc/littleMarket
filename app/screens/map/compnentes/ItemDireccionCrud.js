@@ -40,7 +40,9 @@ export class ItemDireccionCrud extends Component {
                            )}
                         </View>
                         <View style={styles.descripcion}>
-                           <Text style={styles.texto}>{this.props.direccion.alias}</Text>
+                           <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
+                              {this.props.direccion.alias}
+                           </Text>
                            <Text style={styles.texto}>
                               {this.props.direccion.descripcion}
                            </Text>
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
 
    texto: {
       fontSize: 13,
-      fontWeight: 'bold',
+      //fontWeight: 'bold',
    },
    descripcion: {
       flex: 4,

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, FlatList, StyleSheet } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Numero } from './componentes/Numero';
 import {
    registrarEscucha,
    ServicioCarroCompras,
@@ -33,13 +34,6 @@ export class CarroCompras extends Component {
 
    componentDidMount() {
       this.montado = true;
-      let srvItemsCarro = new ServicioCarroCompras();
-      let items = [];
-      /* srvItemsCarro.registrarEscuchaTodas(
-         items,
-         this.repintarLista,
-         global.usuario
-      );*/
       registrarEscucha(global.usuario, this.repintarLista);
       this.repintarLista();
    }
@@ -94,7 +88,7 @@ export class CarroCompras extends Component {
          <SafeAreaView style={styles.contenedorPagina}>
             <CabeceraPersonalizada
                titulo={'Tu Compra'}
-               iconoComponente={
+               /*iconoComponente={
                   <Icon
                      name="menu"
                      type="material-community"
@@ -102,7 +96,7 @@ export class CarroCompras extends Component {
                      size={30}
                      onPress={this.abrirDrawer}
                   />
-               }
+               }*/
                /* iconoMonedero={
                   <Icon
                      name="coin"
@@ -124,33 +118,7 @@ export class CarroCompras extends Component {
                   />
                }*/
             ></CabeceraPersonalizada>
-            <View style={styles.contenedorBoton}>
-               {items.length > 0 ? (
-                  <Button
-                     title="Vaciar"
-                     onPress={() => {
-                        this.eliminarCarro(global.usuario);
-                        this.props.navigation.goBack();
-                     }}
-                     titleStyle={this.textEstilo(
-                        colores.colorBlancoTexto,
-                        12,
-                        'normal'
-                     )}
-                     buttonStyle={styles.estiloBotonS}
-                     icon={
-                        <Icon
-                           name="cart-remove"
-                           size={20}
-                           color="white"
-                           style={styles.iconoIzquierda}
-                        />
-                     }
-                  />
-               ) : (
-                  <Text></Text>
-               )}
-            </View>
+            <View style={styles.contenedorBoton}></View>
 
             <View style={styles.contenedorBoton}>
                <Button
@@ -204,13 +172,48 @@ export class CarroCompras extends Component {
 
             <View style={styles.pie}>
                {items.length > 0 ? (
-                  <View>
-                     <Text>SUBTOTAL:{this.state.subtotal}</Text>
-                     <Text>DELIVERY:{this.state.delivery}</Text>
-                     <Text>TOTAL:{this.state.total}</Text>
+                  <View style={{ flexDirection: 'row' }}>
+                     <View style={{ flex: 1 }}>
+                        <Button
+                           title="Vaciar"
+                           onPress={() => {
+                              this.eliminarCarro(global.usuario);
+                              this.props.navigation.goBack();
+                           }}
+                           titleStyle={this.textEstilo(
+                              colores.colorBlancoTexto,
+                              12,
+                              'normal'
+                           )}
+                           buttonStyle={styles.estiloBotonVaciar}
+                           icon={
+                              <Icon
+                                 name="cart-remove"
+                                 size={20}
+                                 color="white"
+                                 style={styles.iconoIzquierda}
+                              />
+                           }
+                        />
+                        <Text></Text>
+                     </View>
+                     <View style={{ flex: 1 }}>
+                        <Numero
+                           titulo="SUBTOTAL:"
+                           valor={this.state.subtotal}
+                        ></Numero>
+                        <Numero
+                           titulo="ENVÍO:"
+                           valor={this.state.delivery}
+                        ></Numero>
+                        <Numero
+                           titulo="TOTAL:"
+                           valor={this.state.total}
+                        ></Numero>
+                     </View>
                   </View>
                ) : (
-                  <Text>No tiene items</Text>
+                  <Text>No tiene productos agregados al carrito</Text>
                )}
                <FlatList
                   data={this.state.listItems}
@@ -267,6 +270,13 @@ const styles = StyleSheet.create({
    estiloBotonS: {
       backgroundColor: colores.colorOscuroPrimarioVerde,
       width: 130,
+      height: 45,
+      borderRadius: 100,
+      paddingHorizontal: 15,
+   },
+   estiloBotonVaciar: {
+      backgroundColor: colores.colorOscuroPrimarioVerde,
+      width: 100,
       height: 45,
       borderRadius: 100,
       paddingHorizontal: 15,

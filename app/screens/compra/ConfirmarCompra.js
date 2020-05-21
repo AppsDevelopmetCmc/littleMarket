@@ -7,6 +7,7 @@ import {
    ScrollView,
    Linking,
    Alert,
+   Modal,
 } from 'react-native';
 import { Button, Card } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
@@ -18,6 +19,7 @@ import RadioForm, {
    RadioButtonInput,
    RadioButtonLabel,
 } from 'react-native-simple-radio-button';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
@@ -25,6 +27,12 @@ import * as colores from '../../constants/Colores';
 import Separador from '../../components/Separador';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { formatearFechaISO } from '../../utils/DateUtil';
+import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
+import {
+   recuperarPrincipal,
+   ServicioDirecciones,
+} from '../../servicios/ServicioDirecciones';
+
 export class ConfirmarCompra extends Component {
    constructor() {
       super();
@@ -39,6 +47,7 @@ export class ConfirmarCompra extends Component {
          direccion: global.direccionPedido.descripcion,
          pagoSeleccionado: global.pagoSeleccionado == 'TR' ? 1 : 0,
          deshabilitado: true,
+         mostrarModalDirecciones: false,
       };
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
@@ -71,7 +80,7 @@ export class ConfirmarCompra extends Component {
       }
    }
    refrescarDireccion = () => {
-      this.setState({ direccion: global.direccionPedido });
+      this.setState({ direccion: global.direccionPedido.descripcion });
    };
    cargarCombos = (fechas, horarios) => {
       this.setState({ fechas: fechas, horarios: horarios });
@@ -81,6 +90,22 @@ export class ConfirmarCompra extends Component {
    }
    cerrarPantalla = () => {
       this.props.navigation.popToTop();
+   };
+   /* recuperarCobertura = () => {
+      let servDirecciones = new ServicioDirecciones();
+      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
+   };*/
+   mostrarModal = bandera => {
+      this.setState({ mostrarModalDirecciones: bandera });
+   };
+   seleccionarDireccion = direccion => {
+      if (direccion.tieneCoberturaDireccion == 'S') {
+         global.direccionPedido = direccion;
+         this.refrescarDireccion();
+      } else {
+         Alert.alert('La Dirección Seleccionada no tiene Cobertura');
+      }
+      this.setState({ mostrarModalDirecciones: false });
    };
    render() {
       let fechaActual = new Date();
@@ -142,8 +167,31 @@ export class ConfirmarCompra extends Component {
                         title="Verifique su dirección"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>{this.state.direccion}</Text>
-                        <Button title="Cambiar"></Button>
+                        <View style={{ flexDirection: 'row' }}>
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Text>{this.state.direccion}</Text>
+                           </View>
+                           <View style={{ flex: 1 }}>
+                              <Button
+                                 onPress={() => {
+                                    this.setState({
+                                       mostrarModalDirecciones: true,
+                                    });
+                                 }}
+                                 buttonStyle={{
+                                    backgroundColor: 'white',
+                                 }}
+                                 icon={
+                                    <Icon
+                                       name="pencil"
+                                       size={20}
+                                       color={colores.colorPrimarioTomate}
+                                       style={styles.iconos}
+                                    />
+                                 }
+                              ></Button>
+                           </View>
+                        </View>
                      </Card>
                      <Card
                         title="Seleccione su forma de pago"
@@ -173,7 +221,17 @@ export class ConfirmarCompra extends Component {
                         <Text>TOTAL: USD {global.total}</Text>
                      </Card>
                   </View>
-
+                  <Modal
+                     animationType="slide"
+                     transparent={true}
+                     visible={this.state.mostrarModalDirecciones}
+                  >
+                     <SeleccionarDireccion
+                        mostrarModal={this.mostrarModal}
+                        fnSeleccionar={this.seleccionarDireccion}
+                        navigation={this.props.navigation}
+                     />
+                  </Modal>
                   <View style={styles.contenedorBoton}>
                      <Button
                         title="Finalizar compra"
@@ -286,6 +344,33 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
 });
+
+const flatListItemSeparator = () => {
+   return (
+      <View
+         style={{
+            width: '100%',
+
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+         }}
+      >
+         <View
+            style={{
+               height: 0.5,
+               width: '100%',
+               backgroundColor: colores.colorOscuroTexto,
+
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+            }}
+         ></View>
+      </View>
+   );
+};
+
 const pickerSelectStyles = StyleSheet.create({
    inputIOS: {
       fontSize: 16,

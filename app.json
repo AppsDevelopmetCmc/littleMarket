@@ -22,7 +22,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.clearminds.yappando",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "package": "yappando.com",
