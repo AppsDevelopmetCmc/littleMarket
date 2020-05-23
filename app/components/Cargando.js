@@ -6,12 +6,12 @@ import { Overlay } from 'react-native-elements';
 import * as colores from '../constants/Colores';
 
 export default function Cargando(props) {
-   const { isVisible, text } = props;
-
+   const { isVisible, text, color } = props;
+   let colorFondo = color ? color : 'rgba(255,255,255,0.3)';
    return (
       <Overlay
          isVisible={isVisible}
-         windowBackgroundColor="rgba(255,255,255,0.3)"
+         windowBackgroundColor={colorFondo}
          overlayBackgroundColor="transparent"
          overlayStyle={styles.overlay}
       >

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
-import { AsyncStorage, Text } from 'react-native';
+import { AsyncStorage, Text, Alert, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -392,6 +392,9 @@ function HomeDraw() {
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
    const [tieneCobertura, setTieneCobertura] = useState(null);
+   const [intentos, setIntentos] = useState(0);
+   //const [verificarMail, setVerificarMail] = useState(false);
+
    console.log('***NavegadorInicio render *****');
    if (!global.empiezaCarga) {
       global.empiezaCarga = new Date().getTime();
@@ -415,7 +418,33 @@ export default function NavegadorInicio() {
    const infoLogin = async () => {
       try {
          firebase.auth().onAuthStateChanged(async user => {
-            !user ? setLogin(false) : setLogin(true);
+            if (!user) {
+               setLogin(false);
+            } else {
+               global.infoUsuario = user.providerData[0];
+               if (global.infoUsuario.providerId == 'password') {
+                  console.log('ingresa con clave');
+                  //if (intentos > 1) {
+
+                  //}
+                  if (!user.emailVerified) {
+                     setIntentos(intentos + 1);
+                     user.sendEmailVerification().then(function () {
+                        Alert.alert(
+                           'Verifique su correo electrónico para continuar'
+                        );
+                        setLogin(false);
+                        setTieneCobertura(false);
+                     });
+                  } else {
+                     setLogin(true);
+                  }
+               } else {
+                  setLogin(true);
+               }
+            }
+
+            // !user ? setLogin(false) : setLogin(true);
 
             if (user) {
                global.usuario = user.email;
@@ -512,7 +541,13 @@ export default function NavegadorInicio() {
          '*** SMO *** login es null',
          new Date().getTime() - global.empiezaCarga
       );
-      return <Cargando isVisible={true} text="Cargando"></Cargando>;
+      return (
+         <Cargando
+            isVisible={true}
+            text="Cargando"
+            color={colores.colorClaroPrimarioVerde}
+         ></Cargando>
+      );
    } else {
       console.log(
          '*** SMO *** login no es null / tieneCobertura',

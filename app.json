@@ -1,37 +1,35 @@
 {
-  "expo": {
-    "name": "LittleMarket",
-    "slug": "LittleMarket",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "bundleIdentifier": "com.clearminds.yappando",
-      "buildNumber": "1.0.0"
-    },
-    "android": {
-      "package": "yappando.com",
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
-        }
+   "expo": {
+      "name": "Yappando",
+      "slug": "Yappando",
+      "platforms": ["ios", "android", "web"],
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/LogoYapando.png",
+      "splash": {
+         "image": "./assets/splashYappando.png",
+         "resizeMode": "contain",
+         "backgroundColor": "#ddff52"
+      },
+      "updates": {
+         "fallbackToCacheTimeout": 0
+      },
+      "assetBundlePatterns": ["**/*"],
+      "ios": {
+         "bundleIdentifier": "com.clearminds.yappando",
+         "buildNumber": "1.0.0"
+      },
+      "android": {
+         "package": "yappando.com",
+         "config": {
+            "googleSignIn": {
+               "apiKey": "AIzaSyBlbBJcRwgYq2c0R02Vv-4VB7AjejMvUi8",
+               "certificateHash": "A858E1533D9C9A5FB150B01610D7C629E873ED60"
+            },
+            "googleMaps": {
+               "apiKey": "AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
+            }
+         }
       }
-    }
-  }
+   }
 }

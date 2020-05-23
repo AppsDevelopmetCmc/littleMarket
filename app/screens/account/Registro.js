@@ -1,5 +1,12 @@
 import React, { useRef } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Image } from 'react-native';
+import {
+   StyleSheet,
+   View,
+   Text,
+   SafeAreaView,
+   Image,
+   ScrollView,
+} from 'react-native';
 
 // Importacion de Toas
 import Toast from 'react-native-easy-toast';
@@ -31,9 +38,9 @@ export default function Registro({ navigation }) {
             ></Image>
          </View>
 
-         <View style={styles.pie}>
+         <ScrollView style={styles.pie} keyboardShouldPersistTaps="always">
             <RegistroForm nav={navigation} toastRef={toastRef}></RegistroForm>
-         </View>
+         </ScrollView>
 
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast
