@@ -39,7 +39,7 @@ export default function IniciaSesion({ navigation }) {
          </View>
 
          <View style={styles.pie}>
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps="always">
                <IniciaSesionForm
                   nav={navigation}
                   toastRef={toastRef}

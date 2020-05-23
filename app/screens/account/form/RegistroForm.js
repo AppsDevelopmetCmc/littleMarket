@@ -70,11 +70,15 @@ export default function RegistroForm(props) {
                   await firebase
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
-                     .then(() => {
-                        //this.generarNumeroRandom();
-                        console.log(
-                           'se registro correctamente' + codigoReferido
-                        );
+                     .then(user => {
+                        if (user && user.emailVerified === false) {
+                           user.sendEmailVerification().then(function () {
+                              toastRef.current.show(
+                                 'Verifique su correo electrónico para continuar',
+                                 2000
+                              );
+                           });
+                        }
                      })
                      .catch(error => {
                         console.log(error);
@@ -102,7 +106,7 @@ export default function RegistroForm(props) {
    };
 
    return (
-      <KeyboardAwareScrollView style={styles.container}>
+      <View style={styles.container}>
          <Input
             placeholder="yappando@gmail.com"
             containerStyle={styles.estiloContenedor1}
@@ -175,7 +179,7 @@ export default function RegistroForm(props) {
             text="Creando Cuenta"
             isVisible={isVisibleLoading}
          ></Cargando>
-      </KeyboardAwareScrollView>
+      </View>
    );
 }
 

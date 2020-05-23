@@ -63,7 +63,7 @@ export class ListCombo extends Component {
    };
 
    componentDidMount() {
-      this.obtenerPedidoCalifica(global.usuario);
+      //  this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
@@ -139,11 +139,6 @@ export class ListCombo extends Component {
 
    abrirNotificacion = () => {
       this.props.navigation.navigate('NotificacionScreen');
-   };
-
-   recuperarCobertura = () => {
-      let servDirecciones = new ServicioDirecciones();
-      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
    };
 
    repintarDireccion = direcciones => {
@@ -240,7 +235,7 @@ export class ListCombo extends Component {
                      <View style={{ flex: 2 }}>
                         <Button
                            onPress={() => {
-                              this.recuperarCobertura();
+                              this.setState({ mostrarModalDirecciones: true });
                            }}
                            buttonStyle={{
                               backgroundColor: 'white',
