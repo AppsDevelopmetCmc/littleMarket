@@ -1,61 +1,92 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, Component } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 import * as firebase from 'firebase';
-import * as Google from 'expo-google-app-auth';
-import { GoogleApi } from '../../utils/Social';
+//import * as GoogleSignIn from 'expo-google-sign-in';
 import Cargando from '../../components/Cargando';
+import * as GoogleSignIn from 'expo-google-sign-in';
 
-export default function IniciarSesionGoogle(props) {
-   const [isVisibleLoading, setIsVisibleLoading] = useState(false);
+export default class IniciarSesionGoogle extends Component {
+   state = { user: null, cargadorVisible: false };
+   initAsync = async () => {
+      // alert('initAsync');
+      await GoogleSignIn.initAsync({
+         clientId:
+            //  '549900659572-vsav8nioivs7r9j5a3p2lonhdogchdgs.apps.googleusercontent.com',
+            '549900659572-eq9ah25m9dl4kh3nj9eu2d7d483ba3bm.apps.googleusercontent.com',
+      });
+   };
 
-   const iniciaSesionGoogle = async () => {
-      console.log('Inicia metodo de ingreso con google');
+   _syncUserWithStateAsync = async () => {
       try {
-         const result = await Google.logInAsync({
-            androidClientId: GoogleApi.android_client_id,
-            iosClientId: GoogleApi.ios_client_id,
-            scopes: ['profile', 'email'],
-         });
+         //  alert('silent xxxx....');
+         const user = await GoogleSignIn.signInSilentlyAsync();
 
-         console.log('result: ', result);
+         /* if (user.auth) alert('obtiene los tokens' + user.auth.idToken);*/
 
-         if (result.type === 'success') {
-            setIsVisibleLoading(true);
-            const credenciales = firebase.auth.GoogleAuthProvider.credential(
-               result.idToken
-            );
-            console.log('Crendenciales: ', credenciales);
-            await firebase
-               .auth()
-               .signInWithCredential(credenciales)
-               .then(() => {
-                  console.log('Ingreso con google');
-               })
-               .catch(error => {
-                  console.log('Crendenciales: ', credenciales);
+         let credential = firebase.auth.GoogleAuthProvider.credential(
+            user.auth.idToken,
+            user.auth.accessToken
+         );
+         //  alert('credential', user.auth.idToken);
+         firebase
+            .auth()
+            .signInWithCredential(credential)
+            .catch(function (error) {
+               // Handle Errors here.
+               var errorCode = error.code;
+               var errorMessage = error.message;
+               // The email of the user's account used.
+               var email = error.email;
+               // The firebase.auth.AuthCredential type that was used.
+               var credential = error.credential;
 
-                  console.log('Error accediendo con google ', error);
-               });
-         } else {
-            // return { cancelled: true };
-            console.log('cancelado');
+               alert('error al loguear con credenciales', errorMessage);
+               // ...
+            });
+      } catch ({ message }) {
+         alert('Error en silent:' + message);
+      }
+      this.setState({ user });
+   };
+
+   signInAsync = async () => {
+      try {
+         await GoogleSignIn.askForPlayServicesAsync();
+         const { type, user } = await GoogleSignIn.signInAsync();
+         if (type === 'success') {
+            this._syncUserWithStateAsync();
+            this.setState({ cargadorVisible: false });
          }
-         setIsVisibleLoading(false);
-      } catch (e) {
-         // return { error: true };
-         console.log('error fatla', e);
+      } catch ({ message }) {
+         alert('login: Error:' + message);
       }
    };
-   return (
-      <View style={styles.container}>
-         <SocialIcon type="google" onPress={iniciaSesionGoogle}></SocialIcon>
-         <Cargando
-            text="Iniciando Sesión con Google"
-            isVisible={isVisibleLoading}
-         ></Cargando>
-      </View>
-   );
+
+   signOutAsync = async () => {
+      await GoogleSignIn.signOutAsync();
+      this.setState({ user: null });
+   };
+   componentDidMount() {
+      this.initAsync();
+   }
+   render() {
+      return (
+         <View style={styles.container}>
+            <SocialIcon
+               type="google"
+               onPress={() => {
+                  this.setState({ cargadorVisible: true });
+                  this.signInAsync();
+               }}
+            ></SocialIcon>
+            <Cargando
+               text="Iniciando Sesión con Google"
+               isVisible={this.state.cargadorVisible}
+            ></Cargando>
+         </View>
+      );
+   }
 }
 
 const styles = StyleSheet.create({

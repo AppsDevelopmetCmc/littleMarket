@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
-import { AsyncStorage, Text } from 'react-native';
+import { AsyncStorage, Text, Alert, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -142,11 +142,32 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen name="Mapa" component={Mapa} />
+         <StackDirection.Screen
+            name="Mapa"
+            component={Mapa}
+            options={{
+               title: 'Seleccionar Ubicación',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         />
          <StackDirection.Screen name="Direcciones" component={Direcciones} />
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          />
       </StackFromTabs.Navigator>
    );
@@ -213,14 +234,41 @@ function DirectionStack() {
          <StackDirection.Screen
             name="Mapa"
             component={Mapa}
+            options={{
+               title: 'Mapa',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="DireccionesCrudScreen"
             component={DireccionesCrud}
+            options={{
+               title: 'Direcciones',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="HomeTab"
@@ -236,14 +284,41 @@ function DirectionCrudStack() {
          <StackDirection.Screen
             name="Mapa"
             component={Mapa}
+            options={{
+               title: 'Mapa',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
+            options={{
+               title: 'Buscar Dirección',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
          <StackDirection.Screen
             name="DireccionesCrudScreen"
             component={DireccionesCrud}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
@@ -303,7 +378,7 @@ function HomeDraw() {
          <DrawerHome.Screen
             name="DirectionCrudStack"
             component={DirectionCrudStack}
-            options={{ drawerLabel: 'DireccionesCrudScreen' }}
+            options={{ drawerLabel: 'Direcciones' }}
          />
          <DrawerHome.Screen
             name="PerfilUsuario"
@@ -317,6 +392,9 @@ function HomeDraw() {
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
    const [tieneCobertura, setTieneCobertura] = useState(null);
+   const [intentos, setIntentos] = useState(0);
+   //const [verificarMail, setVerificarMail] = useState(false);
+
    console.log('***NavegadorInicio render *****');
    if (!global.empiezaCarga) {
       global.empiezaCarga = new Date().getTime();
@@ -324,9 +402,13 @@ export default function NavegadorInicio() {
 
    global.activarCobertura = async bandera => {
       console.log('ACTIVAR COBERTURA');
+      let banderaCobertura = bandera ? 'S' : 'N';
       try {
-         console.log('GUARDA en el storage:');
-         await AsyncStorage.setItem('cobertura_' + global.usuario, bandera);
+         console.log('GUARDA en el storage: cobertura_' + global.usuario);
+         await AsyncStorage.setItem(
+            'cobertura_' + global.usuario,
+            banderaCobertura
+         );
       } catch (error) {
          // Error saving data
       }
@@ -336,7 +418,33 @@ export default function NavegadorInicio() {
    const infoLogin = async () => {
       try {
          firebase.auth().onAuthStateChanged(async user => {
-            !user ? setLogin(false) : setLogin(true);
+            if (!user) {
+               setLogin(false);
+            } else {
+               global.infoUsuario = user.providerData[0];
+               if (global.infoUsuario.providerId == 'password') {
+                  console.log('ingresa con clave');
+                  //if (intentos > 1) {
+
+                  //}
+                  if (!user.emailVerified) {
+                     setIntentos(intentos + 1);
+                     user.sendEmailVerification().then(function () {
+                        Alert.alert(
+                           'Verifique su correo electrónico para continuar'
+                        );
+                        setLogin(false);
+                        setTieneCobertura(false);
+                     });
+                  } else {
+                     setLogin(true);
+                  }
+               } else {
+                  setLogin(true);
+               }
+            }
+
+            // !user ? setLogin(false) : setLogin(true);
 
             if (user) {
                global.usuario = user.email;
@@ -351,9 +459,13 @@ export default function NavegadorInicio() {
                   const value = await AsyncStorage.getItem(
                      'cobertura_' + global.usuario
                   );
+                  console.log(
+                     'recupera del storage: cobertura_' + global.usuario,
+                     value
+                  );
                   if (value == 'S') {
                      // We have data!!
-                     console.log('recupera del storage:', value);
+
                      //  setRecuperaCobertura(true);
                      setTieneCobertura(true);
                   } else if (value == 'N') {
@@ -384,7 +496,7 @@ export default function NavegadorInicio() {
          .doc(global.usuario)
          .get()
          .then(doc => {
-            if (doc.data().nombreCompleto) {
+            if (doc.data()) {
                documento = doc.data();
                documento.id = doc.id;
                global.appUsuario = documento;
@@ -429,7 +541,13 @@ export default function NavegadorInicio() {
          '*** SMO *** login es null',
          new Date().getTime() - global.empiezaCarga
       );
-      return <Cargando isVisible={true} text="Cargando"></Cargando>;
+      return (
+         <Cargando
+            isVisible={true}
+            text="Cargando"
+            color={colores.colorClaroPrimarioVerde}
+         ></Cargando>
+      );
    } else {
       console.log(
          '*** SMO *** login no es null / tieneCobertura',

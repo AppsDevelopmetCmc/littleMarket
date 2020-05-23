@@ -3,21 +3,16 @@ import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
-import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { ItemDireccion } from './compnentes/ItemDireccion';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-// Importacion de mensajes en la aplicacion label y text
-import * as msg from '../../constants/Mensajes';
-
-//Importacion de los colores
-import * as colores from '../../constants/Colores';
-import Separador from '../../components/Separador';
-import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
-import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
+import { APIKEY } from '../../utils/ApiKey';
+
+import * as estilos from '../../estilos/estilos';
+import * as msg from '../../constants/Mensajes';
+import * as colores from '../../constants/Colores';
 
 export class Direcciones extends Component {
    constructor(props) {
@@ -31,9 +26,11 @@ export class Direcciones extends Component {
       this.state = {
          listaDirecciones: direcciones,
       };
+      this.montado = false;
    }
 
    componentDidMount() {
+      console.log('Direcciones ComponentDidMount ');
       if (global.usuario == null) {
          let user = firebase.auth().currentUser;
          if (user) {
@@ -42,23 +39,22 @@ export class Direcciones extends Component {
          }
       }
       let srvDirecciones = new ServicioDirecciones();
-      let direcciones = [];
-      srvDirecciones.registrarEscuchaDireccionesTodas(
-         direcciones,
-         this.repintarLista,
-         global.usuario
-      );
+      srvDirecciones.registrarEscucha(global.usuario, this.repintarLista);
 
       this.obtenerCoordenadas();
+      if (global.direcciones) this.repintarLista();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
-         Alert.alert("No existe Cobertura para la Direccion ")
+         Alert.alert('No existe Cobertura para la Direccion ');
       }
-
+      this.montado = true;
    }
 
+   componentWillUnmount = () => {
+      this.montado = false;
+   };
    obtenerCoordenadas = async () => {
-      Geocoder.init(APIKEY);
+      // Geocoder.init(APIKEY);
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
          setErrorMsg('Error al otorgar el permiso');
@@ -66,26 +62,22 @@ export class Direcciones extends Component {
 
       let location = await Location.getCurrentPositionAsync({});
       console.log('actual location:', location);
-      this.localizacionActual = location;
-   }
+      global.localizacionActual = location;
+   };
 
    obtenerUbicacionActual = () => {
-      this.props.navigation.navigate(
-         'Mapa',
-         {
-            origen: 'actual',
-            coordenadasActuales: this.localizacionActual,
-            pantallaOrigen: 'Direcciones'
-         }
-      );
-
-   }
+      this.props.navigation.navigate('Mapa', {
+         origen: 'actual',
+         coordenadasActuales: this.localizacionActual,
+         pantallaOrigen: 'Direcciones',
+      });
+   };
 
    actualizar = direccion => {
       this.props.navigation.navigate('Mapa', {
          origen: 'actualizar',
          direccion: direccion,
-         pantallaOrigen: 'Direcciones'
+         pantallaOrigen: 'Direcciones',
       });
    };
    eliminar = idDireccion => {
@@ -93,11 +85,13 @@ export class Direcciones extends Component {
       servDirecciones.eliminar(global.usuario, idDireccion);
    };
 
-   repintarLista = direcciones => {
+   repintarLista = () => {
       //  this.validarCoberturaGlobalDireccion();
-      this.setState({
-         listaDirecciones: direcciones,
-      });
+      if (this.montado) {
+         this.setState({
+            listaDirecciones: global.direcciones,
+         });
+      }
    };
 
    validarCoberturaGlobalDireccion = async () => {
@@ -116,24 +110,15 @@ export class Direcciones extends Component {
       return (
          <SafeAreaView style={styles.container}>
             <View style={styles.cabeceraApp}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
-                  {msg.msg1}
-               </Text>
+               <Text style={estilos.textos.titulo}>{msg.msg1}</Text>
             </View>
 
             <View style={styles.pie}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 14, 'normal')}>
-                  {msg.msg2}
-               </Text>
+               <Text style={estilos.textos.instruccion}>{msg.msg2}</Text>
                <View style={styles.boton}>
                   <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={textEstilo(
-                        colores.colorOscuroTexto,
-                        13,
-                        'bold'
-                     )}
-                     containerStyle={styles.estiloContenedor}
+                     buttonStyle={estilos.botones.blanco}
+                     titleStyle={estilos.textos.botonBlanco}
                      title="Agregar ubicación actual"
                      onPress={() => {
                         this.obtenerUbicacionActual();
@@ -148,20 +133,15 @@ export class Direcciones extends Component {
                      }
                   />
                   <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={textEstilo(
-                        colores.colorOscuroTexto,
-                        13,
-                        'bold'
-                     )}
-                     containerStyle={styles.estiloContenedor}
+                     buttonStyle={estilos.botones.blanco}
+                     titleStyle={estilos.textos.botonBlanco}
                      title="Agregar nueva ubicación"
                      onPress={() => {
                         this.props.navigation.navigate(
                            'BusquedaDireccionesScreen',
                            {
                               origen: 'nuevo',
-                              pantallaOrigen: 'Direcciones'
+                              pantallaOrigen: 'Direcciones',
                            }
                         );
                      }}
@@ -204,7 +184,6 @@ export class Direcciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
-
             </View>
          </SafeAreaView>
       );
@@ -276,7 +255,7 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
    },
    boton: {
-      alignItems: 'center',
+      alignItems: 'stretch',
       paddingBottom: 30,
       paddingTop: 30,
    },
@@ -285,14 +264,7 @@ const styles = StyleSheet.create({
       alignItems: 'flex-end',
       flexDirection: 'row',
    },
-   estiloBotonBlanco: {
-      backgroundColor: colores.colorBlanco,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      padding: 0,
-      margin: 0,
-   },
+
    btnContinuar: {
       backgroundColor: colores.colorPrimarioTomate,
       width: 200,

@@ -6,18 +6,21 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export class ItemPrediccion extends Component {
    constructor(props) {
       super(props);
-
    }
    render() {
       return (
          <TouchableHighlight
             underlayColor="white"
             onPress={() => {
-               this.props.fnbuscarCoordenadas(this.props.prediccionItem.placeId)
+               this.props.fnbuscarCoordenadas(
+                  this.props.prediccionItem.placeId
+               );
             }}
          >
             <View style={styles.fila}>
-            <Text>{this.props.prediccionItem.descripcion}</Text>
+               <Text style={{ fontSize: 16 }}>
+                  {this.props.prediccionItem.descripcion}
+               </Text>
             </View>
          </TouchableHighlight>
       );
@@ -36,10 +39,11 @@ const styles = StyleSheet.create({
    fila: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: 'orange',
+      //backgroundColor: 'orange',
       //borderBottomColor: 'gray',
       //borderBottomWidth: 1,
-      marginTop: 10,
+      marginTop: 20,
+      marginBottom: 20,
       marginLeft: 20,
       borderBottomLeftRadius: 20,
       borderTopLeftRadius: 20,

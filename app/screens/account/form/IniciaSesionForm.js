@@ -29,9 +29,8 @@ export default function IniciaSesionForm(props) {
    const [errorMsgContraseña, seterrorMsgContraseña] = useState('');
 
    const requerido = 'Campo requerido *';
-    
+
    const iniciarSesion = async () => {
-      setisVisibleLoading(true);
       if (!email || !password) {
          toastRef.current.show(err.Err3, 600);
          seterrorMsgCorreo(requerido);
@@ -49,20 +48,23 @@ export default function IniciaSesionForm(props) {
             } else {
                seterrorMsgCorreo('');
                seterrorMsgContraseña('');
+               firebase.auth().signOut();
+               setisVisibleLoading(true);
                await firebase
                   .auth()
                   .signInWithEmailAndPassword(email, password)
                   .then(() => {
                      console.log('Inicio Sesion con Firebase');
-                  })                  
+                     setisVisibleLoading(false);
+                  })
                   .catch(() => {
                      toastRef.current.show(err.Err2, 600);
+                     setisVisibleLoading(false);
                   });
+            }
          }
       }
-      setisVisibleLoading(false);
    };
-   }
    return (
       <View style={styles.container}>
          <Input
@@ -113,7 +115,7 @@ export default function IniciaSesionForm(props) {
          </TouchableOpacity>
 
          <Button
-            title="Iniciar Sesion"
+            title="Iniciar Sesión"
             titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}

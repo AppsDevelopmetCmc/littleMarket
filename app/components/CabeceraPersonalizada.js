@@ -17,10 +17,16 @@ export default function CabeceraPersonalizada(props) {
    } = props;
    return (
       <View style={styles.cabeceraContenedor}>
-         <View style={styles.cabeceraBoton}>{iconoComponente}</View>
+         {iconoComponente ? (
+            <View style={styles.cabeceraBoton}>{iconoComponente}</View>
+         ) : (
+            <View></View>
+         )}
+
          <View style={styles.cabeceraTitulo}>
-            <Text>{titulo}</Text>
+            <Text style={styles.titulo}>{titulo}</Text>
          </View>
+
          <View style={styles.cabeceraIcon}>{iconoDeTienda}</View>
          {/*<View style={styles.cabeceraIcon}>{iconoMonedero}</View>
          <View style={styles.cabeceraIcon}>{iconoNotificacion}</View>*/}
@@ -37,12 +43,23 @@ const styles = StyleSheet.create({
       flex: 1,
 
       justifyContent: 'center',
+      alignItems: 'center',
    },
    cabeceraTitulo: {
-      flex: 3.5,
+      flex: 5,
       justifyContent: 'center',
+      alignItems: 'flex-start',
+      marginHorizontal: 10,
+      //backgroundColor: 'red',
+   },
+   titulo: {
+      fontSize: 18,
+      color: 'white',
+      fontWeight: 'bold',
    },
    cabeceraIcon: {
-      flex: 1,
+      flex: 2,
+      justifyContent: 'center',
+      alignItems: 'center',
    },
 });

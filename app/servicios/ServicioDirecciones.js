@@ -1,6 +1,5 @@
 import { ArregloUtil } from '../utils/utils';
 import { Alert } from 'react-native';
-
 export class ServicioDirecciones {
    crear = async (idCliente, direccion) => {
       let id = '';
@@ -10,7 +9,7 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .add(direccion)
          .then(async function (dataDireccion) {
-            Alert.alert('Dirección Agregado');
+            //Alert.alert('Dirección Agregado');
             id = dataDireccion.id;
          })
          .catch(function (error) {
@@ -32,13 +31,14 @@ export class ServicioDirecciones {
             tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
-            Alert.alert('Dirección Actualizada');
+            //Alert.alert('Dirección Actualizada');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
-   eliminar = (idCliente, idDireccion) => {
+   eliminarDir = (idCliente, idDireccion) => {
+      console.log('ELIMINADO...', idCliente, idDireccion);
       global.db
          .collection('clientes')
          .doc(idCliente)
@@ -46,34 +46,64 @@ export class ServicioDirecciones {
          .doc(idDireccion)
          .delete()
          .then(function () {
-            Alert.alert('Dirección Eliminada');
+            // Alert.alert('Dirección Eliminada');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
          });
    };
+   buscar = objeto => {
+      let indice = -1;
+      for (let i = 0; i < global.direcciones.length; i++) {
+         if (objeto.id == global.direcciones[i].id) {
+            indice = i;
+            break;
+         }
+      }
+      return indice;
+   };
+   actualizarInfo = objeto => {
+      let posicion = this.buscar(objeto);
+      if (posicion != -1) {
+         global.direcciones[posicion] = objeto;
+      }
+      console.log('luego de actualizar smo:', global.direcciones);
+      //fnRepintar();
+   };
 
-   registrarEscuchaDireccionesTodas = (arreglo, fnRepintar, idCliente) => {
-      let arregloUtil = new ArregloUtil(arreglo);
-      global.db
-         .collection('clientes')
-         .doc(idCliente)
-         .collection('direcciones')
-         .onSnapshot(function (snapShot) {
-            snapShot.docChanges().forEach(function (change) {
-               let direccion = change.doc.data();
-               direccion.id = change.doc.id;
-               if (change.type == 'added') {
-                  arregloUtil.agregar(direccion, fnRepintar);
-               }
-               if (change.type == 'modified') {
-                  arregloUtil.actualizar(direccion, fnRepintar);
-               }
-               if (change.type == 'removed') {
-                  arregloUtil.eliminar(direccion, fnRepintar);
-               }
+   eliminar = objeto => {
+      let posicion = this.buscar(objeto);
+      if (posicion != -1) {
+         global.direcciones.splice(posicion, 1);
+      }
+   };
+   registrarEscucha = (idCliente, fnRepintar) => {
+      let actualizarInfo = this.actualizarInfo;
+      let eliminar = this.eliminar;
+      global.fnRepintarDireccion = fnRepintar;
+      if (!global.direcciones) {
+         global.direcciones = [];
+         global.db
+            .collection('clientes')
+            .doc(idCliente)
+            .collection('direcciones')
+            .onSnapshot(function (snapShot) {
+               snapShot.docChanges().forEach(function (change) {
+                  let direccion = change.doc.data();
+                  direccion.id = change.doc.id;
+                  if (change.type == 'added') {
+                     global.direcciones.push(direccion);
+                  }
+                  if (change.type == 'modified') {
+                     actualizarInfo(direccion);
+                  }
+                  if (change.type == 'removed') {
+                     eliminar(direccion);
+                  }
+               });
+               global.fnRepintarDireccion();
             });
-         });
+      }
    };
 
    getValidarCoberturaGlobal = async idCliente => {
@@ -129,7 +159,7 @@ export class ServicioDirecciones {
       }
    };
 
-   getTieneCobertura = async (idCliente, fnRepintarDireccion) => {
+   /*getTieneCobertura = async (idCliente, fnRepintarDireccion) => {
       let respuesta = await global.db
          .collection('clientes')
          .doc(idCliente)
@@ -148,7 +178,7 @@ export class ServicioDirecciones {
          console.log('No tiene Direccciones');
       }
       fnRepintarDireccion(listaDirecciones);
-   };
+   };*/
 
    guardarReferencia = (idCliente, idDireccion, referenciaDireccion) => {
       global.db
@@ -162,7 +192,7 @@ export class ServicioDirecciones {
             principal: referenciaDireccion.principal,
          })
          .then(function () {
-            Alert.alert('Datos de Referencia Actualizado');
+            // Alert.alert('Datos de Referencia Actualizado');
          })
          .catch(function (error) {
             Alert.alert('error' + error);
@@ -187,7 +217,7 @@ export class ServicioDirecciones {
                   principal: 'N',
                })
                .then(function () {
-                  console.log('Dirección principal Actualizado');
+                  //console.log('Dirección principal Actualizado');
                })
                .catch(function (error) {
                   Alert.alert('error' + error);

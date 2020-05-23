@@ -14,14 +14,16 @@ import Cargando from '../../../components/Cargando';
 // Importacion de archivo de errores
 import * as err from '../../../constants/Errores';
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+
 // Importacion de colores
 import * as colores from '../../../constants/Colores';
 
 export default function RegistroForm(props) {
-   this.state = {
+   /* this.state = {
       numero: 1,
-      codigoReferido:'',
-    }
+      codigoReferido: '',
+   };*/
    const { nav, toastRef } = props;
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
@@ -35,8 +37,6 @@ export default function RegistroForm(props) {
    const [errorMsgRepetirContraseña, seterrorMsgRepetirContraseña] = useState(
       ''
    );
-
-   
 
    const requerido = 'Campo requerido *';
 
@@ -70,13 +70,21 @@ export default function RegistroForm(props) {
                   await firebase
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
-                     .then(() => {
-                       
-                        this.generarNumeroRandom();
-                        console.log('se registro correctamente' +codigoReferido);
+                     .then(user => {
+                        if (user && user.emailVerified === false) {
+                           user.sendEmailVerification().then(function () {
+                              toastRef.current.show(
+                                 'Verifique su correo electrónico para continuar',
+                                 2000
+                              );
+                           });
+                        }
                      })
-                     .catch(() => {
-                        toastRef.current.show(err.Err5, 600);
+                     .catch(error => {
+                        console.log(error);
+                        //TODO: SMO EMPATAR ERRORES DE FIREBASE AL REGISTRARSE
+                        //toastRef.current.show(err.Err5, 600);
+                        toastRef.current.show(error.message, 2000);
                      });
                }
             }
@@ -87,10 +95,15 @@ export default function RegistroForm(props) {
    };
    generarNumeroRandom = () => {
       var numeroRandom = Math.floor(Math.random() * 100) + 1;
-      this.setState({numero: numeroRandom})
-      this.setState({codigoReferido:global.usuario.substring(0,1)+global.usuario.substring(3,4)+numeroRandom})
-      console.log('random.... '+codigoReferido)
-    }
+      this.setState({ numero: numeroRandom });
+      this.setState({
+         codigoReferido:
+            global.usuario.substring(0, 1) +
+            global.usuario.substring(3, 4) +
+            numeroRandom,
+      });
+      console.log('random.... ' + codigoReferido);
+   };
 
    return (
       <View style={styles.container}>
