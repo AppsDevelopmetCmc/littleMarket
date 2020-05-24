@@ -104,8 +104,11 @@ export const agregarDisminuirItemCarro = (
                   }
                });
          } else {
+            if (!itemCarro.cantidad) {
             itemCarro.cantidad = 1;
             itemCarro.subtotal = itemCarro.precio;
+            }
+
             global.db
                .collection('carritos')
                .doc(mail)

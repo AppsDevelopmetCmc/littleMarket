@@ -3,76 +3,62 @@ import { View, Text, StyleSheet } from 'react-native';
 import * as colores from '../../../constants/Colores';
 import Separador from '../../../components/Separador';
 
+import { ServicioCombos } from '../../../servicios/ServicioCombos';
+
 export class ItemDetallePedido extends Component{
     constructor(props) {
         super(props);
-        this.alias='';
-        this.precio='';
-        this.subtotal='';
+      this.descripcion = '';
+      new ServicioCombos().recuperarComboProductos(this.props.detallePedido.id);
         this.recuperarDatosCombo();
-        
      }
 
      recuperarDatosCombo=()=>{
-      for (let index = 0; index < global.combos.length; index++) {
-         const element = global.combos[index];
-         console.log("antes "+element.id);
-         if(global.combos[index].id === this.props.detallePedido.id){
-            console.log("despues "+ global.combos[index].alias);
-            this.alias= global.combos[index].alias;
-            this.precio= global.combos[index].precio;
-            
-            
-            break;
-         }         
-      }
-
+      for (
+         let i = 0;
+         i < global.combos[this.props.detallePedido.id].length;
+         i++
+      ) {
+         this.descripcion +=
+            global.combos[this.props.detallePedido.id][i].cantidad +
+            ' ' +
+            global.combos[this.props.detallePedido.id][i].unidad +
+            ' x ' +
+            global.combos[this.props.detallePedido.id][i].id +
+            ', ';
+         console.log('DESC' + this.descripcion);
      }
+      //}
+   };
      render() {
         return (    
          <View style={styles.fila}>
          <View style={styles.contenido}>
-            <View style={styles.contenidoDetalle}>
                <Text style={styles.textoNegrita}>
-                  {this.alias}
+                  {this.props.detallePedido.alias}
                </Text>
-               <Text style={styles.texto}>Cantidad</Text>
+            </View>
+            <View style={styles.contenido}>
+               <Text style={styles.texto}>Cantidad: </Text>
                <Text style={styles.textoNegrita}>
                   {this.props.detallePedido.cantidad}
                </Text>
-               <View style={styles.contenedorPares}>
-                  <Text style={styles.texto}>Precio</Text>
+
+               <Text style={styles.texto}>Precio: </Text>
                   <Text style={styles.textoNegrita}>
-                     {this.precio}
+                  {this.props.detallePedido.precio}
+               </Text>
+               <Text style={styles.texto}>Subtotal:</Text>
+               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}>
+                  {this.props.detallePedido.subtotal}
                   </Text>
                </View>
-               
-            </View>
-            <Separador alto={30}></Separador>
-            <View style={styles.contenidoDetalle}>
-               <Text style={styles.texto}>Dirección</Text>
-               <Text
-                  style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}
-               >
-                 {/*  {this.props.pedido.direccion} */}
-               </Text> 
-
-               
-               <View style={styles.contenedorPares}>
-                  <Text style={styles.texto}>Sub Total:</Text>
-                  <Text
-                     style={textEstilo(
-                        colores.colorOscuroTexto,
-                        20,
-                        'bold'
-                     )}
-                  >
-                    {this.subtotal}
+            <View style={styles.contenido}>
+               <Text style={styles.texto}>Detalle</Text>
+               <Text style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}>
+                  {this.descripcion}
                   </Text>
                </View>
-
-            </View>
-         </View>
       </View>
         );
      }
@@ -89,7 +75,7 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    fila: {
       flex: 1,
-      flexDirection: 'row',
+      flexDirection: 'column',
       backgroundColor: colores.colorPrimarioAmarillo,
       marginTop: 5,
       borderTopStartRadius: 30,
