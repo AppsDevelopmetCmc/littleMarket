@@ -18,6 +18,7 @@ import {
    recuperarPrincipal,
    ServicioDirecciones,
 } from '../../servicios/ServicioDirecciones';
+import Separador from '../../components/Separador';
 
 export class CarroCompras extends Component {
    constructor(props) {
@@ -44,7 +45,7 @@ export class CarroCompras extends Component {
          let subtotal = 0;
          let delivery = 1.5;
          for (let i = 0; i < global.items.length; i++) {
-            subtotal += global.items[i].subtotal;
+            subtotal += Number(global.items[i].subtotal);
          }
          global.total = subtotal + delivery;
          this.setState({
@@ -86,134 +87,98 @@ export class CarroCompras extends Component {
       }
       return (
          <SafeAreaView style={styles.contenedorPagina}>
-            <CabeceraPersonalizada
-               titulo={'Tu Compra'}
-               /*iconoComponente={
-                  <Icon
-                     name="menu"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirDrawer}
-                  />
-               }*/
-               /* iconoMonedero={
-                  <Icon
-                     name="coin"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirMonedero}
-                     underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-               iconoNotificacion={
-                  <Icon
-                     name="bell-circle-outline"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirNotificacion}
-                     underlayColor={colores.colorPrimarioVerde}
-                  />
-               }*/
-            ></CabeceraPersonalizada>
-            <View style={styles.contenedorBoton}></View>
-
-            <View style={styles.contenedorBoton}>
-               <Button
-                  title="Seguir 
-                     comprando"
-                  onPress={() => {
-                     this.props.navigation.dispatch(StackActions.popToTop());
-                  }}
-                  titleStyle={this.textEstilo(
-                     colores.colorBlancoTexto,
-                     12,
-                     'normal'
-                  )}
-                  buttonStyle={styles.estiloBotonS}
-                  icon={
-                     <Icon
-                        name="arrow-left-bold-circle"
-                        size={20}
-                        color="white"
-                        style={styles.iconoIzquierda}
-                     />
-                  }
-               />
-
-               {items.length > 0 ? (
-                  <Button
-                     title="Confirmar"
-                     onPress={() => {
-                        this.props.navigation.navigate('ConfirmarCompraScreen');
-                     }}
-                     titleStyle={this.textEstilo(
-                        colores.colorBlanco,
-                        15,
+            <View style={styles.cabecera}>
+               <View style={styles.tituloCabecera}>
+                  <Text
+                     style={this.textEstilo(
+                        colores.colorBlancoTexto,
+                        22,
                         'bold'
                      )}
-                     buttonStyle={styles.estiloBoton}
-                     iconRight
+                  >
+                     Tu carrito de compra
+                  </Text>
+               </View>
+
+               <View style={styles.contenedorBoton}>
+                  <Button
+                     title="Seguir 
+                     comprando"
+                     onPress={() => {
+                        this.props.navigation.dispatch(StackActions.popToTop());
+                     }}
+                     titleStyle={this.textEstilo(
+                        colores.colorBlancoTexto,
+                        12,
+                        'normal'
+                     )}
+                     buttonStyle={styles.estiloBotonS}
                      icon={
                         <Icon
-                           name="arrow-right-bold-circle"
-                           size={30}
+                           name="arrow-left-bold-circle"
+                           size={20}
                            color="white"
-                           style={styles.iconoDerecha}
+                           style={styles.iconoIzquierda}
                         />
                      }
                   />
-               ) : (
-                  <Text></Text>
-               )}
+
+                  {items.length > 0 ? (
+                     <Button
+                        title="Confirmar"
+                        onPress={() => {
+                           this.props.navigation.navigate(
+                              'ConfirmarCompraScreen'
+                           );
+                        }}
+                        titleStyle={this.textEstilo(
+                           colores.colorBlanco,
+                           13,
+                           'bold'
+                        )}
+                        buttonStyle={styles.estiloBoton}
+                        iconRight
+                        icon={
+                           <Icon
+                              name="arrow-right-bold-circle"
+                              size={30}
+                              color="white"
+                              style={styles.iconoDerecha}
+                           />
+                        }
+                     />
+                  ) : (
+                     <Text></Text>
+                  )}
+               </View>
             </View>
 
             <View style={styles.pie}>
-               {items.length > 0 ? (
-                  <View style={{ flexDirection: 'row' }}>
-                     <View style={{ flex: 1 }}>
-                        <Button
-                           title="Vaciar"
-                           onPress={() => {
-                              this.eliminarCarro(global.usuario);
-                              this.props.navigation.goBack();
-                           }}
-                           titleStyle={this.textEstilo(
-                              colores.colorBlancoTexto,
-                              12,
-                              'normal'
-                           )}
-                           buttonStyle={styles.estiloBotonVaciar}
-                           icon={
-                              <Icon
-                                 name="cart-remove"
-                                 size={20}
-                                 color="white"
-                                 style={styles.iconoIzquierda}
-                              />
-                           }
-                        />
-                        <Text></Text>
-                     </View>
-                     <View style={{ flex: 1 }}>
-                        <Numero
-                           titulo="SUBTOTAL:"
-                           valor={this.state.subtotal}
-                        ></Numero>
-                        <Numero
-                           titulo="ENVÍO:"
-                           valor={this.state.delivery}
-                        ></Numero>
-                        <Numero
-                           titulo="TOTAL:"
-                           valor={this.state.total}
-                        ></Numero>
-                     </View>
+               {/* Se cambia la forma de presentar el texto en el carrito */}
+               {items.length === 0 && (
+                  <View
+                     style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                     }}
+                  >
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
+                     >
+                        No tiene productos agregados al carrito
+                     </Text>
+                     <Separador alto={10} />
+                     <Text
+                        style={textEstilo(
+                           colores.colorOscuroTexto,
+                           15,
+                           'normal'
+                        )}
+                     >
+                        Por favor siga comprando
+                     </Text>
                   </View>
-               ) : (
-                  <Text>No tiene productos agregados al carrito</Text>
                )}
                <FlatList
                   data={this.state.listItems}
@@ -230,6 +195,58 @@ export class CarroCompras extends Component {
                   }}
                />
             </View>
+            {items.length > 0 && (
+               <View
+                  style={{
+                     flexDirection: 'row',
+                     borderTopWidth: 3,
+                     paddingVertical: 25,
+                     borderColor: colores.colorClaroTexto,
+                     backgroundColor: colores.colorBlanco,
+                  }}
+               >
+                  <View
+                     style={{
+                        flex: 1,
+                        paddingVertical: 10,
+                        paddingHorizontal: 30,
+                        paddingRight: 12,
+                     }}
+                  >
+                     <Button
+                        title="Vaciar"
+                        onPress={() => {
+                           this.eliminarCarro(global.usuario);
+                        }}
+                        titleStyle={this.textEstilo(
+                           colores.colorBlancoTexto,
+                           12,
+                           'normal'
+                        )}
+                        buttonStyle={styles.estiloBotonVaciar}
+                        icon={
+                           <Icon
+                              name="cart-remove"
+                              size={20}
+                              color="white"
+                              style={styles.iconoIzquierda}
+                           />
+                        }
+                     />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                     <Numero
+                        titulo="SUBTOTAL:"
+                        valor={this.state.subtotal}
+                     ></Numero>
+                     <Numero
+                        titulo="ENVÍO:"
+                        valor={this.state.delivery}
+                     ></Numero>
+                     <Numero titulo="TOTAL:" valor={this.state.total}></Numero>
+                  </View>
+               </View>
+            )}
          </SafeAreaView>
       );
    }
@@ -237,6 +254,14 @@ export class CarroCompras extends Component {
       this.mondado = false;
    }
 }
+
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
 
 const styles = StyleSheet.create({
    contenedorBoton: {
@@ -247,7 +272,7 @@ const styles = StyleSheet.create({
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
-      paddingHorizontal: 40,
+      paddingHorizontal: 30,
       paddingTop: 30,
    },
    pie: {
@@ -255,30 +280,30 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
-      paddingHorizontal: 15,
+      paddingHorizontal: 25,
       marginTop: 30,
       paddingTop: 20,
    },
    tituloCabecera: { paddingBottom: 20 },
    estiloBoton: {
       backgroundColor: colores.colorOscuroPrimarioTomate,
-      width: 130,
-      height: 45,
+      width: 145,
+      height: 40,
       borderRadius: 100,
       paddingHorizontal: 15,
    },
    estiloBotonS: {
       backgroundColor: colores.colorOscuroPrimarioVerde,
-      width: 130,
-      height: 45,
+      width: 140,
+      height: 40,
       borderRadius: 100,
       paddingHorizontal: 15,
    },
    estiloBotonVaciar: {
       backgroundColor: colores.colorOscuroPrimarioVerde,
       width: 100,
-      height: 45,
-      borderRadius: 100,
+      height: 40,
+      borderRadius: 10,
       paddingHorizontal: 15,
    },
    iconoDerecha: { paddingLeft: 5 },

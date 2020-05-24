@@ -33,7 +33,6 @@ export default function Registro({ navigation }) {
                   Registro
                </Text>
             </View>
-
             <Image
                source={require('../../../assets/img/LogoBlanco.png')}
             ></Image>

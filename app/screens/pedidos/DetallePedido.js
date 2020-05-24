@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Button } from 'react-native';
 import {Text } from 'react-native-elements';
 import { ServicioPedidos } from '../../servicios/ServicioPedidos';
-import {ItemDetallePedido} from './componentes/ItemDetallePedido'
+import { ItemDetallePedido } from './componentes/ItemDetallePedido';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Icon } from 'react-native-elements';
 
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-
+import { agregarDisminuirItemCarro, ServicioCarroCompras } from '../../servicios/ServicioCarroCompras';
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -29,7 +28,8 @@ export class DetallePedido extends Component {
       srvDetallePedido.recuperarDetallePedido(
           detallePedido, 
           this.repintarLista, 
-          this.pedido);
+         this.pedido
+      );
    }
 
    repintarLista = detallePedido => {
@@ -38,44 +38,38 @@ export class DetallePedido extends Component {
       });
    };
 
+   repetir = () => {
+      new ServicioCarroCompras().eliminarCarro(global.usuario)
+      for(let i =0; i< this.state.listDetallePedido.length; i++){
+         agregarDisminuirItemCarro(this.state.listDetallePedido[i], global.usuario,0);
+      }
+   }
+
    render() {
       //let combo = this.props.route.params.pedido;
+      const { navigation } = this.props;
       return (
          <SafeAreaView style={styles.container}>
-            <CabeceraPersonalizada
-               titulo={'Yappando'}
-               iconoComponente={
-                  <Icon
-                     name="menu"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirDrawer}
-                  />
-               }
-               iconoDeTienda={
-                  <Icon
-                     name="cart"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirCarrito}
-                     underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-            ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
                <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
-                  DETALLE DE PEDIDOS
+                  DETALLE DE PEDIDO
                </Text>
+            </View>
+            <View>
+               <Text>Asociado: {this.pedido.nombreAsociado}</Text>
+               <Text>Fecha de Entrega:{this.pedido.fechaEntrega}</Text>
+               <Text>Hora de Entrega: {this.pedido.horarioEntrega}</Text>
+               <Text>Estado: {this.pedido.estado}</Text>
             </View>
             <View style={styles.pie}>
                <FlatList
                   data={this.state.listDetallePedido}
                   renderItem={objeto => {
                      return (
-                        <ItemDetallePedido detallePedido ={objeto.item}
-                        nav={this.props.navigation} />
+                        <ItemDetallePedido
+                           detallePedido={objeto.item}
+                           nav={this.props.navigation}
+                        />
                      );
                   }}
                   keyExtractor={objeto => {
@@ -83,8 +77,14 @@ export class DetallePedido extends Component {
                   }}
                />
          </View>
+            {this.pedido.estado == "PE" ? (
+               <Button title="Repetir" onPress={() => {
+               this.repetir();
+                  navigation.navigate("CarroComprasScreen");
+               }}></Button>
+            ):null}
+           
          </SafeAreaView>
-
       );
    }
 }
@@ -112,9 +112,8 @@ const styles = StyleSheet.create({
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 25,
-      paddingVertical: 10,
-      alignItems: 'center',
-      flexDirection: 'row',
+      //paddingVertical: 0,
+      //alignItems: 'center',
+      //flexDirection: 'row',
    },
 });
- 
