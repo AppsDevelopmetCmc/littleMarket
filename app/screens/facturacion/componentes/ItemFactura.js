@@ -27,7 +27,7 @@ export class ItemFactura extends Component {
                             </View>
                             <View style={styles.container}>
                                 <Text style={styles.textoNegrita}>
-                                    {this.props.factura.id}
+                                    {this.props.factura.tipoDocumento}
                                 </Text>
                             </View>
                             <View style={styles.filaFlexEnd}>
