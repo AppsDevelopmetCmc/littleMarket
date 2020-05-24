@@ -33,28 +33,35 @@ export class SeleccionarDireccion extends Component {
          this.repintarLista
       );
       if (global.direcciones) this.repintarLista();
-      this.obtenerCoordenadas();
    };
    componentWillUnmount = () => {
       this.montado = false;
    };
-   obtenerUbicacionActual = () => {
-      // this.obtenerCoordenadas();
+   obtenerUbicacionActual = async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+         Alert.alert('Error al otorgar el permiso');
+         return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log('actual location:', location);
+      global.localizacionActual = location;
       this.props.navigation.navigate('Mapa', {
          origen: 'actual',
          coordenadasActuales: null,
          pantallaOrigen: 'lsCombo',
       });
    };
-   obtenerCoordenadas = async () => {
-      //Geocoder.init(APIKEY);
+
+   recuperarCoordenadas = async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
          Alert.alert('Error al otorgar el permiso');
+         return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      console.log('actual location:', location);
       global.localizacionActual = location;
    };
    repintarLista = () => {
