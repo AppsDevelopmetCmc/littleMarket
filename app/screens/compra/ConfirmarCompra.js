@@ -106,23 +106,17 @@ export class ConfirmarCompra extends Component {
    generarNumeroOrden = async(fn) => {
       let numero,codigo;
       let limite =10;
-      console.log('generarNumeroOrden ')
       numero = await new ServicioParametros().obtenerSecuencial();
       if(numero){
-         console.log('lle '+numero)
          new ServicioParametros().actualizarSecuencial(numero);
-         
          codigo = ''+numero;
-         console.log('leng '+codigo.length)
          for(let i=0 ; i<limite;i++){
             if( codigo.length < limite){
                codigo = '0'+codigo;
-               console.log('codigo '+codigo)
             }
          }
          codigo = 'YPP'+codigo;
       }
-      console.log('fin '+codigo)
       fn(codigo);
    }
    render() {
