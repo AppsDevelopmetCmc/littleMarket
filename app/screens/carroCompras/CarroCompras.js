@@ -217,9 +217,6 @@ export class CarroCompras extends Component {
                         title="Vaciar"
                         onPress={() => {
                            this.eliminarCarro(global.usuario);
-                           this.props.navigation.dispatch(
-                              StackActions.popToTop()
-                           );
                         }}
                         titleStyle={this.textEstilo(
                            colores.colorBlancoTexto,
