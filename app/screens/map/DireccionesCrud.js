@@ -100,6 +100,17 @@ export class DireccionesCrud extends Component {
    };
    eliminar = direccion => {
       console.log('ELIMINA:', direccion);
+      //si se borra la dirección elegida para la entrega
+      if (global.direccionPedido.id == direccion.id) {
+         for (let i = 0; i < global.direcciones.length; i++) {
+            if (global.direcciones[i].principal == 'S') {
+               global.direccionPedido = global.direcciones[i];
+               break;
+            }
+         }
+         global.repintarDireccion();
+      }
+
       let servDirecciones = new ServicioDirecciones();
       if (direccion.principal != 'S') {
          servDirecciones.eliminarDir(global.usuario, direccion.id);
