@@ -26,6 +26,7 @@ import { Notificaciones } from 'expo';
 
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
+import Separador from '../../components/Separador';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -218,11 +219,11 @@ export class ListCombo extends Component {
             ></CabeceraPersonalizada>
 
             {this.state.direccionPedido ? (
-               <View>
+               <View style={{ paddingVertical: 10 }}>
                   <Text style={{ marginLeft: 20, color: 'gray' }}>
                      Dirección de Entrega
                   </Text>
-
+                  <Separador alto={5} />
                   <View style={styles.contenedorDireccione}>
                      <View style={{ flex: 1 }}>
                         <Icon
@@ -233,7 +234,15 @@ export class ListCombo extends Component {
                         />
                      </View>
                      <View style={{ flex: 10 }}>
-                        <Text>{this.state.direccionPedido}</Text>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              11,
+                              'normal'
+                           )}
+                        >
+                           {this.state.direccionPedido}
+                        </Text>
                      </View>
                      <View style={{ flex: 2 }}>
                         <Button
@@ -241,7 +250,7 @@ export class ListCombo extends Component {
                               this.setState({ mostrarModalDirecciones: true });
                            }}
                            buttonStyle={{
-                              backgroundColor: 'white',
+                              backgroundColor: 'rgba(255,255,255,0)',
                            }}
                            icon={
                               <Icon
@@ -322,7 +331,6 @@ const flatListItemSeparator = () => {
                height: 0.5,
                width: '100%',
                backgroundColor: colores.colorOscuroTexto,
-
                alignItems: 'center',
                justifyContent: 'center',
                alignContent: 'center',
@@ -401,7 +409,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 20,
       backgroundColor: colores.colorBlanco,
       height: 40,
-      borderRadius: 10,
+      borderRadius: 20,
       //justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 3,

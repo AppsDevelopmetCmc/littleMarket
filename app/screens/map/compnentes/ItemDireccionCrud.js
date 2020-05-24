@@ -34,10 +34,10 @@ export class ItemDireccionCrud extends Component {
                         )}
                      </View>
                      <View style={styles.descripcion}>
-                        <View style={{ flexDirection: 'row', flex: 1 }}>
+                        <View style={{ flex: 1 }}>
                            <Text
                               style={{
-                                 fontSize: 13,
+                                 fontSize: 14,
                                  fontWeight: 'bold',
                                  flex: 4,
                               }}
@@ -45,12 +45,7 @@ export class ItemDireccionCrud extends Component {
                               {this.props.direccion.alias}
                            </Text>
                            {this.props.direccion.principal == 'S' ? (
-                              <View
-                                 styles={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'flex-end',
-                                 }}
-                              >
+                              <View>
                                  <Text
                                     style={{
                                        backgroundColor:
@@ -59,6 +54,8 @@ export class ItemDireccionCrud extends Component {
                                        color: colores.colorBlancoTexto,
                                        fontSize: 13,
                                        paddingHorizontal: 10,
+                                       width: '40%',
+                                       marginVertical: 2,
                                     }}
                                  >
                                     Principal

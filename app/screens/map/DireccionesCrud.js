@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   FlatList,
+   Alert,
+   ScrollView,
+} from 'react-native';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
@@ -13,7 +20,6 @@ import * as msg from '../../constants/Mensajes';
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
 import Separador from '../../components/Separador';
-import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import { ItemDireccionCrud } from './compnentes/ItemDireccionCrud';
 import Geocoder from 'react-native-geocoding';
@@ -155,14 +161,16 @@ export class DireccionesCrud extends Component {
                }
             ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}>
-                  Direcciones
+               <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
+                  Mis direcciones
                </Text>
-               <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
-                  Yappando
-               </Text>
+               <Icon
+                  name="map-marker"
+                  size={40}
+                  color={'rgba(255, 255, 255, 0.5)'}
+                  style={styles.iconos}
+               />
             </View>
-
             <View style={styles.pie}>
                <View style={styles.boton}>
                   <Button
@@ -215,7 +223,7 @@ export class DireccionesCrud extends Component {
                      Mis Direcciones
                   </Text>
                </View>
-               <View style={styles.lista}>
+               <View style={{ flex: 1 }}>
                   <FlatList
                      data={this.state.listaDirecciones}
                      renderItem={objeto => {
@@ -335,10 +343,12 @@ const styles = StyleSheet.create({
       paddingTop: 30,
    },
    cabecera: {
-      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       backgroundColor: colores.colorPrimarioVerde,
-      paddingLeft: 40,
+      paddingHorizontal: 20,
       paddingTop: 10,
+      alignItems: 'center',
    },
    pie: {
       flex: 4,
@@ -347,7 +357,6 @@ const styles = StyleSheet.create({
       borderTopEndRadius: 30,
       paddingHorizontal: 20,
       marginTop: 30,
-      // paddingTop: 30,
    },
    estiloContenedor: {
       width: '100%',
