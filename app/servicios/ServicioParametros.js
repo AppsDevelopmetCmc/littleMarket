@@ -42,7 +42,6 @@ export class ServicioParametros {
       let comboHorarios = [];
       let proximas = respuesta.data().proximas;
       let horarios = respuesta.data().horarios;
-      console.log('data:', respuesta.data());
       for (let i = 0; i < proximas.length; i++) {
          comboFechas.push({
             label: formatearFechaCompleta(proximas[i]),
@@ -50,7 +49,6 @@ export class ServicioParametros {
          });
       }
       for (const item in horarios) {
-         console.log('item:',horarios[item] );
          comboHorarios.push({
             label: horarios[item].horario,
             value: horarios[item],
@@ -64,4 +62,19 @@ export class ServicioParametros {
       let metadata = await global.db.collection('parametros').doc(IdParametro).get();
       fnObtenerDato(metadata.data());
    };
+   obtenerSecuencial = async () => {
+      let metadata = await global.db.collection('parametros').doc('secuencial').get();
+      return metadata.data().siguiente;
+   };
+
+   actualizarSecuencial  = (actual) => {
+
+      global.db.collection("parametros").
+      doc('secuencial').
+      set({siguiente: actual+1}).then(function () {
+          Console.log("agregado")
+      }).catch(function (error) {
+          Alert.alert("error" + error)
+      })
+   }
 }

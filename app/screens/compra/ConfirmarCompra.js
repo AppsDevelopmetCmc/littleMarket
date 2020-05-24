@@ -28,10 +28,6 @@ import Separador from '../../components/Separador';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
-import {
-   recuperarPrincipal,
-   ServicioDirecciones,
-} from '../../servicios/ServicioDirecciones';
 
 export class ConfirmarCompra extends Component {
    constructor() {
@@ -107,6 +103,28 @@ export class ConfirmarCompra extends Component {
       }
       this.setState({ mostrarModalDirecciones: false });
    };
+   generarNumeroOrden = async(fn) => {
+      let numero,codigo;
+      let limite =10;
+      console.log('generarNumeroOrden ')
+      numero = await new ServicioParametros().obtenerSecuencial();
+      if(numero){
+         console.log('lle '+numero)
+         new ServicioParametros().actualizarSecuencial(numero);
+         
+         codigo = ''+numero;
+         console.log('leng '+codigo.length)
+         for(let i=0 ; i<limite;i++){
+            if( codigo.length < limite){
+               codigo = '0'+codigo;
+               console.log('codigo '+codigo)
+            }
+         }
+         codigo = 'YPP'+codigo;
+      }
+      console.log('fin '+codigo)
+      fn(codigo);
+   }
    render() {
       let fechaActual = new Date();
 
@@ -236,6 +254,8 @@ export class ConfirmarCompra extends Component {
                         disabled={this.state.deshabilitado}
                         onPress={() => {
                            let fecha = new Date();
+                           this.generarNumeroOrden(
+                           (codigo) =>{
                            crearPedido(
                               {
                                  fechaPedido: formatearFechaISO(fecha),
@@ -254,7 +274,7 @@ export class ConfirmarCompra extends Component {
                                  telefono: global.appUsuario.telefono,
                                  total: global.total,
                                  jornada: this.state.horarioSeleccionado.jornada,
-                                 orden:'Y0000000555555',
+                                 orden: codigo,
                                  horaCreacion:obtenerHoraActual(fecha),
                                  formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
                                  asociado: 'asociado@gmail.com',
@@ -274,6 +294,7 @@ export class ConfirmarCompra extends Component {
                                     numero
                               );
                            }
+                        });
                            
                         }}
                      ></Button>
