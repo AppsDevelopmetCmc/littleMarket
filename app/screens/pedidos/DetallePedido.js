@@ -39,6 +39,7 @@ export class DetallePedido extends Component {
    };
 
    repetir = () => {
+      new ServicioCarroCompras().eliminarCarro(global.usuario)
       for(let i =0; i< this.state.listDetallePedido.length; i++){
          agregarDisminuirItemCarro(this.state.listDetallePedido[i], global.usuario,0);
       }
@@ -77,7 +78,7 @@ export class DetallePedido extends Component {
                />
          </View>
             {this.pedido.estado == "PE" ? (
-               <Button title="Repetir" onPress={() => { new ServicioCarroCompras().eliminarCarro(global.usuario);
+               <Button title="Repetir" onPress={() => {
                this.repetir();
                   navigation.navigate("CarroComprasScreen");
                }}></Button>
