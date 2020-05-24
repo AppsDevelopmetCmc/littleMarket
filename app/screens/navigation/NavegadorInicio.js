@@ -502,7 +502,6 @@ export default function NavegadorInicio() {
                global.appUsuario = documento;
             } else {
                let infoUsuarioGuardar = {};
-               infoUsuarioGuardar.cedula = null;
                infoUsuarioGuardar.nombreCompleto =
                   global.infoUsuario.displayName;
                infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;

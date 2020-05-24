@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Button, Avatar, Input, Icon } from 'react-native-elements';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import { Button, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
@@ -13,35 +13,63 @@ import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 // Importacion de separador de divs
 import Separador from '../../components/Separador';
 
+// Importacion de Toas
+import Toast from 'react-native-easy-toast';
+
 export default function PerfilUsuario(props) {
+   const toastRef = useRef();
+
    const { navigation } = props;
+   console.log('Perfil Prosp:', props);
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
    const [correoUsuario, setcorreoUsuario] = useState(global.appUsuario.id);
-   const [cedulaUsuario, setcedulaUsuario] = useState(global.appUsuario.cedula);
    const [telefonoUsuario, settelefonoUsuario] = useState(
       global.appUsuario.telefono
    );
 
    // Variables de validacion
    const [nombreValidacion, setnombreValidacion] = useState('');
-   const [cedulaValidacion, setCedulaValidacion] = useState('');
    const [telefonoValidacion, setTelefonoValidacion] = useState('');
 
-   const requerido = 'Campo requerido *';
+   // Actualización
+   const [actualizaUsuario, setActualizaUsuario] = useState(false);
 
+   const requerido = 'Campo requerido *';
+   const fonoInvalido = 'Número celular invalido';
+
+   console.log('actualizaUsuario', actualizaUsuario);
+
+   useEffect(() => {
+      setnombreValidacion('');
+      setTelefonoValidacion('');
+      traeInformacion();
+   }, [actualizaUsuario]);
+
+   const traeInformacion = () => {
+      let documento = {};
+      global.db
+         .collection('clientes')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.data()) {
+               documento = doc.data();
+               setNombreUsuario(documento.nombreCompleto);
+               settelefonoUsuario(documento.telefono);
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
+   };
    const actualizaInfo = () => {
-      if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario) {
+      if (!nombreUsuario || !telefonoUsuario) {
          if (!nombreUsuario) {
             setnombreValidacion(requerido);
          } else {
             setnombreValidacion('');
-         }
-         if (!cedulaUsuario) {
-            setCedulaValidacion(requerido);
-         } else {
-            setCedulaValidacion('');
          }
          if (!telefonoUsuario) {
             setTelefonoValidacion(requerido);
@@ -49,23 +77,41 @@ export default function PerfilUsuario(props) {
             setTelefonoValidacion('');
          }
       } else {
-         global.db
-            .collection('clientes')
-            .doc(correoUsuario)
-            .update({
-               cedula: cedulaUsuario,
-               nombreCompleto: nombreUsuario,
-               telefono: telefonoUsuario,
-            })
-            .then(regresoPagina)
-            .catch(error => {
-               console.log(error);
-            });
+         setnombreValidacion('');
+         setTelefonoValidacion('');
+         if (telefonoUsuario.length != 10) {
+            setTelefonoValidacion(fonoInvalido);
+         } else {
+            setnombreValidacion('');
+
+            setTelefonoValidacion('');
+            global.db
+               .collection('clientes')
+               .doc(correoUsuario)
+               .update({
+                  nombreCompleto: nombreUsuario,
+                  telefono: telefonoUsuario,
+               })
+               .then(regresoPagina)
+               .catch(error => {
+                  console.log(error);
+               });
+         }
       }
    };
 
    const regresoPagina = () => {
-      navigation.goBack();
+      Alert.alert(
+         '',
+         'Información guardada con éxito',
+         [
+            {
+               text: 'OK',
+               onPress: () => navigation.goBack(),
+            },
+         ],
+         { cancelable: false }
+      );
    };
    return (
       <SafeAreaView style={styles.contenedorPagina}>
@@ -76,94 +122,82 @@ export default function PerfilUsuario(props) {
                   type="material-community"
                   color={colores.colorBlanco}
                   size={24}
-                  onPress={regresoPagina}
+                  onPress={() => {
+                     setActualizaUsuario(!actualizaUsuario);
+                     navigation.goBack();
+                  }}
                />
             }
          ></CabeceraPersonalizada>
          <View style={styles.cabecera}>
-            <Text style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}>
-               Perfil
-            </Text>
-            <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
-               Yappando
-            </Text>
+            <View>
+               <Text style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}>
+                  Perfil
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
+                  Yappando
+               </Text>
+            </View>
          </View>
          <View style={styles.pie}>
-            <KeyboardAwareScrollView>
-               <Input
-                  placeholder="yappando@mail.com"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Correo *"
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => setcorreoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-                  disabled={true}
-               >
-                  {correoUsuario}
-               </Input>
-               <Separador alto={15}></Separador>
-               <Input
-                  // TO DO : validar que sean solo letras / quitar espacios en blanco
-                  placeholder="Ingrese su Nombre y Apellido"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Nombre y Apellido *"
-                  errorMessage={nombreValidacion}
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => setNombreUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               >
-                  {nombreUsuario}
-               </Input>
-               <Separador alto={15}></Separador>
-
-               <Input
-                  // TO DO : validar que sean solo numeros
-                  placeholder="Ingrese su cédula"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Cédula *"
-                  keyboardType="numeric"
-                  maxLength={10}
-                  errorMessage={cedulaValidacion}
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => setcedulaUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               ></Input>
-               <Separador alto={15}></Separador>
-               <Input
-                  // TO DO : validar que sean solo numeros
-                  placeholder="Ingrese su número teléfonico"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Teléfono celular *"
-                  keyboardType="numeric"
-                  maxLength={10}
-                  errorMessage={telefonoValidacion}
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               >
-                  {telefonoUsuario}
-               </Input>
-               <Separador alto={15}></Separador>
+            <ScrollView keyboardShouldPersistTaps="always">
+               <View style={styles.container}>
+                  <Input
+                     placeholder="yappando@mail.com"
+                     containerStyle={styles.estiloContenedor1}
+                     inputContainerStyle={styles.estiloInputContenedor}
+                     inputStyle={styles.estiloInput}
+                     label="Correo *"
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        15,
+                        'normal'
+                     )}
+                     onChange={e => setcorreoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     disabled={true}
+                  >
+                     {correoUsuario}
+                  </Input>
+                  <Separador alto={15}></Separador>
+                  <Input
+                     // TO DO : validar que sean solo letras / quitar espacios en blanco
+                     placeholder="Ingrese su Nombre y Apellido"
+                     containerStyle={styles.estiloContenedor1}
+                     inputContainerStyle={styles.estiloInputContenedor}
+                     inputStyle={styles.estiloInput}
+                     label="Nombre y Apellido *"
+                     errorMessage={nombreValidacion}
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        15,
+                        'normal'
+                     )}
+                     onChange={e => setNombreUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  >
+                     {nombreUsuario}
+                  </Input>
+                  <Separador alto={15}></Separador>
+                  <Input
+                     // TO DO : validar que sean solo numeros
+                     placeholder="Ingrese su número teléfonico"
+                     containerStyle={styles.estiloContenedor1}
+                     inputContainerStyle={styles.estiloInputContenedor}
+                     inputStyle={styles.estiloInput}
+                     label="Teléfono celular *"
+                     keyboardType="numeric"
+                     maxLength={10}
+                     errorMessage={telefonoValidacion}
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        15,
+                        'normal'
+                     )}
+                     onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  >
+                     {telefonoUsuario}
+                  </Input>
+                  <Separador alto={15}></Separador>
+               </View>
                <Button
                   title="Guardar"
                   titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
@@ -171,8 +205,15 @@ export default function PerfilUsuario(props) {
                   buttonStyle={styles.btnGuardar}
                   onPress={actualizaInfo}
                ></Button>
-            </KeyboardAwareScrollView>
+            </ScrollView>
          </View>
+         <Toast
+            ref={toastRef}
+            position="center"
+            opacity={0.8}
+            fadeInDuration={800}
+            fadeOutDuration={1000}
+         ></Toast>
       </SafeAreaView>
    );
 }
@@ -185,20 +226,23 @@ const textEstilo = (color, tamaño, tipo) => {
    };
 };
 const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      paddingTop: 50,
+   },
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
-      flex: 1,
       backgroundColor: colores.colorPrimarioVerde,
-      paddingLeft: 40,
-      paddingTop: 10,
+      paddingHorizontal: 40,
+      paddingTop: 30,
    },
    pie: {
-      flex: 6,
+      flex: 4,
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
-      paddingTop: 50,
+      marginTop: 30,
    },
    estiloContenedor1: {
       width: '100%',
