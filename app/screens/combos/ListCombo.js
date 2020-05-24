@@ -57,8 +57,11 @@ export class ListCombo extends Component {
 
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarCombos(this.repintarLista);
+      global.repintarDireccion = this.repintarDireccionPrincipal;
    }
-
+   repintarDireccionPrincipal = () => {
+      this.setState({ direccionPedido: global.direccionPedido.descripcion });
+   };
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
    };

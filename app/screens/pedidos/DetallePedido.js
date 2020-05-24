@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as colores from '../../constants/Colores';
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-import { agregarDisminuirItemCarro } from '../../servicios/ServicioCarroCompras';
+import { agregarDisminuirItemCarro, ServicioCarroCompras } from '../../servicios/ServicioCarroCompras';
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -39,6 +39,7 @@ export class DetallePedido extends Component {
    };
 
    repetir = () => {
+      new ServicioCarroCompras().eliminarCarro(global.usuario)
       for(let i =0; i< this.state.listDetallePedido.length; i++){
          agregarDisminuirItemCarro(this.state.listDetallePedido[i], global.usuario,0);
       }
@@ -77,7 +78,8 @@ export class DetallePedido extends Component {
                />
          </View>
             {this.pedido.estado == "PE" ? (
-               <Button title="Repetir" onPress={() => {this.repetir();
+               <Button title="Repetir" onPress={() => {
+               this.repetir();
                   navigation.navigate("CarroComprasScreen");
                }}></Button>
             ):null}
