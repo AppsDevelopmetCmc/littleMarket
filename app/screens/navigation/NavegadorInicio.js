@@ -319,15 +319,7 @@ function DirectionCrudStack() {
          <StackDirection.Screen
             name="DireccionesCrudScreen"
             component={DireccionesCrud}
-            options={{
-               title: '',
-               headerStyle: {
-                  backgroundColor: colores.colorPrimarioVerde,
-                  elevation: 0, //remove shadow on Android
-                  shadowOpacity: 0, //remove shadow on iOS
-               },
-               headerTintColor: '#fff',
-            }}
+            options={navOptionHandler(false)}
          ></StackDirection.Screen>
       </StackDirection.Navigator>
    );
