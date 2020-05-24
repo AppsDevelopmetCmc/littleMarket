@@ -42,21 +42,22 @@ export class ServicioParametros {
       let comboHorarios = [];
       let proximas = respuesta.data().proximas;
       let horarios = respuesta.data().horarios;
-      console.log('tamanio:', proximas.length);
+      console.log('data:', respuesta.data());
       for (let i = 0; i < proximas.length; i++) {
          comboFechas.push({
             label: formatearFechaCompleta(proximas[i]),
             value: proximas[i],
          });
       }
-      for (let i = 0; i < horarios.length; i++) {
+      for (const item in horarios) {
+         console.log('item:',horarios[item] );
          comboHorarios.push({
-            label: horarios[i],
-            value: horarios[i],
+            label: horarios[item].horario,
+            value: horarios[item],
+            jornada: horarios[item].jornada
          });
       }
       fnCargarComboFechas(comboFechas, comboHorarios);
-      console.log('parametros', respuesta.data());
    };
 
    getObtenerParametroId = async (IdParametro,fnObtenerDato) => {

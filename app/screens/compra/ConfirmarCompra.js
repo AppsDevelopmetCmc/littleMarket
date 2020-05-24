@@ -26,7 +26,7 @@ import * as colores from '../../constants/Colores';
 
 import Separador from '../../components/Separador';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
-import { formatearFechaISO } from '../../utils/DateUtil';
+import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import {
    recuperarPrincipal,
@@ -204,13 +204,8 @@ export class ConfirmarCompra extends Component {
                            buttonSize={15}
                            buttonOuterSize={25}
                            onPress={value => {
-                              this.setState({ pagoSeleccionado: value });
+                              this.setState({ pagoSeleccionado: value});
                               global.pagoSeleccionado = value;
-                              /* if (value == 'TR') {
-                                 this.props.navigation.navigate(
-                                    'TransferenciaScreen'
-                                 );
-                              }*/
                            }}
                         />
                      </Card>
@@ -240,15 +235,16 @@ export class ConfirmarCompra extends Component {
                         titleStyle={styles.estiloTitulo}
                         disabled={this.state.deshabilitado}
                         onPress={() => {
+                           let fecha = new Date();
                            crearPedido(
                               {
-                                 fechaPedido: formatearFechaISO(new Date()),
+                                 fechaPedido: formatearFechaISO(fecha),
                                  fechaEntrega: this.state.fechaSeleccionada,
-                                 horarioEntrega: this.state.horarioSeleccionado,
+                                 horarioEntrega: this.state.horarioSeleccionado.horario,
                                  estado:
                                     global.pagoSeleccionado == 'TR'
                                        ? 'CT'
-                                       : 'CE',
+                                       : 'AA',
                                  mail: global.usuario,
                                  nombreCliente:
                                     global.appUsuario.nombreCompleto,
@@ -257,6 +253,12 @@ export class ConfirmarCompra extends Component {
                                  longitud: global.direccionPedido.longitud,
                                  telefono: global.appUsuario.telefono,
                                  total: global.total,
+                                 jornada: this.state.horarioSeleccionado.jornada,
+                                 orden:'Y0000000555555',
+                                 horaCreacion:obtenerHoraActual(fecha),
+                                 formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
+                                 asociado: 'asociado@gmail.com',
+                                 nombreAsociado:'Juan perez'
                               },
                               items,
                               this.cerrarPantalla
@@ -272,6 +274,7 @@ export class ConfirmarCompra extends Component {
                                     numero
                               );
                            }
+                           
                         }}
                      ></Button>
                   </View>
