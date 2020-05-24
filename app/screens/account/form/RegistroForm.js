@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -42,7 +42,7 @@ export default function RegistroForm(props) {
 
    const register = async () => {
       setisVisibleLoading(true);
-      console.log('>>>>>1');
+
       if (!email || !password || !repeatPassword) {
          toastRef.current.show(err.Err3, 600);
          seterrorMsgCorreo(requerido);
@@ -88,7 +88,6 @@ export default function RegistroForm(props) {
                      });
                }
             }
-            console.log('zzzzzzIse');
          }
       }
       setisVisibleLoading(false);
@@ -217,12 +216,11 @@ const styles = StyleSheet.create({
    btnStyles: {
       marginTop: 50,
       width: '100%',
-      height: 40,
    },
    btnRegistrarse: {
       padding: 10,
-      backgroundColor: colores.colorPrimarioVerde,
-      borderRadius: 10,
+      backgroundColor: colores.colorPrimarioTomate,
+      borderRadius: 25,
    },
    estiloTexto: {
       paddingTop: 15,

@@ -7,6 +7,7 @@ import {
    Image,
    ScrollView,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 // Importacion de Toas
 import Toast from 'react-native-easy-toast';
@@ -32,15 +33,19 @@ export default function Registro({ navigation }) {
                   Registro
                </Text>
             </View>
-
             <Image
                source={require('../../../assets/img/LogoBlanco.png')}
             ></Image>
          </View>
 
-         <ScrollView style={styles.pie} keyboardShouldPersistTaps="always">
-            <RegistroForm nav={navigation} toastRef={toastRef}></RegistroForm>
-         </ScrollView>
+         <View style={styles.pie}>
+            <ScrollView keyboardShouldPersistTaps="always">
+               <RegistroForm
+                  nav={navigation}
+                  toastRef={toastRef}
+               ></RegistroForm>
+            </ScrollView>
+         </View>
 
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast
