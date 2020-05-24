@@ -273,10 +273,6 @@ export class Mapa extends Component {
          this.setState({ mostrarModal: true });
          //this.props.navigation.goBack();
       }
-      global.direccionActual = this.state.direccion;
-      if (global.direccionPedido) {
-         global.direccionPedido.descripcion = this.state.direccion;
-      }
    };
    guardarDatosReferencia = async () => {
       let servDireccion = new ServicioDirecciones();
