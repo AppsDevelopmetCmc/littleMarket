@@ -124,7 +124,7 @@ export class ListarDatosFacturacion extends Component {
                         <TouchableHighlight
                             underlayColor="black"
                             onPress={() => {
-                                this.props.navigation.navigate('DatosFacturacionScreen');
+                                this.props.navigation.navigate('DatosFacturacionScreen', { refrescar: this.refrescarLista });
                             }}>
                             <Icon
                                 name="folder-plus-outline"
@@ -142,6 +142,7 @@ export class ListarDatosFacturacion extends Component {
                                         nav={this.props.navigation}
                                         factura={objeto.item}
                                         fnEliminarFactura={this.eliminarfactura}
+                                        refrescar={this.refrescarLista}
                                     />
                                 );
                             }}

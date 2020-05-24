@@ -71,12 +71,11 @@ export default function DatosFacturacion(props) {
                 .catch(error => {
                     console.log(error);
                 });
+            props.route.params.refrescar();
         }
     };
 
-    const regresoPagina = () => {
-        navigation.goBack();
-    };
+
     return (
         <SafeAreaView style={styles.contenedorPagina}>
 
