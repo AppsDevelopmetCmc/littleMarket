@@ -66,7 +66,7 @@ export default function DatosFacturacion(props) {
                 telefono: telefonoUsuario,
             }
             srvFacturas.actualizarFactura(factura, props.route.params.factura.id);
-
+            props.route.params.refrescar();
 
         }
     };

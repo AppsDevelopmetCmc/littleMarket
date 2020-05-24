@@ -63,6 +63,7 @@ export class ItemFactura extends Component {
                         onPress={() => {
                             this.props.nav.navigate('EditarDatosFacturacionScreen', {
                                 factura: this.props.factura,
+                                refrescar: this.props.refrescar
                             });
                         }}>
                         <Icon
