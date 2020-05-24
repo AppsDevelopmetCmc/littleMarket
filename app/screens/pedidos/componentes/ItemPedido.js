@@ -21,10 +21,10 @@ export class ItemPedido extends Component {
                <View style={styles.contenido}>
                   <View style={styles.contenidoDetalle}>
                      <Text style={styles.textoNegrita}>
-                        Orden: 0000000000001
+                     {'Orden:'+this.props.pedido.orden }
                      </Text>
                      <Text style={styles.textoNegrita}>
-                        {this.props.pedido.fechaPedido + ' | 12:00 pm'}
+                        {this.props.pedido.fechaPedido + ' | '+ this.props.pedido.horaCreacion}
                      </Text>
                      <View style={styles.contenedorPares}>
                         <Text style={styles.texto}>Fecha de Entrega</Text>
@@ -34,17 +34,11 @@ export class ItemPedido extends Component {
                      </View>
                      <View style={styles.contenedorPares}>
                         <Text style={styles.texto}>Forma de Pago</Text>
-                        <Text style={styles.textoNegrita}>Efectivo</Text>
+                        <Text style={styles.textoNegrita}>{this.props.pedido.formaPago}</Text>
                      </View>
                   </View>
                   <Separador alto={30}></Separador>
                   <View style={styles.contenidoDetalle}>
-                     {/* <Text style={styles.texto}>Dirección</Text>
-                     <Text
-                        style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}
-                     >
-                        {this.props.pedido.direccion}
-                     </Text> */}
 
                      <View style={styles.contenedorPares}>
                         <Text style={styles.texto}>Estado</Text>
@@ -56,7 +50,7 @@ export class ItemPedido extends Component {
                                  'bold'
                               )}
                            >
-                              {this.props.pedido.estado + 'Entregado'}
+                              {this.props.pedido.estado}
                            </Text>
                         </View>
                      </View>
