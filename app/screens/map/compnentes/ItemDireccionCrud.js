@@ -16,46 +16,84 @@ export class ItemDireccionCrud extends Component {
       return (
          <View style={styles.fila}>
             <View style={styles.touch}>
-               <TouchableOpacity
-                  onPress={() => {
-                     this.props.fnActualizar(this.props.direccion);
-                  }}
-               >
-                  <View style={styles.contenido}>
-                     <View style={styles.subContenido}>
-                        <View style={styles.estiloIconoCobertura}>
-                           {this.props.direccion.tieneCoberturaDireccion ==
-                           'S' ? (
-                              <Icon
-                                 name="access-point-network"
-                                 size={25}
-                                 color={colores.colorOscuroPrimarioTomate}
-                              />
-                           ) : (
-                              <Icon
-                                 name="access-point-network-off"
-                                 size={25}
-                                 color={colores.colorClaroTexto}
-                              />
-                           )}
-                        </View>
-                        <View style={styles.descripcion}>
-                           <Text style={{ fontSize: 13, fontWeight: 'bold' }}>
+               <View style={styles.contenido}>
+                  <View style={styles.subContenido}>
+                     <View style={styles.estiloIconoCobertura}>
+                        {this.props.direccion.tieneCoberturaDireccion == 'S' ? (
+                           <Icon
+                              name="access-point-network"
+                              size={25}
+                              color={colores.colorOscuroPrimarioTomate}
+                           />
+                        ) : (
+                           <Icon
+                              name="access-point-network-off"
+                              size={25}
+                              color={colores.colorClaroTexto}
+                           />
+                        )}
+                     </View>
+                     <View style={styles.descripcion}>
+                        <View style={{ flexDirection: 'row', flex: 1 }}>
+                           <Text
+                              style={{
+                                 fontSize: 13,
+                                 fontWeight: 'bold',
+                                 flex: 4,
+                              }}
+                           >
                               {this.props.direccion.alias}
                            </Text>
-                           <Text style={styles.texto}>
-                              {this.props.direccion.descripcion}
-                           </Text>
+                           {this.props.direccion.principal == 'S' ? (
+                              <View
+                                 styles={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                 }}
+                              >
+                                 <Text
+                                    style={{
+                                       backgroundColor:
+                                          colores.colorClaroPrimarioTomate,
+                                       borderRadius: 5,
+                                       color: colores.colorBlancoTexto,
+                                       fontSize: 13,
+                                       paddingHorizontal: 10,
+                                    }}
+                                 >
+                                    Principal
+                                 </Text>
+                              </View>
+                           ) : (
+                              <Text></Text>
+                           )}
                         </View>
+                        <Text style={styles.texto}>
+                           {this.props.direccion.descripcion}
+                        </Text>
                      </View>
                   </View>
-               </TouchableOpacity>
+               </View>
             </View>
             <View style={styles.contenedorEliminar}>
                <Button
                   buttonStyle={styles.estiloBotonEliminar}
                   onPress={() => {
-                     this.props.fnEliminar(this.props.direccion.id);
+                     this.props.fnActualizar(this.props.direccion);
+                  }}
+                  icon={
+                     <Icon
+                        name="pencil"
+                        size={15}
+                        color={colores.colorBlanco}
+                        style={styles.iconoStilos}
+                     />
+                  }
+               />
+               <Button
+                  buttonStyle={styles.estiloBotonEliminar}
+                  onPress={() => {
+                     this.props.fnEliminar(this.props.direccion);
                   }}
                   icon={
                      <Icon
@@ -82,13 +120,15 @@ const styles = StyleSheet.create({
    },
 
    contenido: {
-      width: '100%',
+      alignItems: 'stretch',
    },
    contenedorEliminar: {
-      flex: 1,
+      flex: 2,
       justifyContent: 'center',
       alignItems: 'flex-end',
       paddingRight: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
    },
    subContenido: {
       flexDirection: 'row',
@@ -105,7 +145,7 @@ const styles = StyleSheet.create({
       flex: 4,
    },
    touch: {
-      flex: 3,
+      flex: 6,
    },
    estiloIconoCobertura: { marginRight: 15 },
    estiloBotonEliminar: {
@@ -113,5 +153,7 @@ const styles = StyleSheet.create({
       height: 30,
       borderRadius: 10,
       backgroundColor: colores.colorPrimarioTomate,
+      marginVertical: 5,
+      marginRight: 2,
    },
 });

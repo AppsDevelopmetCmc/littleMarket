@@ -125,7 +125,7 @@ export class Mapa extends Component {
             tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
             alias: this.direccion.alias,
             referencia: this.direccion.referencia,
-            principal: this.direccion.principal,
+            principal: this.direccion.principal == 'S' ? true : false,
          });
       }
    };
@@ -490,11 +490,18 @@ export class Mapa extends Component {
                            title="Dirección Principal"
                            checked={this.state.principal}
                            checkedColor={colores.colorPrimarioTomate}
-                           onPress={() =>
-                              this.setState({
-                                 principal: !this.state.principal,
-                              })
-                           }
+                           onPress={() => {
+                              if (this.state.principal) {
+                                 Alert.alert(
+                                    'Info',
+                                    'Para cambiar este valor, seleccione otra dirección como principal'
+                                 );
+                              } else {
+                                 this.setState({
+                                    principal: !this.state.principal,
+                                 });
+                              }
+                           }}
                         />
                      ) : (
                         <View></View>

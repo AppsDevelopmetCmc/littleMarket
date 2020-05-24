@@ -128,6 +128,15 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
          />
          <StackDirection.Screen
             name="ConfirmarCompraScreen"
