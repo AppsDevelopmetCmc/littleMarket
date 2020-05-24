@@ -45,7 +45,7 @@ export class CarroCompras extends Component {
          let subtotal = 0;
          let delivery = 1.5;
          for (let i = 0; i < global.items.length; i++) {
-            subtotal += global.items[i].subtotal;
+            subtotal += Number(global.items[i].subtotal);
          }
          global.total = subtotal + delivery;
          this.setState({
