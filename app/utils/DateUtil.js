@@ -29,6 +29,25 @@ export const formatearFechaISO = date => {
 
    return yy + '-' + mm + '-' + dd;
 };
+export const obtenerHoraActual = fecha => {
+   let horas = fecha.getHours();
+   let minutos = fecha.getMinutes();
+   let condicion = 'am';
+   
+   if (horas < 10) {
+      horas = '0' + horas;
+   } else {
+      if(horas > 12){
+        horas = horas === 12 ? horas : horas-12;
+        condicion ='pm';
+      }
+   }
+   if (minutos < 10) {
+      minutos = '0' + minutos;
+   }
+
+   return '' + horas +':'+ minutos +' '+ condicion;
+};
 const obtenerMes = mes => {
    let meses = [
       'Enero',
