@@ -31,7 +31,7 @@ export class DireccionesCrud extends Component {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }
       this.state = {
-         listaDirecciones: direcciones,
+         listaDirecciones: global.direcciones,
       };
    }
 
@@ -55,6 +55,20 @@ export class DireccionesCrud extends Component {
       if (this.notienecobertura == 'N') {
          Alert.alert('No existe Cobertura para la Direccion ');
       }
+
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+         console.log('DRAWER FOCUS');
+         this.repintarLista();
+         new ServicioDirecciones().registrarEscucha(
+            global.usuario,
+            this.repintarLista
+         );
+      });
+   }
+
+   componentWillUnmount() {
+      console.log('Crud Direcciones componentWillUnmount');
+      this._unsubscribe();
    }
 
    obtenerCoordenadas = async () => {
@@ -84,10 +98,14 @@ export class DireccionesCrud extends Component {
          pantallaOrigen: 'Crud',
       });
    };
-   eliminar = idDireccion => {
-      console.log('ELIMINA:', idDireccion);
+   eliminar = direccion => {
+      console.log('ELIMINA:', direccion);
       let servDirecciones = new ServicioDirecciones();
-      servDirecciones.eliminarDir(global.usuario, idDireccion);
+      if (direccion.principal != 'S') {
+         servDirecciones.eliminarDir(global.usuario, direccion.id);
+      } else {
+         Alert.alert('No se puede eliminar la dirección principal');
+      }
    };
 
    repintarLista = () => {
@@ -110,6 +128,7 @@ export class DireccionesCrud extends Component {
    regresoPagina = () => {
       this.props.navigation.goBack();
    };
+
    render() {
       return (
          <SafeAreaView style={styles.contenedorPagina}>
