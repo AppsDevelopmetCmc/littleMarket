@@ -9,7 +9,6 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .add(direccion)
          .then(function (dataDireccion) {
-            //Alert.alert('Dirección Agregado');
             id = dataDireccion.id;
             global.direccionPedido = direccion;
             global.direccionPedido.id = dataDireccion.id;
