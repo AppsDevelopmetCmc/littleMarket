@@ -10,6 +10,8 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
+import DatosFacturacion from '../facturacion/datosFacturacion';
+import EditarDatosFacturacion from '../facturacion/editarDatosFacturacion';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { consultarInformacion } from '../../servicios/ServicioUsuarios';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
@@ -21,6 +23,7 @@ import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
+import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
 import RecuperarCuenta from '../account/RecuperarCuenta';
 
 // Importaciones necesarias direcciones
@@ -79,6 +82,32 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="DetalleComboScreen"
             component={DetalleCombo}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="DatosFacturacionScreen"
+            component={DatosFacturacion}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         ></StackFromTabs.Screen>
+         <StackFromTabs.Screen
+            name="EditarDatosFacturacionScreen"
+            component={EditarDatosFacturacion}
             options={{
                title: '',
                headerStyle: {
@@ -385,6 +414,11 @@ function HomeDraw() {
             component={PerfilUsuario}
             options={{ drawerLabel: 'Perfil' }}
          />
+         <DrawerHome.Screen
+            name="ListarDatosFacturacion"
+            component={ListarDatosFacturacion}
+            options={{ drawerLabel: 'Facturas' }}
+         />
       </DrawerHome.Navigator>
    );
 }
@@ -565,23 +599,23 @@ export default function NavegadorInicio() {
                tieneCobertura ? (
                   HomeDraw()
                ) : (
+                     <StackAuthentication.Navigator>
+                        <StackAuthentication.Screen
+                           name="DireccionStack"
+                           component={DirectionStack}
+                           options={navOptionHandler(false)}
+                        />
+                     </StackAuthentication.Navigator>
+                  )
+            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="DireccionStack"
-                        component={DirectionStack}
+                        name="LoginStack"
+                        component={LoginStack}
                         options={navOptionHandler(false)}
-                     />
+                     ></StackAuthentication.Screen>
                   </StackAuthentication.Navigator>
-               )
-            ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+               )}
          </NavigationContainer>
       );
    }
