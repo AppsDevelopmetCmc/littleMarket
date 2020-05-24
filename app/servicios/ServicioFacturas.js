@@ -47,7 +47,7 @@ export class ServicioFacturas {
                 tipoDocumento: objeto.tipoDocumento
             })
             .then(function () {
-                Alert.alert('Combo Actualizado');
+                //  Alert.alert('Combo Actualizado');
             })
             .catch(function (error) {
                 Alert.alert('error' + error);
