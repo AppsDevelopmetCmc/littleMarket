@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -71,14 +71,20 @@ export default function RegistroForm(props) {
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
                      .then(user => {
-                        if (user && user.emailVerified === false) {
-                           user.sendEmailVerification().then(function () {
-                              toastRef.current.show(
-                                 'Verifique su correo electrónico para continuar',
-                                 2000
-                              );
+                        console.log('registrado', user);
+
+                        let usuarioRegistrado = firebase.auth().currentUser;
+                        console.log('envía mail de verificacion');
+                        usuarioRegistrado
+                           .sendEmailVerification()
+                           .then(function () {
+                              /* Alert.alert(
+                                 'Info',
+                                 'Verifique su correo electrónico ' +
+                                    usuarioRegistrado.email +
+                                    ' para continuar'
+                              );*/
                            });
-                        }
                      })
                      .catch(error => {
                         console.log(error);
