@@ -465,7 +465,10 @@ export default function NavegadorInicio() {
                   if (!user.emailVerified) {
                      //user.sendEmailVerification().then(function () {
                      Alert.alert(
-                        'Verifique su correo electrónico para continuar'
+                        'Info',
+                        'Verifique su correo electrónico ' +
+                           user.email +
+                           ' para continuar'
                      );
                      setLogin(false);
                      setTieneCobertura(false);
