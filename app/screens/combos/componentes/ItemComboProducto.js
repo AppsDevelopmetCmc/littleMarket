@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import * as colores from '../../../constants/Colores';
 import Separador from '../../../components/Separador';
+import { transformDinero } from '../../../utils/Validaciones';
 
 export class ItemComboProducto extends Component {
    render() {
@@ -16,11 +17,11 @@ export class ItemComboProducto extends Component {
             </Text>
             <View style={styles.fila}>
                <View style={styles.filaTexto}>
-                  <View style={styles.contenedorTexto}>
+                  <View style={styles.contenedorTextoCantidad}>
                      <Text
                         style={textEstilo(
                            colores.colorOscuroTexto,
-                           15,
+                           14,
                            'normal'
                         )}
                      >
@@ -28,15 +29,15 @@ export class ItemComboProducto extends Component {
                      </Text>
                      <Separador alto={5}></Separador>
                      <Text
-                        style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
+                        style={textEstilo(colores.colorOscuroTexto, 14, 'bold')}
                      >
                         {this.props.comboProducto.cantidad +
                            ' ' +
                            this.props.comboProducto.unidad}
                      </Text>
                   </View>
-                  <Separador alto={15}></Separador>
-                  <View style={styles.contenedorTexto}>
+
+                  <View style={styles.contenedorTextoPrecio}>
                      <Text
                         style={textEstilo(
                            colores.colorOscuroTexto,
@@ -50,7 +51,8 @@ export class ItemComboProducto extends Component {
                      <Text
                         style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
                      >
-                        {'$ ' + this.props.comboProducto.precio}
+                        {'$ ' +
+                           transformDinero(this.props.comboProducto.precio)}
                      </Text>
                   </View>
                </View>
@@ -74,21 +76,26 @@ const styles = StyleSheet.create({
       paddingHorizontal: 25,
       paddingVertical: 2,
    },
-   contenedorTexto: {
-      height: 40,
+   contenedorTextoCantidad: {
+      flex: 1.5,
+      marginVertical: 2,
       borderRadius: 5,
-      width: 130,
-      justifyContent: 'center',
+      alignItems: 'center',
+      borderColor: colores.colorOscuroPrimarioAmarillo,
+      flexDirection: 'row',
+   },
+   contenedorTextoPrecio: {
+      flex: 1,
+      marginVertical: 2,
+      borderRadius: 5,
       alignItems: 'center',
       borderColor: colores.colorOscuroPrimarioAmarillo,
       flexDirection: 'row',
    },
    fila: {
       flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
    },
-   filaTexto: { flex: 1, flexDirection: 'row', justifyContent: 'center' },
+   filaTexto: { flex: 1, flexDirection: 'row' },
    button: {
       flex: 1,
       backgroundColor: 'orange',

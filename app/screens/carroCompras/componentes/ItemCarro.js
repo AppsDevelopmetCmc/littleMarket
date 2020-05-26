@@ -9,6 +9,7 @@ import {
 } from '../../../servicios/ServicioCarroCompras';
 
 import Separador from '../../../components/Separador';
+import { transformDinero } from '../../../utils/Validaciones';
 
 export class ItemCarro extends Component {
    constructor(props) {
@@ -19,142 +20,162 @@ export class ItemCarro extends Component {
    };*/
    render() {
       return (
-         <View style={styles.fila}>
-            <View style={styles.contenido}>
+         <View style={styles.contenedorPrincipal}>
+            <View style={styles.tituloContenedor}>
                <Text style={textEstilo(colores.colorPrimarioTexto, 16, 'bold')}>
                   {this.props.item.alias}
                </Text>
-               <View style={styles.contenidoDetalle}>
-                  <View style={styles.filaFlexEnd}>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           14,
-                           'bold'
-                        )}
-                     >
-                        Cantidad:
-                     </Text>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           14,
-                           'bold'
-                        )}
-                     >
-                        Precio Unitario:
-                     </Text>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           16,
-                           'bold'
-                        )}
-                     >
-                        Precio Total:
-                     </Text>
-                  </View>
-                  <View style={styles.filaFlexStart}>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           14,
-                           'normal'
-                        )}
-                     >
-                        {this.props.item.cantidad}
-                     </Text>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           14,
-                           'normal'
-                        )}
-                     >
-                        {this.props.item.precio}
-                     </Text>
-                     <Text
-                        style={textEstilo(
-                           colores.colorPrimarioTexto,
-                           16,
-                           'bold'
-                        )}
-                     >
-                        {'$ ' + this.props.item.subtotal}
-                     </Text>
-                  </View>
-               </View>
-            </View>
-            {/*<View style={styles.checked}>
                <Icon
-                  name="delete-circle"
-                  size={30}
-                  color="white"
+                  name="delete"
+                  size={20}
+                  color={colores.colorOscuroPrimarioTomate}
+                  style={styles.iconoStilos}
                   onPress={() => {
-                     this.props.fnEliminarItemCarro(
-                        this.props.item,
+                     eliminarItemCarro(
+                        {
+                           id: this.props.item.id,
+                        },
                         global.usuario
                      );
                   }}
                />
-            </View>*/}
+            </View>
+            <View style={styles.fila}>
+               <View style={styles.contenido}>
+                  <View style={styles.contenidoDetalle}>
+                     <View style={styles.filaFlexEnd}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Cantidad:
+                        </Text>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Precio Unitario:
+                        </Text>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              16,
+                              'bold'
+                           )}
+                        >
+                           Precio Total:
+                        </Text>
+                     </View>
+                     <View style={styles.filaFlexStart}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.props.item.cantidad}
+                        </Text>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {'$ ' + transformDinero(this.props.item.precio)}
+                        </Text>
+                        <Text
+                           style={textEstilo(
+                              colores.colorPrimarioTexto,
+                              16,
+                              'bold'
+                           )}
+                        >
+                           {'$ ' + transformDinero(this.props.item.subtotal)}
+                        </Text>
+                     </View>
+                  </View>
+               </View>
+               {/*<View style={styles.checked}>
+            <Icon
+               name="delete-circle"
+               size={30}
+               color="white"
+               onPress={() => {
+                  this.props.fnEliminarItemCarro(
+                     this.props.item,
+                     global.usuario
+                  );
+               }}
+            />
+         </View>*/}
 
-            <View style={styles.boton}>
-               <Button
-                  buttonStyle={styles.plusButton}
-                  onPress={() => {
-                     let nuevaCantidad = parseInt(this.props.item.cantidad) - 1;
-                     if (nuevaCantidad < 100) {
-                        //this.setState({ cantidad: nuevaCantidad + '' });
-                        agregarDisminuirItemCarro(
-                           {
-                              id: this.props.item.id,
-                              alias: this.props.item.alias,
-                              precio: this.props.item.precio,
-                           },
-                           global.usuario,
-                           1
-                        );
-                     }
-                  }}
-                  icon={<Icon name="plus-circle" size={20} color="white" />}
-               />
-               <Separador alto={5}></Separador>
-               <Text
-                  style={[
-                     styles.caja,
-                     textEstilo(colores.colorPrimarioTexto, 15, 'bold'),
-                  ]}
-               >
-                  {this.props.item.cantidad}
-               </Text>
-               <Separador alto={5}></Separador>
-               <Button
-                  buttonStyle={styles.plusButton}
-                  onPress={() => {
-                     let nuevaCantidad = parseInt(this.props.item.cantidad) - 1;
-                     if (nuevaCantidad > 0) {
-                        //this.setState({ cantidad: nuevaCantidad + '' });
-                        agregarDisminuirItemCarro(
-                           {
-                              id: this.props.item.id,
-                              alias: this.props.item.alias,
-                              precio: this.props.item.precio,
-                           },
-                           global.usuario,
-                           -1
-                        );
-                     } else if (nuevaCantidad == 0) {
-                        eliminarItemCarro(
-                           {
-                              id: this.props.item.id,
-                           },
-                           global.usuario
-                        );
-                     }
-                  }}
-                  icon={<Icon name="minus-circle" size={20} color="white" />}
-               />
+               <View style={styles.boton}>
+                  <Button
+                     buttonStyle={styles.plusButton}
+                     onPress={() => {
+                        let nuevaCantidad =
+                           parseInt(this.props.item.cantidad) - 1;
+                        if (nuevaCantidad < 100) {
+                           //this.setState({ cantidad: nuevaCantidad + '' });
+                           agregarDisminuirItemCarro(
+                              {
+                                 id: this.props.item.id,
+                                 alias: this.props.item.alias,
+                                 precio: this.props.item.precio,
+                              },
+                              global.usuario,
+                              1
+                           );
+                        }
+                     }}
+                     icon={<Icon name="plus-circle" size={15} color="white" />}
+                  />
+                  <Separador alto={5}></Separador>
+                  <Text
+                     style={[
+                        styles.caja,
+                        textEstilo(colores.colorPrimarioTexto, 15, 'bold'),
+                     ]}
+                  >
+                     {this.props.item.cantidad}
+                  </Text>
+                  <Separador alto={5}></Separador>
+                  <Button
+                     buttonStyle={styles.plusButton}
+                     onPress={() => {
+                        let nuevaCantidad =
+                           parseInt(this.props.item.cantidad) - 1;
+                        if (nuevaCantidad > 0) {
+                           //this.setState({ cantidad: nuevaCantidad + '' });
+                           agregarDisminuirItemCarro(
+                              {
+                                 id: this.props.item.id,
+                                 alias: this.props.item.alias,
+                                 precio: this.props.item.precio,
+                              },
+                              global.usuario,
+                              -1
+                           );
+                        } else if (nuevaCantidad == 0) {
+                           eliminarItemCarro(
+                              {
+                                 id: this.props.item.id,
+                              },
+                              global.usuario
+                           );
+                        }
+                     }}
+                     icon={<Icon name="minus-circle" size={15} color="white" />}
+                  />
+               </View>
             </View>
          </View>
       );
@@ -171,15 +192,13 @@ const textEstilo = (color, tamaño, tipo) => {
 
 const styles = StyleSheet.create({
    fila: {
-      flex: 1,
       flexDirection: 'row',
-      backgroundColor: colores.colorPrimarioAmarillo,
-      borderRadius: 20,
       marginTop: 5,
+      borderRadius: 20,
    },
    filaFlexEnd: {
       flex: 1,
-      alignItems: 'flex-end',
+      alignItems: 'flex-start',
    },
    filaFlexStart: {
       flex: 1,
@@ -193,7 +212,6 @@ const styles = StyleSheet.create({
    },
    checked: {
       flex: 1,
-      //backgroundColor: 'yellow',
       alignItems: 'center',
       justifyContent: 'center',
    },
@@ -205,8 +223,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
    },
    caja: {
-      width: 40,
-      height: 40,
+      width: 35,
+      height: 35,
       textAlign: 'center',
       textAlignVertical: 'center',
       justifyContent: 'center',
@@ -218,5 +236,24 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorOscuroPrimarioTomate,
       borderRadius: 15,
    },
-   contenidoDetalle: { flexDirection: 'row', paddingTop: 20 },
+   contenidoDetalle: {
+      flexDirection: 'row',
+      paddingTop: 20,
+   },
+   contenedorPrincipal: {
+      flex: 1,
+      backgroundColor: colores.colorPrimarioAmarilloRgba,
+      marginTop: 5,
+      borderRadius: 20,
+   },
+   tituloContenedor: {
+      backgroundColor: colores.colorPrimarioAmarillo,
+      borderTopStartRadius: 20,
+      borderTopEndRadius: 20,
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+   },
+   iconoStilos: { marginRight: 10 },
 });

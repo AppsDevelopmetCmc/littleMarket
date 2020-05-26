@@ -19,6 +19,7 @@ import {
    ServicioDirecciones,
 } from '../../servicios/ServicioDirecciones';
 import Separador from '../../components/Separador';
+import { transformDinero } from '../../utils/Validaciones';
 
 export class CarroCompras extends Component {
    constructor(props) {
@@ -180,28 +181,30 @@ export class CarroCompras extends Component {
                      </Text>
                   </View>
                )}
-               <FlatList
-                  data={this.state.listItems}
-                  renderItem={objeto => {
-                     return (
-                        <ItemCarro
-                           item={objeto.item}
-                           fnEliminarItemCarro={this.eliminarItemCarro}
-                        />
-                     );
-                  }}
-                  keyExtractor={objetoCarro => {
-                     return objetoCarro.id;
-                  }}
-               />
+               <View style={styles.contenedorFlatList}>
+                  <FlatList
+                     data={this.state.listItems}
+                     renderItem={objeto => {
+                        return (
+                           <ItemCarro
+                              item={objeto.item}
+                              fnEliminarItemCarro={this.eliminarItemCarro}
+                           />
+                        );
+                     }}
+                     keyExtractor={objetoCarro => {
+                        return objetoCarro.id;
+                     }}
+                  />
+               </View>
             </View>
             {items.length > 0 && (
                <View
                   style={{
                      flexDirection: 'row',
-                     borderTopWidth: 3,
+                     borderTopWidth: 1,
                      paddingVertical: 25,
-                     borderColor: colores.colorClaroTexto,
+                     borderColor: colores.colorOscuroPrimarioVerde,
                      backgroundColor: colores.colorBlanco,
                   }}
                >
@@ -237,13 +240,17 @@ export class CarroCompras extends Component {
                   <View style={{ flex: 1 }}>
                      <Numero
                         titulo="SUBTOTAL:"
-                        valor={this.state.subtotal}
+                        valor={transformDinero(this.state.subtotal)}
                      ></Numero>
                      <Numero
                         titulo="ENVÍO:"
-                        valor={this.state.delivery}
+                        valor={transformDinero(this.state.delivery)}
                      ></Numero>
-                     <Numero titulo="TOTAL:" valor={this.state.total}></Numero>
+                     <Numero
+                        titulo="TOTAL:"
+                        valor={transformDinero(this.state.total)}
+                        estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
+                     ></Numero>
                   </View>
                </View>
             )}
@@ -308,4 +315,5 @@ const styles = StyleSheet.create({
    },
    iconoDerecha: { paddingLeft: 5 },
    iconoIzquierda: { paddingRight: 5 },
+   contenedorFlatList: { paddingBottom: 10 },
 });

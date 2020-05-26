@@ -2,18 +2,19 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import * as colores from '../../../constants/Colores';
 import Separador from '../../../components/Separador';
+import { transformDinero } from '../../../utils/Validaciones';
 
 import { ServicioCombos } from '../../../servicios/ServicioCombos';
 
-export class ItemDetallePedido extends Component{
-    constructor(props) {
-        super(props);
+export class ItemDetallePedido extends Component {
+   constructor(props) {
+      super(props);
       this.descripcion = '';
       new ServicioCombos().recuperarComboProductos(this.props.detallePedido.id);
-        this.recuperarDatosCombo();
-     }
+      this.recuperarDatosCombo();
+   }
 
-     recuperarDatosCombo=()=>{
+   recuperarDatosCombo = () => {
       for (
          let i = 0;
          i < global.combos[this.props.detallePedido.id].length;
@@ -27,43 +28,47 @@ export class ItemDetallePedido extends Component{
             global.combos[this.props.detallePedido.id][i].id +
             ', ';
          console.log('DESC' + this.descripcion);
-     }
+      }
       //}
    };
-     render() {
-        return (    
+   render() {
+      return (
          <View style={styles.fila}>
-         <View style={styles.contenido}>
-               <Text style={styles.textoNegrita}>
+            <View style={styles.contenido}>
+               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}>
                   {this.props.detallePedido.alias}
                </Text>
             </View>
-            <View style={styles.contenido}>
-               <Text style={styles.texto}>Cantidad: </Text>
-               <Text style={styles.textoNegrita}>
-                  {this.props.detallePedido.cantidad}
-               </Text>
+            <View style={styles.contenedorDatos}>
+               <View style={styles.contenido}>
+                  <Text style={styles.textoNegrita}>Cantidad: </Text>
+                  <Text style={styles.texto}>
+                     {' ' + this.props.detallePedido.cantidad}
+                  </Text>
+               </View>
+               <View style={[styles.contenido, { flex: 1.2 }]}>
+                  <Text style={styles.textoNegrita}>Precio: </Text>
+                  <Text style={styles.texto}>
+                     {' $ ' + transformDinero(this.props.detallePedido.precio)}
+                  </Text>
+               </View>
+               <View style={styles.contenido}>
+                  <Text style={styles.textoNegrita}>Subtotal:</Text>
+                  <Text style={styles.texto}>
+                     {' $ ' +
+                        transformDinero(this.props.detallePedido.subtotal)}
+                  </Text>
+               </View>
+            </View>
+            <View style={styles.detalleContenido}>
+               <Text style={styles.textoNegrita}>Detalle:</Text>
+               <Text style={styles.texto}>{this.descripcion}</Text>
+            </View>
+         </View>
+      );
+   }
+}
 
-               <Text style={styles.texto}>Precio: </Text>
-                  <Text style={styles.textoNegrita}>
-                  {this.props.detallePedido.precio}
-               </Text>
-               <Text style={styles.texto}>Subtotal:</Text>
-               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}>
-                  {this.props.detallePedido.subtotal}
-                  </Text>
-               </View>
-            <View style={styles.contenido}>
-               <Text style={styles.texto}>Detalle</Text>
-               <Text style={textEstilo(colores.colorOscuroTexto, 12, 'bold')}>
-                  {this.descripcion}
-                  </Text>
-               </View>
-      </View>
-        );
-     }
-  }
-  
 const textEstilo = (color, tamaño, tipo) => {
    return {
       color: color,
@@ -75,23 +80,18 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    fila: {
       flex: 1,
-      flexDirection: 'column',
-      backgroundColor: colores.colorPrimarioAmarillo,
+      paddingHorizontal: 20,
       marginTop: 5,
-      borderTopStartRadius: 30,
-      borderBottomStartRadius: 30,
    },
 
    contenido: {
-      paddingVertical: 10,
       flex: 1,
-      paddingHorizontal: 10,
       flexDirection: 'row',
    },
-   
+
    textoNegrita: {
       fontWeight: 'bold',
-      fontSize: 14,
+      fontSize: 13,
    },
    texto: {
       fontSize: 13,
@@ -110,5 +110,12 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignContent: 'center',
       alignItems: 'center',
+   },
+   contenedorDatos: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignContent: 'space-between',
+      paddingVertical: 5,
    },
 });

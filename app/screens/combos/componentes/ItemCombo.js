@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as colores from '../../../constants/Colores';
+import { transformDinero } from '../../../utils/Validaciones';
+import Separador from '../../../components/Separador';
 
 export class ItemCombo extends Component {
    constructor(props) {
@@ -27,20 +30,44 @@ export class ItemCombo extends Component {
                      <View style={styles.imagenes}>
                         <Avatar
                            rounded
-                           size={70}
+                           size={65}
                            source={{ uri: this.props.combo.imagen }}
                         />
                      </View>
                      <View style={styles.contenido}>
                         <View style={styles.container}>
-                           <Text style={styles.textoNegrita}>
+                           <Text
+                              style={[
+                                 textEstilo(
+                                    colores.colorOscuroTexto,
+                                    18,
+                                    'bold'
+                                 ),
+                                 styles.textoNegrita,
+                              ]}
+                           >
                               {this.props.combo.alias}
                            </Text>
                         </View>
                         <View style={styles.filaFlexEnd}>
-                           <Text style={styles.textoNegrita}>USD:</Text>
-                           <Text style={styles.texto}>
-                              {this.props.combo.precio}
+                           {/* <Text
+                              style={textEstilo(
+                                 colores.colorOscuroTexto,
+                                 18,
+                                 'normal'
+                              )}
+                           >
+                              USD:
+                           </Text> */}
+                           <Separador alto={10}></Separador>
+                           <Text
+                              style={textEstilo(
+                                 colores.colorOscuroTexto,
+                                 24,
+                                 'bold'
+                              )}
+                           >
+                              {'$ ' + transformDinero(this.props.combo.precio)}
                            </Text>
                         </View>
                      </View>
@@ -49,7 +76,7 @@ export class ItemCombo extends Component {
                <View style={styles.checked}>
                   <Icon
                      name="arrow-right-bold-circle"
-                     size={30}
+                     size={28}
                      color="white"
                   />
                </View>
@@ -58,6 +85,14 @@ export class ItemCombo extends Component {
       );
    }
 }
+
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
 
 const styles = StyleSheet.create({
    container: {
@@ -71,7 +106,7 @@ const styles = StyleSheet.create({
    fila: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: 'orange',
+      backgroundColor: colores.colorPrimarioTomate,
       //borderBottomColor: 'gray',
       //borderBottomWidth: 1,
       marginTop: 10,
@@ -80,21 +115,18 @@ const styles = StyleSheet.create({
       borderTopLeftRadius: 20,
    },
    filaFlexEnd: {
-      flex: 1,
       flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginRight: 10,
+      paddingBottom: 20,
    },
    contenido: {
       flex: 4,
-      alignItems: 'stretch',
-      //backgroundColor: 'pink',
    },
    checked: {
       flex: 1,
       //backgroundColor: 'yellow',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
+      paddingBottom: 24.5,
    },
    subContenido: {
       flex: 1,
@@ -108,8 +140,6 @@ const styles = StyleSheet.create({
       padding: 20,
    },
    textoNegrita: {
-      fontWeight: 'bold',
-      fontSize: 17,
       marginTop: 0,
       marginLeft: 10,
    },

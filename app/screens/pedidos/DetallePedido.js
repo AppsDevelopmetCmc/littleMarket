@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, FlatList, Button } from 'react-native';
-import {Text } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import { ServicioPedidos } from '../../servicios/ServicioPedidos';
 import { ItemDetallePedido } from './componentes/ItemDetallePedido';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,7 +9,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as colores from '../../constants/Colores';
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-import { agregarDisminuirItemCarro, ServicioCarroCompras } from '../../servicios/ServicioCarroCompras';
+import {
+   agregarDisminuirItemCarro,
+   ServicioCarroCompras,
+} from '../../servicios/ServicioCarroCompras';
+import Separador from '../../components/Separador';
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -26,24 +30,53 @@ export class DetallePedido extends Component {
       let srvDetallePedido = new ServicioPedidos();
       let detallePedido = [];
       srvDetallePedido.recuperarDetallePedido(
-          detallePedido, 
-          this.repintarLista, 
+         detallePedido,
+         this.repintarLista,
          this.pedido
       );
    }
 
    repintarLista = detallePedido => {
       this.setState({
-        listDetallePedido: detallePedido,
+         listDetallePedido: detallePedido,
       });
    };
 
    repetir = () => {
-      new ServicioCarroCompras().eliminarCarro(global.usuario)
-      for(let i =0; i< this.state.listDetallePedido.length; i++){
-         agregarDisminuirItemCarro(this.state.listDetallePedido[i], global.usuario,0);
+      new ServicioCarroCompras().eliminarCarro(global.usuario);
+      for (let i = 0; i < this.state.listDetallePedido.length; i++) {
+         agregarDisminuirItemCarro(
+            this.state.listDetallePedido[i],
+            global.usuario,
+            0
+         );
       }
-   }
+   };
+
+   flatListItemSeparator = () => {
+      return (
+         <View
+            style={{
+               width: '100%',
+               marginVertical: 5,
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+            }}
+         >
+            <View
+               style={{
+                  height: 1,
+                  width: '85%',
+                  backgroundColor: colores.colorOscuroPrimarioAmarillo,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+               }}
+            ></View>
+         </View>
+      );
+   };
 
    render() {
       //let combo = this.props.route.params.pedido;
@@ -52,38 +85,146 @@ export class DetallePedido extends Component {
          <SafeAreaView style={styles.container}>
             <View style={styles.cabecera}>
                <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
-                  DETALLE DE PEDIDO
+                  Detalle de Pedido
                </Text>
             </View>
-            <View>
-               <Text>Asociado: {this.pedido.nombreAsociado}</Text>
-               <Text>Fecha de Entrega:{this.pedido.fechaEntrega}</Text>
-               <Text>Hora de Entrega: {this.pedido.horarioEntrega}</Text>
-               <Text>Estado: {this.pedido.estado}</Text>
-            </View>
             <View style={styles.pie}>
-               <FlatList
-                  data={this.state.listDetallePedido}
-                  renderItem={objeto => {
-                     return (
-                        <ItemDetallePedido
-                           detallePedido={objeto.item}
-                           nav={this.props.navigation}
-                        />
-                     );
+               <View style={styles.contenedorLista}>
+                  <View style={styles.cabeceraContenedorLista}>
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Orden:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.pedido.orden}
+                        </Text>
+                     </View>
+
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Asociado:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.pedido.nombreAsociado}
+                        </Text>
+                     </View>
+
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Fecha de entrega:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.pedido.fechaEntrega}
+                        </Text>
+                     </View>
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Hora de entrega:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.pedido.horarioEntrega}
+                        </Text>
+                     </View>
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
+                           Estado:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           )}
+                        >
+                           {this.pedido.estado}
+                        </Text>
+                     </View>
+                  </View>
+                  <FlatList
+                     data={this.state.listDetallePedido}
+                     renderItem={objeto => {
+                        return (
+                           <ItemDetallePedido
+                              detallePedido={objeto.item}
+                              nav={this.props.navigation}
+                           />
+                        );
+                     }}
+                     keyExtractor={objeto => {
+                        return objeto.id;
+                     }}
+                     ItemSeparatorComponent={this.flatListItemSeparator}
+                  />
+               </View>
+            </View>
+            {this.pedido.estado == 'PC' ? (
+               <Button
+                  title="Repetir"
+                  onPress={() => {
+                     this.repetir();
+                     navigation.navigate('CarroComprasScreen');
                   }}
-                  keyExtractor={objeto => {
-                     return objeto.id;
-                  }}
-               />
-         </View>
-            {this.pedido.estado == "PE" ? (
-               <Button title="Repetir" onPress={() => {
-               this.repetir();
-                  navigation.navigate("CarroComprasScreen");
-               }}></Button>
-            ):null}
-           
+               ></Button>
+            ) : null}
          </SafeAreaView>
       );
    }
@@ -102,18 +243,34 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioVerde,
    },
    pie: {
-      flex: 3,
+      flex: 4,
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
-      paddingLeft: 25,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 20,
       marginTop: 15,
-      paddingTop: 20,
+      paddingTop: 10,
    },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
-      paddingHorizontal: 25,
-      //paddingVertical: 0,
-      //alignItems: 'center',
-      //flexDirection: 'row',
+      paddingHorizontal: 30,
    },
+   contenedorLista: {
+      flex: 1,
+      backgroundColor: 'rgba(247,217,30,0.4)',
+      marginTop: 20,
+      marginBottom: 15,
+      borderRadius: 30,
+   },
+   cabeceraContenedorLista: {
+      backgroundColor: colores.colorPrimarioAmarillo,
+      borderTopStartRadius: 25,
+      borderTopEndRadius: 25,
+      paddingVertical: 15,
+      alignContent: 'center',
+      justifyContent: 'center',
+      marginBottom: 10,
+      paddingLeft: 20,
+   },
+   textoPares: { flexDirection: 'row' },
 });

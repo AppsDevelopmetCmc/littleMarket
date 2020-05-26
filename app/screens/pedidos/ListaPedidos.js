@@ -91,7 +91,7 @@ export class ListaPedidos extends Component {
             ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
                <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
-                  LISTA DE PEDIDOS
+                  Lista de pedidos
                </Text>
             </View>
             <View style={styles.pie}>
