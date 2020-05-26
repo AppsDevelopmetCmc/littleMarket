@@ -463,14 +463,13 @@ export default function NavegadorInicio() {
 
                   //}
                   if (!user.emailVerified) {
-                     setIntentos(intentos + 1);
-                     user.sendEmailVerification().then(function () {
-                        Alert.alert(
-                           'Verifique su correo electrónico para continuar'
-                        );
-                        setLogin(false);
-                        setTieneCobertura(false);
-                     });
+                     //user.sendEmailVerification().then(function () {
+                     Alert.alert(
+                        'Verifique su correo electrónico para continuar'
+                     );
+                     setLogin(false);
+                     setTieneCobertura(false);
+                     //});
                   } else {
                      setLogin(true);
                   }
@@ -599,23 +598,23 @@ export default function NavegadorInicio() {
                tieneCobertura ? (
                   HomeDraw()
                ) : (
-                     <StackAuthentication.Navigator>
-                        <StackAuthentication.Screen
-                           name="DireccionStack"
-                           component={DirectionStack}
-                           options={navOptionHandler(false)}
-                        />
-                     </StackAuthentication.Navigator>
-                  )
-            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
+                        name="DireccionStack"
+                        component={DirectionStack}
                         options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
+                     />
                   </StackAuthentication.Navigator>
-               )}
+               )
+            ) : (
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
