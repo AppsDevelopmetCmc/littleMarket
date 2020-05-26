@@ -4,14 +4,15 @@ export const colorClaroPrimarioVerde = '#ddff52';
 export const colorOscuroPrimarioVerde = '#72ae00';
 
 // Color Tomate
-export const colorPrimarioTomate = '#f76f1e';
-export const colorClaroPrimarioTomate = '#ffa04f';
-export const colorOscuroPrimarioTomate = '#bd3f00';
+export const colorPrimarioTomate = '#FFA500';
+export const colorClaroPrimarioTomate = '#ffd64a';
+export const colorOscuroPrimarioTomate = '#c67600';
 
 // Color amarillo
 export const colorPrimarioAmarillo = '#f7d91e';
 export const colorClaroPrimarioAmarillo = '#ffff5d';
 export const colorOscuroPrimarioAmarillo = '#c0a800';
+export const colorPrimarioAmarilloRgba = 'rgba(247,217,30,0.4)';
 
 // Color Texto en la aplicación
 export const colorBlancoTexto = '#ffffff';

@@ -28,7 +28,7 @@ export class DetalleCombo extends Component {
          <View
             style={{
                width: '100%',
-
+               marginVertical: 5,
                alignItems: 'center',
                justifyContent: 'center',
                alignContent: 'center',
@@ -36,8 +36,8 @@ export class DetalleCombo extends Component {
          >
             <View
                style={{
-                  height: 2,
-                  width: '80%',
+                  height: 1,
+                  width: '85%',
                   backgroundColor: colores.colorOscuroPrimarioAmarillo,
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -52,7 +52,6 @@ export class DetalleCombo extends Component {
       return (
          <View style={styles.container}>
             <View style={styles.cabecera}>
-               {/* TO DO: Falta el nombre del combo */}
                <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
                   Detalle
                </Text>
@@ -62,6 +61,14 @@ export class DetalleCombo extends Component {
             </View>
             <View style={styles.pie}>
                <View style={styles.contenedorLista}>
+                  <View style={styles.cabeceraContenedorLista}>
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 16, 'bold')}
+                     >
+                        Lista de productos
+                     </Text>
+                  </View>
+
                   <FlatList
                      data={global.combos[this.combo.id]}
                      renderItem={objeto => {
@@ -77,11 +84,11 @@ export class DetalleCombo extends Component {
                </View>
                <View style={styles.contenedorBoton}>
                   <Button
-                     title="Agregar"
+                     title="Añadir al carrito"
                      buttonStyle={styles.btnRegistrarse}
                      titleStyle={this.textEstilo(
                         colores.colorBlanco,
-                        18,
+                        15,
                         'bold'
                      )}
                      onPress={() => {
@@ -96,14 +103,6 @@ export class DetalleCombo extends Component {
                            this.regresar
                         );
                      }}
-                     icon={
-                        <Icon
-                           name="cart"
-                           size={25}
-                           color="white"
-                           style={styles.iconoStilos}
-                        />
-                     }
                   ></Button>
                </View>
             </View>
@@ -151,24 +150,22 @@ const styles = StyleSheet.create({
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 30,
-
       justifyContent: 'space-between',
    },
    contenedorLista: {
       flex: 1,
-      backgroundColor: '#F8DA1E',
+      backgroundColor: 'rgba(247,217,30,0.4)',
       marginHorizontal: 10,
       marginTop: 20,
       marginBottom: 15,
       borderRadius: 30,
-      paddingTop: 25,
    },
    btnRegistrarse: {
       backgroundColor: colores.colorPrimarioTomate,
-      width: 200,
-      height: 45,
+      width: 180,
       borderRadius: 25,
-      marginBottom: 50,
+      marginBottom: 40,
+      marginTop: 10,
    },
    contenedorBoton: {
       alignItems: 'center',
@@ -185,4 +182,14 @@ const styles = StyleSheet.create({
    },
    contenedorAgregar: { alignItems: 'center' },
    btnSumar: { width: 40, backgroundColor: colores.colorPrimarioTomate },
+   cabeceraContenedorLista: {
+      backgroundColor: colores.colorPrimarioAmarillo,
+      borderTopStartRadius: 25,
+      borderTopEndRadius: 25,
+      paddingVertical: 15,
+      alignContent: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 10,
+   },
 });

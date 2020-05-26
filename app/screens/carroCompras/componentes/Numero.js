@@ -12,7 +12,7 @@ export function Numero(props) {
    return (
       <View style={{ flex: 1, flexDirection: 'row' }}>
          <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <Text>{props.titulo}</Text>
+            <Text style={props.estiloNumero}>{props.titulo}</Text>
          </View>
          <View style={{ flex: 1, flexDirection: 'row' }}>
             <View
@@ -23,14 +23,19 @@ export function Numero(props) {
                   //  backgroundColor: 'blue',
                }}
             >
-               <Text>{dividirNumero(props.valor)[0]}.</Text>
+               <Text style={props.estiloNumero}>
+                  {dividirNumero(props.valor)[0]}.
+               </Text>
             </View>
             <Text
-               style={{
-                  flex: 1,
-                  alignItems: 'flex-start',
-                  //backgroundColor: 'red',
-               }}
+               style={[
+                  {
+                     flex: 1,
+                     alignItems: 'flex-start',
+                     //backgroundColor: 'red',
+                  },
+                  props.estiloNumero,
+               ]}
             >
                {dividirNumero(props.valor)[1]}
             </Text>
