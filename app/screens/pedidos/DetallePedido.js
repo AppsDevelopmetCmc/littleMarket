@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, FlatList, Button } from 'react-native';
+import {
+   View,
+   StyleSheet,
+   FlatList,
+   Button,
+   TouchableHighlightBase,
+} from 'react-native';
 import { Text } from 'react-native-elements';
-import { ServicioPedidos } from '../../servicios/ServicioPedidos';
+import {
+   ServicioPedidos,
+   cancelarPedido,
+} from '../../servicios/ServicioPedidos';
 import { ItemDetallePedido } from './componentes/ItemDetallePedido';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -23,6 +32,7 @@ export class DetallePedido extends Component {
       this.state = {
          cantidad: '0',
          listDetallePedido: detallePedido,
+         estado: this.pedido.estado,
       };
    }
 
@@ -53,6 +63,17 @@ export class DetallePedido extends Component {
       }
    };
 
+   repintarCancelado = () => {
+      this.setState({ estado: 'Cancelado' });
+   };
+
+   cancelarPedido = idDoc => {
+      global.db
+         .collection('pedidos')
+         .doc(idDoc)
+         .update({ estado: 'CA' })
+         .then(this.repintarCancelado());
+   };
    flatListItemSeparator = () => {
       return (
          <View
@@ -147,13 +168,16 @@ export class DetallePedido extends Component {
                         </Text>
                         <Separador alto={10}></Separador>
                         <Text
-                           style={[textEstilo(
+                           style={[
+                              textEstilo(
                               colores.colorOscuroTexto,
                               14,
                               'normal'
-                           ), {flex:2}]}
-                        ><Text>{this.pedido.direccion}</Text>
-                           
+                              ),
+                              { flex: 2 },
+                           ]}
+                        >
+                           <Text>{this.pedido.direccion}</Text>
                         </Text>
                      </View>
 
@@ -217,7 +241,7 @@ export class DetallePedido extends Component {
                               'normal'
                            )}
                         >
-                           {this.pedido.estado}
+                           {this.state.estado}
                         </Text>
                      </View>
                   </View>
@@ -238,12 +262,27 @@ export class DetallePedido extends Component {
                   />
                </View>
             </View>
-            {this.pedido.estado == 'PC' ? (
+            {this.pedido.estado == 'PC' ||
+            this.pedido.estado == 'CA' ||
+            this.state.estado == 'Cancelado' ? (
                <Button
                   title="Repetir"
                   onPress={() => {
                      this.repetir();
                      navigation.navigate('CarroComprasScreen');
+                  }}
+               ></Button>
+            ) : null}
+
+            {(((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
+               this.pedido.formaPago == 'EFECTIVO') ||
+               (this.pedido.formaPago == 'TRANSFERENCIA' &&
+                  this.pedido.estado == 'CT')) &&
+            this.state.estado != 'Cancelado' ? (
+               <Button
+                  title="Cancelar"
+                  onPress={() => {
+                     this.cancelarPedido(this.pedido.id);
                   }}
                ></Button>
             ) : null}
