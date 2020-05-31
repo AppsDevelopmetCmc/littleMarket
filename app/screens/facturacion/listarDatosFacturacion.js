@@ -63,17 +63,13 @@ export class ListarDatosFacturacion extends Component {
         this.setState({ estadocalifica: visible });
     };
 
-    componentDidMount() {
+   componentDidMount() {}
 
-    }
-
-    eliminarfactura = (id) => {
+   eliminarfactura = id => {
         let srvFacturas = new ServicioFacturas();
         srvFacturas.eliminarFactura(id);
         this.refrescarLista();
     };
-
-
 
     repintarLista = facturas => {
         this.setState({
@@ -84,53 +80,51 @@ export class ListarDatosFacturacion extends Component {
     refrescarLista = () => {
         let srvFacturas = new ServicioFacturas();
         srvFacturas.recuperarFacturas(this.repintarLista);
-    }
-
+   };
 
     render() {
+      const { navigation } = this.props;
         return (
             <SafeAreaView style={styles.container}>
                 <CabeceraPersonalizada
-                    titulo={'Yappando'}
                     iconoComponente={
                         <Icon
-                            name="menu"
+                     name="arrow-left"
                             type="material-community"
                             color={colores.colorBlanco}
-                            size={30}
-                            onPress={this.abrirDrawer}
+                     size={24}
+                     onPress={() => {
+                        navigation.goBack();
+                     }}
                         />
                     }
-
-                    iconoNotificacion={
-                        <Icon
-                            name="bell-circle-outline"
-                            type="material-community"
-                            color={colores.colorBlanco}
-                            size={30}
-                            onPress={this.abrirNotificacion}
-                            underlayColor={colores.colorPrimarioVerde}
-                        />
-                    }
-
                 ></CabeceraPersonalizada>
+            <View style={styles.cabecera}>
                 <View>
-
-                    <Text>   Facturas</Text>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}
+                  >
+                     Facturas
+                  </Text>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}
+                  >
+                     Yappando
+                  </Text>
+               </View>
                 </View>
-
                 <View style={styles.pie}>
                     <View>
                         <TouchableHighlight
                             underlayColor="black"
                             onPress={() => {
-                                this.props.navigation.navigate('DatosFacturacionScreen', { refrescar: this.refrescarLista });
-                            }}>
-                            <Icon
-                                name="folder-plus-outline"
-                                size={40}
-                                color="black"
-                            />
+                        this.props.navigation.navigate(
+                           'DatosFacturacionScreen',
+                           { refrescar: this.refrescarLista }
+                        );
+                     }}
+                  >
+                     <Icon name="folder-plus-outline" size={40} color="black" />
                         </TouchableHighlight>
                     </View>
                     <View style={styles.lista}>
@@ -152,7 +146,6 @@ export class ListarDatosFacturacion extends Component {
                         />
                     </View>
                 </View>
-
             </SafeAreaView>
         );
     }
@@ -228,9 +221,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cabecera: {
-        flex: 1,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1,
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 30,
     },
     lista: {
         flex: 15,
@@ -260,12 +252,13 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
     },
     pie: {
-        flex: 3,
+      flex: 4,
         backgroundColor: colores.colorBlanco,
         borderTopStartRadius: 30,
-        paddingLeft: 10,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 20,
         marginTop: 15,
-        paddingTop: 20,
+      paddingTop: 10,
     },
     texto: {
         fontSize: 13,
