@@ -14,6 +14,10 @@ export const colorClaroPrimarioAmarillo = '#ffff5d';
 export const colorOscuroPrimarioAmarillo = '#c0a800';
 export const colorPrimarioAmarilloRgba = 'rgba(247,217,30,0.4)';
 
+// Colores Oscuro y Claro
+export const colorOscuroPrimario = '#0c0c0c';
+export const colorClaroPrimario = '#c1c1c1';
+
 // Color Texto en la aplicación
 export const colorBlancoTexto = '#ffffff';
 export const colorOscuroTexto = '#0c0c0c';

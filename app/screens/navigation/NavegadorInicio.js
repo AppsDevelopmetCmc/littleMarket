@@ -336,7 +336,7 @@ function DirectionCrudStack() {
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
             options={{
-               title: 'Buscar Dirección',
+               title: '',
                headerStyle: {
                   backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
