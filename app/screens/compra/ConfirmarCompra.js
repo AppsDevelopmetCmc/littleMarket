@@ -258,7 +258,7 @@ export class ConfirmarCompra extends Component {
                                  estado:
                                     global.pagoSeleccionado == 'TR'
                                        ? 'CT'
-                                       : 'AA',
+                                       : 'PI',
                                  mail: global.usuario,
                                  nombreCliente:
                                     global.appUsuario.nombreCompleto,
@@ -269,7 +269,7 @@ export class ConfirmarCompra extends Component {
                                  total: global.total,
                                  jornada: this.state.horarioSeleccionado.jornada,
                                  orden: codigo,
-                                 horaCreacion:obtenerHoraActual(fecha),
+                                 horaCreacion: obtenerHoraActual(fecha),
                                  formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
                                  asociado: 'asociado@gmail.com',
                                  nombreAsociado:'Juan perez'
