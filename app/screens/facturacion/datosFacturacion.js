@@ -242,12 +242,13 @@ const pickerSelectStyles = StyleSheet.create({
     },
 });
 const styles = StyleSheet.create({
-    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   contenedorPagina: { 
+       flex: 1, 
+       backgroundColor: colores.colorPrimarioVerde },
     cabecera: {
         flex: 1,
         backgroundColor: colores.colorPrimarioVerde,
-        paddingLeft: 40,
-        paddingTop: 10,
+      paddingHorizontal: 30,
     },
     pie: {
         flex: 6,
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
         borderTopStartRadius: 30,
         borderTopEndRadius: 30,
         paddingHorizontal: 40,
-        paddingTop: 50,
+      paddingTop: 25,
     },
     estiloContenedor1: {
         width: '100%',

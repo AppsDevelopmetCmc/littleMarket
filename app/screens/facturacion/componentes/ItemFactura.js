@@ -13,13 +13,10 @@ export class ItemFactura extends Component {
     }
     render() {
         return (
-
             <View style={styles.fila}>
                 <View style={styles.contenido}>
                     <View style={styles.subContenido}>
-
                         <View style={styles.contenido}>
-
                             <View style={styles.container}>
                                 <Text style={styles.textoNegrita}>
                                     {this.props.factura.alias}
@@ -27,28 +24,34 @@ export class ItemFactura extends Component {
                             </View>
                             <View style={styles.container}>
                                 <Text style={styles.textoNegrita}>
-                                    {this.props.factura.tipoDocumento}
+                           Nombre/Razón Social:
                                 </Text>
-                            </View>
-                            <View style={styles.filaFlexEnd}>
-                                <Text style={styles.textoNegrita}>Nombre/Razón Social:</Text>
                                 <Text style={styles.texto}>
                                     {this.props.factura.nombreCompleto}
                                 </Text>
                             </View>
-                            <View style={styles.filaFlexEnd}>
-                                <Text style={styles.textoNegrita}>Correo:</Text>
+                     <View style={styles.container}>
+                        <Text style={styles.textoNegrita}>
+                           Tipo de Documento:
+                        </Text>
                                 <Text style={styles.texto}>
-                                    {this.props.factura.correo}
+                           {this.props.factura.tipoDocumento}
                                 </Text>
                             </View>
-                            <View style={styles.filaFlexEnd}>
+                     <View style={styles.container}>
                                 <Text style={styles.textoNegrita}>Num Documento:</Text>
                                 <Text style={styles.texto}>
                                     {this.props.factura.numDocumento}
                                 </Text>
                             </View>
-                            <View style={styles.filaFlexEnd}>
+                     <View style={styles.container}>
+                        <Text style={styles.textoNegrita}>Correo:</Text>
+                        <Text style={styles.texto}>
+                           {this.props.factura.correo}
+                        </Text>
+                     </View>
+
+                     <View style={styles.container}>
                                 <Text style={styles.textoNegrita}>Teléfono:</Text>
                                 <Text style={styles.texto}>
                                     {this.props.factura.telefono}
@@ -63,31 +66,21 @@ export class ItemFactura extends Component {
                         onPress={() => {
                             this.props.nav.navigate('EditarDatosFacturacionScreen', {
                                 factura: this.props.factura,
-                                refrescar: this.props.refrescar
+                        refrescar: this.props.refrescar,
                             });
-                        }}>
-                        <Icon
-                            name="pencil"
-                            size={40}
-                            color="white"
-                        />
+                  }}
+               >
+                  <Icon name="pencil" size={40} color="white" />
                     </TouchableHighlight>
                     <TouchableHighlight
                         onPress={() => {
-                            this.props.fnEliminarFactura(
-                                this.props.factura.id
-                            );
-
-                        }}>
-                        <Icon
-                            name="delete"
-                            size={40}
-                            color="white"
-                        />
+                     this.props.fnEliminarFactura(this.props.factura.id);
+                  }}
+               >
+                  <Icon name="delete" size={40} color="white" />
                     </TouchableHighlight>
                 </View>
             </View>
-
         );
     }
 }

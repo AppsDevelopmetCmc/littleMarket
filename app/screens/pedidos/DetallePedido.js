@@ -143,6 +143,28 @@ export class DetallePedido extends Component {
                               'bold'
                            )}
                         >
+                           Dirección:
+                        </Text>
+                        <Separador alto={10}></Separador>
+                        <Text
+                           style={[textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'normal'
+                           ), {flex:2}]}
+                        ><Text>{this.pedido.direccion}</Text>
+                           
+                        </Text>
+                     </View>
+
+                     <View style={styles.textoPares}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              14,
+                              'bold'
+                           )}
+                        >
                            Fecha de entrega:
                         </Text>
                         <Separador alto={10}></Separador>
