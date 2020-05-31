@@ -67,6 +67,14 @@ export class ItemFactura extends Component {
                         </View>
                         <View style={styles.contenedorPares}>
                            <Text style={styles.textoNegrita}>
+                              Nombre/Razón Social:
+                           </Text>
+                           <Text style={styles.texto}>
+                              {' ' + this.props.factura.nombreCompleto}
+                           </Text>
+                        </View>
+                        <View style={styles.contenedorPares}>
+                           <Text style={styles.textoNegrita}>
                               Tipo de documento:
                            </Text>
                            <Text style={styles.texto}>
@@ -75,24 +83,16 @@ export class ItemFactura extends Component {
                         </View>
                         <View style={styles.contenedorPares}>
                            <Text style={styles.textoNegrita}>
-                              Nombre/Razón Social:
+                              Cédula / Ruc:
                            </Text>
                            <Text style={styles.texto}>
-                              {' ' + this.props.factura.nombreCompleto}
+                              {' ' + this.props.factura.numDocumento}
                            </Text>
                         </View>
                         <View style={styles.contenedorPares}>
                            <Text style={styles.textoNegrita}>Correo:</Text>
                            <Text style={styles.texto}>
                               {' ' + this.props.factura.correo}
-                           </Text>
-                        </View>
-                        <View style={styles.contenedorPares}>
-                           <Text style={styles.textoNegrita}>
-                              Cédula / Ruc:
-                           </Text>
-                           <Text style={styles.texto}>
-                              {' ' + this.props.factura.numDocumento}
                            </Text>
                         </View>
                         <View style={styles.contenedorPares}>

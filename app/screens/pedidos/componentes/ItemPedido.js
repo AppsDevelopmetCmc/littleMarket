@@ -4,10 +4,24 @@ import * as colores from '../../../constants/Colores';
 import Separador from '../../../components/Separador';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { transformDinero } from '../../../utils/Validaciones';
+import { ESTADOS } from '../../../constants/Estados';
+import { ArregloUtil } from '../../../utils/utils';
 
 export class ItemPedido extends Component {
    constructor(props) {
       super(props);
+      this.state = {
+         estado: '',
+      };
+   }
+   componentDidMount() {
+      let arregloUtil = new ArregloUtil(ESTADOS.PEDIDOS);
+      let indice = arregloUtil.buscar({ id: this.props.pedido.estado });
+      let estadoFinal =
+         indice < 0 ? this.state.estado : ESTADOS.PEDIDOS[indice].descripcion;
+      this.setState({
+         estado: estadoFinal,
+      });
    }
 
    render() {
@@ -20,14 +34,25 @@ export class ItemPedido extends Component {
             }}
          >
             <View style={styles.fila}>
-               <Text style={styles.textoNegrita}>
-                  {'Orden:' + this.props.pedido.orden}
-               </Text>
-               <Text style={styles.textoNegrita}>
-                  {this.props.pedido.fechaPedido +
-                     ' | ' +
-                     this.props.pedido.horaCreacion}
-               </Text>
+               <View style={{ flexDirection: 'row', flex: 1 }}>
+                  <View  style={{ flex: 5 }}>
+                     <Text style={styles.textoNegrita}>
+                        {'Orden:' + this.props.pedido.orden}
+                     </Text>
+                     <Text style={styles.textoNegrita}>
+                        {this.props.pedido.fechaPedido +
+                           ' | ' +
+                           this.props.pedido.horaCreacion}
+                     </Text>
+                  </View>
+                  <View style={(styles.estiloFlecha, { flex: 1 })}>
+                     <Icon
+                        name="arrow-right-bold-circle"
+                        size={28}
+                        color="white"
+                     />
+                  </View>
+               </View>
                <View style={styles.contenido}>
                   <View>
                      <View style={styles.contenedorPares}>
@@ -54,10 +79,11 @@ export class ItemPedido extends Component {
                               'bold'
                            )}
                         >
-                           {this.props.pedido.estado}
+                           {this.state.estado}
                         </Text>
                      </View>
-                     <View style={styles.contenedorPares}>
+
+                     <View style={(styles.contenedorPares, { flex: 1 })}>
                         <Text style={styles.texto}>Total:</Text>
                         <Text
                            style={textEstilo(
@@ -69,13 +95,6 @@ export class ItemPedido extends Component {
                            {transformDinero(this.props.pedido.total)}
                         </Text>
                      </View>
-                  </View>
-                  <View style={styles.estiloFlecha}>
-                     <Icon
-                        name="arrow-right-bold-circle"
-                        size={28}
-                        color="white"
-                     />
                   </View>
                </View>
             </View>
