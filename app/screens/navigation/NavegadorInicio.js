@@ -198,7 +198,7 @@ function ScreensFromTabs() {
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
             options={{
-               title: 'Buscar Dirección',
+               title: '',
                headerStyle: {
                   backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
@@ -286,7 +286,7 @@ function DirectionStack() {
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
             options={{
-               title: 'Buscar Dirección',
+               title: '',
                headerStyle: {
                   backgroundColor: colores.colorPrimarioVerde,
                   elevation: 0, //remove shadow on Android
