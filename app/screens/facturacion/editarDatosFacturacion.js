@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
@@ -19,8 +19,8 @@ export default function DatosFacturacion(props) {
    const [nombreUsuario, setNombreUsuario] = useState(
       props.route.params.factura.nombreCompleto
    );
-
-   const [documentoSeleccionado, setdocumentoSeleccionado] = useState('Cedula');
+   let datos = [{ label: 'Cédula', value: 'cedula' }, { label: 'RUC', value: 'RUC' }]
+   const [documentoSeleccionado, setdocumentoSeleccionado] = useState(props.route.params.factura.tipoDocumento);
    const [correoUsuario, setcorreoUsuario] = useState(
       props.route.params.factura.correo
    );
@@ -30,8 +30,8 @@ export default function DatosFacturacion(props) {
    const [telefonoUsuario, settelefonoUsuario] = useState(
       props.route.params.factura.telefono
    );
-   const [tipoDocumento, settipoDocumento] = useState(
-      props.route.params.factura.tipoDocumento
+   const [tipoDocumento, settipoDocumento] = useState(datos
+
    );
    const [alias, setalias] = useState(props.route.params.factura.alias);
 
@@ -39,11 +39,12 @@ export default function DatosFacturacion(props) {
    const [nombreValidacion, setnombreValidacion] = useState('');
    const [cedulaValidacion, setCedulaValidacion] = useState('');
    const [telefonoValidacion, setTelefonoValidacion] = useState('');
-
+   const [aliasValidacion, setAliasValidacion] = useState('');
+   const [documentoSeleccionadoValidacion, setDocumentoSeleccionadoValidacion] = useState('');
    const requerido = 'Campo requerido *';
 
    const actualizaInfo = () => {
-      if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario) {
+      if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario || !alias || !documentoSeleccionado) {
          if (!nombreUsuario) {
             setnombreValidacion(requerido);
          } else {
@@ -54,6 +55,18 @@ export default function DatosFacturacion(props) {
          } else {
             setCedulaValidacion('');
          }
+         if (!alias) {
+            setAliasValidacion(requerido);
+         } else {
+            setAliasValidacion('');
+         }
+
+         if (!documentoSeleccionado && documentoSeleccionadoValidacion != null) {
+            setDocumentoSeleccionadoValidacion(requerido);
+            Alert.alert("Ingrese Tipo de Documento")
+         } else {
+            setDocumentoSeleccionadoValidacion('');
+         }
          if (!telefonoUsuario) {
             setTelefonoValidacion(requerido);
          } else {
@@ -62,7 +75,7 @@ export default function DatosFacturacion(props) {
       } else {
          let srvFacturas = new ServicioFacturas();
          let factura = {
-            tipoDocumento: tipoDocumento,
+            tipoDocumento: documentoSeleccionado,
             numDocumento: cedulaUsuario,
             alias: alias,
             nombreCompleto: nombreUsuario,
@@ -71,11 +84,22 @@ export default function DatosFacturacion(props) {
          };
          srvFacturas.actualizarFactura(factura, props.route.params.factura.id);
          props.route.params.refrescar();
+         regresoPagina();
       }
    };
 
    const regresoPagina = () => {
-      navigation.goBack();
+      Alert.alert(
+         '',
+         'Información guardada con éxito',
+         [
+            {
+               text: 'OK',
+               onPress: () => navigation.goBack(),
+            },
+         ],
+         { cancelable: false }
+      );
    };
    return (
       <SafeAreaView style={styles.contenedorPagina}>
@@ -89,21 +113,24 @@ export default function DatosFacturacion(props) {
          </View>
          <View style={styles.pie}>
             <KeyboardAwareScrollView>
-               <Input
-                  placeholder="Cedula"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Tipo Documento"
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => settipoDocumento(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               >
-                  {tipoDocumento}
-               </Input>
+
+               <RNPickerSelect
+                  onValueChange={value => console.log(value)}
+                  items={tipoDocumento}
+                  errorMessage={documentoSeleccionadoValidacion}
+                  value={documentoSeleccionado}
+                  style={pickerSelectStyles}
+                  placeholder={{
+                     label: 'Elija Tipo de Documento*',
+                     value: null,
+                  }}
+                  onValueChange={value => {
+                     setdocumentoSeleccionado(value)
+
+                  }}
+               />
+
+
                <Separador alto={15}></Separador>
 
                <Input
