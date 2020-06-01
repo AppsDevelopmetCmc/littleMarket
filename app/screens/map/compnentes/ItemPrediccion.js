@@ -3,26 +3,47 @@ import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+//Importacion de los colores
+import * as colores from '../../../constants/Colores';
+import Separador from '../../../components/Separador';
+
 export class ItemPrediccion extends Component {
    constructor(props) {
       super(props);
    }
    render() {
       return (
-         <TouchableHighlight
-            underlayColor="white"
-            onPress={() => {
-               this.props.fnbuscarCoordenadas(
-                  this.props.prediccionItem.placeId
-               );
-            }}
-         >
-            <View style={styles.fila}>
-               <Text style={{ fontSize: 16 }}>
-                  {this.props.prediccionItem.descripcion}
-               </Text>
-            </View>
-         </TouchableHighlight>
+         <View style={styles.container}>
+            <TouchableHighlight
+               underlayColor="white"
+               onPress={() => {
+                  this.props.fnbuscarCoordenadas(
+                     this.props.prediccionItem.placeId
+                  );
+               }}
+            >
+               <View style={styles.fila}>
+                  <Icon
+                     name="map-marker"
+                     size={20}
+                     color={colores.colorPrimarioTomate}
+                     style={styles.iconos}
+                  />
+                  <Separador alto={10}></Separador>
+                  <View style={styles.contenedorTexto}>
+                     <Text style={{ fontSize: 14, fontWeight: 'bold' }}>
+                        {this.props.prediccionItem.descripcion}
+                     </Text>
+                  </View>
+                  <Icon
+                     name="arrow-right-bold-circle"
+                     size={25}
+                     color={'rgba(0,0,0,0.3)'}
+                     style={styles.iconos}
+                  />
+               </View>
+            </TouchableHighlight>
+         </View>
       );
    }
 }
@@ -31,22 +52,15 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
 
-      alignItems: 'stretch',
-      justifyContent: 'center',
-      fontWeight: 'bold',
       //backgroundColor: 'red',
    },
+   contenedorTexto: { flex: 1 },
    fila: {
       flex: 1,
       flexDirection: 'row',
-      //backgroundColor: 'orange',
-      //borderBottomColor: 'gray',
-      //borderBottomWidth: 1,
+      justifyContent: 'center',
       marginTop: 20,
       marginBottom: 20,
-      marginLeft: 20,
-      borderBottomLeftRadius: 20,
-      borderTopLeftRadius: 20,
    },
    filaFlexEnd: {
       flex: 1,

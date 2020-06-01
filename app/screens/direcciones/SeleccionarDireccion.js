@@ -74,79 +74,84 @@ export class SeleccionarDireccion extends Component {
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <Text>Seleccione una dirección o agregue una nueva.</Text>
-               <View style={styles.boton}>
-                  <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={styles.textoNormal}
-                     containerStyle={styles.estiloContenedor}
-                     title="Agregar ubicación actual"
-                     onPress={() => {
-                        this.obtenerUbicacionActual();
-                        this.props.mostrarModal(false);
-                     }}
-                     icon={
-                        <Icon
-                           name="crosshairs-gps"
-                           size={20}
-                           color={colores.colorPrimarioTomate}
-                           style={styles.iconos}
-                        />
-                     }
-                  />
-                  <Button
-                     buttonStyle={styles.estiloBotonBlanco}
-                     titleStyle={styles.textoNormal}
-                     containerStyle={styles.estiloContenedor}
-                     title="Agregar nueva ubicación"
-                     onPress={() => {
-                        this.props.navigation.navigate(
-                           'BusquedaDireccionesScreen',
-                           {
-                              origen: 'nuevo',
-                              pantallaOrigen: 'lsCombo',
-                           }
-                        );
-                        this.props.mostrarModal(false);
-                     }}
-                     icon={
-                        <Icon
-                           name="map-marker"
-                           size={20}
-                           color={colores.colorPrimarioTomate}
-                           style={styles.iconos}
-                        />
-                     }
-                  />
-               </View>
-               <View style={styles.contenedorTituloSubr}>
-                  <Text style={styles.textoTitulo}>Mis Direcciones</Text>
-               </View>
-               <View style={{ flex: 1 }}>
-                  <FlatList
-                     data={this.state.listaDireccionesCobertura}
-                     renderItem={objeto => {
-                        return (
-                           <ItemDireccionSeleccion
-                              direccion={objeto.item}
-                              fnSeleccionar={this.props.fnSeleccionar}
+               <View style={styles.contenido}>
+                  <View>
+                     <Text>Seleccione una dirección o agregue una nueva.</Text>
+                  </View>
+
+                  <View style={styles.boton}>
+                     <Button
+                        buttonStyle={styles.estiloBotonBlanco}
+                        titleStyle={styles.textoNormal}
+                        containerStyle={styles.estiloContenedor}
+                        title="Agregar ubicación actual"
+                        onPress={() => {
+                           this.obtenerUbicacionActual();
+                           this.props.mostrarModal(false);
+                        }}
+                        icon={
+                           <Icon
+                              name="crosshairs-gps"
+                              size={20}
+                              color={colores.colorPrimarioTomate}
+                              style={styles.iconos}
                            />
-                        );
-                     }}
-                     keyExtractor={direccion => {
-                        return direccion.id;
-                     }}
-                     ItemSeparatorComponent={flatListItemSeparator}
-                  />
-               </View>
-               <View style={{ marginTop: 20 }}>
-                  <Button
-                     title="Cancelar"
-                     onPress={() => {
-                        this.props.mostrarModal(false);
-                     }}
-                     buttonStyle={styles.estiloBotonNaranja}
-                  />
+                        }
+                     />
+                     <Button
+                        buttonStyle={styles.estiloBotonBlanco}
+                        titleStyle={styles.textoNormal}
+                        containerStyle={styles.estiloContenedor}
+                        title="Agregar nueva ubicación"
+                        onPress={() => {
+                           this.props.navigation.navigate(
+                              'BusquedaDireccionesScreen',
+                              {
+                                 origen: 'nuevo',
+                                 pantallaOrigen: 'lsCombo',
+                              }
+                           );
+                           this.props.mostrarModal(false);
+                        }}
+                        icon={
+                           <Icon
+                              name="map-marker"
+                              size={20}
+                              color={colores.colorPrimarioTomate}
+                              style={styles.iconos}
+                           />
+                        }
+                     />
+                  </View>
+                  <View style={styles.contenedorTituloSubr}>
+                     <Text style={styles.textoTitulo}>Mis Direcciones</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                     <FlatList
+                        data={this.state.listaDireccionesCobertura}
+                        renderItem={objeto => {
+                           return (
+                              <ItemDireccionSeleccion
+                                 direccion={objeto.item}
+                                 fnSeleccionar={this.props.fnSeleccionar}
+                              />
+                           );
+                        }}
+                        keyExtractor={direccion => {
+                           return direccion.id;
+                        }}
+                        ItemSeparatorComponent={flatListItemSeparator}
+                     />
+                  </View>
+                  <View style={{ marginTop: 20 }}>
+                     <Button
+                        title="Cancelar"
+                        onPress={() => {
+                           this.props.mostrarModal(false);
+                        }}
+                        buttonStyle={styles.estiloBotonNaranja}
+                     />
+                  </View>
                </View>
             </View>
          </View>
@@ -154,24 +159,48 @@ export class SeleccionarDireccion extends Component {
    }
 }
 
+const flatListItemSeparator = () => {
+   return (
+      <View
+         style={{
+            width: '100%',
+
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignContent: 'center',
+         }}
+      >
+         <View
+            style={{
+               height: 0.5,
+               width: '100%',
+               backgroundColor: colores.colorOscuroTexto,
+
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+            }}
+         ></View>
+      </View>
+   );
+};
+
 const styles = StyleSheet.create({
    centeredView: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'stretch',
-      marginTop: 10,
+      backgroundColor: 'rgba(0,0,0,0.75)',
+      paddingVertical: 50,
    },
    modalView: {
+      flex: 1,
       margin: 20,
-      //backgroundColor: colores.colorPrimarioAmarillo,
       backgroundColor: colores.colorBlanco,
-      borderColor: colores.colorPrimarioAmarillo,
-      borderWidth: 2,
-      borderRadius: 20,
+      borderRadius: 15,
       padding: 30,
       paddingVertical: 10,
       alignItems: 'stretch',
-      shadowColor: '#000',
+      shadowColor: '#0000',
       shadowOffset: {
          width: 0,
          height: 2,
@@ -181,9 +210,9 @@ const styles = StyleSheet.create({
       elevation: 5,
       height: 400,
    },
-   container: {
+   contenido: {
       flex: 1,
-      backgroundColor: colores.colorPrimarioVerde,
+      paddingVertical: 50,
    },
    fondo: {
       fontWeight: 'bold',
@@ -287,30 +316,8 @@ const styles = StyleSheet.create({
       fontSize: 13,
       fontWeight: 'bold',
    },
+   boton: {
+      alignItems: 'stretch',
+      paddingVertical: 20,
+   },
 });
-
-const flatListItemSeparator = () => {
-   return (
-      <View
-         style={{
-            width: '100%',
-
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignContent: 'center',
-         }}
-      >
-         <View
-            style={{
-               height: 0.5,
-               width: '100%',
-               backgroundColor: colores.colorOscuroTexto,
-
-               alignItems: 'center',
-               justifyContent: 'center',
-               alignContent: 'center',
-            }}
-         ></View>
-      </View>
-   );
-};

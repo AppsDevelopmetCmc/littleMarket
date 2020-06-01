@@ -27,6 +27,7 @@ import { Notificaciones } from 'expo';
 
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
+import Separador from '../../components/Separador';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -80,10 +81,11 @@ export class ListarDatosFacturacion extends Component {
     refrescarLista = () => {
         let srvFacturas = new ServicioFacturas();
         srvFacturas.recuperarFacturas(this.repintarLista);
-   };
+    }
 
-    render() {
+   render() {
       const { navigation } = this.props;
+
         return (
             <SafeAreaView style={styles.container}>
                 <CabeceraPersonalizada
@@ -100,23 +102,15 @@ export class ListarDatosFacturacion extends Component {
                     }
                 ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
-                <View>
-                  <Text
-                     style={textEstilo(colores.colorBlancoTexto, 30, 'bold')}
-                  >
-                     Facturas
-                  </Text>
-                  <Text
-                     style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}
-                  >
-                     Yappando
-                  </Text>
-               </View>
-                </View>
+               <Text style={textEstilo(colores.colorBlancoTexto, 22, 'bold')}>
+                  Mis facturas
+               </Text>
+            </View>
+
                 <View style={styles.pie}>
                     <View>
                         <TouchableHighlight
-                            underlayColor="black"
+                     underlayColor="white"
                             onPress={() => {
                         this.props.navigation.navigate(
                            'DatosFacturacionScreen',
@@ -124,9 +118,33 @@ export class ListarDatosFacturacion extends Component {
                         );
                      }}
                   >
-                     <Icon name="folder-plus-outline" size={40} color="black" />
+                     <View style={styles.containerNuevo}>
+                            <Icon
+                           name="plus-circle"
+                           size={25}
+                           color={colores.colorPrimarioTomate}
+                            />
+                        <Separador alto={5}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              15,
+                              'bold'
+                           )}
+                        >
+                           Agregar nueva factura
+                        </Text>
+                     </View>
                         </TouchableHighlight>
                     </View>
+               <View style={{ marginBottom: 20 }}>
+                  <View
+                     style={{
+                        height: 1,
+                        backgroundColor: colores.colorClaroPrimario,
+                     }}
+                  ></View>
+               </View>
                     <View style={styles.lista}>
                         <FlatList
                             data={this.state.listFacturas}
@@ -155,7 +173,6 @@ const flatListItemSeparator = () => {
         <View
             style={{
                 width: '100%',
-
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignContent: 'center',
@@ -166,7 +183,6 @@ const flatListItemSeparator = () => {
                     height: 0.5,
                     width: '100%',
                     backgroundColor: colores.colorOscuroTexto,
-
                     alignItems: 'center',
                     justifyContent: 'center',
                     alignContent: 'center',
@@ -222,11 +238,10 @@ const styles = StyleSheet.create({
     },
     cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
-      paddingHorizontal: 30,
+      paddingHorizontal: 40,
+      paddingTop: 5,
     },
-    lista: {
-        flex: 15,
-    },
+   lista: {},
     textoNegritaSubrayado: {
         fontWeight: 'bold',
         fontSize: 17,
@@ -257,8 +272,7 @@ const styles = StyleSheet.create({
         borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 20,
-        marginTop: 15,
-      paddingTop: 10,
+      marginTop: 30,
     },
     texto: {
         fontSize: 13,
@@ -293,4 +307,10 @@ const styles = StyleSheet.create({
         margin: 0,
     },
     iconos: { marginRight: 0 },
+   containerNuevo: {
+      flexDirection: 'row',
+      paddingHorizontal: 7,
+      paddingVertical: 30,
+      alignItems: 'center',
+   },
 });

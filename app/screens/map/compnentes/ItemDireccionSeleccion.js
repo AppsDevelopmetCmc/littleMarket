@@ -46,12 +46,11 @@ export class ItemDireccionSeleccion extends Component {
                            )}
                         </View>
 
-                        <View>
+                        <View style={styles.contenedorDireccion}>
                            {this.props.direccion.alias ? (
                               <Text
                                  style={{ fontSize: 13, fontWeight: 'bold' }}
                               >
-                                 {' '}
                                  {this.props.direccion.alias}
                               </Text>
                            ) : (
@@ -91,13 +90,13 @@ const styles = StyleSheet.create({
    },
    subContenido: {
       flexDirection: 'row',
-      paddingLeft: 10,
       paddingVertical: 15,
       alignItems: 'center',
    },
 
    texto: {
       fontSize: 13,
+      textAlign: 'left',
       //fontWeight: 'bold',
    },
    descripcion: {
@@ -118,4 +117,5 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
    },
+   contenedorDireccion: { flex: 1 },
 });
