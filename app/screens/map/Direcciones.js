@@ -39,7 +39,10 @@ export class Direcciones extends Component {
          }
       }
       let srvDirecciones = new ServicioDirecciones();
-      srvDirecciones.registrarEscucha(global.usuario, this.repintarLista);
+      srvDirecciones.registrarEscuchaDireccion(
+         global.usuario,
+         this.repintarLista
+      );
 
       this.obtenerCoordenadas();
       if (global.direcciones) this.repintarLista();
