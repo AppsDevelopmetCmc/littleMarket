@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
-      paddingHorizontal: 40,
-      paddingTop: 30,
+      paddingHorizontal: 30,
+     // paddingTop: 30,
    },
    pie: {
       flex: 4,

@@ -1,6 +1,6 @@
 import { SearchBar } from 'react-native-elements';
 import React, { Component } from 'react';
-import { View, Text, FlatList, Alert } from 'react-native';
+import { View, Text, FlatList, Alert, StyleSheet } from 'react-native';
 import { ItemPrediccion } from '../map/compnentes/ItemPrediccion';
 import Geocoder from 'react-native-geocoding';
 import * as Location from 'expo-location';
@@ -25,6 +25,7 @@ export class BusquedaDirecciones extends Component {
       this.state = {
          search: '',
          listaPredicciones: [],
+         cargandoBusqueda: false,
       };
       if (this.sessionToken == 0 || this.sessionToken == undefined) {
          let date = new Date();
@@ -50,6 +51,12 @@ export class BusquedaDirecciones extends Component {
 
    updateSearch = async search => {
       this.setState({ search });
+
+      if (search) {
+         this.setState({ cargandoBusqueda: true });
+      } else {
+         this.setState({ cargandoBusqueda: false });
+      }
       console.log('localization', this.localizacionInicial.coords);
       let response = await fetch(
          URLAUTOCOMPLETE +
@@ -97,35 +104,62 @@ export class BusquedaDirecciones extends Component {
 
    render() {
       return (
-         <View>
+         <View style={styles.contenedorPagina}>
+            <View style={styles.cabecera}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'normal')}>
+                  Busqueda
+               </Text>
+               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
+                  Direcciones
+               </Text>
+            </View>
+
             <SearchBar
                placeholder="Ingrese la Dirección..."
                onChangeText={this.updateSearch}
                value={this.state.search}
+               showLoading={this.state.cargandoBusqueda}
                containerStyle={{
-                  backgroundColor: colores.colorPrimarioVerde,
+                  marginHorizontal: 20,
                   borderWidth: 0,
+                  borderTopWidth: 0,
+                  borderBottomWidth: 0,
+                  backgroundColor: colores.colorPrimarioVerde,
                }}
                inputContainerStyle={{
                   backgroundColor: 'white',
-                  borderWidth: 0,
+                  borderRadius: 15,
                }}
+               inputStyle={{ fontSize: 15 }}
             />
-            <FlatList
-               data={this.state.listaPredicciones}
-               renderItem={objeto => {
-                  return (
-                     <ItemPrediccion
-                        prediccionItem={objeto.item}
-                        fnbuscarCoordenadas={this.buscarCoordenadas}
+            <View style={styles.pie}>
+               {this.state.cargandoBusqueda ? (
+                  <View style={styles.contenderLista}>
+                     <FlatList
+                        data={this.state.listaPredicciones}
+                        renderItem={objeto => {
+                           return (
+                              <ItemPrediccion
+                                 prediccionItem={objeto.item}
+                                 fnbuscarCoordenadas={this.buscarCoordenadas}
+                              />
+                           );
+                        }}
+                        ItemSeparatorComponent={flatListItemSeparator}
+                        keyExtractor={prediccion => {
+                           return prediccion.placeId;
+                        }}
                      />
-                  );
-               }}
-               ItemSeparatorComponent={flatListItemSeparator}
-               keyExtractor={prediccion => {
-                  return prediccion.placeId;
-               }}
-            />
+                  </View>
+               ) : (
+                  <View style={styles.contenedorTextoVacio}>
+                     <Text style={{ textAlign: 'center', fontSize: 15 }}>
+                        Coloque en el cuadro de busqueda la dirección que desea
+                        encontrar.
+                     </Text>
+                  </View>
+               )}
+            </View>
          </View>
       );
    }
@@ -146,7 +180,7 @@ const flatListItemSeparator = () => {
             style={{
                height: 0.5,
                width: '100%',
-               backgroundColor: colores.colorOscuroTexto,
+               backgroundColor: colores.colorClaroPrimario,
 
                alignItems: 'center',
                justifyContent: 'center',
@@ -156,3 +190,59 @@ const flatListItemSeparator = () => {
       </View>
    );
 };
+
+const textEstilo = (color, tamaño, tipo) => {
+   return {
+      color: color,
+      fontSize: tamaño,
+      fontWeight: tipo,
+   };
+};
+
+const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      paddingTop: 50,
+   },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   cabecera: {
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 40,
+      paddingVertical: 10,
+   },
+   pie: {
+      flex: 4,
+      backgroundColor: colores.colorBlanco,
+      borderTopStartRadius: 30,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 40,
+      marginTop: 30,
+   },
+   estiloContenedor1: {
+      width: '100%',
+      padding: 0,
+      margin: 0,
+   },
+   estiloInputContenedor: {
+      padding: 0,
+      height: 40,
+   },
+   estiloInput: { fontSize: 15 },
+   btnStyles: {
+      marginTop: 50,
+      width: '100%',
+      height: 40,
+   },
+   btnGuardar: {
+      paddingHorizontal: 40,
+      backgroundColor: colores.colorPrimarioTomate,
+      borderRadius: 25,
+   },
+   contenderLista: { marginTop: 15 },
+   contenedorTextoVacio: {
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center',
+      marginBottom: 60,
+   },
+});

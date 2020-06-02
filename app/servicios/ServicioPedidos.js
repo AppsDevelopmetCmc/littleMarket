@@ -32,8 +32,7 @@ export class ServicioPedidos {
       let arregloUtil = new ArregloUtil(pedido);
       global.db
          .collection('pedidos')
-         .where('mail', '==', mail)
-         //.onSnapshot(function (snapShot) {
+         .where('mail', '==', mail).orderBy("orden", "desc")
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
                let itemPedidos = change.doc.data();

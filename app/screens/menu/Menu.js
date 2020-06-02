@@ -93,7 +93,9 @@ export function Menu(props) {
                <MenuPersonalizado
                   nombreIcono="deskphone"
                   tituloNombre="Facturas"
-                  navegador={() => props.navigation.navigate('ListarDatosFacturacion')}
+                  navegador={() =>
+                     props.navigation.navigate('ListarDatosFacturacion')
+                  }
                ></MenuPersonalizado>
             </View>
             <View style={styles.contenedorCerrarSesion}>

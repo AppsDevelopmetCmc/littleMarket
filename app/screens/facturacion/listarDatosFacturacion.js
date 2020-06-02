@@ -27,6 +27,7 @@ import { Notificaciones } from 'expo';
 
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
+import Separador from '../../components/Separador';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -63,17 +64,13 @@ export class ListarDatosFacturacion extends Component {
         this.setState({ estadocalifica: visible });
     };
 
-    componentDidMount() {
+   componentDidMount() {}
 
-    }
-
-    eliminarfactura = (id) => {
+   eliminarfactura = id => {
         let srvFacturas = new ServicioFacturas();
         srvFacturas.eliminarFactura(id);
         this.refrescarLista();
     };
-
-
 
     repintarLista = facturas => {
         this.setState({
@@ -86,53 +83,68 @@ export class ListarDatosFacturacion extends Component {
         srvFacturas.recuperarFacturas(this.repintarLista);
     }
 
+   render() {
+      const { navigation } = this.props;
 
-    render() {
         return (
             <SafeAreaView style={styles.container}>
                 <CabeceraPersonalizada
-                    titulo={'Yappando'}
                     iconoComponente={
                         <Icon
-                            name="menu"
+                     name="arrow-left"
                             type="material-community"
                             color={colores.colorBlanco}
-                            size={30}
-                            onPress={this.abrirDrawer}
+                     size={24}
+                     onPress={() => {
+                        navigation.goBack();
+                     }}
                         />
                     }
-
-                    iconoNotificacion={
-                        <Icon
-                            name="bell-circle-outline"
-                            type="material-community"
-                            color={colores.colorBlanco}
-                            size={30}
-                            onPress={this.abrirNotificacion}
-                            underlayColor={colores.colorPrimarioVerde}
-                        />
-                    }
-
                 ></CabeceraPersonalizada>
-                <View>
-
-                    <Text>   Facturas</Text>
-                </View>
+            <View style={styles.cabecera}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 22, 'bold')}>
+                  Mis facturas
+               </Text>
+            </View>
 
                 <View style={styles.pie}>
                     <View>
                         <TouchableHighlight
-                            underlayColor="black"
+                     underlayColor="white"
                             onPress={() => {
-                                this.props.navigation.navigate('DatosFacturacionScreen', { refrescar: this.refrescarLista });
-                            }}>
+                        this.props.navigation.navigate(
+                           'DatosFacturacionScreen',
+                           { refrescar: this.refrescarLista }
+                        );
+                     }}
+                  >
+                     <View style={styles.containerNuevo}>
                             <Icon
-                                name="folder-plus-outline"
-                                size={40}
-                                color="black"
+                           name="plus-circle"
+                           size={25}
+                           color={colores.colorPrimarioTomate}
                             />
+                        <Separador alto={5}></Separador>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              15,
+                              'bold'
+                           )}
+                        >
+                           Agregar nueva factura
+                        </Text>
+                     </View>
                         </TouchableHighlight>
                     </View>
+               <View style={{ marginBottom: 20 }}>
+                  <View
+                     style={{
+                        height: 1,
+                        backgroundColor: colores.colorClaroPrimario,
+                     }}
+                  ></View>
+               </View>
                     <View style={styles.lista}>
                         <FlatList
                             data={this.state.listFacturas}
@@ -152,7 +164,6 @@ export class ListarDatosFacturacion extends Component {
                         />
                     </View>
                 </View>
-
             </SafeAreaView>
         );
     }
@@ -162,7 +173,6 @@ const flatListItemSeparator = () => {
         <View
             style={{
                 width: '100%',
-
                 alignItems: 'center',
                 justifyContent: 'center',
                 alignContent: 'center',
@@ -173,7 +183,6 @@ const flatListItemSeparator = () => {
                     height: 0.5,
                     width: '100%',
                     backgroundColor: colores.colorOscuroTexto,
-
                     alignItems: 'center',
                     justifyContent: 'center',
                     alignContent: 'center',
@@ -228,13 +237,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     cabecera: {
-        flex: 1,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1,
+      backgroundColor: colores.colorPrimarioVerde,
+      paddingHorizontal: 40,
+      paddingTop: 5,
     },
-    lista: {
-        flex: 15,
-    },
+   lista: {},
     textoNegritaSubrayado: {
         fontWeight: 'bold',
         fontSize: 17,
@@ -260,12 +267,12 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
     },
     pie: {
-        flex: 3,
+      flex: 4,
         backgroundColor: colores.colorBlanco,
         borderTopStartRadius: 30,
-        paddingLeft: 10,
-        marginTop: 15,
-        paddingTop: 20,
+      borderTopEndRadius: 30,
+      paddingHorizontal: 20,
+      marginTop: 30,
     },
     texto: {
         fontSize: 13,
@@ -300,4 +307,10 @@ const styles = StyleSheet.create({
         margin: 0,
     },
     iconos: { marginRight: 0 },
+   containerNuevo: {
+      flexDirection: 'row',
+      paddingHorizontal: 7,
+      paddingVertical: 30,
+      alignItems: 'center',
+   },
 });
