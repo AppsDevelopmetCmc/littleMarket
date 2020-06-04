@@ -3,8 +3,6 @@ import { formatearFechaCompleta } from '../utils/DateUtil';
 import { Alert } from 'react-native';
 
 export class ServicioMonederos {
-
-
    getRecuperarMonedero = idEmail => {
       global.db
          .collection('monederos')
@@ -27,10 +25,7 @@ export class ServicioMonederos {
                   monedero.transacciones = listaTransacciones;
 
                   global.monedero = monedero;
-
-               }
-               )
-
+               });
          })
          .catch(function (error) {
             console.log('Error getting document:', error);
@@ -38,23 +33,24 @@ export class ServicioMonederos {
    };
 
    registarEscuchaMonedero = (idMail, fnRepintar) => {
-      global.db.collection('monederos').doc(idMail)
-      .onSnapshot(function (snapShot) {
-            console.log('snapShot',snapShot)
-             fnRepintar(snapShot.data());
+      global.db
+         .collection('monederos')
+         .doc(idMail)
+         .onSnapshot(function (snapShot) {
+            console.log('snapShot', snapShot);
+            fnRepintar(snapShot.data());
          });
-        
    };
 
    registarEscuchaMonederoCompra = (idMail, fnRepintar) => {
-      let escucha=global.db.collection('monederos').doc(idMail)
-      .onSnapshot(function (snapShot) {
-            console.log('snapShot',snapShot)
-             fnRepintar(snapShot.data());
+      let escucha = global.db
+         .collection('monederos')
+         .doc(idMail)
+         .onSnapshot(function (snapShot) {
+            console.log('snapShot', snapShot);
+            fnRepintar(snapShot.data());
          });
 
-         return escucha;
-        
+      return escucha;
    };
-
 }
