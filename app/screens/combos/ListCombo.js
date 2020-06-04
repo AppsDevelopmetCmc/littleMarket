@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Badge, withBadge, Avatar } from 'react-native-elements';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
@@ -27,6 +28,7 @@ import { Notificaciones } from 'expo';
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
+import { TouchableHighlight } from 'react-native';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -211,13 +213,14 @@ export class ListCombo extends Component {
    mostrarModal = bandera => {
       this.setState({ mostrarModalDirecciones: bandera });
    };
+
    render() {
+      const BadgedIcon = withBadge(1)(Icon);
       console.log('invoca a render');
       return (
          <SafeAreaView style={styles.container}>
-            <CabeceraPersonalizada
-               titulo={'Yappando'}
-               iconoComponente={
+            <View style={styles.cabeceraContenedor}>
+               <View style={styles.cabeceraBoton}>
                   <Icon
                      name="menu"
                      type="material-community"
@@ -225,45 +228,116 @@ export class ListCombo extends Component {
                      size={30}
                      onPress={this.abrirDrawer}
                   />
-               }
-               iconoMonedero={
-                  <Icon
-                     name="coin"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     openDrawer={this.abrirMonedero}
-                     //onPress={this.abrirMonedero}
+               </View>
+               <View style={styles.cabeceraTitulo}>
+                  <Text style={styles.titulo}>Yappando</Text>
+               </View>
+               <View style={styles.iconoBadge}>
+                  <TouchableHighlight
+                     onPress={() => {
+                        this.abrirCarrito();
+                     }}
                      underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-               iconoNotificacion={
-                  <Icon
-                     name="bell-circle-outline"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirNotificacion}
+                  >
+                     <View style={styles.areaBadge}>
+                        <View>
+                           <Icon
+                              color={colores.colorBlanco}
+                              type="material"
+                              name="square-inc-cash"
+                              size={30}
+                           />
+                           {global.items && global.items.length > 0 ? (
+                              <Badge
+                                 //textStyle={{ fontSize: 10 }}
+                                 //3 caracteres
+                                 // value="+"
+                                 containerStyle={{
+                                    position: 'absolute',
+                                    top: -4,
+                                    right: -4,
+                                 }}
+                                 status="error"
+                              />
+                           ) : (
+                              <View></View>
+                           )}
+                        </View>
+                     </View>
+                  </TouchableHighlight>
+               </View>
+               <View style={styles.iconoBadge}>
+                  <TouchableHighlight
+                     onPress={() => {
+                        Alert.alert('Abre');
+                     }}
                      underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-               iconoDeTienda={
-                  <Icon
-                     name="cart"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirCarrito}
+                  >
+                     <View style={styles.areaBadge}>
+                        <View>
+                           <Icon
+                              color={colores.colorBlanco}
+                              type="material"
+                              name="bell"
+                              size={30}
+                           />
+                           {global.items && global.items.length > 0 ? (
+                              <Badge
+                                 value={global.items.length}
+                                 containerStyle={{
+                                    position: 'absolute',
+                                    top: -4,
+                                    right: -4,
+                                 }}
+                                 status="error"
+                              />
+                           ) : (
+                              <View></View>
+                           )}
+                        </View>
+                     </View>
+                  </TouchableHighlight>
+               </View>
+               <View style={styles.iconoBadge}>
+                  <TouchableHighlight
+                     onPress={() => {
+                        this.abrirCarrito();
+                     }}
                      underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-            ></CabeceraPersonalizada>
+                  >
+                     <View style={styles.areaBadge}>
+                        <View>
+                           <Icon
+                              color={colores.colorBlanco}
+                              type="material"
+                              name="cart"
+                              size={30}
+                           />
+                           {global.items && global.items.length > 0 ? (
+                              <Badge
+                                 value={global.items.length}
+                                 containerStyle={{
+                                    position: 'absolute',
+                                    top: -4,
+                                    right: -4,
+                                 }}
+                                 status="error"
+                              />
+                           ) : (
+                              <View></View>
+                           )}
+                        </View>
+                     </View>
+                  </TouchableHighlight>
+               </View>
+            </View>
 
             {this.state.direccionPedido ? (
                <View style={{ paddingVertical: 10 }}>
                   <Text style={{ marginLeft: 20, color: 'gray' }}>
                      Dirección de Entrega
                   </Text>
+
                   <Separador alto={5} />
                   <View style={styles.contenedorDireccione}>
                      <View style={{ flex: 1 }}>
@@ -414,6 +488,8 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       backgroundColor: colores.colorPrimarioVerde,
+      /* alignItems: 'stretch',
+      justifyContent: 'center',*/
    },
    fondo: {
       fontWeight: 'bold',
@@ -498,4 +574,41 @@ const styles = StyleSheet.create({
       margin: 0,
    },
    iconos: { marginRight: 0 },
+   cabeceraContenedor: {
+      flexDirection: 'row',
+      // height: 50,
+      marginRight: 20,
+      marginLeft: 10,
+   },
+   cabeceraBoton: {
+      flex: 1,
+
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
+   cabeceraTitulo: {
+      flex: 5,
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      marginHorizontal: 10,
+      //backgroundColor: 'red',
+   },
+   titulo: {
+      fontSize: 18,
+      color: 'white',
+      fontWeight: 'bold',
+   },
+   iconoBadge: {
+      //  backgroundColor: 'pink',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      flex: 2,
+   },
+   areaBadge: {
+      //  backgroundColor: 'blue',
+      paddingTop: 10,
+      paddingBottom: 5,
+      paddingHorizontal: 5,
+   },
 });
