@@ -27,6 +27,7 @@ import { Notificaciones } from 'expo';
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
+import {ServicioMonederos} from '../../servicios/ServicioMonederos'
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -53,6 +54,7 @@ export class ListCombo extends Component {
          direccionPedido: null,
          pedidoCalifica: {},
          estadocalifica: false,
+         valorMonedero:0,
       };
 
       let srvCombos = new ServicioCombos();
@@ -79,7 +81,22 @@ export class ListCombo extends Component {
          this.refrescarDireccion
       );
       // getToken();
+      let srvMonederos = new ServicioMonederos();
+      srvMonederos.registarEscuchaMonedero(global.usuario,this.repintarMonedero);
+
    }
+   repintarMonedero = monedero => {
+      console.log("mondero", monedero)
+      if(monedero)
+      {
+      this.setState({valorMonedero:monedero.valor})
+      }
+   };
+   repintarLista = combos => {
+      this.setState({
+         listCombos: combos,
+      });
+   };
 
    obtenerCoordenadas = async () => {
       Geocoder.init(APIKEY);
@@ -185,6 +202,7 @@ export class ListCombo extends Component {
                      onPress={this.abrirDrawer}
                   />
                }
+               monedero={this.state.valorMonedero}
                iconoMonedero={
                   <Icon
                      name="coin"

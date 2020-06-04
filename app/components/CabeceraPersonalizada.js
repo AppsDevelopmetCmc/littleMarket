@@ -14,6 +14,7 @@ export default function CabeceraPersonalizada(props) {
       iconoMonedero,
       titulo,
       iconoDeTienda,
+      monedero,
    } = props;
    return (
       <View style={styles.cabeceraContenedor}>
@@ -25,6 +26,9 @@ export default function CabeceraPersonalizada(props) {
 
          <View style={styles.cabeceraTitulo}>
             <Text style={styles.titulo}>{titulo}</Text>
+         </View>
+         <View style={styles.cabeceraIcon}>
+            <Text style={styles.titulo}>${monedero}</Text>
          </View>
 
          <View style={styles.cabeceraIcon}>{iconoDeTienda}</View>
