@@ -7,10 +7,8 @@ import { Badge, withBadge, Avatar } from 'react-native-elements';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-import {
-   recuperarPrincipal,
-   ServicioDirecciones,
-} from '../../servicios/ServicioDirecciones';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import { ServicioMonederos } from '../../servicios/ServicioMonederos';
 import * as serviciosCarrito from '../../servicios/ServicioCarroCompras';
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -28,7 +26,7 @@ import { Notificaciones } from 'expo';
 import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
-import { TouchableHighlight } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -55,6 +53,7 @@ export class ListCombo extends Component {
          direccionPedido: null,
          pedidoCalifica: {},
          estadocalifica: false,
+         valorMonedero: 0,
       };
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarItems(this.repintarLista);
@@ -120,6 +119,13 @@ export class ListCombo extends Component {
          console.log('FOCUS LISTA COMBOS');
          this.repintarSeleccionProductos();
       });
+
+      let srvMonederos = new ServicioMonederos();
+      console.log('registrando monedero');
+      srvMonederos.registarEscuchaMonedero(
+         global.usuario,
+         this.repintarMonedero
+      );
    }
 
    obtenerCoordenadas = async () => {
@@ -193,7 +199,14 @@ export class ListCombo extends Component {
          mostrarModalDirecciones: true,
       });
    };
-
+   repintarMonedero = monedero => {
+      console.log('------mondero', monedero);
+      if (monedero) {
+         this.setState({ valorMonedero: monedero.valor });
+      } else {
+         this.setState({ valorMonedero: 0 });
+      }
+   };
    seleccionarDireccion = direccion => {
       if (direccion.tieneCoberturaDireccion == 'S') {
          global.direccionPedido = direccion;
@@ -235,7 +248,7 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        this.abrirCarrito();
+                        Alert.alert('Abre');
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -247,11 +260,12 @@ export class ListCombo extends Component {
                               name="square-inc-cash"
                               size={30}
                            />
-                           {global.items && global.items.length > 0 ? (
+                           {this.state.valorMonedero &&
+                           this.state.valorMonedero > 0 ? (
                               <Badge
                                  //textStyle={{ fontSize: 10 }}
                                  //3 caracteres
-                                 // value="+"
+                                 value={this.state.valorMonedero}
                                  containerStyle={{
                                     position: 'absolute',
                                     top: -4,
