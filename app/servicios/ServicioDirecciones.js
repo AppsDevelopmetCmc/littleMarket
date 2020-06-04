@@ -79,7 +79,7 @@ export class ServicioDirecciones {
          global.direcciones.splice(posicion, 1);
       }
    };
-   registrarEscucha = (idCliente, fnRepintar) => {
+   registrarEscuchaDireccion = (idCliente, fnRepintar) => {
       let actualizarInfo = this.actualizarInfo;
       let eliminar = this.eliminar;
       global.fnRepintarDireccion = fnRepintar;
