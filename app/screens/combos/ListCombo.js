@@ -69,22 +69,12 @@ export class ListCombo extends Component {
       this.setState({ estadocalifica: visible });
    };
    repintarSeleccionProductos = () => {
-      console.log('*********repintar seleccion', global.items); //los productos del carrito
-      console.log('*********repintar seleccion ELEGIR', global.productos);
       if (global.productos) {
          for (let i = 0; i < global.productos.length; i++) {
             global.productos[i].checked = false;
-            console.log('***********IDS Elegidos: ' + global.productos[i].id);
             if (global.items) {
                for (let j = 0; j < global.items.length; j++) {
-                  console.log(
-                     '***********IDS itemsElegir: ' + global.items[j].id
-                  );
                   if (global.productos[i].id == global.items[j].id) {
-                     console.log(
-                        '*********coincide>>>>>>>>>',
-                        global.productos[i]
-                     );
                      global.productos[i].checked = true;
                   }
                }
@@ -110,14 +100,21 @@ export class ListCombo extends Component {
       );
       // getToken();
       //global.repintarSeleccionProductos = this.repintarSeleccionProductos;
+      /* serviciosCarrito.registrarEscucha(
+         global.usuario,
+         this.repintarSeleccionProductos
+      );*/
       serviciosCarrito.registrarEscucha(
          global.usuario,
          this.repintarSeleccionProductos
       );
-
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
          console.log('FOCUS LISTA COMBOS');
          this.repintarSeleccionProductos();
+         serviciosCarrito.registrarEscucha(
+            global.usuario,
+            this.repintarSeleccionProductos
+         );
       });
 
       let srvMonederos = new ServicioMonederos();
@@ -128,6 +125,9 @@ export class ListCombo extends Component {
       );
    }
 
+   componentWillUnmount() {
+      this._unsubscribe();
+   }
    obtenerCoordenadas = async () => {
       Geocoder.init(APIKEY);
       let { status } = await Location.requestPermissionsAsync();
@@ -229,7 +229,7 @@ export class ListCombo extends Component {
 
    render() {
       const BadgedIcon = withBadge(1)(Icon);
-      console.log('invoca a render');
+      console.log('--------invoca a render');
       return (
          <SafeAreaView style={styles.container}>
             <View style={styles.cabeceraContenedor}>
