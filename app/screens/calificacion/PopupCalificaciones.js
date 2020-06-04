@@ -31,7 +31,7 @@ export function PopupCalificaciones(props) {
    const [quejaProducto, setQuejaProducto] = useState(-1);
    const [detalleProducto, setDetalleProducto] = useState('');
 
-   console.log('Pedido', pedido);
+   /* console.log('Pedido', pedido);
 
    console.log('------------------------------------------');
    console.log('calificación Pedido', puntuacionPedido);
@@ -42,7 +42,7 @@ export function PopupCalificaciones(props) {
    console.log('queja codigo producto', quejaProducto);
    console.log('detalle producto', detalleProducto);
    console.log('listaPedido', radio_propsPedio);
-   console.log('listaProducto', radio_propsProducto);
+   console.log('listaProducto', radio_propsProducto);*/
 
    // se utiliza el useEffect
    useEffect(() => {

@@ -146,6 +146,28 @@ export class ServicioCombos {
             }
          });
    };
+
+   recuperarItems = fnRepintar => {
+      global.db
+         .collection('items')
+         .where('estado', '==', 'V')
+         .orderBy('nombre')
+         .get()
+         .then(querySnapShot => {
+            let documentos = querySnapShot.docs;
+            let items = [];
+            for (let i = 0; i < documentos.length; i++) {
+               let item = documentos[i].data();
+               item.id = documentos[i].id;
+               items.push(item);
+            }
+            fnRepintar(items);
+            /*for (let i = 0; i < combos.length; i++) {
+               this.recuperarComboProductos(combos[i].id);
+            }*/
+         });
+   };
+
    recuperarComboProductos = async idCombo => {
       global.db
          .collection('combos')

@@ -57,7 +57,7 @@ export const registrarEscucha = (mail, fnRepintar) => {
                if (change.type == 'added') {
                   //arregloUtil.agregar(change.doc.data(), fnRepintar);
                   global.items.push(change.doc.data());
-                  global.fnRepintar();
+                  global.fnRepintar(global.items);
                }
                if (change.type == 'modified') {
                   console.log('dispara modified');
@@ -73,8 +73,8 @@ export const registrarEscucha = (mail, fnRepintar) => {
 export const agregarDisminuirItemCarro = (
    itemCarro,
    mail,
-   cantidad,
-   fnOnSuccess
+   cantidad
+   //fnOnSuccess
 ) => {
    //RECUPERA la cantidad actual del ITEM
    global.db
@@ -99,14 +99,14 @@ export const agregarDisminuirItemCarro = (
                   ),
                })
                .then(() => {
-                  if (fnOnSuccess) {
+                  /* if (fnOnSuccess) {
                      fnOnSuccess();
-                  }
+                  }*/
                });
          } else {
             if (!itemCarro.cantidad) {
-            itemCarro.cantidad = 1;
-            itemCarro.subtotal = itemCarro.precio;
+               itemCarro.cantidad = 1;
+               itemCarro.subtotal = itemCarro.precio;
             }
 
             global.db
@@ -117,9 +117,9 @@ export const agregarDisminuirItemCarro = (
                .set(itemCarro)
                .then(() => {
                   console.log('se agrega nuevo item al carro');
-                  if (fnOnSuccess) {
+                  /* if (fnOnSuccess) {
                      fnOnSuccess();
-                  }
+                  }*/
                })
                .catch();
          }

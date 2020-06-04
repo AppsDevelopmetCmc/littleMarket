@@ -12,7 +12,7 @@ export class ServicioDirecciones {
             id = dataDireccion.id;
             global.direccionPedido = direccion;
             global.direccionPedido.id = dataDireccion.id;
-            //global.repintarDireccion();
+            global.repintarDireccion();
          })
          .catch(function (error) {
             Alert.alert('error' + error);
