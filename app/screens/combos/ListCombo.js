@@ -10,7 +10,7 @@ import {
    recuperarPrincipal,
    ServicioDirecciones,
 } from '../../servicios/ServicioDirecciones';
-
+import * as serviciosCarrito from '../../servicios/ServicioCarroCompras';
 //Importando los colores
 import * as colores from '../../constants/Colores';
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
@@ -42,13 +42,13 @@ import { ServicioMonederos } from '../../servicios/ServicioMonederos'
 export class ListCombo extends Component {
    constructor(props) {
       super(props);
-      let combos = [];
+      let items = [];
       let direcciones = [];
       if (this.props.route.params != null) {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }
       this.state = {
-         listCombos: combos,
+         listItems: items,
          listaDireccionesCobertura: direcciones,
          mostrarModalDirecciones: false,
          direccionPedido: null,
@@ -56,16 +56,45 @@ export class ListCombo extends Component {
          estadocalifica: false,
          valorMonedero: 0,
       };
-
       let srvCombos = new ServicioCombos();
-      srvCombos.recuperarCombos(this.repintarLista);
+      srvCombos.recuperarItems(this.repintarLista);
       global.repintarDireccion = this.repintarDireccionPrincipal;
+      global.repintarSeleccionProductos = this.repintarSeleccionProductos;
    }
    repintarDireccionPrincipal = () => {
-      this.setState({ direccionPedido: global.direccionPedido.descripcion });
+      if (global.direccionPedido) {
+         this.setState({ direccionPedido: global.direccionPedido.descripcion });
+      }
    };
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
+   };
+   repintarSeleccionProductos = () => {
+      console.log('*********repintar seleccion', global.items); //los productos del carrito
+      console.log('*********repintar seleccion ELEGIR', global.productos);
+      if (global.productos) {
+         for (let i = 0; i < global.productos.length; i++) {
+            global.productos[i].checked = false;
+            console.log('***********IDS Elegidos: ' + global.productos[i].id);
+            if (global.items) {
+               for (let j = 0; j < global.items.length; j++) {
+                  console.log(
+                     '***********IDS itemsElegir: ' + global.items[j].id
+                  );
+                  if (global.productos[i].id == global.items[j].id) {
+                     console.log(
+                        '*********coincide>>>>>>>>>',
+                        global.productos[i]
+                     );
+                     global.productos[i].checked = true;
+                  }
+               }
+            }
+         }
+      }
+      //this.setState({ listItems: null });
+      this.setState({ listItems: global.productos });
+      //}
    };
 
    componentDidMount() {
@@ -81,10 +110,21 @@ export class ListCombo extends Component {
          this.refrescarDireccion
       );
       // getToken();
-      let srvMonederos = new ServicioMonederos();
-      srvMonederos.registarEscuchaMonedero(global.usuario, this.repintarMonedero);
+      //global.repintarSeleccionProductos = this.repintarSeleccionProductos;
+      serviciosCarrito.registrarEscucha(
+         global.usuario,
+         this.repintarSeleccionProductos
+      );
 
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+         console.log('FOCUS LISTA COMBOS');
+         this.repintarSeleccionProductos();
+      });
+
+let srvMonederos = new ServicioMonederos();
+      srvMonederos.registarEscuchaMonedero(global.usuario, this.repintarMonedero);
    }
+
    repintarMonedero = monedero => {
       console.log("mondero", monedero)
       if (monedero) {
@@ -112,11 +152,12 @@ export class ListCombo extends Component {
       this.localizacionActual = location;
    };
 
-   repintarLista = combos => {
-      global.combos = combos;
-      this.setState({
-         listCombos: combos,
-      });
+   repintarLista = items => {
+      global.productos = items;
+      repintarSeleccionProductos();
+      /* this.setState({
+         listItems: global.productos,
+      });*/
    };
 
    obtenerPedidoCalifica = async mail => {
@@ -191,6 +232,7 @@ export class ListCombo extends Component {
       this.setState({ mostrarModalDirecciones: bandera });
    };
    render() {
+      console.log('invoca a render');
       return (
          <SafeAreaView style={styles.container}>
             <CabeceraPersonalizada
@@ -285,15 +327,15 @@ export class ListCombo extends Component {
                   </View>
                </View>
             ) : (
-                  <View>
-                     <Text style={{ marginLeft: 20, color: 'gray' }}>
-                        Dirección de Entrega
+               <View>
+                  <Text style={{ marginLeft: 20, color: 'gray' }}>
+                     Dirección de Entrega
                   </Text>
-                     <View style={styles.contenedorDireccione}>
-                        <Text></Text>
-                     </View>
+                  <View style={styles.contenedorDireccione}>
+                     <Text></Text>
                   </View>
-               )}
+               </View>
+            )}
 
             <Modal
                animationType="slide"
@@ -310,17 +352,17 @@ export class ListCombo extends Component {
             <View style={styles.pie}>
                <View style={styles.lista}>
                   <FlatList
-                     data={this.state.listCombos}
-                     renderItem={objeto => {
+                     data={this.state.listItems}
+                     renderItem={({ item }) => {
                         return (
                            <ItemCombo
                               nav={this.props.navigation}
-                              combo={objeto.item}
+                              combo={item}
                            />
                         );
                      }}
-                     keyExtractor={objetoCombo => {
-                        return objetoCombo.id;
+                     keyExtractor={item => {
+                        return item.id;
                      }}
                   />
                </View>
