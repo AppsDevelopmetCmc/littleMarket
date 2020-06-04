@@ -4,6 +4,7 @@ import { ItemCombo } from '../combos/componentes/ItemCombo';
 import { ServicioCombos } from '../../servicios/ServicioCombos';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Badge, withBadge, Avatar } from 'react-native-elements';
+import ActionButton from 'react-native-action-button';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
@@ -440,6 +441,22 @@ export class ListCombo extends Component {
                pedido={this.state.pedidoCalifica}
                cambioVisibleCalifica={this.cambioVisibleCalifica}
             ></PopupCalificaciones>
+            <ActionButton
+               buttonColor={colores.colorOscuroPrimarioVerde}
+               renderIcon={() => {
+                  return (
+                     <Icon
+                        name="arrow-right-bold"
+                        size={30}
+                        color={colores.colorBlanco}
+                        style={styles.iconos}
+                     />
+                  );
+               }}
+               onPress={() => {
+                  this.abrirCarrito();
+               }}
+            ></ActionButton>
          </SafeAreaView>
       );
    }
