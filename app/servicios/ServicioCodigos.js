@@ -1,6 +1,7 @@
 import { ArregloUtil, DateUtil } from '../utils/utils';
 import { formatearFechaCompleta } from '../utils/DateUtil';
 import { Alert } from 'react-native';
+import { ServicioNotificaciones } from '../servicios/ServicioNotificaciones';
 
 export class ServicioCodigos {
 
@@ -53,6 +54,22 @@ export class ServicioCodigos {
                         tercero: idMail,
                         tipo: 'I',
                      })
+                  //creo Notificacion para el beneficiario
+                  let srvNotificaion = new ServicioNotificaciones();
+                  let numeroActual = await srvNotificaion.buscarNumeroNotificacion(respuesta.data().beneficiario);
+                  let numerototalBeneficiario = parseInt(numeroActual + 1);
+                  srvNotificaion.crearNotificaciones(respuesta.data().beneficiario,
+                     {
+                        numero: numerototalBeneficiario,
+
+                     },
+                     {
+                        mensaje:'Ha Ganado $ ' + parseFloat(respuesta.data().valor) + ' por ingresar el código ' + idCodigo,
+                        fecha: new Date(),
+                     }
+
+                  );
+
                }
                //Para crear Monedero al usuario actual
                let docUsuario = await this.buscarValorMonedero(global.usuario)
@@ -77,6 +94,23 @@ export class ServicioCodigos {
                   })
                //Ingreso un registro en los codigos ya usados   
                this.crearCodigoUsado(idCodigo, global.usuario, { mail: global.usuario })
+
+               //creo Notificacion para el usuario  logueado
+               let srvNotificaion = new ServicioNotificaciones();
+               let numeroActualLogueado = await srvNotificaion.buscarNumeroNotificacion(global.usuario)
+               let numeroTotalLogueado = parseInt(numeroActualLogueado + 1);
+               srvNotificaion.crearNotificaciones(global.usuario,
+                  {
+                     numero: numeroTotalLogueado,
+                  },
+                  {
+                     mensaje:'Ha Ganado $ '+ parseFloat(respuesta.data().valor) + ' por ingresar el código ' + idCodigo,
+                     fecha: new Date(),
+                  }
+
+               );
+
+
 
             }
 

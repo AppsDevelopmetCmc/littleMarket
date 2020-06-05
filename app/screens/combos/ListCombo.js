@@ -28,6 +28,7 @@ import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones'
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -55,6 +56,7 @@ export class ListCombo extends Component {
          pedidoCalifica: {},
          estadocalifica: false,
          valorMonedero: 0,
+         numeroNotificaciones: 0,
       };
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarItems(this.repintarLista);
@@ -124,7 +126,22 @@ export class ListCombo extends Component {
          global.usuario,
          this.repintarMonedero
       );
+
+      let srvNotificaciones = new ServicioNotificaciones();
+      console.log('registrando escucha Notificaciones');
+      srvNotificaciones.registarEscuchaNotificacion(global.usuario, this.repintarNumeroNotificaciones);
+
    }
+
+   repintarNumeroNotificaciones = notificaciones => {
+      console.log('------Notificaciones', notificaciones);
+
+      if (notificaciones) {
+         this.setState({ numeroNotificaciones: notificaciones.numero });
+      } else {
+         this.setState({ numeroNotificaciones: 0 });
+      }
+   };
 
    componentWillUnmount() {
       this._unsubscribe();
@@ -194,6 +211,23 @@ export class ListCombo extends Component {
       this.props.navigation.navigate('NotificacionScreen');
    };
 
+   abrirListaNotificacion = () => {
+      this.props.navigation.navigate('ListaNotificacionScreen');
+      if (this.state.numeroNotificaciones && this.state.numeroNotificaciones > 0) {
+         this.encerarNotificaciones();
+      }
+   };
+   encerarNotificaciones = () => {
+      let srvNotificaciones = new ServicioNotificaciones();
+      console.log('encerando notificaciones');
+      srvNotificaciones.actualizarNotificaciones(
+         {
+            mail: global.usuario,
+            numero: 0
+         })
+
+   }
+
    repintarDireccion = direcciones => {
       this.setState({
          listaDireccionesCobertura: direcciones,
@@ -208,6 +242,7 @@ export class ListCombo extends Component {
          this.setState({ valorMonedero: 0 });
       }
    };
+
    seleccionarDireccion = direccion => {
       if (direccion.tieneCoberturaDireccion == 'S') {
          global.direccionPedido = direccion;
@@ -262,21 +297,21 @@ export class ListCombo extends Component {
                               size={30}
                            />
                            {this.state.valorMonedero &&
-                           this.state.valorMonedero > 0 ? (
-                              <Badge
-                                 //textStyle={{ fontSize: 10 }}
-                                 //3 caracteres
-                                 value={this.state.valorMonedero}
-                                 containerStyle={{
-                                    position: 'absolute',
-                                    top: -4,
-                                    right: -4,
-                                 }}
-                                 status="error"
-                              />
-                           ) : (
-                              <View></View>
-                           )}
+                              this.state.valorMonedero > 0 ? (
+                                 <Badge
+                                    //textStyle={{ fontSize: 10 }}
+                                    //3 caracteres
+                                    value={this.state.valorMonedero}
+                                    containerStyle={{
+                                       position: 'absolute',
+                                       top: -4,
+                                       right: -4,
+                                    }}
+                                    status="error"
+                                 />
+                              ) : (
+                                 <View></View>
+                              )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -284,7 +319,7 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        Alert.alert('Abre');
+                        this.abrirListaNotificacion();
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -296,9 +331,9 @@ export class ListCombo extends Component {
                               name="bell"
                               size={30}
                            />
-                           {global.items && global.items.length > 0 ? (
+                           {this.state.numeroNotificaciones && this.state.numeroNotificaciones > 0 ? (
                               <Badge
-                                 value={global.items.length}
+                                 value={this.state.numeroNotificaciones}
                                  containerStyle={{
                                     position: 'absolute',
                                     top: -4,
@@ -307,8 +342,8 @@ export class ListCombo extends Component {
                                  status="error"
                               />
                            ) : (
-                              <View></View>
-                           )}
+                                 <View></View>
+                              )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -339,8 +374,8 @@ export class ListCombo extends Component {
                                  status="error"
                               />
                            ) : (
-                              <View></View>
-                           )}
+                                 <View></View>
+                              )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -395,15 +430,15 @@ export class ListCombo extends Component {
                   </View>
                </View>
             ) : (
-               <View>
-                  <Text style={{ marginLeft: 20, color: 'gray' }}>
-                     Dirección de Entrega
+                  <View>
+                     <Text style={{ marginLeft: 20, color: 'gray' }}>
+                        Dirección de Entrega
                   </Text>
-                  <View style={styles.contenedorDireccione}>
-                     <Text></Text>
+                     <View style={styles.contenedorDireccione}>
+                        <Text></Text>
+                     </View>
                   </View>
-               </View>
-            )}
+               )}
 
             <Modal
                animationType="slide"

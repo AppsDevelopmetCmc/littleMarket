@@ -43,6 +43,7 @@ import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
+import {ListaNotificaciones} from '../notificaciones/ListaNotificaciones'
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -152,6 +153,11 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="NotificacionScreen"
             component={Notificacion}
+            options={navOptionHandler(false)}
+         />
+         <StackDirection.Screen
+            name="ListaNotificacionScreen"
+            component={ListaNotificaciones}
             options={navOptionHandler(false)}
          />
          <StackDirection.Screen
@@ -467,8 +473,8 @@ export default function NavegadorInicio() {
                      Alert.alert(
                         'Info',
                         'Verifique su correo electrónico ' +
-                           user.email +
-                           ' para continuar'
+                        user.email +
+                        ' para continuar'
                      );
                      setLogin(false);
                      setTieneCobertura(false);
@@ -601,23 +607,23 @@ export default function NavegadorInicio() {
                tieneCobertura ? (
                   HomeDraw()
                ) : (
+                     <StackAuthentication.Navigator>
+                        <StackAuthentication.Screen
+                           name="DireccionStack"
+                           component={DirectionStack}
+                           options={navOptionHandler(false)}
+                        />
+                     </StackAuthentication.Navigator>
+                  )
+            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="DireccionStack"
-                        component={DirectionStack}
+                        name="LoginStack"
+                        component={LoginStack}
                         options={navOptionHandler(false)}
-                     />
+                     ></StackAuthentication.Screen>
                   </StackAuthentication.Navigator>
-               )
-            ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+               )}
          </NavigationContainer>
       );
    }
