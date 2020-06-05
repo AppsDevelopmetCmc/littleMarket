@@ -15,9 +15,9 @@ export class ServicioNotificaciones {
                .collection("notificaciones")
                .doc(idMail)
                .collection("notificaciones")
-               .set(notificaciones)
+               .add(notificaciones)
                .then(function () {
-                  Alert.alert("Subcoleccion de Notifcaciones creados")
+                  console.log("Notificacion creada");
                }).catch(function (error) {
                   Alert.alert("error" + error)
                })
@@ -37,7 +37,7 @@ export class ServicioNotificaciones {
                numero: objeto.numero,
             }
          ).then(function () {
-            Alert.alert("Notificacion actualizado")
+            console.log("Notificacion actualizada")
          }
          ).catch(function (error) {
             Alert.alert("error" + error)
@@ -45,30 +45,67 @@ export class ServicioNotificaciones {
          );
    }
 
-   registrarEscuchaTodas = (idMail, fnRepintar, mail) => {
-      let arregloUtil = new ArregloUtil(pedido);
+   registrarEscuchaTodas = (idMail, fnRepintar) => {
       global.db
          .collection('notificaciones')
          .doc(idMail)
          .collection('notificaciones')
-         .where('mail', '==', mail)
-         .orderBy("orden", "desc")
+         .orderBy("fecha", "desc")
+         .limit(10)
+         .get()
+         .then(async function (documentos) {
+            let listaNotificaciones = [];
+            for (let i = 0; i < documentos.docs.length; i++) {
+               let itemNotificaciones = [];
+               itemNotificaciones = documentos.docs[i].data();
+               itemNotificaciones.id = documentos.docs[i].id;
+               itemNotificaciones.posicion = i;
+               listaNotificaciones.push(itemNotificaciones);
+            }
+            fnRepintar(listaNotificaciones);
+         })
+         .catch(function (error) {
+            Alert.alert('Error catch-->' + error);
+         });
+      /*
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
-               let itemPedidos = change.doc.data();
-               itemPedidos.id = change.doc.id;
+               let itemNotificaciones = change.doc.data();
+               itemNotificaciones.id = change.doc.id;
 
                if (change.type == 'added') {
-                  arregloUtil.agregar(itemPedidos, fnRepintar);
+                  arregloUtil.agregar(itemNotificaciones, fnRepintar);
                }
                if (change.type == 'modified') {
-                  arregloUtil.actualizar(itemPedidos, fnRepintar);
+                  arregloUtil.actualizar(itemNotificaciones, fnRepintar);
                }
                if (change.type == 'removed') {
-                  arregloUtil.eliminar(itemPedidos, fnRepintar);
+                  arregloUtil.eliminar(itemNotificaciones, fnRepintar);
                }
             });
+         });*/
+   };
+
+   registarEscuchaNotificacion = (idMail, fnRepintar) => {
+      global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .onSnapshot(function (snapShot) {
+            console.log('snapShot', snapShot);
+            fnRepintar(snapShot.data());
          });
+   };
+
+   buscarNumeroNotificacion = async (idMail) => {
+      let valorNumero = 0;
+      let notificacion = await global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .get();
+      if (notificacion && notificacion.data()) {
+         valorNumero = notificacion.data().numero;
+      }
+      return valorNumero;
    };
 
 }
