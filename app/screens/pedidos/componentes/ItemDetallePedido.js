@@ -10,8 +10,8 @@ export class ItemDetallePedido extends Component {
    constructor(props) {
       super(props);
       this.descripcion = '';
-      new ServicioCombos().recuperarComboProductos(this.props.detallePedido.id);
-      this.recuperarDatosCombo();
+      //new ServicioCombos().recuperarComboProductos(this.props.detallePedido.id);
+      // this.recuperarDatosCombo();
    }
 
    recuperarDatosCombo = () => {
@@ -36,7 +36,7 @@ export class ItemDetallePedido extends Component {
          <View style={styles.fila}>
             <View style={styles.contenido}>
                <Text style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}>
-                  {this.props.detallePedido.alias}
+                  {this.props.detallePedido.nombre}
                </Text>
             </View>
             <View style={styles.contenedorDatos}>
@@ -62,7 +62,6 @@ export class ItemDetallePedido extends Component {
             </View>
             <View style={styles.detalleContenido}>
                <Text style={styles.textoNegrita}>Detalle:</Text>
-               <Text style={styles.texto}>{this.descripcion}</Text>
             </View>
          </View>
       );

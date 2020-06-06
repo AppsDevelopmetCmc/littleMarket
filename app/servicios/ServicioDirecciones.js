@@ -12,7 +12,9 @@ export class ServicioDirecciones {
             id = dataDireccion.id;
             global.direccionPedido = direccion;
             global.direccionPedido.id = dataDireccion.id;
-            global.repintarDireccion();
+            if (global.repintarDireccion) {
+               global.repintarDireccion();
+            }
          })
          .catch(function (error) {
             Alert.alert('error' + error);
@@ -79,7 +81,7 @@ export class ServicioDirecciones {
          global.direcciones.splice(posicion, 1);
       }
    };
-   registrarEscucha = (idCliente, fnRepintar) => {
+   registrarEscuchaDireccion = (idCliente, fnRepintar) => {
       let actualizarInfo = this.actualizarInfo;
       let eliminar = this.eliminar;
       global.fnRepintarDireccion = fnRepintar;

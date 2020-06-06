@@ -9,7 +9,7 @@ import {
    Alert,
    Modal,
 } from 'react-native';
-import { Button, Card } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -28,6 +28,8 @@ import Separador from '../../components/Separador';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
+import { ServicioCodigos } from '../../servicios/ServicioCodigos'
+import { ServicioMonederos } from '../../servicios/ServicioMonederos'
 
 export class ConfirmarCompra extends Component {
    constructor() {
@@ -44,6 +46,9 @@ export class ConfirmarCompra extends Component {
          pagoSeleccionado: global.pagoSeleccionado == 'TR' ? 1 : 0,
          deshabilitado: true,
          mostrarModalDirecciones: false,
+         codigoPromo: '',
+         errorCodigoPromo: '',
+         valorMonedero: 0,
       };
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
@@ -83,7 +88,25 @@ export class ConfirmarCompra extends Component {
    };
    componentDidMount() {
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
+      let srvMonederos = new ServicioMonederos();
+      this.unsubscribe = srvMonederos.registarEscuchaMonederoCompra(global.usuario, this.repintarMonedero);
+      console.log("Aqui")
    }
+   repintarMonedero = monedero => {
+      console.log("mondero en confirmar Compra", monedero)
+      if (monedero) {
+         this.setState({ valorMonedero: monedero.valor })
+      }
+      else {
+         this.setState({ valorMonedero: 0 })
+      }
+   };
+
+   componentWillUnmount() {
+      console.log("componentWillUnmount");
+      this.unsubscribe();
+   }
+
    cerrarPantalla = () => {
       this.props.navigation.popToTop();
    };
@@ -103,21 +126,38 @@ export class ConfirmarCompra extends Component {
       }
       this.setState({ mostrarModalDirecciones: false });
    };
-   generarNumeroOrden = async(fn) => {
-      let numero,codigo;
-      let limite =10;
+   generarNumeroOrden = async (fn) => {
+      let numero, codigo;
+      let limite = 10;
       numero = await new ServicioParametros().obtenerSecuencial();
-      if(numero){
+      if (numero) {
          new ServicioParametros().actualizarSecuencial(numero);
-         codigo = ''+numero;
-         for(let i=0 ; i<limite;i++){
-            if( codigo.length < limite){
-               codigo = '0'+codigo;
+         codigo = '' + numero;
+         for (let i = 0; i < limite; i++) {
+            if (codigo.length < limite) {
+               codigo = '0' + codigo;
             }
          }
-         codigo = 'YPP'+codigo;
+         codigo = 'YPP' + codigo;
       }
       fn(codigo);
+   }
+
+   validarCodigoPromo = () => {
+      let srvCodigos = new ServicioCodigos();
+      //Validaciones
+      let validar = true;
+      this.state.errorCodigoPromo = '';
+
+      if (this.state.codigoPromo === '' || this.state.codigoPromo === undefined) {
+         this.setState({ errorCodigoPromo: 'El código es requerido' });
+         validar = false;
+      }
+      //Si pasa todas las validaciones crea el combo
+      if (validar === true) {
+         srvCodigos.validarCodigo(this.state.codigoPromo, global.usuario);
+      }
+
    }
    render() {
       let fechaActual = new Date();
@@ -216,10 +256,76 @@ export class ConfirmarCompra extends Component {
                            buttonSize={15}
                            buttonOuterSize={25}
                            onPress={value => {
-                              this.setState({ pagoSeleccionado: value});
+                              this.setState({ pagoSeleccionado: value });
                               global.pagoSeleccionado = value;
                            }}
                         />
+                     </Card>
+                     <Card
+                        title="Ingrese Su código Promocional"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <View style={{ flexDirection: 'row' }}>
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Input
+                                 errorMessage={this.state.errorCodigoPromo}
+                                 value={this.state.codigoPromo}
+                                 placeholder="Código"
+                                 onChangeText={text => {
+                                    this.setState({ codigoPromo: text });
+                                 }}
+                              />
+                           </View>
+                           <View style={{ flex: 1 }}>
+                              <Button
+                                 title="Validar"
+                                 onPress={() => {
+                                    this.validarCodigoPromo();
+                                 }}
+                                 buttonStyle={{
+                                    backgroundColor: "white",
+                                 }}
+                                 icon={
+                                    <Icon
+                                       name="check-circle"
+                                       size={25}
+                                       color={colores.colorPrimarioTomate}
+                                       style={styles.iconos}
+                                    />
+                                 }
+                              ></Button>
+                           </View>
+                        </View>
+
+                     </Card>
+                     <Card
+                        title="Valor del Monedero"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <View style={{ flexDirection: 'row' }}>
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Text>{this.state.valorMonedero}</Text>
+                           </View>
+                           <View style={{ flex: 1 }}>
+                              <Button
+                                 onPress={() => {
+                                    Alert.alert("Utilizando Monedero")
+                                 }}
+                                 buttonStyle={{
+                                    backgroundColor: "white",
+                                 }}
+                                 icon={
+                                    <Icon
+                                       name="coin"
+                                       size={25}
+                                       color={colores.colorPrimarioTomate}
+                                       style={styles.iconos}
+                                    />
+                                 }
+                              ></Button>
+                           </View>
+                        </View>
+
                      </Card>
                      <Card
                         title="Detalle del pago"
@@ -249,47 +355,47 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            this.generarNumeroOrden(
-                           (codigo) =>{
-                           crearPedido(
-                              {
-                                 fechaPedido: formatearFechaISO(fecha),
-                                 fechaEntrega: this.state.fechaSeleccionada,
-                                 horarioEntrega: this.state.horarioSeleccionado.horario,
-                                 estado:
-                                    global.pagoSeleccionado == 'TR'
-                                       ? 'CT'
-                                       : 'PI',
-                                 mail: global.usuario,
-                                 nombreCliente:
-                                    global.appUsuario.nombreCompleto,
-                                 direccion: global.direccionPedido.descripcion,
-                                 latitud: global.direccionPedido.latitud,
-                                 longitud: global.direccionPedido.longitud,
-                                 telefono: global.appUsuario.telefono,
-                                 total: global.total,
-                                 jornada: this.state.horarioSeleccionado.jornada,
-                                 orden: codigo,
-                                 horaCreacion: obtenerHoraActual(fecha),
-                                 formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
-                                 asociado: 'asociado@gmail.com',
-                                 nombreAsociado:'Juan perez'
-                              },
-                              items,
-                              this.cerrarPantalla
-                           );
-                           if (global.pagoSeleccionado == 'TR') {
-                              let text =
-                                 'He completado mi pedido, solicito información para transferencia';
-                              let numero = '593992920306';
-                              Linking.openURL(
-                                 'whatsapp://send?text=' +
-                                    text +
-                                    '&phone=' +
-                                    numero
-                              );
-                           }
-                        });
-                           
+                              (codigo) => {
+                                 crearPedido(
+                                    {
+                                       fechaPedido: formatearFechaISO(fecha),
+                                       fechaEntrega: this.state.fechaSeleccionada,
+                                       horarioEntrega: this.state.horarioSeleccionado.horario,
+                                       estado:
+                                          global.pagoSeleccionado == 'TR'
+                                             ? 'CT'
+                                             : 'PI',
+                                       mail: global.usuario,
+                                       nombreCliente:
+                                          global.appUsuario.nombreCompleto,
+                                       direccion: global.direccionPedido.descripcion,
+                                       latitud: global.direccionPedido.latitud,
+                                       longitud: global.direccionPedido.longitud,
+                                       telefono: global.appUsuario.telefono,
+                                       total: global.total,
+                                       jornada: this.state.horarioSeleccionado.jornada,
+                                       orden: codigo,
+                                       horaCreacion: obtenerHoraActual(fecha),
+                                       formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
+                                       asociado: 'asociado@gmail.com',
+                                       nombreAsociado: 'Juan perez'
+                                    },
+                                    items,
+                                    this.cerrarPantalla
+                                 );
+                                 if (global.pagoSeleccionado == 'TR') {
+                                    let text =
+                                       'He completado mi pedido, solicito información para transferencia';
+                                    let numero = '593992920306';
+                                    Linking.openURL(
+                                       'whatsapp://send?text=' +
+                                       text +
+                                       '&phone=' +
+                                       numero
+                                    );
+                                 }
+                              });
+
                         }}
                      ></Button>
                   </View>

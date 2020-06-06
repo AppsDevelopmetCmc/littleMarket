@@ -49,14 +49,14 @@ export class DireccionesCrud extends Component {
             global.infoUsuario = user.providerData[0];
          }
       }
-      new ServicioDirecciones().registrarEscucha(
+      /*new ServicioDirecciones().registrarEscuchaDireccion(
          global.usuario,
          this.repintarLista
-      );
+      );*/
 
       this.obtenerCoordenadas();
       console.log('DireccionesCrud: ' + global.direcciones);
-      if (global.direcciones) this.repintarLista();
+      //if (global.direcciones) this.repintarLista();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
          Alert.alert('No existe Cobertura para la Direccion ');
@@ -65,7 +65,7 @@ export class DireccionesCrud extends Component {
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
          console.log('DRAWER FOCUS');
          this.repintarLista();
-         new ServicioDirecciones().registrarEscucha(
+         new ServicioDirecciones().registrarEscuchaDireccion(
             global.usuario,
             this.repintarLista
          );
@@ -89,7 +89,16 @@ export class DireccionesCrud extends Component {
       global.localizacionActual = location;
    };
 
-   obtenerUbicacionActual = () => {
+   obtenerUbicacionActual = async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+         Alert.alert('Error al otorgar el permiso');
+         return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log('actual location:', location);
+      global.localizacionActual = location;
       this.props.navigation.navigate('Mapa', {
          origen: 'actual',
          coordenadasActuales: this.localizacionActual,

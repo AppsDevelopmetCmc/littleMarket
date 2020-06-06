@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import {
+   View,
+   StyleSheet,
+   AsyncStorage,
+   ScrollView,
+   Alert,
+} from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -67,6 +73,9 @@ export default function RegistroForm(props) {
                   seterrorMsgCorreo('');
                   seterrorMsgContraseña('');
                   seterrorMsgRepetirContraseña('');
+                  //Borra la info del storage
+                  console.log('Borrando del storage:' + 'cobertura_' + email);
+                  AsyncStorage.removeItem('cobertura_' + email);
                   await firebase
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
