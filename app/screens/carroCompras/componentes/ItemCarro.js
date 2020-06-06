@@ -10,6 +10,7 @@ import {
 
 import Separador from '../../../components/Separador';
 import { transformDinero } from '../../../utils/Validaciones';
+import { convertir } from '../../../utils/ConvertidorUnidades';
 
 export class ItemCarro extends Component {
    constructor(props) {
@@ -35,9 +36,10 @@ export class ItemCarro extends Component {
                         'normal'
                      )}
                   >
-                     {this.props.item.cantidadItem * this.props.item.cantidad +
-                        ' ' +
-                        this.props.item.unidad}
+                     {convertir(
+                        this.props.item.unidad,
+                        this.props.item.cantidadItem * this.props.item.cantidad
+                     )}
                   </Text>
                </View>
                <Icon

@@ -68,7 +68,16 @@ export class Direcciones extends Component {
       global.localizacionActual = location;
    };
 
-   obtenerUbicacionActual = () => {
+   obtenerUbicacionActual = async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+         Alert.alert('Error al otorgar el permiso');
+         return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      console.log('actual location:', location);
+      global.localizacionActual = location;
       this.props.navigation.navigate('Mapa', {
          origen: 'actual',
          coordenadasActuales: this.localizacionActual,

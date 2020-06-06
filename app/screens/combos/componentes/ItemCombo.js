@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as colores from '../../../constants/Colores';
 import { transformDinero } from '../../../utils/Validaciones';
 import Separador from '../../../components/Separador';
+import { convertir } from '../../../utils/ConvertidorUnidades';
+
 import {
    agregarDisminuirItemCarro,
    eliminarItemCarro,
@@ -69,7 +71,10 @@ export class ItemCombo extends Component {
                         //styles.textoNegrita,
                      ]}
                   >
-                     {this.props.combo.cantidad + ' ' + this.props.combo.unidad}
+                     {convertir(
+                        this.props.combo.unidad,
+                        this.props.combo.cantidad
+                     )}
                   </Text>
                </View>
                <View style={styles.filaFlexEnd}>
