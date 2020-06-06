@@ -36,6 +36,7 @@ export default function DatosFacturacion(props) {
    const [aliasValidacion, setAliasValidacion] = useState('');
    const [documentoSeleccionadoValidacion, setDocumentoSeleccionadoValidacion] = useState('');
    const requerido = 'Campo requerido *';
+   const fonoInvalido = 'Número celular invalido';
 
    const actualizaInfo = () => {
       if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario || !alias || !documentoSeleccionado) {
@@ -141,6 +142,7 @@ export default function DatosFacturacion(props) {
                   label="Número de Documento*"
                   keyboardType="numeric"
                   maxLength={10}
+
                   errorMessage={cedulaValidacion}
                   labelStyle={textEstilo(
                      colores.colorOscuroTexto,
