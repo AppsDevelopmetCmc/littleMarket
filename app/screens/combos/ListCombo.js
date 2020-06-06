@@ -28,7 +28,7 @@ import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
-import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones'
+import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -129,8 +129,10 @@ export class ListCombo extends Component {
 
       let srvNotificaciones = new ServicioNotificaciones();
       console.log('registrando escucha Notificaciones');
-      srvNotificaciones.registarEscuchaNotificacion(global.usuario, this.repintarNumeroNotificaciones);
-
+      srvNotificaciones.registarEscuchaNotificacion(
+         global.usuario,
+         this.repintarNumeroNotificaciones
+      );
    }
 
    repintarNumeroNotificaciones = notificaciones => {
@@ -213,20 +215,21 @@ export class ListCombo extends Component {
 
    abrirListaNotificacion = () => {
       this.props.navigation.navigate('ListaNotificacionScreen');
-      if (this.state.numeroNotificaciones && this.state.numeroNotificaciones > 0) {
+      if (
+         this.state.numeroNotificaciones &&
+         this.state.numeroNotificaciones > 0
+      ) {
          this.encerarNotificaciones();
       }
    };
    encerarNotificaciones = () => {
       let srvNotificaciones = new ServicioNotificaciones();
       console.log('encerando notificaciones');
-      srvNotificaciones.actualizarNotificaciones(
-         {
-            mail: global.usuario,
-            numero: 0
-         })
-
-   }
+      srvNotificaciones.actualizarNotificaciones({
+         mail: global.usuario,
+         numero: 0,
+      });
+   };
 
    repintarDireccion = direcciones => {
       this.setState({
@@ -284,7 +287,12 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        Alert.alert('Abre');
+                        Alert.alert(
+                           'Felicidades',
+                           'Usted tiene : $' +
+                              this.state.valorMonedero.toFixed(2) +
+                              ' para usar en su próxima compra'
+                        );
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -297,21 +305,21 @@ export class ListCombo extends Component {
                               size={30}
                            />
                            {this.state.valorMonedero &&
-                              this.state.valorMonedero > 0 ? (
-                                 <Badge
-                                    //textStyle={{ fontSize: 10 }}
-                                    //3 caracteres
-                                    value={this.state.valorMonedero}
-                                    containerStyle={{
-                                       position: 'absolute',
-                                       top: -4,
-                                       right: -4,
-                                    }}
-                                    status="error"
-                                 />
-                              ) : (
-                                 <View></View>
-                              )}
+                           this.state.valorMonedero > 0 ? (
+                              <Badge
+                                 //textStyle={{ fontSize: 10 }}
+                                 //3 caracteres
+                                 //value={this.state.valorMonedero}
+                                 containerStyle={{
+                                    position: 'absolute',
+                                    top: -4,
+                                    right: -4,
+                                 }}
+                                 status="error"
+                              />
+                           ) : (
+                              <View></View>
+                           )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -331,7 +339,8 @@ export class ListCombo extends Component {
                               name="bell"
                               size={30}
                            />
-                           {this.state.numeroNotificaciones && this.state.numeroNotificaciones > 0 ? (
+                           {this.state.numeroNotificaciones &&
+                           this.state.numeroNotificaciones > 0 ? (
                               <Badge
                                  value={this.state.numeroNotificaciones}
                                  containerStyle={{
@@ -342,8 +351,8 @@ export class ListCombo extends Component {
                                  status="error"
                               />
                            ) : (
-                                 <View></View>
-                              )}
+                              <View></View>
+                           )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -374,8 +383,8 @@ export class ListCombo extends Component {
                                  status="error"
                               />
                            ) : (
-                                 <View></View>
-                              )}
+                              <View></View>
+                           )}
                         </View>
                      </View>
                   </TouchableHighlight>
@@ -430,15 +439,15 @@ export class ListCombo extends Component {
                   </View>
                </View>
             ) : (
-                  <View>
-                     <Text style={{ marginLeft: 20, color: 'gray' }}>
-                        Dirección de Entrega
+               <View>
+                  <Text style={{ marginLeft: 20, color: 'gray' }}>
+                     Dirección de Entrega
                   </Text>
-                     <View style={styles.contenedorDireccione}>
-                        <Text></Text>
-                     </View>
+                  <View style={styles.contenedorDireccione}>
+                     <Text></Text>
                   </View>
-               )}
+               </View>
+            )}
 
             <Modal
                animationType="slide"
@@ -477,7 +486,7 @@ export class ListCombo extends Component {
                cambioVisibleCalifica={this.cambioVisibleCalifica}
             ></PopupCalificaciones>
             <ActionButton
-               buttonColor={colores.colorOscuroPrimarioVerde}
+               buttonColor={'red'}
                renderIcon={() => {
                   return (
                      <Icon

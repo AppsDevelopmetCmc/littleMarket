@@ -151,7 +151,7 @@ export class ServicioCombos {
       global.db
          .collection('items')
          .where('estado', '==', 'V')
-         .orderBy('nombre')
+         .orderBy('posicion')
          .get()
          .then(querySnapShot => {
             let documentos = querySnapShot.docs;
