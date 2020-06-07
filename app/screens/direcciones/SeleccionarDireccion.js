@@ -28,7 +28,7 @@ export class SeleccionarDireccion extends Component {
    }
    componentDidMount = () => {
       this.montado = true;
-      new ServicioDirecciones().registrarEscucha(
+      new ServicioDirecciones().registrarEscuchaDireccion(
          global.usuario,
          this.repintarLista
       );

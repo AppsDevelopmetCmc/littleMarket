@@ -10,6 +10,7 @@ import {
 
 import Separador from '../../../components/Separador';
 import { transformDinero } from '../../../utils/Validaciones';
+import { convertir } from '../../../utils/ConvertidorUnidades';
 
 export class ItemCarro extends Component {
    constructor(props) {
@@ -22,9 +23,25 @@ export class ItemCarro extends Component {
       return (
          <View style={styles.contenedorPrincipal}>
             <View style={styles.tituloContenedor}>
-               <Text style={textEstilo(colores.colorPrimarioTexto, 16, 'bold')}>
-                  {this.props.item.alias}
-               </Text>
+               <View>
+                  <Text
+                     style={textEstilo(colores.colorPrimarioTexto, 16, 'bold')}
+                  >
+                     {this.props.item.nombre}
+                  </Text>
+                  <Text
+                     style={textEstilo(
+                        colores.colorPrimarioTexto,
+                        14,
+                        'normal'
+                     )}
+                  >
+                     {convertir(
+                        this.props.item.unidad,
+                        this.props.item.cantidadItem * this.props.item.cantidad
+                     )}
+                  </Text>
+               </View>
                <Icon
                   name="delete"
                   size={20}
@@ -37,6 +54,7 @@ export class ItemCarro extends Component {
                         },
                         global.usuario
                      );
+                     global.repintarSeleccionProductos();
                   }}
                />
             </View>
@@ -47,50 +65,14 @@ export class ItemCarro extends Component {
                         <Text
                            style={textEstilo(
                               colores.colorPrimarioTexto,
-                              14,
-                              'bold'
-                           )}
-                        >
-                           Cantidad:
-                        </Text>
-                        <Text
-                           style={textEstilo(
-                              colores.colorPrimarioTexto,
-                              14,
-                              'bold'
-                           )}
-                        >
-                           Precio Unitario:
-                        </Text>
-                        <Text
-                           style={textEstilo(
-                              colores.colorPrimarioTexto,
                               16,
                               'bold'
                            )}
                         >
-                           Precio Total:
+                           Precio:
                         </Text>
                      </View>
                      <View style={styles.filaFlexStart}>
-                        <Text
-                           style={textEstilo(
-                              colores.colorPrimarioTexto,
-                              14,
-                              'normal'
-                           )}
-                        >
-                           {this.props.item.cantidad}
-                        </Text>
-                        <Text
-                           style={textEstilo(
-                              colores.colorPrimarioTexto,
-                              14,
-                              'normal'
-                           )}
-                        >
-                           {'$ ' + transformDinero(this.props.item.precio)}
-                        </Text>
                         <Text
                            style={textEstilo(
                               colores.colorPrimarioTexto,
@@ -123,38 +105,7 @@ export class ItemCarro extends Component {
                      onPress={() => {
                         let nuevaCantidad =
                            parseInt(this.props.item.cantidad) - 1;
-                        if (nuevaCantidad < 100) {
-                           //this.setState({ cantidad: nuevaCantidad + '' });
-                           agregarDisminuirItemCarro(
-                              {
-                                 id: this.props.item.id,
-                                 alias: this.props.item.alias,
-                                 precio: this.props.item.precio,
-                              },
-                              global.usuario,
-                              1
-                           );
-                        }
-                     }}
-                     icon={<Icon name="plus-circle" size={15} color="white" />}
-                  />
-                  <Separador alto={5}></Separador>
-                  <Text
-                     style={[
-                        styles.caja,
-                        textEstilo(colores.colorPrimarioTexto, 15, 'bold'),
-                     ]}
-                  >
-                     {this.props.item.cantidad}
-                  </Text>
-                  <Separador alto={5}></Separador>
-                  <Button
-                     buttonStyle={styles.plusButton}
-                     onPress={() => {
-                        let nuevaCantidad =
-                           parseInt(this.props.item.cantidad) - 1;
                         if (nuevaCantidad > 0) {
-                           //this.setState({ cantidad: nuevaCantidad + '' });
                            agregarDisminuirItemCarro(
                               {
                                  id: this.props.item.id,
@@ -164,16 +115,46 @@ export class ItemCarro extends Component {
                               global.usuario,
                               -1
                            );
-                        } else if (nuevaCantidad == 0) {
+                        } /*else if (nuevaCantidad == 0) {
                            eliminarItemCarro(
                               {
                                  id: this.props.item.id,
                               },
                               global.usuario
                            );
-                        }
+                        }*/
                      }}
                      icon={<Icon name="minus-circle" size={15} color="white" />}
+                  />
+                  <Separador alto={5}></Separador>
+                  <Text
+                     style={[
+                        styles.caja,
+                        textEstilo(colores.colorPrimarioTexto, 15, 'bold'),
+                     ]}
+                  >
+                     {this.props.item.cantidadItem * this.props.item.cantidad}
+                  </Text>
+                  <Separador alto={5}></Separador>
+
+                  <Button
+                     buttonStyle={styles.plusButton}
+                     onPress={() => {
+                        let nuevaCantidad =
+                           parseInt(this.props.item.cantidad) - 1;
+                        if (nuevaCantidad < 100) {
+                           agregarDisminuirItemCarro(
+                              {
+                                 id: this.props.item.id,
+                                 nombre: this.props.item.alias,
+                                 precio: this.props.item.precio,
+                              },
+                              global.usuario,
+                              1
+                           );
+                        }
+                     }}
+                     icon={<Icon name="plus-circle" size={15} color="white" />}
                   />
                </View>
             </View>
@@ -199,6 +180,7 @@ const styles = StyleSheet.create({
    filaFlexEnd: {
       flex: 1,
       alignItems: 'flex-start',
+      justifyContent: 'center',
    },
    filaFlexStart: {
       flex: 1,
@@ -206,9 +188,10 @@ const styles = StyleSheet.create({
       marginLeft: 10,
    },
    contenido: {
-      paddingVertical: 10,
+      //paddingVertical: 10,
       flex: 1,
       paddingHorizontal: 20,
+      justifyContent: 'center',
    },
    checked: {
       flex: 1,
@@ -217,10 +200,11 @@ const styles = StyleSheet.create({
    },
 
    boton: {
-      paddingVertical: 15,
+      paddingVertical: 5,
       marginRight: 20,
       justifyContent: 'center',
       alignItems: 'center',
+      flexDirection: 'row',
    },
    caja: {
       width: 35,
@@ -238,7 +222,8 @@ const styles = StyleSheet.create({
    },
    contenidoDetalle: {
       flexDirection: 'row',
-      paddingTop: 20,
+      //paddingVertical: 15,
+      //justifyContent: 'center',
    },
    contenedorPrincipal: {
       flex: 1,
