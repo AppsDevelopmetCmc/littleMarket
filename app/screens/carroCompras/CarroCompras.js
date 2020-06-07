@@ -41,7 +41,6 @@ export class CarroCompras extends Component {
    }
 
    repintarLista = () => {
-      console.log('carro compras repinta lista');
       if (this.montado) {
          let subtotal = 0;
          let delivery = 1.5;

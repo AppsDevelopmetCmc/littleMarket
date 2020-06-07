@@ -54,7 +54,6 @@ export default function IniciaSesionForm(props) {
                   .auth()
                   .signInWithEmailAndPassword(email, password)
                   .then(() => {
-                     console.log('Inicio Sesion con Firebase');
                      setisVisibleLoading(false);
                   })
                   .catch(() => {

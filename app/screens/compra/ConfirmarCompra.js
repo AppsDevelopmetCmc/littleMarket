@@ -378,7 +378,8 @@ export class ConfirmarCompra extends Component {
                                        horaCreacion: obtenerHoraActual(fecha),
                                        formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
                                        asociado: 'asociado@gmail.com',
-                                       nombreAsociado: 'Juan perez'
+                                       nombreAsociado: 'Juan perez',
+                                       telefonoAsociado: '1245635'
                                     },
                                     items,
                                     this.cerrarPantalla

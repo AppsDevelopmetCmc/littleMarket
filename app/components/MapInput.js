@@ -50,7 +50,6 @@ export default class MapInput extends Component {
             renderDescription={row => {row.description}}
             getDefaultValue={() => {
                 this.setState({mostrarLista: false}); 
-                console.log('default '+direccion)
                 return direccion;
             }} 
             onPress={(data, details = null) =>{

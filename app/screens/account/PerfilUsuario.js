@@ -20,7 +20,6 @@ export default function PerfilUsuario(props) {
    const toastRef = useRef();
 
    const { navigation } = props;
-   console.log('Perfil Prosp:', props);
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
@@ -38,8 +37,6 @@ export default function PerfilUsuario(props) {
 
    const requerido = 'Campo requerido *';
    const fonoInvalido = 'Número celular invalido';
-
-   console.log('actualizaUsuario', actualizaUsuario);
 
    useEffect(() => {
       setnombreValidacion('');

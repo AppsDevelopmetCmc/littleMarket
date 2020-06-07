@@ -6,7 +6,7 @@ import {
    Button,
    TouchableHighlightBase,
 } from 'react-native';
-import { Text } from 'react-native-elements';
+import { Text, Icon } from 'react-native-elements';
 import {
    ServicioPedidos,
    cancelarPedido,
@@ -16,13 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
-// Importacion de Cabecera Personalizada
-import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 import {
    agregarDisminuirItemCarro,
    ServicioCarroCompras,
 } from '../../servicios/ServicioCarroCompras';
 import Separador from '../../components/Separador';
+import { ESTADOS } from '../../constants/Estados';
+import { ArregloUtil } from '../../utils/utils';
+import { callNumber } from '../../utils/Contacto';
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -33,10 +34,23 @@ export class DetallePedido extends Component {
          cantidad: '0',
          listDetallePedido: detallePedido,
          estado: this.pedido.estado,
+         indice: null,
       };
    }
 
    componentDidMount() {
+      const indiceEstado = this.buscarIndice(
+         ESTADOS.PEDIDOS,
+         this.state.estado
+      );
+      let estadoFinal =
+         indiceEstado < 0
+            ? this.state.estado
+            : ESTADOS.PEDIDOS[indiceEstado].descripcion;
+      this.setState({
+         estado: estadoFinal,
+      });
+
       let srvDetallePedido = new ServicioPedidos();
       let detallePedido = [];
       srvDetallePedido.recuperarDetallePedido(
@@ -44,6 +58,12 @@ export class DetallePedido extends Component {
          this.repintarLista,
          this.pedido
       );
+   }
+
+   buscarIndice(array, id) {
+      let arregloUtil = new ArregloUtil(array);
+      let indice = arregloUtil.buscar({ id: id });
+      return indice;
    }
 
    repintarLista = detallePedido => {
@@ -100,7 +120,9 @@ export class DetallePedido extends Component {
    };
 
    render() {
-      //let combo = this.props.route.params.pedido;
+      this.pedido = this.state.indice
+         ? global.pedidos[this.state.indice]
+         : this.pedido;
       const { navigation } = this.props;
       return (
          <SafeAreaView style={styles.container}>
@@ -142,37 +164,15 @@ export class DetallePedido extends Component {
                               'bold'
                            )}
                         >
-                           Asociado:
-                        </Text>
-                        <Separador alto={10}></Separador>
-                        <Text
-                           style={textEstilo(
-                              colores.colorOscuroTexto,
-                              14,
-                              'normal'
-                           )}
-                        >
-                           {this.pedido.nombreAsociado}
-                        </Text>
-                     </View>
-
-                     <View style={styles.textoPares}>
-                        <Text
-                           style={textEstilo(
-                              colores.colorOscuroTexto,
-                              14,
-                              'bold'
-                           )}
-                        >
                            Dirección:
                         </Text>
                         <Separador alto={10}></Separador>
                         <Text
                            style={[
                               textEstilo(
-                              colores.colorOscuroTexto,
-                              14,
-                              'normal'
+                                 colores.colorOscuroTexto,
+                                 14,
+                                 'normal'
                               ),
                               { flex: 2 },
                            ]}
@@ -244,6 +244,64 @@ export class DetallePedido extends Component {
                            {this.state.estado}
                         </Text>
                      </View>
+                     {(this.pedido.estado === 'AA' ||
+                        this.pedido.estado === 'IE' ||
+                        this.pedido.estado === 'PE') && (
+                        <View>
+                           <View style={styles.textoPares}>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'bold'
+                                 )}
+                              >
+                                 Asociado:
+                              </Text>
+                              <Separador alto={10}></Separador>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'normal'
+                                 )}
+                              >
+                                 {this.pedido.nombreAsociado}
+                              </Text>
+                           </View>
+
+                           <View style={styles.textoPares}>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'bold'
+                                 )}
+                              >
+                                 Teléfono Asociado:
+                              </Text>
+                              <Separador alto={10}></Separador>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'normal'
+                                 )}
+                              >
+                                 {this.pedido.telefonoAsociado}
+                              </Text>
+                              <Icon
+                                 name="phone-outgoing"
+                                 type="material-community"
+                                 color={colores.colorNegro}
+                                 size={28}
+                                 onPress={() => {
+                                    callNumber(this.pedido.telefonoAsociado);
+                                 }}
+                              />
+                           </View>
+                        </View>
+                     )}
                   </View>
                   <FlatList
                      data={this.state.listDetallePedido}

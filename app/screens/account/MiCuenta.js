@@ -7,7 +7,6 @@ import IniciarSesion from '../account/IniciarSesion';
 import Mapa from '../map/Mapa';
 
 export default function MiCuenta() {
-   console.log('llego al balanceador');
    const [login, setLogin] = useState(null);
 
    useEffect(() => {

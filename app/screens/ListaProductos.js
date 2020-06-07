@@ -21,7 +21,6 @@ export class ListaProductos extends Component {
                title="Cerrar Sesión"
                onPress={() => {
                   firebase.auth().signOut();
-                  console.log('Se cerro sesion');
                }}
             ></Button>
          </View>
