@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { validarTelefono, validarCedula } from '../../utils/utils.js'
 import RNPickerSelect from 'react-native-picker-select';
 
 // Importación de los colores
@@ -19,7 +20,7 @@ export default function DatosFacturacion(props) {
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
-   let datos = [{ label: 'Cédula', value: 'cedula' }, { label: 'RUC', value: 'RUC' }]
+   let datos = [{ label: 'Cédula', value: 'Cédula' }, { label: 'Ruc', value: 'Ruc' }]
    const [documentoSeleccionado, setdocumentoSeleccionado] = useState('');
    const [correoUsuario, setcorreoUsuario] = useState(global.appUsuario.id);
    const [cedulaUsuario, setcedulaUsuario] = useState(global.appUsuario.cedula);
@@ -36,7 +37,8 @@ export default function DatosFacturacion(props) {
    const [aliasValidacion, setAliasValidacion] = useState('');
    const [documentoSeleccionadoValidacion, setDocumentoSeleccionadoValidacion] = useState('');
    const requerido = 'Campo requerido *';
-   const fonoInvalido = 'Número celular invalido';
+   const fonoInvalido = 'Número  incorrecto';
+
 
    const actualizaInfo = () => {
       if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario || !alias || !documentoSeleccionado) {
@@ -69,23 +71,36 @@ export default function DatosFacturacion(props) {
          }
 
       } else {
-         global.db
-            .collection('clientes')
-            .doc(correoUsuario)
-            .collection('factura')
-            .add({
-               tipoDocumento: documentoSeleccionado,
-               numDocumento: cedulaUsuario,
-               alias: alias,
-               nombreCompleto: nombreUsuario,
-               correo: correoUsuario,
-               telefono: telefonoUsuario,
-            })
-            .then(regresoPagina)
-            .catch(error => {
-               console.log(error);
-            });
-         props.route.params.refrescar();
+         let validaTele = validarTelefono(telefonoUsuario);
+         let validaDocumento = validarCedula(cedulaUsuario, documentoSeleccionado);
+         if (validaTele == "S") {
+            if (validaDocumento == "S") {
+               global.db
+                  .collection('clientes')
+                  .doc(correoUsuario)
+                  .collection('factura')
+                  .add({
+                     tipoDocumento: documentoSeleccionado,
+                     numDocumento: cedulaUsuario,
+                     alias: alias,
+                     nombreCompleto: nombreUsuario,
+                     correo: correoUsuario,
+                     telefono: telefonoUsuario,
+                  })
+                  .then(regresoPagina)
+                  .catch(error => {
+                     console.log(error);
+                  });
+               props.route.params.refrescar();
+               setCedulaValidacion('');
+               setTelefonoValidacion('');
+            } else {
+               setCedulaValidacion(fonoInvalido);
+            }
+         } else {
+            setTelefonoValidacion(fonoInvalido);
+
+         }
       }
    };
    const regresoPagina = () => {
@@ -125,32 +140,70 @@ export default function DatosFacturacion(props) {
                      value: null,
                   }}
                   onValueChange={value => {
-                     setdocumentoSeleccionado(value)
+                     setdocumentoSeleccionado(value);
+
 
                   }}
                />
 
 
                <Separador alto={15}></Separador>
+               {documentoSeleccionado == "Ruc" ? (
+                  <Input
+                     // TO DO : validar que sean solo numeros
+                     placeholder="Ingrese número de documento"
+                     containerStyle={styles.estiloContenedor1}
+                     inputContainerStyle={styles.estiloInputContenedor}
+                     inputStyle={styles.estiloInput}
+                     label="Número de Documento*"
+                     keyboardType="numeric"
+                     maxLength={13}
 
-               <Input
-                  // TO DO : validar que sean solo numeros
-                  placeholder="Ingrese número de documento"
-                  containerStyle={styles.estiloContenedor1}
-                  inputContainerStyle={styles.estiloInputContenedor}
-                  inputStyle={styles.estiloInput}
-                  label="Número de Documento*"
-                  keyboardType="numeric"
-                  maxLength={10}
+                     errorMessage={cedulaValidacion}
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        15,
+                        'normal'
+                     )}
+                     onChange={e => {
+                        const ra = /^[0-9]+$/;
+                        if (ra.test(e.nativeEvent.text)) {
+                           setcedulaUsuario(e.nativeEvent.text)
+                           setCedulaValidacion('')
+                        } else {
+                           setCedulaValidacion(fonoInvalido)
+                        }
+                     }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  ></Input>) : (<Input
+                     // TO DO : validar que sean solo numeros
+                     placeholder="Ingrese número de documento"
+                     containerStyle={styles.estiloContenedor1}
+                     inputContainerStyle={styles.estiloInputContenedor}
+                     inputStyle={styles.estiloInput}
+                     label="Número de Documento*"
+                     keyboardType="numeric"
+                     maxLength={10}
 
-                  errorMessage={cedulaValidacion}
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     15,
-                     'normal'
-                  )}
-                  onChange={e => setcedulaUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-               ></Input>
+                     errorMessage={cedulaValidacion}
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        15,
+                        'normal'
+                     )}
+                     onChange={e => {
+                        const ra = /^[0-9]+$/;
+                        if (ra.test(e.nativeEvent.text)) {
+                           setcedulaUsuario(e.nativeEvent.text)
+                           setCedulaValidacion('')
+                        } else {
+                           setCedulaValidacion(fonoInvalido)
+                        }
+                     }}// Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  ></Input>
+
+                  )
+               }
+
                <Separador alto={15}></Separador>
                <Input
                   placeholder="Alias"
@@ -218,7 +271,16 @@ export default function DatosFacturacion(props) {
                      15,
                      'normal'
                   )}
-                  onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  onChange={e => {
+                     const re = /^[0-9]+$/;
+                     if (re.test(e.nativeEvent.text)) {
+                        settelefonoUsuario(e.nativeEvent.text)
+                        setTelefonoValidacion('')
+                     } else {
+                        setTelefonoValidacion(fonoInvalido)
+                     }
+
+                  }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                >
                   {telefonoUsuario}
                </Input>
