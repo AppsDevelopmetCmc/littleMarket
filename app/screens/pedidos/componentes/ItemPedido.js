@@ -14,13 +14,14 @@ export class ItemPedido extends Component {
          estado: '',
       };
    }
-   componentDidMount() {
+
+   componentWillReceiveProps(next_props) {
       let arregloUtil = new ArregloUtil(ESTADOS.PEDIDOS);
-      let indice = arregloUtil.buscar({ id: this.props.pedido.estado });
+      let indice = arregloUtil.buscar({ id: next_props.pedido.estado });
       let estadoFinal =
          indice < 0 ? this.state.estado : ESTADOS.PEDIDOS[indice].descripcion;
       this.setState({
-         estado: estadoFinal,
+         estado: estadoFinal
       });
    }
 
@@ -35,7 +36,7 @@ export class ItemPedido extends Component {
          >
             <View style={styles.fila}>
                <View style={{ flexDirection: 'row', flex: 1 }}>
-                  <View  style={{ flex: 5 }}>
+                  <View style={{ flex: 5 }}>
                      <Text style={styles.textoNegrita}>
                         {'Orden:' + this.props.pedido.orden}
                      </Text>
@@ -82,8 +83,7 @@ export class ItemPedido extends Component {
                            {this.state.estado}
                         </Text>
                      </View>
-
-                     <View style={(styles.contenedorPares, { flex: 1 })}>
+                     <View style={styles.contenedorPares}>
                         <Text style={styles.texto}>Total:</Text>
                         <Text
                            style={textEstilo(

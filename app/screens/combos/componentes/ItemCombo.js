@@ -43,7 +43,6 @@ export class ItemCombo extends Component {
    }
    render() {
       let combo = this.props.combo;
-      console.log('render item combo');
       return (
          <View
             style={this.state.checked ? styles.filaSeleccionada : styles.fila}

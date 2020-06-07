@@ -16,9 +16,7 @@ export class ItemCarro extends Component {
    constructor(props) {
       super(props);
    }
-   /*componentDidMount = () => {
-      console.log('mounted');
-   };*/
+   
    render() {
       return (
          <View style={styles.contenedorPrincipal}>

@@ -13,7 +13,6 @@ export class CargarImagen extends Component {
       };
    }
    componentDidMount() {
-      //  console.log('props', this.props.route.params.imagen);
       if (this.props.route.params && this.props.route.params.imagen) {
          this.setState({ imagen: this.props.route.params.imagen });
       }
@@ -83,7 +82,6 @@ export class CargarImagen extends Component {
                .ref()
                .child('/imagenes/' + nombreArchivo)
                .put(blob);
-            //  console.log('snapshot', snapshot);
             this.obtenerUrlDescarga(nombreArchivo);
          } catch (error) {
             console.log('error', error);

@@ -31,18 +31,6 @@ export function PopupCalificaciones(props) {
    const [quejaProducto, setQuejaProducto] = useState(-1);
    const [detalleProducto, setDetalleProducto] = useState('');
 
-   /* console.log('Pedido', pedido);
-
-   console.log('------------------------------------------');
-   console.log('calificación Pedido', puntuacionPedido);
-   console.log('queja codigo', quejaPedido);
-   console.log('detalle', detallePedido);
-   console.log('------------------------------------------');
-   console.log('calificación Producto', puntuacionProducto);
-   console.log('queja codigo producto', quejaProducto);
-   console.log('detalle producto', detalleProducto);
-   console.log('listaPedido', radio_propsPedio);
-   console.log('listaProducto', radio_propsProducto);*/
 
    // se utiliza el useEffect
    useEffect(() => {
@@ -96,7 +84,6 @@ export function PopupCalificaciones(props) {
    };
 
    const infoIncial = async () => {
-      console.log('ingreso a traer la info incial');
 
       await global.db
          .collection('parametros')
@@ -139,7 +126,6 @@ export function PopupCalificaciones(props) {
                   estado: 'PC',
                })
                .then(() => {
-                  console.log('guardo correctamente');
                   cambioVisibleCalifica(!isVisible);
                   setIsLoading(false);
                })
