@@ -23,8 +23,8 @@ import RadioForm, {
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-import { ServicioYapas } from '../../servicios/ServicioYapas'
-import { convertir } from '../../utils/ConvertidorUnidades'
+import { ServicioYapas } from '../../servicios/ServicioYapas';
+import { convertir } from '../../utils/ConvertidorUnidades';
 export class SeleccionarYapa extends Component {
    constructor(props) {
       super(props);
@@ -51,22 +51,31 @@ export class SeleccionarYapa extends Component {
       if (global.direcciones) this.repintarLista();
       //Lista de data para el radio
       this.consultaItemRadioYapa();
-
-
    };
-
 
    consultaItemRadioYapa = () => {
       let listaItemYapa = [];
       //valor quemado para el item Alinambi
       let itemAlinambi = {};
       itemAlinambi.label = 'Donar su Yapa a la Fundación Aliñambi';
-      itemAlinambi.value = 'D'
+      itemAlinambi.value = 'D';
       //continuo con el for
       for (let i = 0; i < this.props.listaYapa.length; i++) {
          let itemYapa = {};
-         itemYapa.label = this.props.listaYapa[i].nombre + " - " + convertir(this.props.listaYapa[i].unidad, this.props.listaYapa[i].cantidad);
-         itemYapa.value = this.props.listaYapa[i].nombre + " - " + convertir(this.props.listaYapa[i].unidad, this.props.listaYapa[i].cantidad);
+         itemYapa.label =
+            this.props.listaYapa[i].nombre +
+            ' - ' +
+            convertir(
+               this.props.listaYapa[i].unidad,
+               this.props.listaYapa[i].cantidad
+            );
+         itemYapa.value =
+            this.props.listaYapa[i].nombre +
+            ' - ' +
+            convertir(
+               this.props.listaYapa[i].unidad,
+               this.props.listaYapa[i].cantidad
+            );
 
          console.log('data itemYapa', itemYapa);
          listaItemYapa.push(itemYapa);
@@ -74,8 +83,8 @@ export class SeleccionarYapa extends Component {
       listaItemYapa.push(itemAlinambi);
       this.radio_props = listaItemYapa;
       console.log('listaItemYapa', listaItemYapa);
-
-   }
+      this.setState({ yapaSeleccionada: this.radio_props[0].value });
+   };
    componentWillUnmount = () => {
       this.montado = false;
    };
@@ -131,7 +140,7 @@ export class SeleccionarYapa extends Component {
                         buttonColor={colores.colorPrimarioTomate}
                         selectedButtonColor={colores.colorPrimarioTomate}
                         radio_props={this.radio_props}
-                        initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
+                        initial={0}
                         formHorizontal={false}
                         buttonSize={10}
                         buttonOuterSize={20}
