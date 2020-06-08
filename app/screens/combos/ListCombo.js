@@ -436,7 +436,7 @@ export class ListCombo extends Component {
                         <Text
                            style={textEstilo(
                               colores.colorOscuroTexto,
-                              11,
+                              14,
                               'normal'
                            )}
                         >

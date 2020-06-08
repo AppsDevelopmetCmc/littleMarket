@@ -389,9 +389,9 @@ export class Mapa extends Component {
             ', ' +
             direccionName.sublocality +
             ', ' +
-            direccionName.locality +
+            direccionName.locality; /*+
             '-' +
-            direccionName.country;
+            direccionName.country;*/
          let res = str.replace(/, ,/gi, ',');
          res = str.replace(/ ,/gi, '');
          nombreDireccion = res.replace(/undefined,/gi, '');
