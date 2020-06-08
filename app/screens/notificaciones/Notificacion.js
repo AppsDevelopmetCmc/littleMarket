@@ -38,7 +38,7 @@ export class Notificacion extends Component {
                   <Text
                      style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}
                   >
-                     {global.usuario}
+                     {'Hola' + global.usuario}
                   </Text>
                </View>
                <View style={styles.contenedorBoton}>

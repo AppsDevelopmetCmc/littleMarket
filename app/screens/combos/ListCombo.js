@@ -266,6 +266,31 @@ export class ListCombo extends Component {
       this.setState({ mostrarModalDirecciones: bandera });
    };
 
+   flatListItemSeparator = () => {
+      return (
+         <View
+            style={{
+               width: '100%',
+               marginVertical: 5,
+               alignItems: 'center',
+               justifyContent: 'center',
+               alignContent: 'center',
+               paddingLeft: 20,
+            }}
+         >
+            <View
+               style={{
+                  height: 1,
+                  width: '100%',
+                  backgroundColor: colores.colorClaroPrimario,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+               }}
+            ></View>
+         </View>
+      );
+   };
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--------invoca a render');
@@ -476,6 +501,7 @@ export class ListCombo extends Component {
                      keyExtractor={item => {
                         return item.id;
                      }}
+                     ItemSeparatorComponent={this.flatListItemSeparator}
                   />
                </View>
             </View>
@@ -485,7 +511,7 @@ export class ListCombo extends Component {
                pedido={this.state.pedidoCalifica}
                cambioVisibleCalifica={this.cambioVisibleCalifica}
             ></PopupCalificaciones>
-            <ActionButton
+            {/* <ActionButton
                buttonColor={'red'}
                renderIcon={() => {
                   return (
@@ -500,7 +526,7 @@ export class ListCombo extends Component {
                onPress={() => {
                   this.abrirCarrito();
                }}
-            ></ActionButton>
+            ></ActionButton> */}
          </SafeAreaView>
       );
    }
@@ -612,7 +638,6 @@ const styles = StyleSheet.create({
       flex: 3,
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
-      paddingLeft: 10,
       marginTop: 15,
       paddingTop: 20,
    },
