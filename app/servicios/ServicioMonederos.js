@@ -53,4 +53,19 @@ export class ServicioMonederos {
 
       return escucha;
    };
+
+   actualizarMonedero = (idMail, datoValor) => {
+      global.db
+         .collection('monederos')
+         .doc(idMail)
+         .update({
+            valor: datoValor,
+         })
+         .then(function () {
+            console.log("monedero actualizado",datoValor)
+         })
+         .catch(function (error) {
+            Alert.alert('error' + error);
+         });
+   };
 }
