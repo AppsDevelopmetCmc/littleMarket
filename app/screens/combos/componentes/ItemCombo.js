@@ -47,18 +47,19 @@ export class ItemCombo extends Component {
          <View
             style={this.state.checked ? styles.filaSeleccionada : styles.fila}
          >
+            <View style={styles.colorLinea}></View>
             <View style={styles.imagenes}>
                <Avatar
                   source={{ uri: this.props.combo.imagen }}
                   rounded
-                  size={50}
+                  size={40}
                ></Avatar>
             </View>
             <View style={styles.informacion}>
                <View style={styles.descripcion}>
                   <Text
                      style={[
-                        textEstilo(colores.colorOscuroTexto, 18, 'bold'),
+                        textEstilo(colores.colorOscuroTexto, 16, 'bold'),
                         //styles.textoNegrita,
                      ]}
                   >
@@ -66,7 +67,7 @@ export class ItemCombo extends Component {
                   </Text>
                   <Text
                      style={[
-                        textEstilo(colores.colorOscuroTexto, 16),
+                        textEstilo(colores.colorOscuroTexto, 14),
                         //styles.textoNegrita,
                      ]}
                   >
@@ -88,7 +89,7 @@ export class ItemCombo extends Component {
                            </Text> */}
 
                   <Text
-                     style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
+                     style={textEstilo(colores.colorOscuroTexto, 16, 'bold')}
                   >
                      {'$ ' + transformDinero(this.props.combo.precio)}
                   </Text>
@@ -97,6 +98,7 @@ export class ItemCombo extends Component {
             <View style={styles.checked}>
                <CheckBox
                   checked={this.state.checked}
+                  containerStyle={styles.contenedorCheckItem}
                   onPress={() => {
                      if (!this.state.checked) {
                         agregarDisminuirItemCarro(
@@ -121,15 +123,17 @@ export class ItemCombo extends Component {
 
                      this.setState({ checked: !this.state.checked });
                   }}
-                  checkedColor={colores.colorOscuroPrimario}
-                  size={30}
-                  uncheckedColor={colores.colorBlanco}
+                  checkedColor={colores.colorOscuroPrimarioTomate}
+                  size={22}
+                  uncheckedColor={colores.colorOscuroPrimario}
                ></CheckBox>
             </View>
          </View>
       );
    }
 }
+
+const borderLinea = 15;
 
 const textEstilo = (color, tamaño, tipo) => {
    return {
@@ -142,64 +146,47 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      alignItems: 'stretch',
-      //justifyContent: 'center',
-      fontWeight: 'bold',
-      //backgroundColor: 'red',
    },
 
    fila: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: colores.colorPrimarioTomate,
-      //borderBottomColor: 'gray',
-      //borderBottomWidth: 1,
-      marginTop: 10,
-      marginLeft: 20,
-      borderBottomLeftRadius: 20,
-      borderTopLeftRadius: 20,
+      backgroundColor: colores.colorBlanco,
+      marginTop: 2,
+      marginLeft: 15,
+      borderBottomLeftRadius: 6,
+      borderTopLeftRadius: 6,
    },
    filaSeleccionada: {
       flex: 1,
       flexDirection: 'row',
-      backgroundColor: colores.colorClaroPrimarioAmarillo,
-      //borderBottomColor: 'gray',
-      //borderBottomWidth: 1,
-      marginTop: 10,
-      marginLeft: 20,
-      borderBottomLeftRadius: 20,
-      borderTopLeftRadius: 20,
-      borderWidth: 3,
-      borderColor: 'yellow',
+      backgroundColor: colores.colorPrimarioAmarilloRgba,
+      marginTop: 2,
+      marginLeft: 15,
+      borderBottomLeftRadius: 6,
+      borderTopLeftRadius: 6,
    },
    imagenes: {
       flex: 3,
-      // backgroundColor: 'green',
       alignItems: 'center',
-      //padding: 5,
+      justifyContent: 'center',
       paddingVertical: 5,
    },
    informacion: {
       flex: 10,
-      alignItems: 'center',
-
-      //backgroundColor: 'pink',
       flexDirection: 'row',
    },
    descripcion: {
       flex: 5,
-      justifyContent: 'center',
-      alignItems: 'center',
-      // backgroundColor: 'yellow',
+      marginLeft: 15,
       flexDirection: 'column',
+      justifyContent: 'center',
    },
 
    filaFlexEnd: {
       flex: 2,
       flexDirection: 'column',
       justifyContent: 'center',
-      //backgroundColor: 'blue',
-      //paddingBottom: 20,
    },
    contenido: {
       flex: 5,
@@ -229,5 +216,11 @@ const styles = StyleSheet.create({
       marginTop: 0,
       borderBottomColor: 'gray',
       borderBottomWidth: 1,
+   },
+   colorLinea: {
+      backgroundColor: colores.colorPrimarioTomate,
+      width: 5,
+      borderTopStartRadius: borderLinea,
+      borderBottomStartRadius: borderLinea,
    },
 });

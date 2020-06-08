@@ -125,25 +125,22 @@ export class CarroCompras extends Component {
 
                   {items.length > 0 ? (
                      <Button
-                        title="Confirmar"
+                        title="Vaciar"
                         onPress={() => {
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
+                           this.eliminarCarro(global.usuario);
                         }}
                         titleStyle={this.textEstilo(
-                           colores.colorBlanco,
-                           13,
-                           'bold'
+                           colores.colorBlancoTexto,
+                           12,
+                           'normal'
                         )}
-                        buttonStyle={styles.estiloBoton}
-                        iconRight
+                        buttonStyle={styles.estiloBotonVaciar}
                         icon={
                            <Icon
-                              name="arrow-right-bold-circle"
-                              size={30}
+                              name="cart-remove"
+                              size={20}
                               color="white"
-                              style={styles.iconoDerecha}
+                              style={styles.iconoIzquierda}
                            />
                         }
                      />
@@ -216,22 +213,25 @@ export class CarroCompras extends Component {
                      }}
                   >
                      <Button
-                        title="Vaciar"
+                        title="Confirmar"
                         onPress={() => {
-                           this.eliminarCarro(global.usuario);
+                           this.props.navigation.navigate(
+                              'ConfirmarCompraScreen'
+                           );
                         }}
                         titleStyle={this.textEstilo(
-                           colores.colorBlancoTexto,
-                           12,
-                           'normal'
+                           colores.colorBlanco,
+                           13,
+                           'bold'
                         )}
-                        buttonStyle={styles.estiloBotonVaciar}
+                        buttonStyle={styles.estiloBoton}
+                        iconRight
                         icon={
                            <Icon
-                              name="cart-remove"
-                              size={20}
+                              name="arrow-right-bold-circle"
+                              size={30}
                               color="white"
-                              style={styles.iconoIzquierda}
+                              style={styles.iconoDerecha}
                            />
                         }
                      />
@@ -300,16 +300,16 @@ const styles = StyleSheet.create({
    },
    estiloBotonS: {
       backgroundColor: colores.colorOscuroPrimarioVerde,
-      width: 140,
+      width: '90%',
       height: 40,
-      borderRadius: 100,
+      borderRadius: 25,
       paddingHorizontal: 15,
    },
    estiloBotonVaciar: {
       backgroundColor: colores.colorOscuroPrimarioVerde,
       width: 100,
       height: 40,
-      borderRadius: 10,
+      borderRadius: 25,
       paddingHorizontal: 15,
    },
    iconoDerecha: { paddingLeft: 5 },

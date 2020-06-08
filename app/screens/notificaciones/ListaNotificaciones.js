@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, FlatList, Alert, StyleSheet } from 'react-native';
 import * as colores from '../../constants/Colores';
-import {ItemNotificacionGeneral} from './componentes/ItemNotificacionGeneral'
-import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones'
-
+import { ItemNotificacionGeneral } from './componentes/ItemNotificacionGeneral';
+import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
 
 export class ListaNotificaciones extends Component {
    constructor(props) {
@@ -11,46 +10,80 @@ export class ListaNotificaciones extends Component {
       let notificaciones = [];
       this.state = {
          listaNotificaciones: notificaciones,
+         listaCargada: false,
       };
    }
    componentDidMount() {
       let srvNotificaciones = new ServicioNotificaciones();
       let notificaciones = [];
-      console.log('registrando Notificaciones')
-      srvNotificaciones.registrarEscuchaTodas(global.usuario, this.repintarNotificaciones)
+      console.log('registrando Notificaciones');
+      srvNotificaciones.registrarEscuchaTodas(
+         global.usuario,
+         this.repintarNotificaciones
+      );
    }
 
    repintarNotificaciones = notificaciones => {
       console.log('------Notificaciones', notificaciones);
+      console.log('Numero de notificaciones:', notificaciones.length);
+
+      let valNumNotif = false;
+      if (notificaciones.length !== 0) {
+         valNumNotif = true;
+      }
       this.setState({
          listaNotificaciones: notificaciones,
+         listaCargada: valNumNotif,
       });
    };
    render() {
       return (
          <View style={styles.contenedorPagina}>
             <View style={styles.cabecera}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'normal')}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
                   Notificaciones
                </Text>
             </View>
-            <View style={styles.pie}>
-               <FlatList
-                  data={this.state.listaNotificaciones}
-                  renderItem={objeto => {
-                     return (
-                        <ItemNotificacionGeneral
-                           notificacion={objeto.item}
-                        />
-                     );
-                  }}
-                  keyExtractor={objeto => {
-                     return objeto.id;
-                  }}
-                  ItemSeparatorComponent={flatListItemSeparator}
-               />
-             
-            </View>
+            {this.state.listaCargada ? (
+               <View style={styles.pie}>
+                  <FlatList
+                     data={this.state.listaNotificaciones}
+                     renderItem={objeto => {
+                        return (
+                           <ItemNotificacionGeneral
+                              notificacion={objeto.item}
+                           />
+                        );
+                     }}
+                     keyExtractor={objeto => {
+                        return objeto.id;
+                     }}
+                  />
+               </View>
+            ) : (
+               <View style={styles.pie}>
+                  <View style={styles.contenedorTextoInfo}>
+                     <Text
+                        style={[
+                           textEstilo(colores.colorOscuroTexto, 16, 'bold'),
+                           styles.textoAlineacion,
+                        ]}
+                     >
+                        Al momento no tiene notificaciones
+                     </Text>
+                     <Text
+                        style={[
+                           textEstilo(colores.colorOscuroTexto, 13, 'normal'),
+                           styles.textoAlineacion,
+                        ]}
+                     >
+                        Aquí encontrar sus notificaciones sobre promociones,
+                        estado de su compra, futuras actualizaciones de nuestro
+                        aplicativo
+                     </Text>
+                  </View>
+               </View>
+            )}
          </View>
       );
    }
@@ -99,15 +132,15 @@ const styles = StyleSheet.create({
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
-      paddingVertical: 20,
    },
    pie: {
       flex: 4,
       backgroundColor: colores.colorBlanco,
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
-      paddingHorizontal: 40,
+      paddingHorizontal: 30,
       marginTop: 30,
+      paddingTop: 30,
    },
    estiloContenedor1: {
       width: '100%',
@@ -136,4 +169,11 @@ const styles = StyleSheet.create({
       alignContent: 'center',
       marginBottom: 60,
    },
+   contenedorTextoInfo: {
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignItems: 'center',
+   },
+   textoAlineacion: { textAlign: 'center' },
 });
