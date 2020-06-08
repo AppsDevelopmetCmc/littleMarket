@@ -1,6 +1,7 @@
 import { Alert } from 'react-native';
 import { ArregloUtil } from '../utils/utils';
 import { ServicioCarroCompras } from './ServicioCarroCompras';
+import { ServicioMonederos } from './ServicioMonederos';
 
 export const crearPedido = (pedido, items, fnCerrarPantalla) => {
    global.db
@@ -22,6 +23,9 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          global.fechaSeleccionada = null;
          global.horarioSeleccionado = null;
          global.yapa = undefined;
+         if (pedido.descuento > 0) {
+            new ServicioMonederos().actualizarMonedero(global.usuario, parseFloat(0))
+         }
       })
       .catch(function (error) {
          Alert.alert('error' + error);

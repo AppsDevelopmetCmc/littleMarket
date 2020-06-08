@@ -138,18 +138,23 @@ export class ConfirmarCompra extends Component {
    generarNumeroOrden = async fn => {
       let numero, codigo;
       let limite = 10;
-      numero = await new ServicioParametros().obtenerSecuencial();
-      if (numero) {
-         new ServicioParametros().actualizarSecuencial(numero);
-         codigo = '' + numero;
-         for (let i = 0; i < limite; i++) {
-            if (codigo.length < limite) {
-               codigo = '0' + codigo;
-            }
-         }
-         codigo = 'YPP' + codigo;
+      if (!this.state.nombreCliente || !this.state.telefonoCliente) {
+         Alert.alert("Ingrese todos los Datos para la Entrega");
       }
-      fn(codigo);
+      else {
+         numero = await new ServicioParametros().obtenerSecuencial();
+         if (numero) {
+            new ServicioParametros().actualizarSecuencial(numero);
+            codigo = '' + numero;
+            for (let i = 0; i < limite; i++) {
+               if (codigo.length < limite) {
+                  codigo = '0' + codigo;
+               }
+            }
+            codigo = 'YPP' + codigo;
+         }
+         fn(codigo);
+      }
    };
 
    validarCodigoPromo = () => {
@@ -337,7 +342,7 @@ export class ConfirmarCompra extends Component {
                         title="Descuentos"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>Si pose un código promocional, ingréselo</Text>
+                        <Text>Si posee un código promocional, ingréselo</Text>
                         <Text></Text>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
@@ -497,6 +502,7 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            this.generarNumeroOrden(codigo => {
+
                               crearPedido(
                                  {
                                     fechaPedido: formatearFechaISO(fecha),
@@ -527,7 +533,8 @@ export class ConfirmarCompra extends Component {
                                     asociado: 'asociado@gmail.com',
                                     nombreAsociado: 'Juan perez',
                                     telefonoAsociado: '1245635',
-                                    yapa: global.yapa.descripcion
+                                    yapa: global.yapa.descripcion,
+                                    descuento: parseFloat(this.state.valorDescuento.toFixed(2))
                                  },
                                  items,
                                  this.cerrarPantalla
@@ -543,6 +550,7 @@ export class ConfirmarCompra extends Component {
                                     numero
                                  );
                               }
+
                            });
                         }}
                      ></Button>
