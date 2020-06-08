@@ -23,9 +23,15 @@ export function Numero(props) {
                   //  backgroundColor: 'blue',
                }}
             >
-               <Text style={props.estiloNumero}>
-                  {dividirNumero(props.valor)[0]}.
-               </Text>
+               {props.descuento ? (
+                  <Text style={props.estiloNumero}>
+                     {-dividirNumero(props.valor)[0]}.
+                  </Text>
+               ) : (
+                  <Text style={props.estiloNumero}>
+                     {dividirNumero(props.valor)[0]}.
+                  </Text>
+               )}
             </View>
             <Text
                style={[

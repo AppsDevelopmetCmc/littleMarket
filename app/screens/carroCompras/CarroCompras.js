@@ -53,6 +53,8 @@ export class CarroCompras extends Component {
             subtotal += Number(global.items[i].subtotal);
          }
          global.total = subtotal + delivery;
+         global.delivery = delivery;
+         global.subtotal = subtotal;
          this.setState({
             listItems: global.items,
             subtotal: subtotal,
