@@ -53,7 +53,10 @@ export class ConfirmarCompra extends Component {
          valorDescuento: 0,
          valorDescontado: global.total,
          mostrarCargando: false,
+         nombreCliente: global.appUsuario.nombreCompleto,
+         telefonoCliente: global.appUsuario.telefonoCliente,
       };
+      global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
          { label: 'Transferencia', value: 'TR' },
@@ -174,6 +177,14 @@ export class ConfirmarCompra extends Component {
          this.setState({ mostrarCargando: false });
       }
    };
+   repintarUsuario = () => {
+      console.log('REPINTAR:' + global.appUsuario.nombreCompleto);
+      console.log('REPINTAR:' + global.appUsuario.telefonoCliente);
+      this.state({
+         nombreCliente: global.appUsuario.nombreCompleto,
+         telefonoCliente: global.appUsuario.telefonoCliente,
+      });
+   };
    finalizarCodigo = mensaje => {
       console.log('Finaliza Monedero');
 
@@ -246,15 +257,19 @@ export class ConfirmarCompra extends Component {
                      >
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text>
-                                 Nombre:{global.appUsuario.nombreCompleto}
+                              <Text style={{ marginBottom: 5 }}>
+                                 Nombre:{'   ' + this.state.nombreCliente}
                               </Text>
-                              <Text>Teléfono:{global.appUsuario.telefono}</Text>
+                              <Text style={{ marginBottom: 5 }}>
+                                 Teléfono: {' ' + this.state.telefonoCliente}
+                              </Text>
                            </View>
                            <View style={{ flex: 1 }}>
                               <Button
                                  onPress={() => {
-                                    Alert.alert('Abrir la pantalla del perfil');
+                                    this.props.navigation.navigate(
+                                       'PerfilUsuarioScreen'
+                                    );
                                  }}
                                  buttonStyle={{
                                     backgroundColor:
@@ -273,7 +288,9 @@ export class ConfirmarCompra extends Component {
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text>{this.state.direccion}</Text>
+                              <Text style={{ marginBottom: 4 }}>
+                                 Dirección:{this.state.direccion}
+                              </Text>
                            </View>
                            <View style={{ flex: 1 }}>
                               <Button

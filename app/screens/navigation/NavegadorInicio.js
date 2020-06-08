@@ -155,6 +155,13 @@ function ScreensFromTabs() {
             component={Notificacion}
             options={navOptionHandler(false)}
          />
+
+         <StackDirection.Screen
+            name="PerfilUsuarioScreen"
+            component={PerfilUsuario}
+            options={navOptionHandler(false)}
+         />
+
          <StackDirection.Screen
             name="ListaNotificacionScreen"
             component={ListaNotificaciones}
