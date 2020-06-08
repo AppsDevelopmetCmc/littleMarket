@@ -239,10 +239,38 @@ export class ConfirmarCompra extends Component {
                            </View>
                         </View>
                      </Card>
+
                      <Card
-                        title="Dirección de Entrega"
+                        title="Datos de Entrega"
                         containerStyle={styles.contenedorTarjetas}
                      >
+                        <View style={{ flexDirection: 'row' }}>
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Text>
+                                 Nombre:{global.appUsuario.nombreCompleto}
+                              </Text>
+                              <Text>Teléfono:{global.appUsuario.telefono}</Text>
+                           </View>
+                           <View style={{ flex: 1 }}>
+                              <Button
+                                 onPress={() => {
+                                    Alert.alert('Abrir la pantalla del perfil');
+                                 }}
+                                 buttonStyle={{
+                                    backgroundColor:
+                                       colores.colorPrimarioTomate,
+                                 }}
+                                 icon={
+                                    <Icon
+                                       name="pencil"
+                                       size={20}
+                                       color={colores.colorBlanco}
+                                       style={styles.iconos}
+                                    />
+                                 }
+                              ></Button>
+                           </View>
+                        </View>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text>{this.state.direccion}</Text>
@@ -255,13 +283,14 @@ export class ConfirmarCompra extends Component {
                                     });
                                  }}
                                  buttonStyle={{
-                                    backgroundColor: 'white',
+                                    backgroundColor:
+                                       colores.colorPrimarioTomate,
                                  }}
                                  icon={
                                     <Icon
                                        name="pencil"
                                        size={20}
-                                       color={colores.colorPrimarioTomate}
+                                       color={colores.colorBlanco}
                                        style={styles.iconos}
                                     />
                                  }
@@ -275,6 +304,8 @@ export class ConfirmarCompra extends Component {
                      >
                         <RadioForm
                            radio_props={this.radio_props}
+                           buttonColor={colores.colorPrimarioTomate}
+                           selectedButtonColor={colores.colorPrimarioTomate}
                            initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
                            formHorizontal={true}
                            buttonSize={15}
@@ -423,6 +454,7 @@ export class ConfirmarCompra extends Component {
                         ></Numero>
                      </Card>
                   </View>
+
                   <Cargando
                      text="Validando Código Promocional"
                      isVisible={this.state.mostrarCargando}
