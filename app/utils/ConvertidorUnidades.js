@@ -7,6 +7,7 @@ export const convertir = (unidad, cantidad) => {
       global.unidadesSingular.set('ma', 'mano');
       global.unidadesSingular.set('cu', 'cubeta');
       global.unidadesSingular.set('at', 'atado');
+      global.unidadesSingular.set('ar', 'arroba');
    }
    if (!global.unidadesPlural) {
       global.unidadesPlural = new Map();
@@ -16,6 +17,7 @@ export const convertir = (unidad, cantidad) => {
       global.unidadesPlural.set('ma', 'manos');
       global.unidadesPlural.set('cu', 'cubetas');
       global.unidadesPlural.set('at', 'atados');
+      global.unidadesPlural.set('ar', 'arrobas');
    }
    if (cantidad == 1) {
       return cantidad + ' ' + global.unidadesSingular.get(unidad);
