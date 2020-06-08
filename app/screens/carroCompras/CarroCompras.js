@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Modal } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Numero } from './componentes/Numero';
@@ -11,7 +11,7 @@ import { ItemCarro } from '../../screens/carroCompras/componentes/ItemCarro';
 import { StackActions } from '@react-navigation/native';
 import * as colores from '../../constants/Colores';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { SeleccionarYapa } from '../carroCompras/SeleccionarYappa';
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 import {
@@ -20,6 +20,7 @@ import {
 } from '../../servicios/ServicioDirecciones';
 import Separador from '../../components/Separador';
 import { transformDinero } from '../../utils/Validaciones';
+import { convertir } from '../../utils/ConvertidorUnidades';
 
 export class CarroCompras extends Component {
    constructor(props) {
@@ -30,6 +31,8 @@ export class CarroCompras extends Component {
          subtotal: '0',
          delivery: '1.5',
          total: '0',
+         pintarYapa: true,
+         mostrarModalYapa: false,
       };
       this.montado = false;
    }
@@ -56,6 +59,9 @@ export class CarroCompras extends Component {
       }
    };
 
+   repintarYapa = () => {
+      this.setState({ pintarYapa: true });
+   };
    eliminarCarro = mail => {
       let srvItemsCarro = new ServicioCarroCompras();
       srvItemsCarro.eliminarCarro(mail);
@@ -177,6 +183,106 @@ export class CarroCompras extends Component {
                      </Text>
                   </View>
                )}
+
+               {global.yapa ? (
+                  global.yapa.tipo == 'D' ? (
+                     <View style={styles.contenedorYapa}>
+                        <View style={styles.tituloContenedorYapa}>
+                           <View style={{ flexDirection: 'row' }}>
+                              <View
+                                 style={{ flex: 7, alignItems: 'flex-start' }}
+                              >
+                                 <Text style={{ fontWeight: 'bold' }}>
+                                    YAPA
+                                 </Text>
+                              </View>
+                              <View style={{ flex: 1 }}>
+                                 <Icon
+                                    name="delete"
+                                    size={20}
+                                    color={colores.colorBlanco}
+                                    style={styles.iconoStilos}
+                                    onPress={() => {
+                                       global.yapa = undefined;
+                                       this.repintarYapa();
+                                    }}
+                                 />
+                              </View>
+                           </View>
+                        </View>
+                        <View
+                           style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              marginLeft: 20,
+                           }}
+                        >
+                           <Text>
+                              Gracias por donar su Yapa a la Fundación Aliñambi
+                           </Text>
+                        </View>
+                     </View>
+                  ) : (
+                     <View style={styles.contenedorYapa}>
+                        <View style={styles.tituloContenedorYapa}>
+                           <View style={{ flexDirection: 'row' }}>
+                              <View
+                                 style={{ flex: 7, alignItems: 'flex-start' }}
+                              >
+                                 <Text style={{ fontWeight: 'bold' }}>
+                                    YAPA
+                                 </Text>
+                              </View>
+                              <View style={{ flex: 1 }}>
+                                 <Icon
+                                    name="delete"
+                                    size={20}
+                                    color={colores.colorBlanco}
+                                    style={styles.iconoStilos}
+                                    onPress={() => {
+                                       global.yapa = undefined;
+                                       this.repintarYapa();
+                                    }}
+                                 />
+                              </View>
+                           </View>
+                        </View>
+                        <View
+                           style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              marginLeft: 20,
+                           }}
+                        >
+                           <Text>
+                              {global.yapa.nombre}{' '}
+                              {convertir(
+                                 global.yapa.unidad,
+                                 global.yapa.cantidad
+                              )}
+                           </Text>
+                        </View>
+                     </View>
+                  )
+               ) : this.state.subtotal > 10 ? (
+                  <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                     <Button
+                        onPress={() => {
+                           this.mostrarModalYapa(true);
+                        }}
+                        title="Seleccione su Yapa"
+                        buttonStyle={{
+                           backgroundColor: colores.colorPrimarioTomate,
+                        }}
+                     ></Button>
+                  </View>
+               ) : (
+                  <View></View>
+               )}
                <View style={styles.contenedorFlatList}>
                   <FlatList
                      data={this.state.listItems}
@@ -253,9 +359,21 @@ export class CarroCompras extends Component {
                   </View>
                </View>
             )}
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarModalYapa}
+            >
+               <SeleccionarYapa
+                  mostrarModal={this.mostrarModalYapa}
+               ></SeleccionarYapa>
+            </Modal>
          </SafeAreaView>
       );
    }
+   mostrarModalYapa = bandera => {
+      this.setState({ mostrarModalYapa: bandera });
+   };
    componentWillUnmount() {
       this.mondado = false;
    }
@@ -270,6 +388,26 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
+   contenedorYapa: {
+      flex: 2,
+      backgroundColor: colores.colorPrimarioAmarilloRgba,
+      //marginTop: 5,
+      borderRadius: 20,
+      marginBottom: 10,
+      //height: 10,
+   },
+   tituloContenedorYapa: {
+      backgroundColor: colores.colorPrimarioTomate,
+      borderTopStartRadius: 20,
+      borderTopEndRadius: 20,
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      alignItems: 'center',
+      //   flex: 1,
+      //      justifyContent: 'stretch',
+   },
    contenedorBoton: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -314,5 +452,5 @@ const styles = StyleSheet.create({
    },
    iconoDerecha: { paddingLeft: 5 },
    iconoIzquierda: { paddingRight: 5 },
-   contenedorFlatList: { paddingBottom: 10 },
+   contenedorFlatList: { paddingBottom: 10, flex: 8 },
 });
