@@ -72,7 +72,7 @@ export class ServicioParametros {
       global.db.collection("parametros").
       doc('secuencial').
       set({siguiente: actual+1}).then(function () {
-          Console.log("agregado")
+          console.log("agregado")
       }).catch(function (error) {
           Alert.alert("error" + error)
       })

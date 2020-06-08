@@ -379,7 +379,8 @@ export class ConfirmarCompra extends Component {
                                        formaPago: global.pagoSeleccionado === 'TR' ? 'TRANSFERENCIA' : 'EFECTIVO',
                                        asociado: 'asociado@gmail.com',
                                        nombreAsociado: 'Juan perez',
-                                       telefonoAsociado: '1245635'
+                                       telefonoAsociado: '1245635',
+                                       yapa:global.yapa.descripcion
                                     },
                                     items,
                                     this.cerrarPantalla

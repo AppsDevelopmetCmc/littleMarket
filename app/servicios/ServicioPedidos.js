@@ -21,6 +21,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          global.pagoSeleccionado = null;
          global.fechaSeleccionada = null;
          global.horarioSeleccionado = null;
+         global.yapa = undefined;
       })
       .catch(function (error) {
          Alert.alert('error' + error);

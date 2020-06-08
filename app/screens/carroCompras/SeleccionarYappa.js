@@ -23,7 +23,8 @@ import RadioForm, {
 import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
-
+import { ServicioYapas } from '../../servicios/ServicioYapas'
+import { convertir } from '../../utils/ConvertidorUnidades'
 export class SeleccionarYapa extends Component {
    constructor(props) {
       super(props);
@@ -31,31 +32,14 @@ export class SeleccionarYapa extends Component {
          yapaSeleccionada: null,
       };
       this.montado = false;
-      this.radio_props = [
-         { label: 'Ají - 10 unidades', value: 'Y1' },
-         { label: 'Naranja - 20 unidades', value: 'Y2' },
-         { label: 'Donar su Yapa a la Fundación Aliñambi', value: 'D' },
-      ];
+      this.radio_props = [];
+      console.log('radio_props', this.radio_props);
    }
    seleccionarYapa = seleccionada => {
       if (seleccionada == 'D') {
-         global.yapa = { tipo: 'D' };
+         global.yapa = { tipo: 'D', descripcion: seleccionada };
       } else {
-         if (seleccionada == 'Y1') {
-            global.yapa = {
-               nombre: 'Aji',
-               cantidad: 10,
-               unidad: 'u',
-               //tipo: 'D',//D es donar
-            };
-         } else {
-            global.yapa = {
-               nombre: 'Naranja',
-               cantidad: 20,
-               unidad: 'u',
-               //tipo: 'D',//D es donar
-            };
-         }
+         global.yapa = { descripcion: seleccionada };
       }
    };
    componentDidMount = () => {
@@ -65,7 +49,33 @@ export class SeleccionarYapa extends Component {
          this.repintarLista
       );
       if (global.direcciones) this.repintarLista();
+      //Lista de data para el radio
+      this.consultaItemRadioYapa();
+
+
    };
+
+
+   consultaItemRadioYapa = () => {
+      let listaItemYapa = [];
+      //valor quemado para el item Alinambi
+      let itemAlinambi = {};
+      itemAlinambi.label = 'Donar su Yapa a la Fundación Aliñambi';
+      itemAlinambi.value = 'D'
+      //continuo con el for
+      for (let i = 0; i < this.props.listaYapa.length; i++) {
+         let itemYapa = {};
+         itemYapa.label = this.props.listaYapa[i].nombre + " - " + convertir(this.props.listaYapa[i].unidad, this.props.listaYapa[i].cantidad);
+         itemYapa.value = this.props.listaYapa[i].nombre + " - " + convertir(this.props.listaYapa[i].unidad, this.props.listaYapa[i].cantidad);
+
+         console.log('data itemYapa', itemYapa);
+         listaItemYapa.push(itemYapa);
+      }
+      listaItemYapa.push(itemAlinambi);
+      this.radio_props = listaItemYapa;
+      console.log('listaItemYapa', listaItemYapa);
+
+   }
    componentWillUnmount = () => {
       this.montado = false;
    };
