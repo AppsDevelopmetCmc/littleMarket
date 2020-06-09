@@ -55,8 +55,7 @@ export default function PerfilUsuario(props) {
                documento = doc.data();
                setNombreUsuario(documento.nombreCompleto);
                settelefonoUsuario(documento.telefonoCliente);
-               global.appUsuario.telefono = documento.telefonoCliente;
-
+               global.appUsuario.telefonoCliente = documento.telefonoCliente;
             }
          })
          .catch(err => {
@@ -85,7 +84,7 @@ export default function PerfilUsuario(props) {
 
             setTelefonoValidacion('');
             global.appUsuario.nombreCompleto = nombreUsuario;
-            global.appUsuario.telefono = telefonoUsuario;
+            global.appUsuario.telefonoCliente = telefonoUsuario;
             global.db
                .collection('clientes')
                .doc(correoUsuario)
@@ -199,14 +198,13 @@ export default function PerfilUsuario(props) {
                      onChange={e => {
                         const re = /^[0-9]+$/;
                         if (re.test(e.nativeEvent.text)) {
-                           settelefonoUsuario(e.nativeEvent.text)
-                           setTelefonoValidacion('')
+                           settelefonoUsuario(e.nativeEvent.text);
+                           setTelefonoValidacion('');
                         } else {
-                           setTelefonoValidacion(fonoInvalido)
+                           setTelefonoValidacion(fonoInvalido);
                         }
-
                      }}
-                  // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   >
                      {telefonoUsuario}
                   </Input>

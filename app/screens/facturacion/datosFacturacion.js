@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Button, Avatar, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
-import { validarTelefono, validarCedula } from '../../utils/utils.js'
+import { validarTelefono, validarCedula } from '../../utils/utils.js';
 import RNPickerSelect from 'react-native-picker-select';
 
 // Importación de los colores
@@ -20,12 +20,15 @@ export default function DatosFacturacion(props) {
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
-   let datos = [{ label: 'Cédula', value: 'Cédula' }, { label: 'Ruc', value: 'Ruc' }]
+   let datos = [
+      { label: 'Cédula', value: 'Cédula' },
+      { label: 'Ruc', value: 'Ruc' },
+   ];
    const [documentoSeleccionado, setdocumentoSeleccionado] = useState('');
    const [correoUsuario, setcorreoUsuario] = useState(global.appUsuario.id);
    const [cedulaUsuario, setcedulaUsuario] = useState(global.appUsuario.cedula);
    const [telefonoUsuario, settelefonoUsuario] = useState(
-      global.appUsuario.telefono
+      global.appUsuario.telefonoCliente
    );
    const [tipoDocumento, settipoDocumento] = useState(datos);
    const [alias, setalias] = useState('');
@@ -35,13 +38,21 @@ export default function DatosFacturacion(props) {
    const [cedulaValidacion, setCedulaValidacion] = useState('');
    const [telefonoValidacion, setTelefonoValidacion] = useState('');
    const [aliasValidacion, setAliasValidacion] = useState('');
-   const [documentoSeleccionadoValidacion, setDocumentoSeleccionadoValidacion] = useState('');
+   const [
+      documentoSeleccionadoValidacion,
+      setDocumentoSeleccionadoValidacion,
+   ] = useState('');
    const requerido = 'Campo requerido *';
    const fonoInvalido = 'Número  incorrecto';
 
-
    const actualizaInfo = () => {
-      if (!nombreUsuario || !cedulaUsuario || !telefonoUsuario || !alias || !documentoSeleccionado) {
+      if (
+         !nombreUsuario ||
+         !cedulaUsuario ||
+         !telefonoUsuario ||
+         !alias ||
+         !documentoSeleccionado
+      ) {
          if (!nombreUsuario) {
             setnombreValidacion(requerido);
          } else {
@@ -58,9 +69,12 @@ export default function DatosFacturacion(props) {
             setAliasValidacion('');
          }
 
-         if (!documentoSeleccionado && documentoSeleccionadoValidacion != null) {
+         if (
+            !documentoSeleccionado &&
+            documentoSeleccionadoValidacion != null
+         ) {
             setDocumentoSeleccionadoValidacion(requerido);
-            Alert.alert("Ingrese Tipo de Documento")
+            Alert.alert('Ingrese Tipo de Documento');
          } else {
             setDocumentoSeleccionadoValidacion('');
          }
@@ -69,12 +83,14 @@ export default function DatosFacturacion(props) {
          } else {
             setTelefonoValidacion('');
          }
-
       } else {
          let validaTele = validarTelefono(telefonoUsuario);
-         let validaDocumento = validarCedula(cedulaUsuario, documentoSeleccionado);
-         if (validaTele == "S") {
-            if (validaDocumento == "S") {
+         let validaDocumento = validarCedula(
+            cedulaUsuario,
+            documentoSeleccionado
+         );
+         if (validaTele == 'S') {
+            if (validaDocumento == 'S') {
                global.db
                   .collection('clientes')
                   .doc(correoUsuario)
@@ -99,7 +115,6 @@ export default function DatosFacturacion(props) {
             }
          } else {
             setTelefonoValidacion(fonoInvalido);
-
          }
       }
    };
@@ -128,7 +143,6 @@ export default function DatosFacturacion(props) {
          </View>
          <View style={styles.pie}>
             <KeyboardAwareScrollView>
-
                <RNPickerSelect
                   onValueChange={value => console.log(value)}
                   items={tipoDocumento}
@@ -141,14 +155,11 @@ export default function DatosFacturacion(props) {
                   }}
                   onValueChange={value => {
                      setdocumentoSeleccionado(value);
-
-
                   }}
                />
 
-
                <Separador alto={15}></Separador>
-               {documentoSeleccionado == "Ruc" ? (
+               {documentoSeleccionado == 'Ruc' ? (
                   <Input
                      // TO DO : validar que sean solo numeros
                      placeholder="Ingrese número de documento"
@@ -158,7 +169,6 @@ export default function DatosFacturacion(props) {
                      label="Número de Documento*"
                      keyboardType="numeric"
                      maxLength={13}
-
                      errorMessage={cedulaValidacion}
                      labelStyle={textEstilo(
                         colores.colorOscuroTexto,
@@ -168,13 +178,15 @@ export default function DatosFacturacion(props) {
                      onChange={e => {
                         const ra = /^[0-9]+$/;
                         if (ra.test(e.nativeEvent.text)) {
-                           setcedulaUsuario(e.nativeEvent.text)
-                           setCedulaValidacion('')
+                           setcedulaUsuario(e.nativeEvent.text);
+                           setCedulaValidacion('');
                         } else {
-                           setCedulaValidacion(fonoInvalido)
+                           setCedulaValidacion(fonoInvalido);
                         }
                      }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-                  ></Input>) : (<Input
+                  ></Input>
+               ) : (
+                  <Input
                      // TO DO : validar que sean solo numeros
                      placeholder="Ingrese número de documento"
                      containerStyle={styles.estiloContenedor1}
@@ -183,7 +195,6 @@ export default function DatosFacturacion(props) {
                      label="Número de Documento*"
                      keyboardType="numeric"
                      maxLength={10}
-
                      errorMessage={cedulaValidacion}
                      labelStyle={textEstilo(
                         colores.colorOscuroTexto,
@@ -193,16 +204,14 @@ export default function DatosFacturacion(props) {
                      onChange={e => {
                         const ra = /^[0-9]+$/;
                         if (ra.test(e.nativeEvent.text)) {
-                           setcedulaUsuario(e.nativeEvent.text)
-                           setCedulaValidacion('')
+                           setcedulaUsuario(e.nativeEvent.text);
+                           setCedulaValidacion('');
                         } else {
-                           setCedulaValidacion(fonoInvalido)
+                           setCedulaValidacion(fonoInvalido);
                         }
-                     }}// Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   ></Input>
-
-                  )
-               }
+               )}
 
                <Separador alto={15}></Separador>
                <Input
@@ -274,12 +283,11 @@ export default function DatosFacturacion(props) {
                   onChange={e => {
                      const re = /^[0-9]+$/;
                      if (re.test(e.nativeEvent.text)) {
-                        settelefonoUsuario(e.nativeEvent.text)
-                        setTelefonoValidacion('')
+                        settelefonoUsuario(e.nativeEvent.text);
+                        setTelefonoValidacion('');
                      } else {
-                        setTelefonoValidacion(fonoInvalido)
+                        setTelefonoValidacion(fonoInvalido);
                      }
-
                   }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                >
                   {telefonoUsuario}

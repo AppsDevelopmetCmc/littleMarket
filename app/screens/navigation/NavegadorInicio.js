@@ -560,9 +560,14 @@ export default function NavegadorInicio() {
                global.appUsuario = documento;
             } else {
                let infoUsuarioGuardar = {};
-               infoUsuarioGuardar.nombreCompleto =
-                  global.infoUsuario.displayName;
-               infoUsuarioGuardar.telefono = global.infoUsuario.phoneNumber;
+               infoUsuarioGuardar.nombreCompleto = global.infoUsuario
+                  .displayName
+                  ? global.infoUsuario.displayName
+                  : '';
+               infoUsuarioGuardar.telefonoCliente = global.infoUsuario
+                  .phoneNumber
+                  ? global.infoUsuario.phoneNumber
+                  : '';
                global.db
                   .collection('clientes')
                   .doc(global.usuario)
