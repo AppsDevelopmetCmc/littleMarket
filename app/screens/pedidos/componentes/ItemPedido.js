@@ -21,7 +21,7 @@ export class ItemPedido extends Component {
       let estadoFinal =
          indice < 0 ? this.state.estado : ESTADOS.PEDIDOS[indice].descripcion;
       this.setState({
-         estado: estadoFinal
+         estado: estadoFinal,
       });
    }
 
@@ -84,7 +84,7 @@ export class ItemPedido extends Component {
                         </Text>
                      </View>
                      <View style={styles.contenedorPares}>
-                        <Text style={styles.texto}>Total:</Text>
+                        <Text style={styles.texto}>Total</Text>
                         <Text
                            style={textEstilo(
                               colores.colorOscuroTexto,
@@ -92,7 +92,12 @@ export class ItemPedido extends Component {
                               'bold'
                            )}
                         >
-                           {transformDinero(this.props.pedido.total)}
+                           {this.props.pedido.descuento
+                              ? transformDinero(
+                                   this.props.pedido.total -
+                                      this.props.pedido.descuento
+                                )
+                              : transformDinero(this.props.pedido.total)}
                         </Text>
                      </View>
                   </View>
