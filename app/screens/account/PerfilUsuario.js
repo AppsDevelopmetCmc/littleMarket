@@ -194,7 +194,17 @@ export default function PerfilUsuario(props) {
                         15,
                         'normal'
                      )}
-                     onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     onChange={e => {
+                        const re = /^[0-9]+$/;
+                        if (re.test(e.nativeEvent.text)) {
+                           settelefonoUsuario(e.nativeEvent.text)
+                           setTelefonoValidacion('')
+                        } else {
+                           setTelefonoValidacion(fonoInvalido)
+                        }
+
+                     }}
+                  // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   >
                      {telefonoUsuario}
                   </Input>
