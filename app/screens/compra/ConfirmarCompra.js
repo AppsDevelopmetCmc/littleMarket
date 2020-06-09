@@ -531,10 +531,8 @@ export class ConfirmarCompra extends Component {
                                     asociado: 'asociado@gmail.com',
                                     nombreAsociado: 'Juan perez',
                                     telefonoAsociado: '1245635',
-                                    yapa: global.yapa.descripcion,
-                                    descuento: parseFloat(
-                                       this.state.valorDescuento.toFixed(2)
-                                    ),
+                                    yapa: global.yapa ? global.yapa.descripcion : "",
+                                    descuento: parseFloat(this.state.valorDescuento.toFixed(2))
                                  },
                                  items,
                                  this.cerrarPantalla
