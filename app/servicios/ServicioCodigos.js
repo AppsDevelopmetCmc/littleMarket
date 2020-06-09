@@ -96,9 +96,13 @@ export class ServicioCodigos {
                   );
                } else {
                   //si no existe creo primero el Documento
-                  this.crearMonedero(global.usuario, {
-                     valor: parseFloat(respuesta.data().valor),
-                  });
+                  this.crearMonedero(
+                     global.usuario,
+                     {
+                        valor: parseFloat(respuesta.data().valor),
+                     },
+                     fnFinalizar
+                  );
                }
                //creo la transaccion de para el usuario loguedao
                this.crearMonederoTransaccion(global.usuario, {
@@ -188,13 +192,13 @@ export class ServicioCodigos {
          });
    };
 
-   crearMonedero = async (idMail, monedero) => {
+   crearMonedero = async (idMail, monedero, finalizar) => {
       await global.db
          .collection('monederos')
          .doc(idMail)
          .set(monedero)
          .then(function () {
-            Alert.alert('Monedero Creado');
+            finalizar();
          })
          .catch(function (error) {
             Alert.alert('error' + error);
