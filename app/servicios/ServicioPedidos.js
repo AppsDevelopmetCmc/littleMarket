@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert ,Linking} from 'react-native';
 import { ArregloUtil } from '../utils/utils';
 import { ServicioCarroCompras } from './ServicioCarroCompras';
 import { ServicioMonederos } from './ServicioMonederos';
@@ -10,14 +10,34 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
       .then(function (doc) {
          let descripcionALert='Su pedido ha sido procesado, con la orden: ';
          if (pedido.formaPago === 'EFECTIVO') {
-            Alert.alert('Pedidio Creado',
+            Alert.alert('Pedido Creado Exitosamente',
             descripcionALert + ''+pedido.orden);
          }
          else
          {
-            Alert.alert('Pedidio Creado',
-            descripcionALert+''+ pedido.orden 
-            +' Queda pendiente la confirmación de la transferencia, que se hará por whatsapp');
+            let text =
+            'He realizado el pedido: ' + pedido.orden + ' por el monto $ ' +
+           parseFloat(pedido.total-pedido.descuento) + '. Solicito información para realizar la transferencia.';
+         Alert.alert(
+            "Información",
+            text,
+            [
+               {
+                  text: "Aceptar", onPress: () => {
+                     console.log("OK Pressed")
+                     let numero = '593992920306';
+                     Linking.openURL(
+                        'whatsapp://send?text=' +
+                        text +
+                        '&phone=' +
+                        numero
+                     );
+                  }
+
+               }
+            ],
+            { cancelable: false }
+         );
          }
             for (let i = 0; i < items.length; i++) {
                global.db
