@@ -3,54 +3,51 @@ import { formatearFechaCompleta } from '../utils/DateUtil';
 import { Alert } from 'react-native';
 
 export class ServicioNotificaciones {
-
    crearNotificaciones = (idMail, notificacion, notificaciones) => {
-      global.db.collection("notificaciones")
-         .doc(idMail).
-         set(notificacion)
+      global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .set(notificacion)
          .then(function () {
-            console.log("Notificacion creada")
-            global
-               .db
-               .collection("notificaciones")
+            console.log('Notificacion creada');
+            global.db
+               .collection('notificaciones')
                .doc(idMail)
-               .collection("notificaciones")
+               .collection('notificaciones')
                .add(notificaciones)
                .then(function () {
-                  console.log("Notificacion creada");
-               }).catch(function (error) {
-                  Alert.alert("error" + error)
+                  console.log('Notificacion creada');
                })
-
-         }).catch(function (error) {
-            Alert.alert("error" + error)
+               .catch(function (error) {
+                  Alert.alert('error' + error);
+               });
          })
-   }
+         .catch(function (error) {
+            Alert.alert('error' + error);
+         });
+   };
 
-   actualizarNotificaciones = (objeto) => {
-      global
-         .db
-         .collection("notificaciones")
+   actualizarNotificaciones = objeto => {
+      global.db
+         .collection('notificaciones')
          .doc(objeto.mail)
-         .update(
-            {
-               numero: objeto.numero,
-            }
-         ).then(function () {
-            console.log("Notificacion actualizada")
-         }
-         ).catch(function (error) {
-            Alert.alert("error" + error)
-         }
-         );
-   }
+         .update({
+            numero: objeto.numero,
+         })
+         .then(function () {
+            console.log('Notificacion actualizada');
+         })
+         .catch(function (error) {
+            Alert.alert('error' + error);
+         });
+   };
 
    registrarEscuchaTodas = (idMail, fnRepintar) => {
       global.db
          .collection('notificaciones')
          .doc(idMail)
          .collection('notificaciones')
-         .orderBy("fecha", "desc")
+         .orderBy('fecha', 'desc')
          .limit(10)
          .get()
          .then(async function (documentos) {
@@ -91,12 +88,12 @@ export class ServicioNotificaciones {
          .collection('notificaciones')
          .doc(idMail)
          .onSnapshot(function (snapShot) {
-            console.log('snapShot', snapShot);
+            //console.log('snapShot', snapShot);
             fnRepintar(snapShot.data());
          });
    };
 
-   buscarNumeroNotificacion = async (idMail) => {
+   buscarNumeroNotificacion = async idMail => {
       let valorNumero = 0;
       let notificacion = await global.db
          .collection('notificaciones')
@@ -107,5 +104,4 @@ export class ServicioNotificaciones {
       }
       return valorNumero;
    };
-
 }

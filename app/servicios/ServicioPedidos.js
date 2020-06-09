@@ -24,7 +24,10 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          global.horarioSeleccionado = null;
          global.yapa = undefined;
          if (pedido.descuento > 0) {
-            new ServicioMonederos().actualizarMonedero(global.usuario, parseFloat(0))
+            new ServicioMonederos().actualizarMonedero(
+               global.usuario,
+               parseFloat(0)
+            );
          }
       })
       .catch(function (error) {
@@ -37,7 +40,8 @@ export class ServicioPedidos {
       let arregloUtil = new ArregloUtil(pedido);
       global.db
          .collection('pedidos')
-         .where('mail', '==', mail).orderBy("orden", "desc")
+         .where('mail', '==', mail)
+         .orderBy('orden', 'desc')
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
                let itemPedidos = change.doc.data();

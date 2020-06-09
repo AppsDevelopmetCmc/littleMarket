@@ -21,7 +21,7 @@ import {
 import Separador from '../../components/Separador';
 import { transformDinero } from '../../utils/Validaciones';
 import { convertir } from '../../utils/ConvertidorUnidades';
-import { ServicioYapas } from '../../servicios/ServicioYapas'
+import { ServicioYapas } from '../../servicios/ServicioYapas';
 
 export class CarroCompras extends Component {
    constructor(props) {
@@ -156,8 +156,8 @@ export class CarroCompras extends Component {
                         }
                      />
                   ) : (
-                        <Text></Text>
-                     )}
+                     <Text></Text>
+                  )}
                </View>
             </View>
 
@@ -230,43 +230,43 @@ export class CarroCompras extends Component {
                         </View>
                      </View>
                   ) : (
-                        <View style={styles.contenedorYapa}>
-                           <View style={styles.tituloContenedorYapa}>
-                              <View style={{ flexDirection: 'row' }}>
-                                 <View
-                                    style={{ flex: 7, alignItems: 'flex-start' }}
-                                 >
-                                    <Text style={{ fontWeight: 'bold' }}>
-                                       YAPA
+                     <View style={styles.contenedorYapa}>
+                        <View style={styles.tituloContenedorYapa}>
+                           <View style={{ flexDirection: 'row' }}>
+                              <View
+                                 style={{ flex: 7, alignItems: 'flex-start' }}
+                              >
+                                 <Text style={{ fontWeight: 'bold' }}>
+                                    YAPA
                                  </Text>
-                                 </View>
-                                 <View style={{ flex: 1 }}>
-                                    <Icon
-                                       name="delete"
-                                       size={20}
-                                       color={colores.colorBlanco}
-                                       style={styles.iconoStilos}
-                                       onPress={() => {
-                                          global.yapa = undefined;
-                                          this.repintarYapa();
-                                       }}
-                                    />
-                                 </View>
+                              </View>
+                              <View style={{ flex: 1 }}>
+                                 <Icon
+                                    name="delete"
+                                    size={20}
+                                    color={colores.colorBlanco}
+                                    style={styles.iconoStilos}
+                                    onPress={() => {
+                                       global.yapa = undefined;
+                                       this.repintarYapa();
+                                    }}
+                                 />
                               </View>
                            </View>
-                           <View
-                              style={{
-                                 flex: 1,
-                                 flexDirection: 'row',
-                                 alignItems: 'center',
-                                 justifyContent: 'flex-start',
-                                 marginLeft: 20,
-                              }}
-                           >
-                              <Text>{global.yapa.descripcion}</Text>
-                           </View>
                         </View>
-                     )
+                        <View
+                           style={{
+                              flex: 1,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                              marginLeft: 20,
+                           }}
+                        >
+                           <Text>{global.yapa.descripcion}</Text>
+                        </View>
+                     </View>
+                  )
                ) : this.state.subtotal > 10 ? (
                   <View style={{ alignItems: 'center', marginBottom: 10 }}>
                      <Button
@@ -280,8 +280,8 @@ export class CarroCompras extends Component {
                      ></Button>
                   </View>
                ) : (
-                        <View></View>
-                     )}
+                  <View></View>
+               )}
                <View style={styles.contenedorFlatList}>
                   <FlatList
                      data={this.state.listItems}
@@ -321,9 +321,10 @@ export class CarroCompras extends Component {
                         title="Confirmar"
                         onPress={() => {
                            if (this.state.subtotal > 10 && !global.yapa) {
-                              Alert.alert("Debe selecionar su Yapa para poder continuar")
-                           }
-                           else {
+                              Alert.alert(
+                                 'Debe selecionar su Yapa para poder continuar'
+                              );
+                           } else {
                               this.props.navigation.navigate(
                                  'ConfirmarCompraScreen'
                               );
@@ -378,7 +379,7 @@ export class CarroCompras extends Component {
    }
    mostrarModalYapa = async bandera => {
       ///llamada al servicio de yapas
-      console.log("Ingesar a Mostrar Modal")
+      console.log('Ingesar a Mostrar Modal');
       let srvYapas = new ServicioYapas();
       this.tramaYapa = await srvYapas.conusultarYapas(this.state.subtotal);
 
