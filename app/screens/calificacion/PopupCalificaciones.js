@@ -31,7 +31,6 @@ export function PopupCalificaciones(props) {
    const [quejaProducto, setQuejaProducto] = useState(-1);
    const [detalleProducto, setDetalleProducto] = useState('');
 
-
    // se utiliza el useEffect
    useEffect(() => {
       infoIncial();
@@ -84,7 +83,6 @@ export function PopupCalificaciones(props) {
    };
 
    const infoIncial = async () => {
-
       await global.db
          .collection('parametros')
          .doc('calificacion')
@@ -138,6 +136,21 @@ export function PopupCalificaciones(props) {
          });
    };
 
+   const guardarFirebaseSinCalif = async () => {
+      await global.db
+         .collection('pedidos')
+         .doc(pedido.id)
+         .update({
+            estado: 'PC',
+         })
+         .then(() => {
+            cambioVisibleCalifica(!isVisible);
+         })
+         .catch(error => {
+            console.log(error);
+         });
+   };
+
    return (
       <Overlay
          isVisible={isVisible}
@@ -158,10 +171,34 @@ export function PopupCalificaciones(props) {
                   placeholderComentario={'El pedido estuvo perfecto'}
                   itemLista={varItemDefault}
                   numeroEstrellas={varEstrellaDefault}
-                  idPedido={pedido.id}
+                  idPedido={pedido.orden}
                   validacionEstrellas={validacionEstrellas}
                />
-               <View style={{ alignItems: 'flex-end', paddingBottom: 20 }}>
+               <View
+                  style={{
+                     alignItems: 'flex-end',
+                     paddingBottom: 20,
+                     flexDirection: 'row',
+                  }}
+               >
+                  <Button
+                     title="En otro momento"
+                     titleStyle={textEstilo(
+                        colores.colorPrimarioTomate,
+                        15,
+                        'normal'
+                     )}
+                     containerStyle={styles.btnStyles}
+                     buttonStyle={styles.btnRegistrarse}
+                     onPress={guardarFirebaseSinCalif}
+                     icon={
+                        <Icon
+                           name="arrow-left-bold-circle-outline"
+                           size={30}
+                           color={colores.colorPrimarioTomate}
+                        />
+                     }
+                  ></Button>
                   <Button
                      title="Siguiente"
                      titleStyle={textEstilo(
@@ -196,7 +233,7 @@ export function PopupCalificaciones(props) {
                   placeholderComentario={'El producto estuvo perfecto'}
                   itemLista={varItemDefault}
                   numeroEstrellas={varEstrellaDefault}
-                  idPedido={pedido.id}
+                  idPedido={pedido.orden}
                   validacionEstrellas={validacionEstrellas}
                />
                <View style={{ alignItems: 'center', paddingBottom: 20 }}>
