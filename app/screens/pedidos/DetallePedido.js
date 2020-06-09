@@ -3,10 +3,10 @@ import {
    View,
    StyleSheet,
    FlatList,
-   Button,
    TouchableHighlightBase,
+   Alert,
 } from 'react-native';
-import { Text, Icon } from 'react-native-elements';
+import { Text, Icon, Button } from 'react-native-elements';
 import {
    ServicioPedidos,
    cancelarPedido,
@@ -88,11 +88,29 @@ export class DetallePedido extends Component {
    };
 
    cancelarPedido = idDoc => {
-      global.db
-         .collection('pedidos')
-         .doc(idDoc)
-         .update({ estado: 'CA' })
-         .then(this.repintarCancelado());
+      Alert.alert(
+         'Cancelar Pedido',
+         '¿Está seguro que desea Cancelar el pedido en curso?',
+         [
+            {
+               text: 'Cancel',
+               onPress: () => console.log('Cancel Pressed'),
+               //TO DO: Se debe cerrar el drawer?
+               style: 'cancel',
+            },
+            {
+               text: 'OK',
+               onPress: () => {
+                  global.db
+                     .collection('pedidos')
+                     .doc(idDoc)
+                     .update({ estado: 'CA' })
+                     .then(this.repintarCancelado());
+               },
+            },
+         ],
+         { cancelable: false }
+      );
    };
    flatListItemSeparator = () => {
       return (
@@ -321,7 +339,9 @@ export class DetallePedido extends Component {
                      <Text
                         style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
                      >
-                        {this.pedido.yapa}
+                        {this.pedido.yapa == 'D'
+                           ? 'Donado a la Fundación Aliñambi'
+                           : this.pedido.yapa}
                      </Text>
                   </View>
 
@@ -345,13 +365,23 @@ export class DetallePedido extends Component {
             {this.pedido.estado == 'PC' ||
             this.pedido.estado == 'CA' ||
             this.state.estado == 'Cancelado' ? (
-               <Button
-                  title="Repetir"
-                  onPress={() => {
-                     this.repetir();
-                     navigation.navigate('CarroComprasScreen');
+               <View
+                  style={{
+                     alignItems: 'center',
+                     backgroundColor: colores.colorBlanco,
                   }}
-               ></Button>
+               >
+                  <Button
+                     title="Repetir"
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioTomate,
+                     }}
+                     onPress={() => {
+                        this.repetir();
+                        navigation.navigate('CarroComprasScreen');
+                     }}
+                  ></Button>
+               </View>
             ) : null}
 
             {(((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
@@ -359,12 +389,22 @@ export class DetallePedido extends Component {
                (this.pedido.formaPago == 'TRANSFERENCIA' &&
                   this.pedido.estado == 'CT')) &&
             this.state.estado != 'Cancelado' ? (
-               <Button
-                  title="Cancelar"
-                  onPress={() => {
-                     this.cancelarPedido(this.pedido.id);
+               <View
+                  style={{
+                     alignItems: 'center',
+                     backgroundColor: colores.colorBlanco,
                   }}
-               ></Button>
+               >
+                  <Button
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioTomate,
+                     }}
+                     title="Cancelar"
+                     onPress={() => {
+                        this.cancelarPedido(this.pedido.id);
+                     }}
+                  ></Button>
+               </View>
             ) : null}
          </SafeAreaView>
       );
