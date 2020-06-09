@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, StyleSheet, Modal } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Modal, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Numero } from './componentes/Numero';
@@ -69,6 +69,7 @@ export class CarroCompras extends Component {
    eliminarCarro = mail => {
       let srvItemsCarro = new ServicioCarroCompras();
       srvItemsCarro.eliminarCarro(mail);
+      global.yapa = undefined;
    };
 
    eliminarItemCarro = (item, mail) => {
@@ -319,9 +320,14 @@ export class CarroCompras extends Component {
                      <Button
                         title="Confirmar"
                         onPress={() => {
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
+                           if (this.state.subtotal > 10 && !global.yapa) {
+                              Alert.alert("Debe selecionar su Yapa para poder continuar")
+                           }
+                           else {
+                              this.props.navigation.navigate(
+                                 'ConfirmarCompraScreen'
+                              );
+                           }
                         }}
                         titleStyle={this.textEstilo(
                            colores.colorBlanco,
