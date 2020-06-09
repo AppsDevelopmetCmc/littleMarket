@@ -20,7 +20,7 @@ export class ServicioCodigos {
                .doc(idMail)
                .get();
             if (respuestaUsados && respuestaUsados.data()) {
-               Alert.alert('No puede usar el código más de una vez');
+               Alert.alert('Información', 'No puede usar el código más de una vez');
                fnFinalizar();
             } else {
                console.log('El código es valido ');
@@ -138,7 +138,8 @@ export class ServicioCodigos {
                );
             }
          } else {
-            Alert.alert('Código no vigente');
+            Alert.alert('Información',
+               'Código no vigente');
             fnFinalizar();
          }
       } else {
@@ -160,12 +161,12 @@ export class ServicioCodigos {
          .then(function () {
             finalizar(
                'Ha ganado USD' +
-                  parseFloat(valorGanado).toFixed(2) +
-                  ' para usar en su compra'
+               parseFloat(valorGanado).toFixed(2) +
+               ' para usar en su compra'
             );
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 
@@ -188,7 +189,7 @@ export class ServicioCodigos {
             //Alert.alert('transacción agregado');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 
@@ -201,7 +202,7 @@ export class ServicioCodigos {
             finalizar();
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', + error);
          });
    };
 
@@ -216,7 +217,7 @@ export class ServicioCodigos {
             console.log('Se creo el dato usado para', codigoUsado);
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 }

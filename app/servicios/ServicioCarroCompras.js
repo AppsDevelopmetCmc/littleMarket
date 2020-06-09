@@ -40,7 +40,7 @@ export const eliminarItemCarro = (itemCarro, mail) => {
          //Alert.alert('eliminando item');
       })
       .catch(function (error) {
-         Alert.alert('Error ' + error.message);
+         Alert.alert('Se ha producido un Error', error.message);
       });
 };
 export const registrarEscucha = (mail, fnRepintar) => {

@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert ,Linking} from 'react-native';
 import { ArregloUtil } from '../utils/utils';
 import { ServicioCarroCompras } from './ServicioCarroCompras';
 import { ServicioMonederos } from './ServicioMonederos';
@@ -8,15 +8,45 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
       .collection('pedidos')
       .add(pedido)
       .then(function (doc) {
-         Alert.alert('Su pedido ha sido procesado');
-         for (let i = 0; i < items.length; i++) {
-            global.db
-               .collection('pedidos')
-               .doc(doc.id)
-               .collection('combos')
-               .doc(items[i].id)
-               .set(items[i]);
+         let descripcionALert='Su pedido ha sido procesado, con la orden: ';
+         if (pedido.formaPago === 'EFECTIVO') {
+            Alert.alert('Pedido Creado Exitosamente',
+            descripcionALert + ''+pedido.orden);
          }
+         else
+         {
+            let text =
+            'He realizado el pedido: ' + pedido.orden + ' por el monto $ ' +
+           parseFloat(pedido.total-pedido.descuento) + '. Solicito información para realizar la transferencia.';
+         Alert.alert(
+            "Información",
+            text,
+            [
+               {
+                  text: "Aceptar", onPress: () => {
+                     console.log("OK Pressed")
+                     let numero = '593992920306';
+                     Linking.openURL(
+                        'whatsapp://send?text=' +
+                        text +
+                        '&phone=' +
+                        numero
+                     );
+                  }
+
+               }
+            ],
+            { cancelable: false }
+         );
+         }
+            for (let i = 0; i < items.length; i++) {
+               global.db
+                  .collection('pedidos')
+                  .doc(doc.id)
+                  .collection('combos')
+                  .doc(items[i].id)
+                  .set(items[i]);
+            }
          new ServicioCarroCompras().eliminarCarro(global.usuario);
          fnCerrarPantalla();
          global.pagoSeleccionado = null;
@@ -31,7 +61,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          }
       })
       .catch(function (error) {
-         Alert.alert('error' + error);
+         Alert.alert('Se ha Producido un error', error);
       });
 };
 

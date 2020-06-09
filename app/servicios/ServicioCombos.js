@@ -8,10 +8,10 @@ export class ServicioCombos {
          .doc(combo.id)
          .set(combo)
          .then(function () {
-            Alert.alert('Combo agregado');
+            Alert.alert('Información', 'Combo Agregado Exitosamente');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 
@@ -23,10 +23,10 @@ export class ServicioCombos {
          .doc(producto.id)
          .set(producto)
          .then(function () {
-            Alert.alert('Producto Combo agregado');
+            Alert.alert('Información', 'Producto Combo Agregado Exitosamente');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 
@@ -66,10 +66,10 @@ export class ServicioCombos {
             alias: objeto.alias,
          })
          .then(function () {
-            Alert.alert('Combo Actualizado');
+            Alert.alert('Información', 'Combo Actualizado Exitosamente');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 

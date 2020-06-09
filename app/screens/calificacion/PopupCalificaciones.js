@@ -40,7 +40,7 @@ export function PopupCalificaciones(props) {
    const validacionSiguiente = () => {
       if (puntuacionPedido < 3.5) {
          if (quejaPedido == -1) {
-            Alert.alert('Debe seleccionar una razón');
+            Alert.alert('Información','Debe seleccionar una razón');
          } else {
             setVarPresentacion(1);
          }
@@ -52,7 +52,7 @@ export function PopupCalificaciones(props) {
    const validacionSalir = () => {
       if (puntuacionProducto < 3.5) {
          if (quejaProducto == -1) {
-            Alert.alert('Debe seleccionar una razón');
+            Alert.alert('Información','Debe seleccionar una razón');
          } else {
             guardarFirebase();
          }

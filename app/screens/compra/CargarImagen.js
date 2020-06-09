@@ -61,7 +61,7 @@ export class CargarImagen extends Component {
          Alert.alert('error');
       }
       if (permissionResult.granted === false) {
-         Alert.alert('Permission to access camera roll is required!');
+         Alert.alert('Información','Permission to access camera roll is required!');
          return;
       }
 

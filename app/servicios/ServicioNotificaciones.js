@@ -19,11 +19,11 @@ export class ServicioNotificaciones {
                   console.log('Notificacion creada');
                })
                .catch(function (error) {
-                  Alert.alert('error' + error);
+                  Alert.alert('Se ha Producido un Error', error);
                });
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha Producido un Error' , error);
          });
    };
 
@@ -38,7 +38,7 @@ export class ServicioNotificaciones {
             console.log('Notificacion actualizada');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha Producido un Error' , error);
          });
    };
 
@@ -62,7 +62,7 @@ export class ServicioNotificaciones {
             fnRepintar(listaNotificaciones);
          })
          .catch(function (error) {
-            Alert.alert('Error catch-->' + error);
+            Alert.alert('Error catch-->' , error);
          });
       /*
          .onSnapshot(function (snapShot) {
