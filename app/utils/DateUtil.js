@@ -71,10 +71,10 @@ const obtenerDia = diaSemana => {
       'Domingo',
       'Lunes',
       'Martes',
-      'Miercoles',
+      'Miércoles',
       'Jueves',
       'Viernes',
-      'Sabado',
+      'Sábado',
    ];
    return dias[diaSemana];
 };
