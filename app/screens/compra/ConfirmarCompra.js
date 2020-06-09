@@ -185,7 +185,7 @@ export class ConfirmarCompra extends Component {
    repintarUsuario = () => {
       console.log('REPINTAR:' + global.appUsuario.nombreCompleto);
       console.log('REPINTAR:' + global.appUsuario.telefonoCliente);
-      this.state({
+      this.setState({
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
       });
@@ -263,10 +263,10 @@ export class ConfirmarCompra extends Component {
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ marginBottom: 5 }}>
-                                 Nombre:{'   ' + this.state.nombreCliente}
+                                 Nombre:{this.state.nombreCliente ? '   ' + this.state.nombreCliente : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                               <Text style={{ marginBottom: 5 }}>
-                                 Teléfono: {' ' + this.state.telefonoCliente}
+                                 Teléfono: {this.state.telefonoCliente ?  '' + this.state.telefonoCliente : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>

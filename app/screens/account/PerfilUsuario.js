@@ -25,7 +25,7 @@ export default function PerfilUsuario(props) {
    );
    const [correoUsuario, setcorreoUsuario] = useState(global.appUsuario.id);
    const [telefonoUsuario, settelefonoUsuario] = useState(
-      global.appUsuario.telefono
+      global.appUsuario.telefonoCliente
    );
 
    // Variables de validacion
@@ -54,7 +54,7 @@ export default function PerfilUsuario(props) {
             if (doc.data()) {
                documento = doc.data();
                setNombreUsuario(documento.nombreCompleto);
-               settelefonoUsuario(documento.telefono);
+               settelefonoUsuario(documento.telefonoCliente);
             }
          })
          .catch(err => {

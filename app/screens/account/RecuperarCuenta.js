@@ -1,6 +1,12 @@
 //import liraries
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ToastAndroid } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   SafeAreaView,
+   Alert,
+} from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de los colores
@@ -43,16 +49,24 @@ export default function RecuperarCuenta(props) {
                .sendPasswordResetEmail(correo)
                .then(function (user) {
                   console.log('envio de correo correcto');
-                  if (Platform.OS === 'android') {
-                     ToastAndroid.showWithGravity('CORREO ENVIADO', ToastAndroid.LONG,ToastAndroid.CENTER)
-                   }
-                   navigation.goBack();
+                  Alert.alert(
+                     '',
+                     'Correo Enviado',
+                     [
+                        {
+                           text: 'OK',
+                           onPress: () => navigation.goBack(),
+                        },
+                     ],
+                     { cancelable: false }
+                  );
                })
                .catch(function (e) {
                   console.log('error envio de correo', e);
-                  if (Platform.OS === 'android') {
-                     ToastAndroid.showWithGravity('CORREO NO REGISTRADO O INCORRECTO', ToastAndroid.LONG,ToastAndroid.CENTER)
-                   }
+                  Alert.alert(
+                     '',
+                     'Correo Incorrecto o No Registrado'
+                  );
                });
          }
       }
