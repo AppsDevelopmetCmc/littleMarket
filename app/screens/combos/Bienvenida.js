@@ -5,6 +5,7 @@ import {
    TextInput,
    FlatList,
    Text,
+   ImageBackground,
    TouchableHighlight,
 } from 'react-native';
 import * as colores from '../../constants/Colores';
@@ -26,19 +27,21 @@ export class Bienvenida extends Component {
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <View style={styles.contenido}>
-                  <View>
-                     <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                        YAPPANDO
-                     </Text>
-                     <Text>Arma tu compra con los mejores productos</Text>
-                     <Avatar
-                        width={250}
-                        height={400}
-                        source={require('../../imagenes/Tip.jpeg')}
-                     ></Avatar>
-                  </View>
-                  <View style={{ alignItems: 'flex-end', marginVertical: 10 }}>
+               <ImageBackground
+                  style={{
+                     flex: 1,
+                     resizeMode: 'cover',
+                     justifyContent: 'flex-start',
+                  }}
+                  source={require('../../imagenes/Bienvenida3.jpg')}
+               >
+                  <View
+                     style={{
+                        alignItems: 'flex-end',
+                        justifyContent: 'flex-start',
+                        //marginVertical: 10,
+                     }}
+                  >
                      <TouchableHighlight
                         underlayColor={colores.colorBlanco}
                         onPress={() => {
@@ -47,21 +50,28 @@ export class Bienvenida extends Component {
                      >
                         <View
                            style={{
-                              backgroundColor: colores.colorBlanco,
-                              padding: 10,
+                              backgroundColor: 'rgb(138,221,45,0.8)',
+                              width: 50,
+                              height: 50,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              //borderRadius: 10,
+                              //borderWidth: 2,
+                              //borderColor: 'black',
                            }}
                         >
                            <Text
                               style={{
-                                 color: colores.colorPrimarioTomate,
+                                 color: 'black',
+                                 fontSize: 20,
                               }}
                            >
-                              OK
+                              X
                            </Text>
                         </View>
                      </TouchableHighlight>
                   </View>
-               </View>
+               </ImageBackground>
             </View>
          </View>
       );
@@ -106,8 +116,8 @@ const styles = StyleSheet.create({
       margin: 20,
       backgroundColor: colores.colorBlanco,
       borderRadius: 15,
-      padding: 30,
-      paddingVertical: 10,
+      //padding: 30,
+      //paddingVertical: 10,
       alignItems: 'stretch',
       shadowColor: '#0000',
       shadowOffset: {
