@@ -138,7 +138,7 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert('Información','La Dirección Seleccionada no tiene Cobertura');
       }
       this.setState({ mostrarModalDirecciones: false });
    };
@@ -593,17 +593,6 @@ export class ConfirmarCompra extends Component {
                                  items,
                                  this.cerrarPantalla
                               );
-                              if (global.pagoSeleccionado == 'TR') {
-                                 let text =
-                                    'He completado mi pedido, solicito información para transferencia';
-                                 let numero = '593992920306';
-                                 Linking.openURL(
-                                    'whatsapp://send?text=' +
-                                       text +
-                                       '&phone=' +
-                                       numero
-                                 );
-                              }
                            });
                         }}
                      ></Button>

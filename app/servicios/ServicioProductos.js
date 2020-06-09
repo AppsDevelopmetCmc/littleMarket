@@ -10,11 +10,11 @@ export class ServicioProductos {
          .collection('productos')
          .doc(producto.id)
          .set(producto)
-         .then(function() {
-            Alert.alert('Producto agregado');
+         .then(function () {
+            Alert.alert('Informacion', 'Producto Creado Exitosamente');
          })
-         .catch(function(error) {
-            Alert.alert('error' + error);
+         .catch(function (error) {
+            Alert.alert('Se ha producido un error', error);
          });
    };
    eliminar = id => {
@@ -22,10 +22,10 @@ export class ServicioProductos {
          .collection('productos')
          .doc(id)
          .delete()
-         .then(function() {
+         .then(function () {
             console.log('Document successfully deleted!');
          })
-         .catch(function(error) {
+         .catch(function (error) {
             console.error('Error removing document: ', error);
          });
    };
@@ -39,17 +39,17 @@ export class ServicioProductos {
             precio: objeto.precio,
             imagen: objeto.imagen,
          })
-         .then(function() {
-            Alert.alert('actualizado');
+         .then(function () {
+            Alert.alert('Información','Producto Actualizado Exitosamente');
          })
-         .catch(function(error) {
-            Alert.alert('error' + error);
+         .catch(function (error) {
+            Alert.alert('Se ha producido un Error', error);
          });
    };
    registrarEscuchaTodas = (arreglo, fnRepintar) => {
       let arregloUtil = new ArregloUtil(arreglo);
-      global.db.collection('productos').onSnapshot(function(snapShot) {
-         snapShot.docChanges().forEach(function(change) {
+      global.db.collection('productos').onSnapshot(function (snapShot) {
+         snapShot.docChanges().forEach(function (change) {
             if (change.type == 'added') {
                arregloUtil.agregar(change.doc.data(), fnRepintar);
             }
@@ -67,7 +67,7 @@ export class ServicioProductos {
       global.db
          .collection('productos')
          .get()
-         .then(async function(coleccion) {
+         .then(async function (coleccion) {
             let documentos = coleccion.docs;
             let productos = [];
             for (let i = 0; i < documentos.length; i++) {
@@ -83,11 +83,11 @@ export class ServicioProductos {
                for (let j = 0; j < precios.length; j++) {
                   listaPrecios.push(precios[j].data());
                }
-               productos[i].listPrecios=listaPrecios;
+               productos[i].listPrecios = listaPrecios;
             }
             fnRepintar(productos);
          })
-         .catch(function(error) {
+         .catch(function (error) {
             console.log('Error getting document:', error);
          });
    };

@@ -65,7 +65,7 @@ export class ServicioMonederos {
             console.log('monedero actualizado', datoValor);
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha Produciodo un Error' , error);
          });
    };
 }
