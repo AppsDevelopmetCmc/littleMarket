@@ -25,7 +25,7 @@ export default function PerfilUsuario(props) {
    );
    const [correoUsuario, setcorreoUsuario] = useState(global.appUsuario.id);
    const [telefonoUsuario, settelefonoUsuario] = useState(
-      global.appUsuario.telefono
+      global.appUsuario.telefonoCliente
    );
 
    // Variables de validacion
@@ -54,7 +54,9 @@ export default function PerfilUsuario(props) {
             if (doc.data()) {
                documento = doc.data();
                setNombreUsuario(documento.nombreCompleto);
-               settelefonoUsuario(documento.telefono);
+               settelefonoUsuario(documento.telefonoCliente);
+               global.appUsuario.telefono = documento.telefonoCliente;
+
             }
          })
          .catch(err => {
@@ -83,7 +85,7 @@ export default function PerfilUsuario(props) {
 
             setTelefonoValidacion('');
             global.appUsuario.nombreCompleto = nombreUsuario;
-            global.appUsuario.telefonoCliente = telefonoUsuario;
+            global.appUsuario.telefono = telefonoUsuario;
             global.db
                .collection('clientes')
                .doc(correoUsuario)
@@ -194,7 +196,17 @@ export default function PerfilUsuario(props) {
                         15,
                         'normal'
                      )}
-                     onChange={e => settelefonoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     onChange={e => {
+                        const re = /^[0-9]+$/;
+                        if (re.test(e.nativeEvent.text)) {
+                           settelefonoUsuario(e.nativeEvent.text)
+                           setTelefonoValidacion('')
+                        } else {
+                           setTelefonoValidacion(fonoInvalido)
+                        }
+
+                     }}
+                  // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   >
                      {telefonoUsuario}
                   </Input>

@@ -139,9 +139,8 @@ export class ConfirmarCompra extends Component {
       let numero, codigo;
       let limite = 10;
       if (!this.state.nombreCliente || !this.state.telefonoCliente) {
-         Alert.alert("Ingrese todos los Datos para la Entrega");
-      }
-      else {
+         Alert.alert('Ingrese todos los Datos para la Entrega');
+      } else {
          numero = await new ServicioParametros().obtenerSecuencial();
          if (numero) {
             new ServicioParametros().actualizarSecuencial(numero);
@@ -185,7 +184,7 @@ export class ConfirmarCompra extends Component {
    repintarUsuario = () => {
       console.log('REPINTAR:' + global.appUsuario.nombreCompleto);
       console.log('REPINTAR:' + global.appUsuario.telefonoCliente);
-      this.state({
+      this.setState({
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
       });
@@ -213,60 +212,22 @@ export class ConfirmarCompra extends Component {
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
                      <Card
-                        title="Fecha y Horario de Entrega"
-                        containerStyle={styles.contenedorTarjetas}
-                     >
-                        <View style={styles.contenedorFechas}>
-                           <View>
-                              <RNPickerSelect
-                                 onValueChange={value => console.log(value)}
-                                 items={this.state.fechas}
-                                 value={this.state.fechaSeleccionada}
-                                 style={pickerSelectStyles}
-                                 placeholder={{
-                                    label: 'Elija la fecha',
-                                    value: null,
-                                 }}
-                                 onValueChange={value => {
-                                    this.setState({
-                                       fechaSeleccionada: value,
-                                    });
-                                    global.fechaSeleccionada = value;
-                                 }}
-                              />
-                           </View>
-                           <View>
-                              <RNPickerSelect
-                                 onValueChange={value => console.log(value)}
-                                 items={this.state.horarios}
-                                 value={this.state.horarioSeleccionado}
-                                 style={pickerSelectStyles}
-                                 placeholder={{
-                                    label: 'Elija el horario',
-                                    value: null,
-                                 }}
-                                 onValueChange={value => {
-                                    this.setState({
-                                       horarioSeleccionado: value,
-                                    });
-                                    global.horarioSeleccionado = value;
-                                 }}
-                              />
-                           </View>
-                        </View>
-                     </Card>
-
-                     <Card
                         title="Datos de Entrega"
                         containerStyle={styles.contenedorTarjetas}
                      >
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ marginBottom: 5 }}>
-                                 Nombre:{'   ' + this.state.nombreCliente}
+                                 Nombre:
+                                 {this.state.nombreCliente
+                                    ? '   ' + this.state.nombreCliente
+                                    : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                               <Text style={{ marginBottom: 5 }}>
-                                 Teléfono: {' ' + this.state.telefonoCliente}
+                                 Teléfono:{' '}
+                                 {this.state.telefonoCliente
+                                    ? '' + this.state.telefonoCliente
+                                    : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>
@@ -293,8 +254,8 @@ export class ConfirmarCompra extends Component {
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text style={{ marginBottom: 4 }}>
-                                 Dirección:{this.state.direccion}
+                              <Text style={{ marginBottom: 4, fontSize: 13 }}>
+                                 Dirección: {this.state.direccion}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>
@@ -318,6 +279,44 @@ export class ConfirmarCompra extends Component {
                                  }
                               ></Button>
                            </View>
+                        </View>
+                        <View>
+                           <View>
+                              <RNPickerSelect
+                                 onValueChange={value => console.log(value)}
+                                 items={this.state.fechas}
+                                 value={this.state.fechaSeleccionada}
+                                 style={pickerSelectStyles}
+                                 useNativeAndroidPickerStyle={false}
+                                 placeholder={{
+                                    label: 'Elija la fecha',
+                                    value: null,
+                                 }}
+                                 onValueChange={value => {
+                                    this.setState({
+                                       fechaSeleccionada: value,
+                                    });
+                                    global.fechaSeleccionada = value;
+                                 }}
+                              />
+                           </View>
+                           <RNPickerSelect
+                              onValueChange={value => console.log(value)}
+                              items={this.state.horarios}
+                              value={this.state.horarioSeleccionado}
+                              style={pickerSelectStyles}
+                              placeholder={{
+                                 label: 'Elija el horario',
+                                 value: null,
+                              }}
+                              useNativeAndroidPickerStyle={false}
+                              onValueChange={value => {
+                                 this.setState({
+                                    horarioSeleccionado: value,
+                                 });
+                                 global.horarioSeleccionado = value;
+                              }}
+                           />
                         </View>
                      </Card>
                      <Card
@@ -502,7 +501,6 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            this.generarNumeroOrden(codigo => {
-
                               crearPedido(
                                  {
                                     fechaPedido: formatearFechaISO(fecha),
@@ -545,12 +543,11 @@ export class ConfirmarCompra extends Component {
                                  let numero = '593992920306';
                                  Linking.openURL(
                                     'whatsapp://send?text=' +
-                                    text +
-                                    '&phone=' +
-                                    numero
+                                       text +
+                                       '&phone=' +
+                                       numero
                                  );
                               }
-
                            });
                         }}
                      ></Button>
@@ -653,7 +650,7 @@ const flatListItemSeparator = () => {
 
 const pickerSelectStyles = StyleSheet.create({
    inputIOS: {
-      fontSize: 16,
+      fontSize: 13,
       paddingVertical: 12,
       paddingHorizontal: 10,
       borderWidth: 1,
@@ -663,11 +660,12 @@ const pickerSelectStyles = StyleSheet.create({
       paddingRight: 30, // to ensure the text is never behind the icon
    },
    inputAndroid: {
-      fontSize: 16,
+      fontSize: 13,
       paddingHorizontal: 10,
       paddingVertical: 8,
       borderWidth: 0.5,
-      borderColor: 'purple',
+      borderColor: colores.colorPrimarioTomate,
+      marginVertical: 2,
       borderRadius: 8,
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon

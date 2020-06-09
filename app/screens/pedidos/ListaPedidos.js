@@ -54,38 +54,8 @@ export class ListaPedidos extends Component {
                      name="menu"
                      type="material-community"
                      color={colores.colorBlanco}
-                     size={30}
+                     size={29.5}
                      onPress={this.abrirDrawer}
-                  />
-               }
-               iconoMonedero={
-                  <Icon
-                     name="coin"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirMonedero}
-                     underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-               iconoNotificacion={
-                  <Icon
-                     name="bell-circle-outline"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirNotificacion}
-                     underlayColor={colores.colorPrimarioVerde}
-                  />
-               }
-               iconoDeTienda={
-                  <Icon
-                     name="cart"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={30}
-                     onPress={this.abrirCarrito}
-                     underlayColor={colores.colorPrimarioVerde}
                   />
                }
             ></CabeceraPersonalizada>

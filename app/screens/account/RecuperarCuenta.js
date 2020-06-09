@@ -1,6 +1,12 @@
 //import liraries
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   SafeAreaView,
+   Alert,
+} from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de los colores
@@ -23,6 +29,7 @@ export default function RecuperarCuenta(props) {
    const [correo, setCorreo] = useState('');
    const [isVisibleLoading, setisVisibleLoading] = useState(false);
    const [errorMsgCorreo, seterrorMsgCorreo] = useState('');
+   const { navigation } = props;
 
    const requerido = 'Campo requerido *';
 
@@ -42,9 +49,24 @@ export default function RecuperarCuenta(props) {
                .sendPasswordResetEmail(correo)
                .then(function (user) {
                   console.log('envio de correo correcto');
+                  Alert.alert(
+                     '',
+                     'Correo Enviado',
+                     [
+                        {
+                           text: 'OK',
+                           onPress: () => navigation.goBack(),
+                        },
+                     ],
+                     { cancelable: false }
+                  );
                })
                .catch(function (e) {
                   console.log('error envio de correo', e);
+                  Alert.alert(
+                     '',
+                     'Correo Incorrecto o No Registrado'
+                  );
                });
          }
       }
