@@ -9,8 +9,9 @@ import {
    Alert,
    Modal,
    TouchableHighlight,
+   TextInput,
 } from 'react-native';
-import { Button, Card, Input } from 'react-native-elements';
+import { Button, Card } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -234,13 +235,14 @@ export class ConfirmarCompra extends Component {
                      >
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text style={{ marginBottom: 5 }}>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
                                  Nombre:
                                  {this.state.nombreCliente
                                     ? '   ' + this.state.nombreCliente
                                     : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
-                              <Text style={{ marginBottom: 5 }}>
+                              <Separador alto={7}></Separador>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
                                  Teléfono:{' '}
                                  {this.state.telefonoCliente
                                     ? '' + this.state.telefonoCliente
@@ -271,7 +273,7 @@ export class ConfirmarCompra extends Component {
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text style={{ marginBottom: 4, fontSize: 13 }}>
+                              <Text style={{ fontSize: 14 }}>
                                  Dirección: {this.state.direccion}
                               </Text>
                            </View>
@@ -297,6 +299,7 @@ export class ConfirmarCompra extends Component {
                               ></Button>
                            </View>
                         </View>
+                        <Separador alto={8}></Separador>
                         <View>
                            <View>
                               <RNPickerSelect
@@ -317,6 +320,7 @@ export class ConfirmarCompra extends Component {
                                  }}
                               />
                            </View>
+                           <Separador alto={5}></Separador>
                            <RNPickerSelect
                               onValueChange={value => console.log(value)}
                               items={this.state.horarios}
@@ -341,41 +345,29 @@ export class ConfirmarCompra extends Component {
                         title="Descuentos"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <View>
-                           <Text>
-                              Si posee un código promocional, ingréselo
-                           </Text>
-                        </View>
-                        <View style={{ alignItems: 'flex-end' }}>
-                           <TouchableHighlight
-                              underlayColor={colores.colorBlanco}
-                              onPress={() => {
-                                 this.setState({ mostrarPromociones: true });
+                        <View
+                           style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                           }}
+                        >
+                           <View
+                              style={{
+                                 flex: 6,
+                                 justifyContent: 'center',
+                                 marginRight: 10,
                               }}
                            >
-                              <View>
-                                 <Text
-                                    style={{
-                                       color: colores.colorPrimarioTomate,
-                                    }}
-                                 >
-                                    ¿Cómo obtener códigos?
-                                 </Text>
-                              </View>
-                           </TouchableHighlight>
-                        </View>
-                        <Text></Text>
-                        <View style={{ flexDirection: 'row' }}>
-                           <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Input
-                                 borderColor="gray"
+                              <TextInput
+                                 borderColor={colores.colorPrimarioTomate}
                                  padding={10}
                                  borderWidth={1}
+                                 fontSize={14}
                                  errorMessage={this.state.errorCodigoPromo}
                                  value={this.state.codigoPromo}
                                  autoCapitalize="characters"
-                                 // placeholder="Código"
-
+                                 borderRadius={8}
+                                 placeholder="Ingrese Código Promocional"
                                  onChangeText={text => {
                                     if (text.length <= 5) {
                                        this.setState({
@@ -385,7 +377,12 @@ export class ConfirmarCompra extends Component {
                                  }}
                               />
                            </View>
-                           <View style={{ flex: 1 }}>
+                           <View
+                              style={{
+                                 flex: 2,
+                                 alignItems: 'stretch',
+                              }}
+                           >
                               <Button
                                  onPress={() => {
                                     this.validarCodigoPromo();
@@ -405,7 +402,32 @@ export class ConfirmarCompra extends Component {
                               ></Button>
                            </View>
                         </View>
-                        <Text></Text>
+
+                        <View
+                           style={{ alignItems: 'flex-start', marginLeft: 10 }}
+                        >
+                           <TouchableHighlight
+                              underlayColor={colores.colorBlanco}
+                              onPress={() => {
+                                 this.setState({ mostrarPromociones: true });
+                              }}
+                           >
+                              <View
+                                 height={30}
+                                 paddingHorizontal={10}
+                                 alignItems="stretch"
+                                 justifyContent="center"
+                              >
+                                 <Text
+                                    style={{
+                                       color: colores.colorPrimarioTomate,
+                                    }}
+                                 >
+                                    ¿Cómo obtener Códigos?
+                                 </Text>
+                              </View>
+                           </TouchableHighlight>
+                        </View>
                         <View
                            style={{
                               flexDirection: 'row',
@@ -414,7 +436,7 @@ export class ConfirmarCompra extends Component {
                         >
                            <View
                               style={{
-                                 flex: 4,
+                                 flex: 6,
                                  //  backgroundColor: 'red',
                                  justifyContent: 'center',
                               }}
@@ -427,7 +449,12 @@ export class ConfirmarCompra extends Component {
                                  <Text> para descuentos </Text>
                               </View>
                            </View>
-                           <View style={{ flex: 2, alignItems: 'flex-end' }}>
+                           <View
+                              style={{
+                                 flex: 2,
+                                 alignItems: 'stretch',
+                              }}
+                           >
                               <Button
                                  onPress={() => {
                                     if (this.state.valorDescontado > 0) {
@@ -690,23 +717,24 @@ const flatListItemSeparator = () => {
 
 const pickerSelectStyles = StyleSheet.create({
    inputIOS: {
-      fontSize: 13,
+      fontSize: 14,
       paddingVertical: 12,
       paddingHorizontal: 10,
-      borderWidth: 1,
+      borderWidth: 2,
       borderColor: 'gray',
       borderRadius: 4,
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon
    },
    inputAndroid: {
-      fontSize: 13,
+      fontSize: 14,
       paddingHorizontal: 10,
       paddingVertical: 8,
-      borderWidth: 0.5,
+      // borderWidth: 0.5,
       borderColor: colores.colorPrimarioTomate,
       marginVertical: 2,
       borderRadius: 8,
+      borderWidth: 1,
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon
    },
