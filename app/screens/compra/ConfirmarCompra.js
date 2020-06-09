@@ -218,10 +218,16 @@ export class ConfirmarCompra extends Component {
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ marginBottom: 5 }}>
-                                 Nombre:{this.state.nombreCliente ? '   ' + this.state.nombreCliente : '_ _ _ _ _ _ _ _ _ _'}
+                                 Nombre:
+                                 {this.state.nombreCliente
+                                    ? '   ' + this.state.nombreCliente
+                                    : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                               <Text style={{ marginBottom: 5 }}>
-                                 Teléfono: {this.state.telefonoCliente ?  '' + this.state.telefonoCliente : '_ _ _ _ _ _ _ _ _ _'}
+                                 Teléfono:{' '}
+                                 {this.state.telefonoCliente
+                                    ? '' + this.state.telefonoCliente
+                                    : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>
