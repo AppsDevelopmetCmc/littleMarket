@@ -303,6 +303,28 @@ export class DetallePedido extends Component {
                         </View>
                      )}
                   </View>
+
+                  <View
+                     style={{
+                        //paddingLeft: 20,
+                        borderBottomWidth: 1,
+                        borderBottomColor: colores.colorOscuroPrimarioAmarillo,
+                        marginHorizontal: 20,
+                        paddingBottom: 10,
+                     }}
+                  >
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
+                     >
+                        YAPA
+                     </Text>
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
+                     >
+                        {this.pedido.yapa}
+                     </Text>
+                  </View>
+
                   <FlatList
                      data={this.state.listDetallePedido}
                      renderItem={objeto => {
