@@ -321,7 +321,7 @@ export class CarroCompras extends Component {
                         title="Confirmar"
                         onPress={() => {
                            if (this.state.subtotal > 10 && !global.yapa) {
-                              Alert.alert("Debe Selecionar su Yapa para poder continuar")
+                              Alert.alert("Debe selecionar su Yapa para poder continuar")
                            }
                            else {
                               this.props.navigation.navigate(
