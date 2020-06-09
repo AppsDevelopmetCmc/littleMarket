@@ -57,7 +57,6 @@ export const registrarEscucha = (mail, fnRepintar) => {
                if (change.type == 'added') {
                   //arregloUtil.agregar(change.doc.data(), fnRepintar);
                   global.items.push(change.doc.data());
-                  global.fnRepintar(global.items);
                }
                if (change.type == 'modified') {
                   console.log('dispara modified');
@@ -67,6 +66,7 @@ export const registrarEscucha = (mail, fnRepintar) => {
                   eliminar(change.doc.data(), global.fnRepintar);
                }
             });
+            global.fnRepintar(global.items);
          });
    }
 };

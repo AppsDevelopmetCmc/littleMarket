@@ -51,14 +51,16 @@ export class ItemCombo extends Component {
                   style={{
                      backgroundColor: colores.colorPrimarioTomate,
                      alignItems: 'center',
-                     paddingVertical: 10,
-                     marginLeft: 5,
+                     paddingVertical: 15,
+                     marginLeft: 10,
                      borderTopStartRadius: 30,
 
                      //marginTop: 20,
                   }}
                >
-                  <Text>{combo.nombre}</Text>
+                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+                     {combo.nombre}
+                  </Text>
                </View>
             ) : (
                <View
@@ -69,6 +71,10 @@ export class ItemCombo extends Component {
                   <View style={styles.colorLinea}></View>
                   <View style={styles.imagenes}>
                      <Avatar
+                        title="Y"
+                        placeholderStyle={{
+                           backgroundColor: colores.colorPrimarioTomate,
+                        }}
                         source={{ uri: this.props.combo.imagen }}
                         rounded
                         size={40}

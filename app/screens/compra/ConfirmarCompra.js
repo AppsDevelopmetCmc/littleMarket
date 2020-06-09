@@ -8,6 +8,7 @@ import {
    Linking,
    Alert,
    Modal,
+   TouchableHighlight,
 } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
@@ -31,6 +32,7 @@ import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
+import { Promociones } from './Promociones';
 
 export class ConfirmarCompra extends Component {
    constructor() {
@@ -55,6 +57,7 @@ export class ConfirmarCompra extends Component {
          mostrarCargando: false,
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
+         mostrarPromociones: false,
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -63,7 +66,10 @@ export class ConfirmarCompra extends Component {
       ];
    }
 
-   componentDidUpdate(prevProps, prevState) {
+   cerrarPromociones = () => {
+      this.setState({ mostrarPromociones: false });
+   };
+   /*componentDidUpdate(prevProps, prevState) {
       if (prevState.deshabilitado) {
          if (this.state.horarioSeleccionado && this.state.fechaSeleccionada) {
             this.setState({ deshabilitado: false });
@@ -86,7 +92,7 @@ export class ConfirmarCompra extends Component {
             }
          }
       }
-   }
+   }*/
    refrescarDireccion = () => {
       this.setState({ direccion: global.direccionPedido.descripcion });
    };
@@ -139,7 +145,18 @@ export class ConfirmarCompra extends Component {
       let numero, codigo;
       let limite = 10;
       if (!this.state.nombreCliente || !this.state.telefonoCliente) {
-         Alert.alert('Ingrese todos los Datos para la Entrega');
+         Alert.alert(
+            'Información',
+            'Debe ingresar el nombre y el teléfono del cliente'
+         );
+      } else if (
+         !this.state.horarioSeleccionado ||
+         !this.state.fechaSeleccionada
+      ) {
+         Alert.alert(
+            'Información',
+            'Debe elegir una fecha y horario de entrega'
+         );
       } else {
          numero = await new ServicioParametros().obtenerSecuencial();
          if (numero) {
@@ -319,29 +336,34 @@ export class ConfirmarCompra extends Component {
                            />
                         </View>
                      </Card>
-                     <Card
-                        title="Forma de Pago"
-                        containerStyle={styles.contenedorTarjetas}
-                     >
-                        <RadioForm
-                           radio_props={this.radio_props}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
-                           formHorizontal={true}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           onPress={value => {
-                              this.setState({ pagoSeleccionado: value });
-                              global.pagoSeleccionado = value;
-                           }}
-                        />
-                     </Card>
+
                      <Card
                         title="Descuentos"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <Text>Si posee un código promocional, ingréselo</Text>
+                        <View>
+                           <Text>
+                              Si posee un código promocional, ingréselo
+                           </Text>
+                        </View>
+                        <View style={{ alignItems: 'flex-end' }}>
+                           <TouchableHighlight
+                              underlayColor={colores.colorBlanco}
+                              onPress={() => {
+                                 this.setState({ mostrarPromociones: true });
+                              }}
+                           >
+                              <View>
+                                 <Text
+                                    style={{
+                                       color: colores.colorPrimarioTomate,
+                                    }}
+                                 >
+                                    ¿Cómo obtener códigos?
+                                 </Text>
+                              </View>
+                           </TouchableHighlight>
+                        </View>
                         <Text></Text>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
@@ -474,30 +496,33 @@ export class ConfirmarCompra extends Component {
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
                      </Card>
+                     <Card
+                        title="Forma de Pago"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <RadioForm
+                           radio_props={this.radio_props}
+                           buttonColor={colores.colorPrimarioTomate}
+                           selectedButtonColor={colores.colorPrimarioTomate}
+                           initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
+                           formHorizontal={true}
+                           buttonSize={15}
+                           buttonOuterSize={25}
+                           onPress={value => {
+                              this.setState({ pagoSeleccionado: value });
+                              global.pagoSeleccionado = value;
+                           }}
+                        />
+                     </Card>
                   </View>
 
-                  <Cargando
-                     text="Validando Código Promocional"
-                     isVisible={this.state.mostrarCargando}
-                  ></Cargando>
-                  <Modal
-                     animationType="slide"
-                     transparent={true}
-                     visible={this.state.mostrarModalDirecciones}
-                  >
-                     <SeleccionarDireccion
-                        mostrarModal={this.mostrarModal}
-                        fnSeleccionar={this.seleccionarDireccion}
-                        navigation={this.props.navigation}
-                     />
-                  </Modal>
                   <View style={styles.contenedorBoton}>
                      <Button
                         title="Finalizar compra"
                         containerStyle={styles.contenedorEstiloBoton}
                         buttonStyle={styles.estiloBoton}
                         titleStyle={styles.estiloTitulo}
-                        disabled={this.state.deshabilitado}
+                        //disabled={this.state.deshabilitado}
                         onPress={() => {
                            let fecha = new Date();
                            this.generarNumeroOrden(codigo => {
@@ -531,8 +556,12 @@ export class ConfirmarCompra extends Component {
                                     asociado: 'asociado@gmail.com',
                                     nombreAsociado: 'Juan perez',
                                     telefonoAsociado: '1245635',
-                                    yapa: global.yapa ? global.yapa.descripcion : "",
-                                    descuento: parseFloat(this.state.valorDescuento.toFixed(2))
+                                    yapa: global.yapa
+                                       ? global.yapa.descripcion
+                                       : '',
+                                    descuento: parseFloat(
+                                       this.state.valorDescuento.toFixed(2)
+                                    ),
                                  },
                                  items,
                                  this.cerrarPantalla
@@ -552,6 +581,28 @@ export class ConfirmarCompra extends Component {
                         }}
                      ></Button>
                   </View>
+                  <Cargando
+                     text="Validando Código Promocional"
+                     isVisible={this.state.mostrarCargando}
+                  ></Cargando>
+                  <Modal
+                     animationType="slide"
+                     transparent={true}
+                     visible={this.state.mostrarModalDirecciones}
+                  >
+                     <SeleccionarDireccion
+                        mostrarModal={this.mostrarModal}
+                        fnSeleccionar={this.seleccionarDireccion}
+                        navigation={this.props.navigation}
+                     />
+                  </Modal>
+                  <Modal
+                     // animationType="slide"
+                     transparent={true}
+                     visible={this.state.mostrarPromociones}
+                  >
+                     <Promociones cerrar={this.cerrarPromociones} />
+                  </Modal>
                </ScrollView>
             </View>
          </View>
@@ -597,7 +648,7 @@ const styles = StyleSheet.create({
    },
    contenedorTarjetas: {
       borderWidth: 1,
-      padding: 10,
+      // padding: 10,
       borderRadius: 15,
    },
    contenedorFechas: {

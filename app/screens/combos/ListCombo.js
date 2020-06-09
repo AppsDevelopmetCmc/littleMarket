@@ -29,6 +29,7 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
+import { Bienvenida } from '../combos/Bienvenida';
 /*const getToken= async()=>{
    const{status}= await Permisos.getAsync(Permisos.NOTIFICATIONS);
    if(status !== "granted"){
@@ -57,6 +58,7 @@ export class ListCombo extends Component {
          estadocalifica: false,
          valorMonedero: 0,
          numeroNotificaciones: 0,
+         mostrarInstrucciones: true,
       };
       let srvCombos = new ServicioCombos();
       srvCombos.recuperarItems(this.repintarLista);
@@ -172,7 +174,7 @@ export class ListCombo extends Component {
       console.log('mail', mail);
       console.log('Ingreso a recuperar el pedido');
 
-      await global.db
+      global.db
          .collection('pedidos')
          .where('mail', '==', mail)
          .where('estado', '==', 'PE')
@@ -180,7 +182,7 @@ export class ListCombo extends Component {
          .then(querySnapshot => {
             let pedido = {};
             querySnapshot.forEach(doc => {
-               console.log('doc', doc);
+               //   console.log('doc', doc);
                if (doc.exists) {
                   console.log('Pedido:', doc.data());
 
@@ -293,10 +295,12 @@ export class ListCombo extends Component {
          </View>
       );
    };
-
+   cerrarBienvenida = () => {
+      this.setState({ mostrarInstrucciones: false });
+   };
    render() {
       const BadgedIcon = withBadge(1)(Icon);
-      console.log('--------invoca a render');
+      console.log('--------ListCombo invoca a render');
       return (
          <SafeAreaView style={styles.container}>
             <View style={styles.cabeceraContenedor}>
@@ -493,6 +497,13 @@ export class ListCombo extends Component {
                   navigation={this.props.navigation}
                />
             </Modal>
+            <Modal
+               //animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarInstrucciones}
+            >
+               <Bienvenida cerrar={this.cerrarBienvenida}></Bienvenida>
+            </Modal>
 
             <View style={styles.pie}>
                <View style={styles.lista}>
@@ -514,7 +525,6 @@ export class ListCombo extends Component {
                </View>
             </View>
             <PopupCalificaciones
-               text="Iniciando Sesión con Facebook"
                isVisible={this.state.estadocalifica}
                pedido={this.state.pedidoCalifica}
                cambioVisibleCalifica={this.cambioVisibleCalifica}

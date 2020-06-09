@@ -37,7 +37,7 @@ export class ServicioMonederos {
          .collection('monederos')
          .doc(idMail)
          .onSnapshot(function (snapShot) {
-            console.log('snapShot', snapShot);
+            // console.log('snapShot', snapShot);
             fnRepintar(snapShot.data());
          });
    };
@@ -47,7 +47,7 @@ export class ServicioMonederos {
          .collection('monederos')
          .doc(idMail)
          .onSnapshot(function (snapShot) {
-            console.log('snapShot', snapShot);
+            // console.log('snapShot', snapShot);
             fnRepintar(snapShot.data());
          });
 
@@ -62,7 +62,7 @@ export class ServicioMonederos {
             valor: datoValor,
          })
          .then(function () {
-            console.log("monedero actualizado",datoValor)
+            console.log('monedero actualizado', datoValor);
          })
          .catch(function (error) {
             Alert.alert('error' + error);

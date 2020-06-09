@@ -89,7 +89,7 @@ export function PopupCalificaciones(props) {
          .get()
          .then(doc => {
             if (doc.exists) {
-               console.log('Document data:', doc.data());
+               //  console.log('Document data:', doc.data());
                manejoResp(doc.data().respPedido, doc.data().respProducto);
                setValidacionEstrellas(doc.data().minimo);
             } else {
