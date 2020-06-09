@@ -518,7 +518,7 @@ export class ConfirmarCompra extends Component {
                                        global.direccionPedido.descripcion,
                                     latitud: global.direccionPedido.latitud,
                                     longitud: global.direccionPedido.longitud,
-                                    telefono: global.appUsuario.telefono,
+                                    telefono: global.appUsuario.telefonoCliente,
                                     total: global.total,
                                     jornada: this.state.horarioSeleccionado
                                        .jornada,
