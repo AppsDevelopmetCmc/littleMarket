@@ -568,7 +568,8 @@ export class ConfirmarCompra extends Component {
                               );
                               if (global.pagoSeleccionado == 'TR') {
                                  let text =
-                                    'He completado mi pedido, solicito información para transferencia';
+                                    'He realizado el pedido: '+codigo+' por el monto '+
+                                    global.total+'.Solicito información para realizar la transferencia.';
                                  let numero = '593992920306';
                                  Linking.openURL(
                                     'whatsapp://send?text=' +

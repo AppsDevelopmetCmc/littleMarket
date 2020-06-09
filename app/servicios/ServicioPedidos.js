@@ -8,15 +8,25 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
       .collection('pedidos')
       .add(pedido)
       .then(function (doc) {
-         Alert.alert('Su pedido ha sido procesado');
-         for (let i = 0; i < items.length; i++) {
-            global.db
-               .collection('pedidos')
-               .doc(doc.id)
-               .collection('combos')
-               .doc(items[i].id)
-               .set(items[i]);
+         let descripcionALert='Su pedido ha sido procesado, con la orden: ';
+         if (pedido.formaPago === 'EFECTIVO') {
+            Alert.alert('Pedidio Creado',
+            descripcionALert + ''+pedido.orden);
          }
+         else
+         {
+            Alert.alert('Pedidio Creado',
+            descripcionALert+''+ pedido.orden 
+            +' Queda pendiente la confirmación de la transferencia, que se hará por whatsapp');
+         }
+            for (let i = 0; i < items.length; i++) {
+               global.db
+                  .collection('pedidos')
+                  .doc(doc.id)
+                  .collection('combos')
+                  .doc(items[i].id)
+                  .set(items[i]);
+            }
          new ServicioCarroCompras().eliminarCarro(global.usuario);
          fnCerrarPantalla();
          global.pagoSeleccionado = null;
