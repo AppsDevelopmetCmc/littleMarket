@@ -91,7 +91,7 @@ export class SeleccionarYapa extends Component {
    obtenerUbicacionActual = async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-         Alert.alert('Error al otorgar el permiso');
+         Alert.alert('Información','Error al otorgar el permiso');
          return;
       }
 
@@ -108,7 +108,7 @@ export class SeleccionarYapa extends Component {
    recuperarCoordenadas = async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-         Alert.alert('Error al otorgar el permiso');
+         Alert.alert('Información','Error al otorgar el permiso');
          return;
       }
 

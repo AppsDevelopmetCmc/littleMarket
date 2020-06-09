@@ -82,7 +82,7 @@ export class ServicioParametros {
             console.log('agregado');
          })
          .catch(function (error) {
-            Alert.alert('error' + error);
+            Alert.alert('Se ha producido un error', error);
          });
    };
 }

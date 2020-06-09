@@ -137,7 +137,7 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert('Información','La Dirección Seleccionada no tiene Cobertura');
       }
       this.setState({ mostrarModalDirecciones: false });
    };

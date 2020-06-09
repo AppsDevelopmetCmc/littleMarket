@@ -29,7 +29,7 @@ export class ServicioFacturas {
                 //Alert.alert('eliminando item');
             })
             .catch(function (error) {
-                Alert.alert('Error ' + error.message);
+                Alert.alert('Se ha producido un Error' , error.message);
             });
     };
     actualizarFactura = (objeto, id) => {
@@ -50,7 +50,7 @@ export class ServicioFacturas {
                 //  Alert.alert('Combo Actualizado');
             })
             .catch(function (error) {
-                Alert.alert('error' + error);
+                Alert.alert('Se ha producido un Error',error);
             });
     };
 

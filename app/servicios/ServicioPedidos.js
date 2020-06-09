@@ -61,7 +61,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          }
       })
       .catch(function (error) {
-         Alert.alert('error' + error);
+         Alert.alert('Se ha Producido un error', error);
       });
 };
 
