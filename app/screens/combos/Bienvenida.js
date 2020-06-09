@@ -33,7 +33,7 @@ export class Bienvenida extends Component {
                      resizeMode: 'cover',
                      justifyContent: 'flex-start',
                   }}
-                  source={require('../../imagenes/Bienvenida3.jpg')}
+                  source={require('../../imagenes/Bienvenida3.jpeg')}
                >
                   <View
                      style={{

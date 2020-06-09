@@ -8,6 +8,7 @@ export const convertir = (unidad, cantidad) => {
       global.unidadesSingular.set('cu', 'cubeta');
       global.unidadesSingular.set('at', 'atado');
       global.unidadesSingular.set('ar', 'arroba');
+      global.unidadesSingular.set('gr', 'gramo');
    }
    if (!global.unidadesPlural) {
       global.unidadesPlural = new Map();
@@ -18,6 +19,7 @@ export const convertir = (unidad, cantidad) => {
       global.unidadesPlural.set('cu', 'cubetas');
       global.unidadesPlural.set('at', 'atados');
       global.unidadesPlural.set('ar', 'arrobas');
+      global.unidadesPlural.set('gr', 'gramos');
    }
    if (cantidad == 1) {
       return cantidad + ' ' + global.unidadesSingular.get(unidad);
