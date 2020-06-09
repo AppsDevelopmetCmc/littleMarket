@@ -312,12 +312,17 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        Alert.alert(
-                           'Felicidades',
-                           'Usted tiene : $' +
-                              this.state.valorMonedero.toFixed(2) +
-                              ' para usar en su próxima compra'
-                        );
+                        if (
+                           this.state.valorMonedero &&
+                           this.state.valorMonedero > 0
+                        ) {
+                           Alert.alert(
+                              'Felicidades',
+                              'Usted tiene : $' +
+                                 this.state.valorMonedero.toFixed(2) +
+                                 ' para usar en su próxima compra'
+                           );
+                        }
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
