@@ -291,6 +291,7 @@ export class ListCombo extends Component {
          </View>
       );
    };
+
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--------invoca a render');
@@ -312,12 +313,17 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        Alert.alert(
-                           'Felicidades',
-                           'Usted tiene : $' +
-                              this.state.valorMonedero.toFixed(2) +
-                              ' para usar en su próxima compra'
-                        );
+                        if (
+                           this.state.valorMonedero &&
+                           this.state.valorMonedero > 0
+                        ) {
+                           Alert.alert(
+                              'Felicidades',
+                              'Usted tiene : $' +
+                                 this.state.valorMonedero.toFixed(2) +
+                                 ' para usar en su próxima compra'
+                           );
+                        }
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -327,7 +333,7 @@ export class ListCombo extends Component {
                               color={colores.colorBlanco}
                               type="material"
                               name="square-inc-cash"
-                              size={30}
+                              size={28}
                            />
                            {this.state.valorMonedero &&
                            this.state.valorMonedero > 0 ? (
@@ -362,7 +368,7 @@ export class ListCombo extends Component {
                               color={colores.colorBlanco}
                               type="material"
                               name="bell"
-                              size={30}
+                              size={28}
                            />
                            {this.state.numeroNotificaciones &&
                            this.state.numeroNotificaciones > 0 ? (
@@ -395,7 +401,7 @@ export class ListCombo extends Component {
                               color={colores.colorBlanco}
                               type="material"
                               name="cart"
-                              size={30}
+                              size={28}
                            />
                            {global.items && global.items.length > 0 ? (
                               <Badge
@@ -682,7 +688,6 @@ const styles = StyleSheet.create({
    },
    cabeceraBoton: {
       flex: 1,
-
       justifyContent: 'center',
       alignItems: 'center',
    },

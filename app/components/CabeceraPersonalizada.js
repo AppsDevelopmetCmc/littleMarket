@@ -28,7 +28,7 @@ export default function CabeceraPersonalizada(props) {
             <Text style={styles.titulo}>{titulo}</Text>
          </View>
          <View style={styles.cabeceraIcon}>
-            <Text style={styles.titulo}>${monedero}</Text>
+            <Text style={styles.titulo}>{monedero}</Text>
          </View>
 
          <View style={styles.cabeceraIcon}>{iconoDeTienda}</View>
@@ -41,19 +41,14 @@ export default function CabeceraPersonalizada(props) {
 const styles = StyleSheet.create({
    cabeceraContenedor: {
       flexDirection: 'row',
-      height: 50,
+      marginLeft: 10,
+      marginTop: 6,
    },
-   cabeceraBoton: {
-      flex: 1,
-
-      justifyContent: 'center',
-      alignItems: 'center',
-   },
+   cabeceraBoton: {},
    cabeceraTitulo: {
-      flex: 5,
       justifyContent: 'center',
       alignItems: 'flex-start',
-      marginHorizontal: 10,
+      marginHorizontal: 7,
       //backgroundColor: 'red',
    },
    titulo: {
