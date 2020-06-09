@@ -90,7 +90,7 @@ export class ListCombo extends Component {
    };
 
    componentDidMount() {
-      //  this.obtenerPedidoCalifica(global.usuario);
+      this.obtenerPedidoCalifica(global.usuario);
 
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
@@ -182,6 +182,8 @@ export class ListCombo extends Component {
             querySnapshot.forEach(doc => {
                console.log('doc', doc);
                if (doc.exists) {
+                  console.log('Pedido:', doc.data());
+
                   pedido = doc.data();
                   pedido.id = doc.id;
                   this.setState({
