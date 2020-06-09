@@ -11,7 +11,6 @@ export default function IniciarSesionFacebook(props) {
    const [isVisibleLoading, setIsVisibleLoading] = useState(false);
 
    const iniciaSesionFacebook = async () => {
-      console.log('Iniciando sesion con facebook');
       await Facebook.initializeAsync(FacebookApi.application_id);
       const {
          type,
@@ -20,8 +19,6 @@ export default function IniciarSesionFacebook(props) {
       } = await Facebook.logInWithReadPermissionsAsync({
          permissions: ['public_profile', 'email'],
       });
-      console.log('Expires: ' + expires);
-      console.log('Credenciales: ' + token);
 
       if (type === 'success') {
          setIsVisibleLoading(true);
@@ -35,16 +32,11 @@ export default function IniciarSesionFacebook(props) {
                console.log('Ingreso con facebook');
             })
             .catch(error => {
-               console.log('Crendenciales: ', credentials);
-
-               console.log('Error accediendo con facebook ', error);
                toastRef.current.show('Error accediendo con facebook ');
             });
       } else if (type === 'cancel') {
-         console.log('Inicio de Sesion Cancelado');
          toastRef.current.show('Inicio de Sesion Cancelado');
       } else {
-         console.log('Error desconocido, intentelo mas tarde');
          toastRef.current.show('Error desconocido, intentelo mas tarde');
       }
       setIsVisibleLoading(false);

@@ -74,16 +74,13 @@ export default function RegistroForm(props) {
                   seterrorMsgContraseña('');
                   seterrorMsgRepetirContraseña('');
                   //Borra la info del storage
-                  console.log('Borrando del storage:' + 'cobertura_' + email);
                   AsyncStorage.removeItem('cobertura_' + email);
                   await firebase
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
                      .then(user => {
-                        console.log('registrado', user);
 
                         let usuarioRegistrado = firebase.auth().currentUser;
-                        console.log('envía mail de verificacion');
                         usuarioRegistrado
                            .sendEmailVerification()
                            .then(function () {
@@ -116,7 +113,6 @@ export default function RegistroForm(props) {
             global.usuario.substring(3, 4) +
             numeroRandom,
       });
-      console.log('random.... ' + codigoReferido);
    };
 
    return (

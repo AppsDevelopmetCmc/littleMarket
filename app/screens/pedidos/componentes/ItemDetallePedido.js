@@ -60,9 +60,6 @@ export class ItemDetallePedido extends Component {
                   </Text>
                </View>
             </View>
-            <View style={styles.detalleContenido}>
-               <Text style={styles.textoNegrita}>Detalle:</Text>
-            </View>
          </View>
       );
    }

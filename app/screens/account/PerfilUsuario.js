@@ -20,7 +20,6 @@ export default function PerfilUsuario(props) {
    const toastRef = useRef();
 
    const { navigation } = props;
-   console.log('Perfil Prosp:', props);
    const [nombreUsuario, setNombreUsuario] = useState(
       global.appUsuario.nombreCompleto
    );
@@ -38,8 +37,6 @@ export default function PerfilUsuario(props) {
 
    const requerido = 'Campo requerido *';
    const fonoInvalido = 'Número celular invalido';
-
-   console.log('actualizaUsuario', actualizaUsuario);
 
    useEffect(() => {
       setnombreValidacion('');
@@ -85,12 +82,14 @@ export default function PerfilUsuario(props) {
             setnombreValidacion('');
 
             setTelefonoValidacion('');
+            global.appUsuario.nombreCompleto = nombreUsuario;
+            global.appUsuario.telefonoCliente = telefonoUsuario;
             global.db
                .collection('clientes')
                .doc(correoUsuario)
                .update({
                   nombreCompleto: nombreUsuario,
-                  telefono: telefonoUsuario,
+                  telefonoCliente: telefonoUsuario,
                })
                .then(regresoPagina)
                .catch(error => {
@@ -112,6 +111,9 @@ export default function PerfilUsuario(props) {
          ],
          { cancelable: false }
       );
+      if (global.repintarUsuario) {
+         global.repintarUsuario();
+      }
    };
    return (
       <SafeAreaView style={styles.contenedorPagina}>
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 30,
-     // paddingTop: 30,
+      // paddingTop: 30,
    },
    pie: {
       flex: 4,

@@ -43,43 +43,61 @@ export class ItemCombo extends Component {
    }
    render() {
       let combo = this.props.combo;
-      console.log('render item combo');
+
       return (
-         <View
-            style={this.state.checked ? styles.filaSeleccionada : styles.fila}
-         >
-            <View style={styles.colorLinea}></View>
-            <View style={styles.imagenes}>
-               <Avatar
-                  source={{ uri: this.props.combo.imagen }}
-                  rounded
-                  size={40}
-               ></Avatar>
-            </View>
-            <View style={styles.informacion}>
-               <View style={styles.descripcion}>
-                  <Text
-                     style={[
-                        textEstilo(colores.colorOscuroTexto, 16, 'bold'),
-                        //styles.textoNegrita,
-                     ]}
-                  >
-                     {this.props.combo.nombre}
-                  </Text>
-                  <Text
-                     style={[
-                        textEstilo(colores.colorOscuroTexto, 14),
-                        //styles.textoNegrita,
-                     ]}
-                  >
-                     {convertir(
-                        this.props.combo.unidad,
-                        this.props.combo.cantidad
-                     )}
-                  </Text>
+         <View>
+            {combo.tipo == 'S' ? (
+               <View
+                  style={{
+                     backgroundColor: colores.colorPrimarioTomate,
+                     alignItems: 'center',
+                     paddingVertical: 10,
+                     marginLeft: 5,
+                     borderTopStartRadius: 30,
+
+                     //marginTop: 20,
+                  }}
+               >
+                  <Text>{combo.nombre}</Text>
                </View>
-               <View style={styles.filaFlexEnd}>
-                  {/* <Text
+            ) : (
+               <View
+                  style={
+                     this.state.checked ? styles.filaSeleccionada : styles.fila
+                  }
+               >
+                  <View style={styles.colorLinea}></View>
+                  <View style={styles.imagenes}>
+                     <Avatar
+                        source={{ uri: this.props.combo.imagen }}
+                        rounded
+                        size={40}
+                     ></Avatar>
+                  </View>
+                  <View style={styles.informacion}>
+                     <View style={styles.descripcion}>
+                        <Text
+                           style={[
+                              textEstilo(colores.colorOscuroTexto, 16, 'bold'),
+                              //styles.textoNegrita,
+                           ]}
+                        >
+                           {this.props.combo.nombre}
+                        </Text>
+                        <Text
+                           style={[
+                              textEstilo(colores.colorOscuroTexto, 14),
+                              //styles.textoNegrita,
+                           ]}
+                        >
+                           {convertir(
+                              this.props.combo.unidad,
+                              this.props.combo.cantidad
+                           )}
+                        </Text>
+                     </View>
+                     <View style={styles.filaFlexEnd}>
+                        {/* <Text
                               style={textEstilo(
                                  colores.colorOscuroTexto,
                                  18,
@@ -89,46 +107,52 @@ export class ItemCombo extends Component {
                               USD:
                            </Text> */}
 
-                  <Text
-                     style={textEstilo(colores.colorOscuroTexto, 16, 'bold')}
-                  >
-                     {'$ ' + transformDinero(this.props.combo.precio)}
-                  </Text>
-               </View>
-            </View>
-            <View style={styles.checked}>
-               <CheckBox
-                  checked={this.state.checked}
-                  containerStyle={styles.contenedorCheckItem}
-                  onPress={() => {
-                     if (!this.state.checked) {
-                        agregarDisminuirItemCarro(
-                           {
-                              id: combo.id,
-                              nombre: combo.nombre,
-                              unidad: combo.unidad,
-                              cantidadItem: combo.cantidad,
-                              precio: combo.precio,
-                           },
-                           global.usuario,
-                           1
-                        );
-                     } else {
-                        eliminarItemCarro(
-                           {
-                              id: combo.id,
-                           },
-                           global.usuario
-                        );
-                     }
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              16,
+                              'bold'
+                           )}
+                        >
+                           {'$ ' + transformDinero(this.props.combo.precio)}
+                        </Text>
+                     </View>
+                  </View>
+                  <View style={styles.checked}>
+                     <CheckBox
+                        checked={this.state.checked}
+                        containerStyle={styles.contenedorCheckItem}
+                        onPress={() => {
+                           if (!this.state.checked) {
+                              agregarDisminuirItemCarro(
+                                 {
+                                    id: combo.id,
+                                    nombre: combo.nombre,
+                                    unidad: combo.unidad,
+                                    cantidadItem: combo.cantidad,
+                                    precio: combo.precio,
+                                 },
+                                 global.usuario,
+                                 1
+                              );
+                           } else {
+                              eliminarItemCarro(
+                                 {
+                                    id: combo.id,
+                                 },
+                                 global.usuario
+                              );
+                           }
 
-                     this.setState({ checked: !this.state.checked });
-                  }}
-                  checkedColor={colores.colorOscuroPrimarioTomate}
-                  size={22}
-                  uncheckedColor={colores.colorOscuroPrimario}
-               ></CheckBox>
-            </View>
+                           this.setState({ checked: !this.state.checked });
+                        }}
+                        checkedColor={colores.colorOscuroPrimarioTomate}
+                        size={22}
+                        uncheckedColor={colores.colorOscuroPrimario}
+                     ></CheckBox>
+                  </View>
+               </View>
+            )}
          </View>
       );
    }

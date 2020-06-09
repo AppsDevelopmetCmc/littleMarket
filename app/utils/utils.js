@@ -59,3 +59,29 @@ export const eliminar = (objeto, fnRepintar) => {
    }
    fnRepintar();
 };
+export const validarTelefono = (number) => {
+   let val = "N";
+   if (+number === +number && number.length == 10) {// valida que sea numero
+      val = "S";
+   } else (
+      val = "N"
+   )
+   return val;
+
+};
+export const validarCedula = (number, tipo) => {
+   let val = "N";
+   if (+number === +number) {// valida que sea numero
+      if (tipo == "Ruc" && number.length == 13) {
+         val = "S";
+      } else if (tipo == "Cédula" && number.length == 10) {
+         val = "S";
+      } else {
+         val = "N";
+      }
+   } else (
+      val = "N"
+   )
+   return val;
+
+};
