@@ -55,6 +55,8 @@ export default function PerfilUsuario(props) {
                documento = doc.data();
                setNombreUsuario(documento.nombreCompleto);
                settelefonoUsuario(documento.telefonoCliente);
+               global.appUsuario.telefono = documento.telefonoCliente;
+
             }
          })
          .catch(err => {
@@ -83,7 +85,7 @@ export default function PerfilUsuario(props) {
 
             setTelefonoValidacion('');
             global.appUsuario.nombreCompleto = nombreUsuario;
-            global.appUsuario.telefonoCliente = telefonoUsuario;
+            global.appUsuario.telefono = telefonoUsuario;
             global.db
                .collection('clientes')
                .doc(correoUsuario)
