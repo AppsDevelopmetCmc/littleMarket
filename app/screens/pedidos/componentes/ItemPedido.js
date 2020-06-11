@@ -16,6 +16,14 @@ export class ItemPedido extends Component {
    }
 
    componentWillReceiveProps(next_props) {
+      this.actualizarEstado(next_props);
+   }
+
+   componentDidMount() {
+      this.actualizarEstado(this.props);
+   }
+
+   actualizarEstado(next_props) {
       let arregloUtil = new ArregloUtil(ESTADOS.PEDIDOS);
       let indice = arregloUtil.buscar({ id: next_props.pedido.estado });
       let estadoFinal =

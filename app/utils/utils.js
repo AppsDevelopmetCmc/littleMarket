@@ -4,7 +4,7 @@ export class ArregloUtil {
       this.arreglo = arreglo;
    }
    agregar = (objeto, fnRepintar) => {
-      this.arreglo.push(objeto);
+      this.arreglo.unshift(objeto);
       fnRepintar(this.arreglo);
    };
    buscar = objeto => {
