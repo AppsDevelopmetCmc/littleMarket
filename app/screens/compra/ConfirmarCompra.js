@@ -11,7 +11,7 @@ import {
    TouchableHighlight,
    TextInput,
 } from 'react-native';
-import { Button, Card } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -138,7 +138,7 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('Información','La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert('Información', 'La Dirección Seleccionada no tiene Cobertura');
       }
       this.setState({ mostrarModalDirecciones: false });
    };
@@ -216,6 +216,13 @@ export class ConfirmarCompra extends Component {
       }
       this.setState({ mostrarCargando: false });
    };
+   irMapaDirecciones = () => {
+      console.log("Direccion Actual", global.direccionPedido)
+      this.props.navigation.navigate('MapaDirecciones', {
+         origen: 'actualizar',
+         direccion: global.direccionPedido,
+      });
+   }
    render() {
       let fechaActual = new Date();
 
@@ -226,7 +233,9 @@ export class ConfirmarCompra extends Component {
                   Confirmar compra
                </Text>
             </View> */}
+
             <View style={styles.pie}>
+
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
                      <Card
@@ -280,9 +289,7 @@ export class ConfirmarCompra extends Component {
                            <View style={{ flex: 1 }}>
                               <Button
                                  onPress={() => {
-                                    this.setState({
-                                       mostrarModalDirecciones: true,
-                                    });
+                                    this.irMapaDirecciones();
                                  }}
                                  buttonStyle={{
                                     backgroundColor:

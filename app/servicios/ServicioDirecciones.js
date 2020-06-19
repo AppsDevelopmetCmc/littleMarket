@@ -110,6 +110,39 @@ export class ServicioDirecciones {
       }
    };
 
+   registrarEscuchaMapaDireccion = (idCliente, fnRepintar) => {
+      let actualizarInfo = this.actualizarInfo;
+      let eliminar = this.eliminar;
+      global.fnRepintarDireccion = fnRepintar;
+      if (!global.direcciones) {
+         global.direcciones = [];
+         global.db
+            .collection('clientes')
+            .doc(idCliente)
+            .collection('direcciones')
+            .onSnapshot(function (snapShot) {
+               snapShot.docChanges().forEach(function (change) {
+                  let direccion = change.doc.data();
+                  direccion.id = change.doc.id;
+                  if (change.type == 'added') {
+                     global.direcciones.push(direccion);
+                  }
+                  if (change.type == 'modified') {
+                     actualizarInfo(direccion);
+                  }
+                  if (change.type == 'removed') {
+                     eliminar(direccion);
+                  }
+               });
+               global.fnRepintarDireccion(); 
+            });   
+             
+      }else{
+         global.fnRepintarDireccion();
+      }
+      
+   };
+
    getValidarCoberturaGlobal = async idCliente => {
       let coberturaGlobalDireccion = false;
       let coleccion = await global.db
@@ -156,6 +189,7 @@ export class ServicioDirecciones {
          .get();
       if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
          global.direccionPedido = respuesta.docs[0].data();
+         global.direccionPedido.id=respuesta.docs[0].id
          console.log('direccion pedido:', global.direccionPedido);
          fnRefrescarDireccion();
       } else {
@@ -191,6 +225,26 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .doc(idDireccion)
          .update({
+            referencia: referenciaDireccion.referencia,
+            alias: referenciaDireccion.alias,
+            principal: referenciaDireccion.principal,
+         })
+         .then(function () {
+            // Alert.alert('Datos de Referencia Actualizado');
+         })
+         .catch(function (error) {
+            Alert.alert('Se ha producido un Error' , error);
+         });
+   };
+
+   guardarDataReferencia = (idCliente, idDireccion, referenciaDireccion) => {
+      global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .doc(idDireccion)
+         .update({
+            descripcion:referenciaDireccion.descripcion,
             referencia: referenciaDireccion.referencia,
             alias: referenciaDireccion.alias,
             principal: referenciaDireccion.principal,

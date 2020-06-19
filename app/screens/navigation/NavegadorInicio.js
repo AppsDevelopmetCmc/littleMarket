@@ -44,6 +44,7 @@ import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
+import { MapaDirecciones } from '../map/MapaDirecciones'
 
 //Importando los colores
 import * as colores from '../../constants/Colores';
@@ -228,6 +229,18 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
+         <StackDirection.Screen
+            name="MapaDirecciones"
+            component={MapaDirecciones}
+            options={{
+               title: 'Seleccionar Ubicación',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }} />
       </StackFromTabs.Navigator>
    );
 }
@@ -488,8 +501,8 @@ export default function NavegadorInicio() {
                      Alert.alert(
                         'Info',
                         'Verifique su correo electrónico ' +
-                           user.email +
-                           ' para continuar'
+                        user.email +
+                        ' para continuar'
                      );
                      setLogin(false);
                      setTieneCobertura(false);
@@ -627,23 +640,23 @@ export default function NavegadorInicio() {
                tieneCobertura ? (
                   HomeDraw()
                ) : (
+                     <StackAuthentication.Navigator>
+                        <StackAuthentication.Screen
+                           name="DireccionStack"
+                           component={DirectionStack}
+                           options={navOptionHandler(false)}
+                        />
+                     </StackAuthentication.Navigator>
+                  )
+            ) : (
                   <StackAuthentication.Navigator>
                      <StackAuthentication.Screen
-                        name="DireccionStack"
-                        component={DirectionStack}
+                        name="LoginStack"
+                        component={LoginStack}
                         options={navOptionHandler(false)}
-                     />
+                     ></StackAuthentication.Screen>
                   </StackAuthentication.Navigator>
-               )
-            ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+               )}
          </NavigationContainer>
       );
    }
