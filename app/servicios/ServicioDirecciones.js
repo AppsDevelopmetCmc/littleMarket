@@ -17,7 +17,7 @@ export class ServicioDirecciones {
             }
          })
          .catch(function (error) {
-            Alert.alert('Se ha producido un Error' , error);
+            Alert.alert('Se ha producido un Error', error);
          });
       return id;
    };
@@ -38,7 +38,7 @@ export class ServicioDirecciones {
             //Alert.alert('Dirección Actualizada');
          })
          .catch(function (error) {
-            Alert.alert('Se ha producido un Error' , error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
    eliminarDir = (idCliente, idDireccion) => {
@@ -71,7 +71,7 @@ export class ServicioDirecciones {
       if (posicion != -1) {
          global.direcciones[posicion] = objeto;
       }
-      console.log('luego de actualizar smo:', global.direcciones);
+      //console.log('luego de actualizar smo:', global.direcciones);
       //fnRepintar();
    };
 
@@ -233,7 +233,7 @@ export class ServicioDirecciones {
             // Alert.alert('Datos de Referencia Actualizado');
          })
          .catch(function (error) {
-            Alert.alert('Se ha producido un Error' , error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 
@@ -278,7 +278,7 @@ export class ServicioDirecciones {
                   //console.log('Dirección principal Actualizado');
                })
                .catch(function (error) {
-                  Alert.alert('Se ha producido un Error' , error);
+                  Alert.alert('Se ha producido un Error', error);
                });
          }
       }

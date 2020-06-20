@@ -10,7 +10,7 @@ import * as colores from '../../constants/Colores';
 export class DetalleCombo extends Component {
    constructor(props) {
       super(props);
-      this.combo = this.props.route.params.combo;
+      this.combo = params.combo;
       let productosCombo = [];
       this.state = {
          cantidad: '0',

@@ -4,5 +4,6 @@ export function validateEmail(email) {
 }
 
 export function transformDinero(numero) {
-   return Number.parseFloat(numero).toFixed(2);
+   console.log('xxnumero:', numero);
+   return parseFloat(numero).toFixed(2);
 }

@@ -1,44 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
-import { AsyncStorage, Text, Alert, View } from 'react-native';
+import { Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+//NAVEGACION
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import {
-   createDrawerNavigator,
-   DrawerItemList,
-} from '@react-navigation/drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { cargarConfiguracion } from '../../utils/FireBase';
+//PANTALLLAS
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import DatosFacturacion from '../facturacion/datosFacturacion';
 import EditarDatosFacturacion from '../facturacion/editarDatosFacturacion';
-import { Button, Avatar, Input, Icon } from 'react-native-elements';
-import { consultarInformacion } from '../../servicios/ServicioUsuarios';
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Transferencia } from '../compra/Transferencia';
 import { CargarImagen } from '../compra/CargarImagen';
-
-// Importación Logueo y información de usuario
 import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
 import RecuperarCuenta from '../account/RecuperarCuenta';
-
-// Importaciones necesarias direcciones
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
 import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
 import { DireccionesCrud } from '../map/DireccionesCrud';
-
-// Splash de carga
-import Cargando from '../../components/Cargando';
-
-// Importaciones para el Inicio
 import { ListaPedidos } from '../pedidos/ListaPedidos';
-import { ListaProductos } from '../ListaProductos';
-import { ListCombo } from '../combos/ListCombo';
+import { ListaProductos } from '../productos/ListaProductos';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
@@ -46,17 +33,16 @@ import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
 import { MapaDirecciones } from '../map/MapaDirecciones'
 
-//Importando los colores
+//Componentes
+import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
-import { SafeAreaContext, SafeAreaView } from 'react-native-safe-area-context';
-
 import { Menu } from '../menu/Menu';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
 const StackDirection = createStackNavigator();
 const StackFromTabs = createStackNavigator();
-const TabHome = createBottomTabNavigator();
+//const TabHome = createBottomTabNavigator();
 const DrawerHome = createDrawerNavigator();
 
 if (!global.firebaseRegistrado) {
@@ -75,10 +61,10 @@ if (global.usuario == null) {
 }
 function ScreensFromTabs() {
    return (
-      <StackFromTabs.Navigator initialRouteName="HomeTabScreen">
+      <StackFromTabs.Navigator initialRouteName="ListaProductosScreen">
          <StackFromTabs.Screen
-            name="HomeTabScreen"
-            component={HomeTab}
+            name="ListaProductosScreen"
+            component={ListaProductos}
             options={navOptionHandler(false)}
          ></StackFromTabs.Screen>
          <StackFromTabs.Screen
@@ -387,44 +373,6 @@ function DirectionCrudStack() {
       </StackDirection.Navigator>
    );
 }
-function HomeTab() {
-   return (
-      <TabHome.Navigator
-         initialRouteName="ListaCombos"
-         screenOptions={({ route }) => ({
-            tabBarIcon: ({ color, size }) => {
-               let iconName;
-               let tipo = 'material-community';
-
-               if (route.name === 'ListaCombos') {
-                  iconName = 'store';
-               } else if (route.name === 'ListaPedidos') {
-                  iconName = 'basket';
-               }
-
-               return (
-                  <Icon name={iconName} size={size} color={color} type={tipo} />
-               );
-            },
-         })}
-         tabBarOptions={{
-            activeTintColor: colores.colorOscuroPrimarioVerde,
-            inactiveTintColor: colores.colorClaroTexto,
-         }}
-      >
-         <TabHome.Screen
-            name="ListaCombos"
-            component={ListCombo}
-            options={{ tabBarLabel: 'Inicio' }}
-         />
-         <TabHome.Screen
-            name="ListaPedidos"
-            component={ListaPedidos}
-            options={{ tabBarLabel: 'Mis Compras' }}
-         />
-      </TabHome.Navigator>
-   );
-}
 
 function HomeDraw() {
    return (
@@ -437,7 +385,7 @@ function HomeDraw() {
          <DrawerHome.Screen
             name="DirectionStack"
             component={DirectionStack}
-            options={{ drawerLabel: 'Direcciones' }}
+            options={{ el: 'Direcciones' }}
          />
          <DrawerHome.Screen
             name="DirectionCrudStack"
@@ -460,31 +408,13 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   const [tieneCobertura, setTieneCobertura] = useState(null);
-   const [intentos, setIntentos] = useState(0);
-   //const [verificarMail, setVerificarMail] = useState(false);
 
-   console.log('***NavegadorInicio render *****');
+   console.log('--NavegadorInicio render');
    if (!global.empiezaCarga) {
       global.empiezaCarga = new Date().getTime();
    }
 
-   global.activarCobertura = async bandera => {
-      console.log('ACTIVAR COBERTURA');
-      let banderaCobertura = bandera ? 'S' : 'N';
-      try {
-         console.log('GUARDA en el storage: cobertura_' + global.usuario);
-         await AsyncStorage.setItem(
-            'cobertura_' + global.usuario,
-            banderaCobertura
-         );
-      } catch (error) {
-         // Error saving data
-      }
-      setTieneCobertura(bandera);
-   };
-   // Funcion para recuperar info de logue
-   const infoLogin = async () => {
+   const validarLogin = async () => {
       try {
          firebase.auth().onAuthStateChanged(async user => {
             if (!user) {
@@ -492,65 +422,41 @@ export default function NavegadorInicio() {
             } else {
                global.infoUsuario = user.providerData[0];
                if (global.infoUsuario.providerId == 'password') {
-                  console.log('ingresa con clave');
-                  //if (intentos > 1) {
-
-                  //}
+                  console.log('--NavegadorInicio ingresa con usuario/clave');
                   if (!user.emailVerified) {
-                     //user.sendEmailVerification().then(function () {
                      Alert.alert(
-                        'Info',
+                        'Información',
                         'Verifique su correo electrónico ' +
                         user.email +
                         ' para continuar'
                      );
                      setLogin(false);
-                     setTieneCobertura(false);
-                     //});
                   } else {
+                     if (user) {
+                        global.usuario = user.email;
+                        global.infoUsuario = user.providerData[0];
+                        console.log(
+                           '--NavegadorInicio recupera info usuario mail verificado:',
+                           new Date().getTime() - global.empiezaCarga,
+                           global.infoUsuario
+                        );
+                        agregaInfo();
+                     }
                      setLogin(true);
                   }
                } else {
+                  if (user) {
+                     global.usuario = user.email;
+                     global.infoUsuario = user.providerData[0];
+                     console.log(
+                        '--NavegadorInicio recupera info usuario logueado por facebook o google:',
+                        new Date().getTime() - global.empiezaCarga,
+                        global.infoUsuario
+                     );
+                     agregaInfo();
+                  }
                   setLogin(true);
                }
-            }
-
-            // !user ? setLogin(false) : setLogin(true);
-
-            if (user) {
-               global.usuario = user.email;
-               global.infoUsuario = user.providerData[0];
-               console.log(
-                  '***NavegadorInicio info usuario:',
-                  new Date().getTime() - global.empiezaCarga,
-                  global.infoUsuario
-               );
-
-               try {
-                  const value = await AsyncStorage.getItem(
-                     'cobertura_' + global.usuario
-                  );
-                  console.log(
-                     'recupera del storage: cobertura_' + global.usuario,
-                     value
-                  );
-                  if (value == 'S') {
-                     // We have data!!
-
-                     //  setRecuperaCobertura(true);
-                     setTieneCobertura(true);
-                  } else if (value == 'N') {
-                     //setRecuperaCobertura(true);
-                     setTieneCobertura(false);
-                  } else {
-                     console.log('NO recupera del storage:', value);
-                     new ServicioDirecciones().tieneCobertura(global.usuario);
-                  }
-               } catch (error) {
-                  // Error retrieving data
-               }
-
-               agregaInfo();
             }
          });
       } catch (error) {
@@ -559,7 +465,7 @@ export default function NavegadorInicio() {
    };
 
    const agregaInfo = async () => {
-      console.log('ingreso a cargar la info del perfil');
+      console.log('--NavegadorInicio ingresa a cargar la info del perfil');
 
       let documento = {};
       await global.db
@@ -586,7 +492,7 @@ export default function NavegadorInicio() {
                   .doc(global.usuario)
                   .set(infoUsuarioGuardar)
                   .then(() => {
-                     console.log('agregado Correctamente');
+                     console.log('--NavegadorInicio agregado Correctamente');
                   })
                   .catch(error => {
                      console.log(error);
@@ -604,16 +510,16 @@ export default function NavegadorInicio() {
    useEffect(() => {
       if (login === null) {
          console.log(
-            '*** SMO *** dispara useEffect',
+            '--NavegadorInicio dispara useEffect',
             new Date().getTime() - global.empiezaCarga
          );
-         infoLogin();
+         validarLogin();
       }
    }, [login]);
 
    if (login === null) {
       console.log(
-         '*** SMO *** login es null',
+         '--NavegadorInicio login es null',
          new Date().getTime() - global.empiezaCarga
       );
       return (
@@ -624,39 +530,19 @@ export default function NavegadorInicio() {
          ></Cargando>
       );
    } else {
-      console.log(
-         '*** SMO *** login no es null / tieneCobertura',
-         new Date().getTime() - global.empiezaCarga,
-         tieneCobertura
-      );
-
-      if (tieneCobertura == null && login) {
-         return <Cargando isVisible={true} text="Cargando"></Cargando>;
-      }
-
       return (
          <NavigationContainer>
             {login ? (
-               tieneCobertura ? (
-                  HomeDraw()
-               ) : (
-                     <StackAuthentication.Navigator>
-                        <StackAuthentication.Screen
-                           name="DireccionStack"
-                           component={DirectionStack}
-                           options={navOptionHandler(false)}
-                        />
-                     </StackAuthentication.Navigator>
-                  )
+               HomeDraw()
             ) : (
-                  <StackAuthentication.Navigator>
-                     <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
-                        options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
-                  </StackAuthentication.Navigator>
-               )}
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
