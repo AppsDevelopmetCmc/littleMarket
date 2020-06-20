@@ -351,6 +351,7 @@ export class MapaDirecciones extends Component {
    onRegionChange = region => {
       this.setState({
          coordinate: { latitude: region.latitude, longitude: region.longitude },
+         region: region
       });
    };
    generarDireccion = info => {
