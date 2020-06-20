@@ -446,7 +446,6 @@ export class MapaDirecciones extends Component {
          principal: direccion.principal == 'S' ? true : false,
       });
 
-
    };
 
    actualizarDireccionPedido = () => {
@@ -460,7 +459,7 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.descripcion = this.state.direccion;
          this.direccionTmp.alias = this.state.alias;
          this.direccionTmp.referencia = this.state.referencia;
-         this.direccionTmp.principal = this.state.principal;
+         this.direccionTmp.principal = this.state.principal ? 'S' : 'N';
          global.direccionPedido = this.direccionTmp
          let srvDireccion = new ServicioDirecciones();
          srvDireccion.guardarDataReferencia(global.usuario, direccionPedido.id, this.direccionTmp
