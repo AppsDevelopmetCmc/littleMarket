@@ -28,6 +28,7 @@ import {
 import * as colores from '../../constants/Colores';
 import * as estilos from '../../estilos/estilos';
 import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion'
+import { ScrollView } from 'react-native-gesture-handler';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -463,14 +464,17 @@ export class MapaDirecciones extends Component {
 
       }
       if (validar) {
+         
          this.direccionTmp.descripcion = this.state.direccion;
-         this.direccionTmp.alias = this.state.alias;
          this.direccionTmp.referencia = this.state.referencia;
-         this.direccionTmp.principal = this.state.principal ? 'S' : 'N';
-         global.direccionPedido = this.direccionTmp
+         this.direccionTmp.principal = 'S';
+         this.direccionTmp.itemSeleccionado = true;
+         global.direccionPedido = this.direccionTmp;
+         console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
-         srvDireccion.guardarDataReferencia(global.usuario, direccionPedido.id, this.direccionTmp
-         )
+         srvDireccion.actualizarPrincipalTodosNo(global.usuario);
+         srvDireccion.guardarDataReferencia(global.usuario, direccionPedido.id, this.direccionTmp);
+         console.log('Envia Confirmar');
          this.setState({ mostrarModal: false })
          this.props.navigation.navigate('ConfirmarCompraScreen');
       }
@@ -575,10 +579,9 @@ export class MapaDirecciones extends Component {
                      </View>
                   </View>
                </Modal>
-               <View style={{flex:1, flexDirection: 'row', justifyContent:'flex-end', alignItems:'stretch'}}>
-               
+               <View>
                <Button
-                     buttonStyle={estilos.botones.blanco}
+                     buttonStyle={estilos.botones.blancoRight}
                      titleStyle={estilos.textos.botonBlanco}
                      title="Agregar nueva ubicación"
                      onPress={() => {
@@ -599,9 +602,7 @@ export class MapaDirecciones extends Component {
                         />
                      }
                   />
-               
-               </View>
-               <View style={styles.lista}>
+               <ScrollView style={styles.lista}>
                   <FlatList
                      data={this.state.listaDirecciones}
                      renderItem={objeto => {
@@ -617,7 +618,7 @@ export class MapaDirecciones extends Component {
                      }}
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
-               </View>
+               </ScrollView>
                <Button
                   buttonStyle={{ backgroundColor: colores.colorPrimarioTomate }}
                   title={this.pintarElemento ? 'GUARDAR' : 'GUARDAR SELECCIONADO'}
@@ -625,6 +626,7 @@ export class MapaDirecciones extends Component {
                      this.setState({ mostrarModal: true })
                   }}
                />
+               </View>
             </View>
          </View>
       );

@@ -237,21 +237,26 @@ export class ServicioDirecciones {
          });
    };
 
-   guardarDataReferencia = (idCliente, idDireccion, referenciaDireccion) => {
-      global.db
+   guardarDataReferencia = async (idCliente, idDireccion, referenciaDireccion) => {
+      console.log('Entra a actualizar');
+      console.log(idCliente)
+      console.log(idDireccion)
+      await global.db
          .collection('clientes')
          .doc(idCliente)
          .collection('direcciones')
          .doc(idDireccion)
          .update({
-            descripcion:referenciaDireccion.descripcion,
+            descripcion: referenciaDireccion.descripcion,
             referencia: referenciaDireccion.referencia,
             principal: referenciaDireccion.principal,
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');
+            console.log('Datos de Referencia Actualizado');
          })
          .catch(function (error) {
+            console.log('Error Datos de Referencia Actualizado');
             Alert.alert('Se ha producido un Error' , error);
          });
    };

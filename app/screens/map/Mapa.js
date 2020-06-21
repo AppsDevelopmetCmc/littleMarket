@@ -259,9 +259,10 @@ export class Mapa extends Component {
          );
          // console.log('idDireccionCreada', idDireccionCreada);
          this.idDireccion = idDireccionCreada;
-         // console.log('idDireccion', this.idDireccion);
+         console.log('idDireccion NME', this.idDireccion);
          if (this.idDireccion != undefined) {
             if (this.pantallaOrigen == 'ConfirmarCompra') {
+               console.log('navigation Confirmar compra NME');
                this.props.navigation.navigate('ConfirmarCompraScreen');
             } else {
                this.setState({ mostrarModal: true });

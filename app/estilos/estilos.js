@@ -28,4 +28,12 @@ export const botones = StyleSheet.create({
       padding: 0,
       margin: 0,
    },
+   blancoRight: {
+      backgroundColor: colores.colorBlanco,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      padding: 0,
+      margin: 0,
+   },
 });

@@ -79,13 +79,14 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
+      console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
       this.unsubscribe = srvMonederos.registarEscuchaMonederoCompra(
          global.usuario,
          this.repintarMonedero
       );
-      console.log('Aqui');
+      
    }
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
