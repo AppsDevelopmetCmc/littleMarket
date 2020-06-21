@@ -41,6 +41,7 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
+  
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -70,30 +71,7 @@ export class ConfirmarCompra extends Component {
    cerrarPromociones = () => {
       this.setState({ mostrarPromociones: false });
    };
-   /*componentDidUpdate(prevProps, prevState) {
-      if (prevState.deshabilitado) {
-         if (this.state.horarioSeleccionado && this.state.fechaSeleccionada) {
-            this.setState({ deshabilitado: false });
-         }
-         if (
-            this.state.horarioSeleccionado != prevState.horarioSeleccionado &&
-            !prevState.deshabilitado
-         ) {
-            if (!this.state.horarioSeleccionado) {
-               this.setState({ deshabilitado: true });
-            }
-         }
 
-         if (
-            this.state.fechaSeleccionada != prevState.fechaSeleccionada &&
-            !prevState.deshabilitado
-         ) {
-            if (!this.state.fechaSeleccionada) {
-               this.setState({ deshabilitado: true });
-            }
-         }
-      }
-   }*/
    refrescarDireccion = () => {
       this.setState({ direccion: global.direccionPedido.descripcion });
    };
@@ -126,10 +104,6 @@ export class ConfirmarCompra extends Component {
    cerrarPantalla = () => {
       this.props.navigation.popToTop();
    };
-   /* recuperarCobertura = () => {
-      let servDirecciones = new ServicioDirecciones();
-      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
-   };*/
    mostrarModal = bandera => {
       this.setState({ mostrarModalDirecciones: bandera });
    };

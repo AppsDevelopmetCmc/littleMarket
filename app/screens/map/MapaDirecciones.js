@@ -13,6 +13,7 @@ import { Button, CheckBox, Text } from 'react-native-elements';
 import MapInput from '../../components/MapInput';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Input } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import Geocoder from 'react-native-geocoding';
 import _ from 'lodash';
@@ -25,6 +26,7 @@ import {
 } from '../../constants/Colores';
 
 import * as colores from '../../constants/Colores';
+import * as estilos from '../../estilos/estilos';
 import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion'
 
 let { width, height } = Dimensions.get('window');
@@ -149,9 +151,12 @@ export class MapaDirecciones extends Component {
 
    repintarLista = () => {
       //  this.validarCoberturaGlobalDireccion();
-      console.log("montado", this.montado)
+      const direcciones= global.direcciones;
+      
       this.setState({
-         listaDirecciones: global.direcciones,
+         listaDirecciones: direcciones.map(function(item) {
+            return {...item, itemSeleccionado: global.direccionPedido.id == item.id ? true : false};
+         }),
       });
 
    };
@@ -446,7 +451,8 @@ export class MapaDirecciones extends Component {
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
       });
-
+      global.direccionPedido = direccion;
+      this.repintarLista();
    };
 
    actualizarDireccionPedido = () => {
@@ -502,6 +508,7 @@ export class MapaDirecciones extends Component {
                      ref={map => (this.map = map)}
                      onLayout={this.onMapLayout}
                      initialRegion={this.state.region}
+                     region={this.state.region}
                      onRegionChangeComplete={region => {
                         this.onRegionChangeComplete(region);
                      }}
@@ -536,67 +543,24 @@ export class MapaDirecciones extends Component {
                            value={this.state.direccion}
                            placeholder="Nombre Direccion"
                            label="Dirección"
+                           multiline={true}
                            onChangeText={text => {
                               this.setState({ direccion: text });
                            }}
                         />
                         <Input
-                           value={this.state.alias}
-                           placeholder="Casa/Oficina"
-                           label="Alias"
+                           value={this.state.referencia}
+                           placeholder="Piso / Color de casa/ N- Oficina/ Indicaciones"
+                           label="Referencia"
+                           multiline={true}
                            onChangeText={text => {
-                              this.setState({ alias: text });
+                              this.setState({ referencia: text });
                            }}
                         />
-                        <View>
-                           <View style={{ alignItems: 'center' }}>
-                              <Text> Referencia </Text>
-                           </View>
-                           <View>
-                              <TextInput
-                                 style={styles.textArea}
-                                 placeholder="Color de casa/ N- Oficina/ Indicaciones"
-                                 multiline={true}
-                                 borderBottomColor={colores.colorPrimarioTomate}
-                                 borderBottomWidth={3}
-                                 borderLeftColor={colores.colorPrimarioTomate}
-                                 borderLeftWidth={3}
-                                 borderRightColor={colores.colorPrimarioTomate}
-                                 borderRightWidth={3}
-                                 editable={true}
-                                 value={this.state.referencia}
-                                 onChangeText={(text) => {
-                                    this.setState(() => {
-                                       this.setState({ referencia: text });
-                                    })
-                                 }} />
-
-                              <Text style={{
+                         <Text style={{
                                  color: 'red'
                               }}>{this.state.validarReferencia}</Text>
-                           </View>
-                        </View>
-                        {this.tieneCoberturaDireccion ? (
-                           <CheckBox
-                              title="Dirección Principal"
-                              checked={this.state.principal}
-                              checkedColor={colores.colorPrimarioTomate}
-                              onPress={() => {
-                                 if (this.state.principal) {
-                                    Alert.alert(
-                                       'Info',
-                                       'Para cambiar este valor, seleccione otra dirección como principal'
-                                    );
-                                 } else {
-                                    this.setState({
-                                       principal: !this.state.principal,
-                                    });
-                                 }
-                              }}
-                           />
-                        ) : (
-                              <View></View>
-                           )}
+                   
 
                         <Button
                            title="OK Referencia"
@@ -611,14 +575,32 @@ export class MapaDirecciones extends Component {
                      </View>
                   </View>
                </Modal>
+               <View style={{flex:1, flexDirection: 'row', justifyContent:'flex-end', alignItems:'stretch'}}>
+               
                <Button
-                  buttonStyle={{ backgroundColor: colores.colorPrimarioTomate }}
-                  title={this.pintarElemento ? 'GUARDAR' : 'Ok'}
-                  onPress={() => {
-                     this.setState({ mostrarModal: true })
-                  }}
-               />
-
+                     buttonStyle={estilos.botones.blanco}
+                     titleStyle={estilos.textos.botonBlanco}
+                     title="Agregar nueva ubicación"
+                     onPress={() => {
+                        this.props.navigation.navigate(
+                           'BusquedaDireccionesScreen',
+                           {
+                              origen: 'nuevo',
+                              pantallaOrigen: 'ConfirmarCompra',
+                           }
+                        );
+                     }}
+                     icon={
+                        <Icon
+                           name="map-marker"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
+                        />
+                     }
+                  />
+               
+               </View>
                <View style={styles.lista}>
                   <FlatList
                      data={this.state.listaDirecciones}
@@ -636,6 +618,13 @@ export class MapaDirecciones extends Component {
                      ItemSeparatorComponent={flatListItemSeparator}
                   />
                </View>
+               <Button
+                  buttonStyle={{ backgroundColor: colores.colorPrimarioTomate }}
+                  title={this.pintarElemento ? 'GUARDAR' : 'GUARDAR SELECCIONADO'}
+                  onPress={() => {
+                     this.setState({ mostrarModal: true })
+                  }}
+               />
             </View>
          </View>
       );
@@ -680,12 +669,15 @@ const styles = StyleSheet.create({
    },
    centeredView: {
       flex: 1,
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0,0,0,0.75)',
+      paddingVertical: 50,
       alignItems: 'stretch',
       marginTop: 22,
    },
    modalView: {
       margin: 20,
-      backgroundColor: 'white',
+      backgroundColor: colores.colorBlanco,
       borderRadius: 20,
       padding: 35,
       shadowColor: '#000',

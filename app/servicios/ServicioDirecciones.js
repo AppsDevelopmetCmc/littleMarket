@@ -246,7 +246,6 @@ export class ServicioDirecciones {
          .update({
             descripcion:referenciaDireccion.descripcion,
             referencia: referenciaDireccion.referencia,
-            alias: referenciaDireccion.alias,
             principal: referenciaDireccion.principal,
          })
          .then(function () {

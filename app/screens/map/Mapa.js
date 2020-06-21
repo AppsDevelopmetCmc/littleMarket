@@ -257,11 +257,16 @@ export class Mapa extends Component {
             global.usuario,
             nuevaDireccion
          );
-         console.log('idDireccionCreada', idDireccionCreada);
+         // console.log('idDireccionCreada', idDireccionCreada);
          this.idDireccion = idDireccionCreada;
-         console.log('idDireccion', this.idDireccion);
+         // console.log('idDireccion', this.idDireccion);
          if (this.idDireccion != undefined) {
-            this.setState({ mostrarModal: true });
+            if (this.pantallaOrigen == 'ConfirmarCompra') {
+               this.props.navigation.navigate('ConfirmarCompraScreen');
+            } else {
+               this.setState({ mostrarModal: true });
+            }
+            
          }
          //this.props.navigation.navigate('Direcciones');
       } else {

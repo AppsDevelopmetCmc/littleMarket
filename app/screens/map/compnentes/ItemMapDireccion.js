@@ -7,22 +7,31 @@ import * as colores from '../../../constants/Colores';
 export class ItemMapDireccion extends Component {
    constructor(props) {
       super(props);
-      
+
       this.cobertura = false;
+   }
+   componentDidMount() {
       if (this.props.direccion.tieneCobertura == 'S') {
          this.cobertura = true;
       }
-      this.state = {
-         direccionSelecionada:global.direccionPedido.id==this.props.direccion.id?true:false
-      }
+
    }
    render() {
       return (
-         <View style={this.state.direccionSelecionada ? styles.filaSeleccionada : styles.fila}>
+         <View
+            style={
+               this.props.direccion.itemSeleccionado
+                  ? styles.filaSeleccionada
+                  : styles.fila
+            }
+         >
             <View style={styles.touch}>
                <TouchableOpacity
                   onPress={() => {
                      this.props.fnActualizar(this.props.direccion);
+                     this.setState({
+                        direccionSelecionada:true,
+                     });
                   }}
                >
                   <View style={styles.contenido}>
@@ -44,7 +53,6 @@ export class ItemMapDireccion extends Component {
                            )}
                         </View>
                         <View style={styles.descripcion}>
-                           <Text style={styles.texto}>{this.props.direccion.alias}</Text>
                            <Text style={styles.texto}>
                               {this.props.direccion.descripcion}
                            </Text>
@@ -53,22 +61,7 @@ export class ItemMapDireccion extends Component {
                   </View>
                </TouchableOpacity>
             </View>
-            {/* <View style={styles.contenedorEliminar}>
-               <Button
-                  buttonStyle={styles.estiloBotonEliminar}
-                  onPress={() => {
-                     this.props.fnEliminar(this.props.direccion.id);
-                  }}
-                  icon={
-                     <Icon
-                        name="delete"
-                        size={15}
-                        color={colores.colorBlanco}
-                        style={styles.iconoStilos}
-                     />
-                  }
-               />
-            </View> */}
+           
          </View>
       );
    }
@@ -122,5 +115,5 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioAmarilloRgba,
       marginTop: 5,
       borderRadius: 15,
-    },
+   },
 });
