@@ -11,7 +11,7 @@ import {
    TouchableHighlight,
    TextInput,
 } from 'react-native';
-import { Button, Card } from 'react-native-elements';
+import { Button, Card, Input } from 'react-native-elements';
 import { crearPedido } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
@@ -41,6 +41,7 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
+  
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -70,30 +71,7 @@ export class ConfirmarCompra extends Component {
    cerrarPromociones = () => {
       this.setState({ mostrarPromociones: false });
    };
-   /*componentDidUpdate(prevProps, prevState) {
-      if (prevState.deshabilitado) {
-         if (this.state.horarioSeleccionado && this.state.fechaSeleccionada) {
-            this.setState({ deshabilitado: false });
-         }
-         if (
-            this.state.horarioSeleccionado != prevState.horarioSeleccionado &&
-            !prevState.deshabilitado
-         ) {
-            if (!this.state.horarioSeleccionado) {
-               this.setState({ deshabilitado: true });
-            }
-         }
 
-         if (
-            this.state.fechaSeleccionada != prevState.fechaSeleccionada &&
-            !prevState.deshabilitado
-         ) {
-            if (!this.state.fechaSeleccionada) {
-               this.setState({ deshabilitado: true });
-            }
-         }
-      }
-   }*/
    refrescarDireccion = () => {
       this.setState({ direccion: global.direccionPedido.descripcion });
    };
@@ -101,13 +79,14 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
+      console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
       this.unsubscribe = srvMonederos.registarEscuchaMonederoCompra(
          global.usuario,
          this.repintarMonedero
       );
-      console.log('Aqui');
+      
    }
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
@@ -126,10 +105,6 @@ export class ConfirmarCompra extends Component {
    cerrarPantalla = () => {
       this.props.navigation.popToTop();
    };
-   /* recuperarCobertura = () => {
-      let servDirecciones = new ServicioDirecciones();
-      servDirecciones.getTieneCobertura(global.usuario, this.repintarDireccion);
-   };*/
    mostrarModal = bandera => {
       this.setState({ mostrarModalDirecciones: bandera });
    };
@@ -138,7 +113,7 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('Información','La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert('Información', 'La Dirección Seleccionada no tiene Cobertura');
       }
       this.setState({ mostrarModalDirecciones: false });
    };
@@ -216,6 +191,13 @@ export class ConfirmarCompra extends Component {
       }
       this.setState({ mostrarCargando: false });
    };
+   irMapaDirecciones = () => {
+      console.log("Direccion Actual", global.direccionPedido)
+      this.props.navigation.navigate('MapaDirecciones', {
+         origen: 'actualizar',
+         direccion: global.direccionPedido,
+      });
+   }
    render() {
       let fechaActual = new Date();
 
@@ -226,7 +208,9 @@ export class ConfirmarCompra extends Component {
                   Confirmar compra
                </Text>
             </View> */}
+
             <View style={styles.pie}>
+
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
                      <Card
@@ -280,9 +264,7 @@ export class ConfirmarCompra extends Component {
                            <View style={{ flex: 1 }}>
                               <Button
                                  onPress={() => {
-                                    this.setState({
-                                       mostrarModalDirecciones: true,
-                                    });
+                                    this.irMapaDirecciones();
                                  }}
                                  buttonStyle={{
                                     backgroundColor:

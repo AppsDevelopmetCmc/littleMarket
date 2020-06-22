@@ -108,6 +108,10 @@ export class ListaProductos extends Component {
          global.usuario,
          this.pintarSeleccionProductos
       );
+      new ServicioDirecciones().recuperarPrincipal(
+         global.usuario,
+         this.refrescarDireccion
+      );
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -115,10 +119,7 @@ export class ListaProductos extends Component {
       /*  if (this.notienecobertura == 'N') {
          Alert.alert('Información', 'No existe Cobertura para la Direccion ');
       }
-      new ServicioDirecciones().recuperarPrincipal(
-         global.usuario,
-         this.refrescarDireccion
-      );*/
+      */
       // getToken();
       //global.repintarSeleccionProductos = this.repintarSeleccionProductos;
       /* serviciosCarrito.registrarEscucha(
@@ -576,7 +577,7 @@ export class ListaProductos extends Component {
                   <View style={{ flex: 1 }}>
                      <TouchableHighlight
                         onPress={() => {
-                           Alert.alert('Confirmando Compra');
+                           this.props.navigation.navigate('ConfirmarCompraScreen');
                         }}
                      >
                         <View
