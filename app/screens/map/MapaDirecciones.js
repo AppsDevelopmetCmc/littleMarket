@@ -34,7 +34,7 @@ let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE = -1.831239;
 const LONGITUDE = -78.183403;
-const LATITUDE_DELTA = 0.02 / 2;
+const LATITUDE_DELTA = 0.02/2 ;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (ASPECT_RATIO);
 
 export class MapaDirecciones extends Component {
@@ -70,7 +70,8 @@ export class MapaDirecciones extends Component {
          referencia: '',
          principal: false,
          listaDirecciones: direcciones,
-         validarReferencia: ''
+         validarReferencia: '',
+         siguienteMapa: false,
       };
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
@@ -143,7 +144,8 @@ export class MapaDirecciones extends Component {
    componentWillReceiveProps(next_props) {
       console.log("props")
       if (next_props.route.params.origen == 'busquedaDirecciones') {
-         
+         let siguienteMapaActual = this.state.siguienteMapa
+
          let direccion = next_props.route.params.direccion
          this.setState({
             region: {
@@ -162,7 +164,7 @@ export class MapaDirecciones extends Component {
             alias: direccion.alias,
             referencia: direccion.referencia,
             principal: direccion.principal == 'S' ? true : false,
-
+            siguienteMapa: !siguienteMapaActual
          });
          this.repintarLista();
       }
@@ -385,7 +387,7 @@ export class MapaDirecciones extends Component {
    onRegionChange = region => {
       this.setState({
          coordinate: { latitude: region.latitude, longitude: region.longitude },
-         region: region
+         /* region: region*/
       });
    };
    generarDireccion = info => {
@@ -461,9 +463,11 @@ export class MapaDirecciones extends Component {
       this.setState({ direccion: nombreDireccion });
    };
    actualizarDireccion = (direccion) => {
-      Alert.alert("Información",'Los cambios se realizaran cuando presione el boton \n \"GUARDAR SELECCIONADO\"')
+      Alert.alert("Información", 'Los cambios se realizaran cuando presione el boton \n \"GUARDAR SELECCIONADO\"')
       this.direccionTmp = direccion;
       console.log("direccion", direccion)
+      let siguienteMapaActual = this.state.siguienteMapa
+      console.log("mapa Actual", siguienteMapaActual)
       this.setState({
          region: {
             latitude: direccion.latitud,
@@ -480,8 +484,10 @@ export class MapaDirecciones extends Component {
          alias: direccion.alias,
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
+         siguienteMapa: !siguienteMapaActual
       });
       global.direccionPedido = direccion;
+      console.log("siguienteMapa", this.state.siguienteMapa)
       this.repintarLista();
    };
 
@@ -535,8 +541,10 @@ export class MapaDirecciones extends Component {
                   <Text>{this.state.direccion}</Text>
                </View>
                {this.state.region ? (
+                  <View>
+                     {!this.state.siguienteMapa && (
                   <MapView
-                     style={{ width: width, height: ((height / 2) - 50) }}
+                     style={{ width: width, height: ((height /2) - 50) }}
                      provider={PROVIDER_GOOGLE}
                      mapType="standard"
                      showsScale
@@ -548,7 +556,6 @@ export class MapaDirecciones extends Component {
                      ref={map => (this.map = map)}
                      onLayout={this.onMapLayout}
                      initialRegion={this.state.region}
-                     region={this.state.region}
                      onRegionChangeComplete={region => {
                         this.onRegionChangeComplete(region);
                      }}
@@ -566,6 +573,41 @@ export class MapaDirecciones extends Component {
                         draggable={true}
                      />
                   </MapView>
+                  )}
+                  {this.state.siguienteMapa && (
+                  <MapView
+                     style={{ width: width, height: ((height / 2) - 50) }}
+                     provider={PROVIDER_GOOGLE}
+                     mapType="standard"
+                     showsScale
+                     showsCompass
+                     showsPointsOfInterest
+                     showsBuildings
+                     showsUserLocation
+                     loadingEnabled={true}
+                     ref={map => (this.map = map)}
+                     onLayout={this.onMapLayout}
+                     initialRegion={this.state.region}
+                     onRegionChangeComplete={region => {
+                        this.onRegionChangeComplete(region);
+                     }}
+                     onRegionChange={region => {
+                        this.onRegionChange(region);
+                     }}
+                  >
+                     <MapView.Marker
+                        title={this.state.direccion}
+                        Key={APIKEY}
+                        ref={marker => {
+                           this.marker = marker;
+                        }}
+                        coordinate={this.state.coordinate}
+                        draggable={true}
+                     />
+                  </MapView>
+                  )}
+                  </View>
+
                ) : (
                      <Text>Cargando</Text>
                   )}
@@ -634,27 +676,27 @@ export class MapaDirecciones extends Component {
                         />
                      }
                   />
-                 
+
                   <ScrollView style={styles.lista}>
-                  <View>
-                     <FlatList
-                        data={this.state.listaDirecciones}
-                        renderItem={objeto => {
-                           return (
-                              <ItemMapDireccion
-                                 direccion={objeto.item}
-                                 fnActualizar={this.actualizarDireccion}
-                              />
-                           );
-                        }}
-                        keyExtractor={objetoCombo => {
-                           return objetoCombo.id;
-                        }}
-                        ItemSeparatorComponent={flatListItemSeparator}
-                     />
+                     <View>
+                        <FlatList
+                           data={this.state.listaDirecciones}
+                           renderItem={objeto => {
+                              return (
+                                 <ItemMapDireccion
+                                    direccion={objeto.item}
+                                    fnActualizar={this.actualizarDireccion}
+                                 />
+                              );
+                           }}
+                           keyExtractor={objetoCombo => {
+                              return objetoCombo.id;
+                           }}
+                           ItemSeparatorComponent={flatListItemSeparator}
+                        />
                      </View>
                   </ScrollView>
-               
+
                </View>
             </View>
             <View >
@@ -665,7 +707,7 @@ export class MapaDirecciones extends Component {
                      this.setState({ mostrarModal: true })
                   }}
                />
-            </View> 
+            </View>
          </View>
       );
    }
@@ -697,8 +739,8 @@ const flatListItemSeparator = () => {
    );
 };
 const styles = StyleSheet.create({
-   lista:{
-       marginBottom:40
+   lista: {
+      marginBottom: 40
    },
    container: {
       flex: 1,
@@ -734,7 +776,7 @@ const styles = StyleSheet.create({
    },
    pie: {
       flex: 1,
-      backgroundColor: colores.colorBlanco,
+     /* backgroundColor: colores.colorBlanco,*/
       marginTop: 15,
       paddingTop: 20,
    },
