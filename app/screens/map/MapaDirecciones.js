@@ -776,7 +776,7 @@ const styles = StyleSheet.create({
    },
    pie: {
       flex: 1,
-     /* backgroundColor: colores.colorBlanco,*/
+      backgroundColor: colores.colorBlanco,
       marginTop: 15,
       paddingTop: 20,
    },
