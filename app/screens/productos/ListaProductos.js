@@ -36,6 +36,7 @@ import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
 import { Numero } from './Numero';
 import { transformDinero } from '../../utils/Validaciones';
+import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 
 export class ListaProductos extends Component {
    constructor(props) {
@@ -45,6 +46,7 @@ export class ListaProductos extends Component {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }*/
       global.categoria = 'V';
+      this.sector="";
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -334,6 +336,16 @@ export class ListaProductos extends Component {
    cerrarBienvenida = () => {
       this.setState({ mostrarInstrucciones: false });
    };
+
+    asignarSector = async() =>{
+      let srvCobertura = new ServicioCobertura();
+      this.sector = await srvCobertura.consultarCobertura(global.coordenadas.latitude, global.coordenadas.longitude)
+      console.log("LATITUD LONGITUD" + global.coordenadas.latitude +"="+global.coordenadas.longitude);
+      console.log("SECTOR" + this.sector.sector);
+      Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
+   }
+   
+
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--ListaProductos render');
@@ -577,6 +589,7 @@ export class ListaProductos extends Component {
                   <View style={{ flex: 1 }}>
                      <TouchableHighlight
                         onPress={() => {
+                           this.asignarSector();
                            this.props.navigation.navigate('ConfirmarCompraScreen');
                         }}
                      >
