@@ -15,6 +15,7 @@ import {
 import { colorOscuroTexto } from '../../constants/Colores';
 import * as colores from '../../constants/Colores';
 import { color } from 'react-native-reanimated';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 
 export class BusquedaDirecciones extends Component {
    constructor(props) {
@@ -22,6 +23,8 @@ export class BusquedaDirecciones extends Component {
       this.origen = this.props.route.params.origen;
       this.pantallaOrigen = this.props.route.params.pantallaOrigen;
       this.localizacionInicial = [];
+      this.tieneCoberturaDireccion = 'N';
+      this.idDireccion = '';
       this.state = {
          search: '',
          listaPredicciones: [],
@@ -60,20 +63,20 @@ export class BusquedaDirecciones extends Component {
       console.log('localization', this.localizacionInicial.coords);
       let response = await fetch(
          URLAUTOCOMPLETE +
-            '' +
-            search +
-            '&location=' +
-            this.localizacionInicial.coords.latitude +
-            ',' +
-            this.localizacionInicial.coords.longitude +
-            '&strictbouds&radius=' +
-            RADIO +
-            '&components=country:' +
-            PAIS +
-            '&key=' +
-            APIKEY +
-            '&sessiontoken=' +
-            this.sessionToken
+         '' +
+         search +
+         '&location=' +
+         this.localizacionInicial.coords.latitude +
+         ',' +
+         this.localizacionInicial.coords.longitude +
+         '&strictbouds&radius=' +
+         RADIO +
+         '&components=country:' +
+         PAIS +
+         '&key=' +
+         APIKEY +
+         '&sessiontoken=' +
+         this.sessionToken
       );
       let trama = await response.json();
       let tramaPredicciones = trama.predictions;
@@ -89,17 +92,100 @@ export class BusquedaDirecciones extends Component {
       this.setState({ listaPredicciones: direccionPredicciones });
    };
 
-   buscarCoordenadas = async placeId => {
+   buscarCoordenadas = async (placeId, descripcion) => {
       let response = await fetch(URLPLACEID + '' + placeId + '&key=' + APIKEY);
       let trama = await response.json();
       let coordenadas = await trama.results[0].geometry.location;
       console.log('coordenadas', coordenadas);
-      this.props.navigation.navigate('Mapa', {
-         origen: 'nuevo',
-         coordenadasBusqueda: coordenadas,
-         pantallaOrigen: this.pantallaOrigen,
-      });
+      if (this.pantallaOrigen == 'ConfirmarCompra') {
+         this.guardarDireccion(descripcion, coordenadas)
+      } else {
+         this.props.navigation.navigate('Mapa', {
+            origen: 'nuevo',
+            coordenadasBusqueda: coordenadas,
+            pantallaOrigen: this.pantallaOrigen,
+         });
+      }
       this.sessionToken = 0;
+   };
+
+
+   guardarDireccion = async (descripcion, coordenadas) => {
+      let servDireccion = new ServicioDirecciones();
+
+      this.validar(coordenadas.lat, coordenadas.lng);
+      let nuevaDireccion = {
+         descripcion: descripcion,
+         latitud: coordenadas.lat,
+         longitud: coordenadas.lng,
+         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         alias: '',
+         referencia: '',
+         principal: 'N'
+
+      };
+
+      let idDireccionCreada = await servDireccion.crear(
+         global.usuario,
+         nuevaDireccion
+      );
+      // console.log('idDireccionCreada', idDireccionCreada);
+      this.idDireccion = idDireccionCreada;
+      console.log('idDireccion NME', this.idDireccion);
+      if (this.idDireccion != undefined) {
+         nuevaDireccion.id = this.idDireccion;
+         global.direccionPedido = nuevaDireccion;
+         if (this.pantallaOrigen == 'ConfirmarCompra') {
+            this.props.navigation.navigate('MapaDirecciones', {
+               origen: 'busquedaDirecciones',
+               direccion: nuevaDireccion,
+            });
+         }
+
+      }
+      //this.props.navigation.navigate('Direcciones');
+   };
+   //Guardar Direcciones
+   validar = (lat, long) => {
+      let lat1 = lat;
+      let log1 = long;
+      for (let i = 0; i < global.coberturas.length; i++) {
+         let distancia = 0;
+         distancia = parseFloat(
+            this.getKilometros(
+               lat1,
+               log1,
+               global.coberturas[i].latitud,
+               global.coberturas[i].longitud
+            )
+         );
+         console.log('Kilomeros' + distancia);
+         if (distancia < global.parametrosGeo.cobertura) {
+            console.log('Ingresa');
+            this.tieneCoberturaDireccion = 'S';
+            break;
+         }
+      }
+   };
+
+   rad = x => {
+      return (x * Math.PI) / 180;
+   };
+
+   getKilometros = (lat1, lon1, lat2, lon2) => {
+      let R = 6378.137; //Radio de la tierra en km
+      let dLat = this.rad(lat2 - lat1);
+      console.log('rad1' + this.rad(lat2 - lat1));
+      let dLong = this.rad(lon2 - lon1);
+      let a =
+         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+         Math.cos(this.rad(lat1)) *
+         Math.cos(this.rad(lat2)) *
+         Math.sin(dLong / 2) *
+         Math.sin(dLong / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+      return d.toFixed(3); //Retorna tres decimales
    };
 
    render() {
@@ -152,13 +238,13 @@ export class BusquedaDirecciones extends Component {
                      />
                   </View>
                ) : (
-                  <View style={styles.contenedorTextoVacio}>
-                     <Text style={{ textAlign: 'center', fontSize: 15 }}>
-                        Coloque en el cuadro de busqueda la dirección que desea
-                        encontrar.
+                     <View style={styles.contenedorTextoVacio}>
+                        <Text style={{ textAlign: 'center', fontSize: 15 }}>
+                           Coloque en el cuadro de busqueda la dirección que desea
+                           encontrar.
                      </Text>
-                  </View>
-               )}
+                     </View>
+                  )}
             </View>
          </View>
       );

@@ -101,6 +101,13 @@ export class ConfirmarCompra extends Component {
       console.log('componentWillUnmount');
       this.unsubscribe();
    }
+   componentWillReceiveProps(next_props) {
+      console.log("next Prop",next_props)
+      if( next_props.route.params.origen=='mapaDirecciones')
+      {
+         this.refrescarDireccion()
+      }
+   }
 
    cerrarPantalla = () => {
       this.props.navigation.popToTop();
@@ -132,6 +139,13 @@ export class ConfirmarCompra extends Component {
          Alert.alert(
             'Información',
             'Debe elegir una fecha y horario de entrega'
+         );
+      }else if (
+         !global.pedido.referencia
+      ) {
+         Alert.alert(
+            'Información',
+            'La Direccion de Entrega no tiene una referencia'
          );
       } else {
          numero = await new ServicioParametros().obtenerSecuencial();

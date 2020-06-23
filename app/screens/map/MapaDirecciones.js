@@ -140,6 +140,34 @@ export class MapaDirecciones extends Component {
       }
    };
 
+   componentWillReceiveProps(next_props) {
+      console.log("props")
+      if (next_props.route.params.origen == 'busquedaDirecciones') {
+         
+         let direccion = next_props.route.params.direccion
+         this.setState({
+            region: {
+               latitude: direccion.latitud,
+               longitude: direccion.longitud,
+               latitudeDelta: LATITUDE_DELTA,
+               longitudeDelta: LONGITUDE_DELTA,
+            },
+            coordinate: {
+               latitude: direccion.latitud,
+               longitude: direccion.longitud,
+            },
+            direccion: direccion.descripcion,
+            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+
+            alias: direccion.alias,
+            referencia: direccion.referencia,
+            principal: direccion.principal == 'S' ? true : false,
+
+         });
+         this.repintarLista();
+      }
+   }
+
    componentDidMount() {
       this.obtenerCoordenadas();
       let srvDirecciones = new ServicioDirecciones();
@@ -152,11 +180,11 @@ export class MapaDirecciones extends Component {
 
    repintarLista = () => {
       //  this.validarCoberturaGlobalDireccion();
-      const direcciones= global.direcciones;
-      
+      const direcciones = global.direcciones;
+
       this.setState({
-         listaDirecciones: direcciones.map(function(item) {
-            return {...item, itemSeleccionado: global.direccionPedido.id == item.id ? true : false};
+         listaDirecciones: direcciones.map(function (item) {
+            return { ...item, itemSeleccionado: global.direccionPedido.id == item.id ? true : false };
          }),
       });
 
@@ -433,6 +461,7 @@ export class MapaDirecciones extends Component {
       this.setState({ direccion: nombreDireccion });
    };
    actualizarDireccion = (direccion) => {
+      Alert.alert("Información",'Los cambios se realizaran cuando presione el boton \n \"GUARDAR SELECCIONADO\"')
       this.direccionTmp = direccion;
       console.log("direccion", direccion)
       this.setState({
@@ -456,7 +485,7 @@ export class MapaDirecciones extends Component {
       this.repintarLista();
    };
 
-   actualizarDireccionPedido = () => {
+   actualizarDireccionPedido = async () => {
       let validar = true;
       if (!this.state.referencia) {
          this.setState({ validarReferencia: 'Campo Referencia Obligatorio' });
@@ -464,19 +493,26 @@ export class MapaDirecciones extends Component {
 
       }
       if (validar) {
-         
+
          this.direccionTmp.descripcion = this.state.direccion;
          this.direccionTmp.referencia = this.state.referencia;
          this.direccionTmp.principal = 'S';
          this.direccionTmp.itemSeleccionado = true;
+         this.direccionTmp.id = direccionPedido.id;
+         this.direccionTmp.latitud = this.state.region.latitude;
+         this.direccionTmp.longitud = this.state.region.longitude;
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
-         srvDireccion.actualizarPrincipalTodosNo(global.usuario);
+         await srvDireccion.actualizarPrincipalTodosNo(global.usuario);
          srvDireccion.guardarDataReferencia(global.usuario, direccionPedido.id, this.direccionTmp);
          console.log('Envia Confirmar');
          this.setState({ mostrarModal: false })
-         this.props.navigation.navigate('ConfirmarCompraScreen');
+         this.props.navigation.navigate('ConfirmarCompraScreen',
+            {
+               origen: "mapaDirecciones"
+            }
+         );
       }
    }
 
@@ -553,6 +589,7 @@ export class MapaDirecciones extends Component {
                            }}
                         />
                         <Input
+                           errorMessage={this.state.validarReferencia}
                            value={this.state.referencia}
                            placeholder="Piso / Color de casa/ N- Oficina/ Indicaciones"
                            label="Referencia"
@@ -561,13 +598,8 @@ export class MapaDirecciones extends Component {
                               this.setState({ referencia: text });
                            }}
                         />
-                         <Text style={{
-                                 color: 'red'
-                              }}>{this.state.validarReferencia}</Text>
-                   
-
                         <Button
-                           title="OK Referencia"
+                           title="Guardar"
                            buttonStyle={{
                               backgroundColor: colores.colorPrimarioTomate,
                            }}
@@ -580,7 +612,7 @@ export class MapaDirecciones extends Component {
                   </View>
                </Modal>
                <View>
-               <Button
+                  <Button
                      buttonStyle={estilos.botones.blancoRight}
                      titleStyle={estilos.textos.botonBlanco}
                      title="Agregar nueva ubicación"
@@ -602,23 +634,30 @@ export class MapaDirecciones extends Component {
                         />
                      }
                   />
-               <ScrollView style={styles.lista}>
-                  <FlatList
-                     data={this.state.listaDirecciones}
-                     renderItem={objeto => {
-                        return (
-                           <ItemMapDireccion
-                              direccion={objeto.item}
-                              fnActualizar={this.actualizarDireccion}
-                           />
-                        );
-                     }}
-                     keyExtractor={objetoCombo => {
-                        return objetoCombo.id;
-                     }}
-                     ItemSeparatorComponent={flatListItemSeparator}
-                  />
-               </ScrollView>
+                 
+                  <ScrollView style={styles.lista}>
+                  <View>
+                     <FlatList
+                        data={this.state.listaDirecciones}
+                        renderItem={objeto => {
+                           return (
+                              <ItemMapDireccion
+                                 direccion={objeto.item}
+                                 fnActualizar={this.actualizarDireccion}
+                              />
+                           );
+                        }}
+                        keyExtractor={objetoCombo => {
+                           return objetoCombo.id;
+                        }}
+                        ItemSeparatorComponent={flatListItemSeparator}
+                     />
+                     </View>
+                  </ScrollView>
+               
+               </View>
+            </View>
+            <View >
                <Button
                   buttonStyle={{ backgroundColor: colores.colorPrimarioTomate }}
                   title={this.pintarElemento ? 'GUARDAR' : 'GUARDAR SELECCIONADO'}
@@ -626,8 +665,7 @@ export class MapaDirecciones extends Component {
                      this.setState({ mostrarModal: true })
                   }}
                />
-               </View>
-            </View>
+            </View> 
          </View>
       );
    }
@@ -659,6 +697,9 @@ const flatListItemSeparator = () => {
    );
 };
 const styles = StyleSheet.create({
+   lista:{
+       marginBottom:40
+   },
    container: {
       flex: 1,
       alignItems: 'stretch',

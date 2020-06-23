@@ -18,7 +18,7 @@ export class ItemPrediccion extends Component {
                underlayColor="white"
                onPress={() => {
                   this.props.fnbuscarCoordenadas(
-                     this.props.prediccionItem.placeId
+                     this.props.prediccionItem.placeId, this.props.prediccionItem.descripcion
                   );
                }}
             >

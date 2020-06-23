@@ -250,6 +250,9 @@ export class ServicioDirecciones {
             descripcion: referenciaDireccion.descripcion,
             referencia: referenciaDireccion.referencia,
             principal: referenciaDireccion.principal,
+            latitud:referenciaDireccion.latitud,
+            longitud:referenciaDireccion.longitud
+
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');
