@@ -29,11 +29,12 @@ import * as colores from '../../constants/Colores';
 import Cargando from '../../components/Cargando';
 import Separador from '../../components/Separador';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
-import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
+import { formatearFechaISO, obtenerHoraActual,formatearFechaCompleta } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
 import { Promociones } from './Promociones';
+import { ItemFechas } from './componentes/ItemFechas';
 
 export class ConfirmarCompra extends Component {
    constructor() {
@@ -41,9 +42,9 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
-  
+
       this.state = {
-         fechaSeleccionada: global.fechaSeleccionada,
+         fechaSeleccionada: formatearFechaCompleta(global.fechaSeleccionada),
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
          horarios: [],
@@ -60,6 +61,8 @@ export class ConfirmarCompra extends Component {
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
          mostrarPromociones: false,
+         modalFechaVisible: false,
+         modalHoraVisible: false,
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -86,7 +89,7 @@ export class ConfirmarCompra extends Component {
          global.usuario,
          this.repintarMonedero
       );
-      
+
    }
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
@@ -102,9 +105,8 @@ export class ConfirmarCompra extends Component {
       this.unsubscribe();
    }
    componentWillReceiveProps(next_props) {
-      console.log("next Prop",next_props)
-      if( next_props.route.params.origen=='mapaDirecciones')
-      {
+      console.log("next Prop", next_props)
+      if (next_props.route.params.origen == 'mapaDirecciones') {
          this.refrescarDireccion()
       }
    }
@@ -140,7 +142,7 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      }else if (
+      } else if (
          !global.pedido.referencia
       ) {
          Alert.alert(
@@ -211,6 +213,13 @@ export class ConfirmarCompra extends Component {
          origen: 'actualizar',
          direccion: global.direccionPedido,
       });
+   }
+   fnSeleccionar=(value)=>{
+      Alert.alert("Ingresa")
+
+      this.setState({fechaSeleccionada:formatearFechaCompleta(value)})
+      global.fechaSeleccionada = value
+      this.setState({modalFechaVisible:false})
    }
    render() {
       let fechaActual = new Date();
@@ -296,6 +305,24 @@ export class ConfirmarCompra extends Component {
                            </View>
                         </View>
                         <Separador alto={8}></Separador>
+                        <View
+                           style={{
+                              flex: 6,
+                              justifyContent: 'center',
+
+                              borderColor: colores.colorPrimarioTomate,
+                              borderWidth: 1,
+                              borderRadius: 8
+                           }}
+                        >
+                           <Text
+                              style={{ padding: 12 }}
+                              onPress={() => {
+                                 this.setState({ modalFechaVisible: true })
+                              }}
+                           >{(this.state.fechaSeleccionada) ? (this.state.fechaSeleccionada) : ("Elija la Fecha")}</Text>
+
+                        </View>
                         <View>
                            <View>
                               <RNPickerSelect
@@ -314,6 +341,14 @@ export class ConfirmarCompra extends Component {
                                     });
                                     global.fechaSeleccionada = value;
                                  }}
+                                 icon={
+                                    <Icon
+                                       name="check-circle"
+                                       size={25}
+                                       color={colores.colorBlancoTexto}
+                                       style={styles.iconos}
+                                    />
+                                 }
                               />
                            </View>
                            <Separador alto={5}></Separador>
@@ -333,6 +368,7 @@ export class ConfirmarCompra extends Component {
                                  });
                                  global.horarioSeleccionado = value;
                               }}
+
                            />
                         </View>
                      </Card>
@@ -552,7 +588,7 @@ export class ConfirmarCompra extends Component {
                               crearPedido(
                                  {
                                     fechaPedido: formatearFechaISO(fecha),
-                                    fechaEntrega: this.state.fechaSeleccionada,
+                                    fechaEntrega: global.fechaSeleccionada,
                                     horarioEntrega: this.state
                                        .horarioSeleccionado.horario,
                                     estado:
@@ -617,6 +653,31 @@ export class ConfirmarCompra extends Component {
                   </Modal>
                </ScrollView>
             </View>
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.modalFechaVisible}
+            >
+               <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                     <FlatList
+                        data={this.state.fechas}
+                        renderItem={objeto => {
+                           return (
+                              <ItemFechas
+                                 fecha={objeto.item}
+                              fnSeleccionar={this.fnSeleccionar}
+                              />
+                           );
+                        }}
+                        keyExtractor={fecha => {
+                           return fecha.posicion;
+                        }}
+                        ItemSeparatorComponent={flatListItemSeparator}
+                     />
+                  </View>
+               </View>
+            </Modal>
          </View>
       );
    }
@@ -631,6 +692,28 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
+   centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0,0,0,0.75)',
+      paddingVertical: 50,
+      alignItems: 'stretch',
+      marginTop: 22,
+   },
+   modalView: {
+      margin: 20,
+      backgroundColor: colores.colorBlanco,
+      borderRadius: 20,
+      padding: 35,
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+   },
    container: {
       flex: 1,
       backgroundColor: colores.colorPrimarioVerde,

@@ -46,6 +46,7 @@ export class ServicioParametros {
          comboFechas.push({
             label: formatearFechaCompleta(proximas[i]),
             value: proximas[i],
+            posicion: i,
          });
       }
       for (const item in horarios) {
