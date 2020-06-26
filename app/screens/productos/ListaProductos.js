@@ -28,13 +28,14 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import { ServicioDirecciones,generarDireccion } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
 import { Numero } from './Numero';
 import { transformDinero } from '../../utils/Validaciones';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
+import { ServicioParametros } from '../../servicios/ServicioParametros';
 
 export class ListaProductos extends Component {
    constructor(props) {
@@ -45,6 +46,7 @@ export class ListaProductos extends Component {
       }*/
       global.categoria = 'V';
       this.sector = '';
+      this.tieneCoberturaDireccion='N';
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -64,7 +66,19 @@ export class ListaProductos extends Component {
       // srvCombos.recuperarItems(this.repintarLista);
       //global.repintarDireccion = this.repintarDireccionPrincipal;
       // global.repintarSeleccionProductos = this.repintarSeleccionProductos;
+      let servCobertura = new ServicioCobertura();
+      servCobertura.getRegistrarCoberturaTodas();
+
+      let servParametros = new ServicioParametros();
+      servParametros.getObtenerParametroId(
+         'geo',
+         this.obtenerParametroCobertura
+      );
    }
+   obtenerParametroCobertura = parametro => {
+      global.parametrosGeo = parametro;
+      console.log('parametrosGeo', global.parametrosGeo.cobertura);
+   };
    repintarDireccionPrincipal = () => {
       if (global.direccionPedido) {
          this.setState({ direccionPedido: global.direccionPedido.descripcion });
@@ -116,7 +130,13 @@ export class ListaProductos extends Component {
          global.usuario,
          this.refrescarDireccion
       );*/
-      this.validarCobertura();
+      let srvDirecciones=new ServicioDirecciones()
+     /* if(!global.direccionPedido)*/
+      {
+       srvDirecciones.obtenerDirecciones(global.usuario,this.validarCobertura)
+      }
+      
+     // this.validarCobertura();
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -182,8 +202,32 @@ export class ListaProductos extends Component {
       global.localizacionActual = actualLocation.coords;
       console.log('actual location:', global.localizacionActual);
 
-      let existeCobertura = this.validarSector(global.localizacionActual);
-      if (!existeCobertura) {
+      generarDireccion(
+         global.localizacionActual.latitude,
+         global.localizacionActual.longitude,
+         this.obtenerDireccionPedido
+      );
+      this.obtenerDireccionPedido();
+   };
+   //Obtiene la ultima direccion usada en un pedido
+   //Si no existen direcciones en el pedido, agrega una usando el punto actual
+   obtenerDireccionPedido = async (direccionNombre,latitud,longitud) => {
+      let pedido = null;
+      await this.validar(latitud, longitud);
+      if (!pedido) {
+         new ServicioDirecciones().crear(global.usuario, {
+            descripcion: direccionNombre,
+            latitud: latitud,
+            longitud: longitud,
+            alias:'',
+            principal:'N',
+            referencia:'',
+            tieneCoberturaDireccion:this.tieneCoberturaDireccion
+
+
+         });
+      }
+      if (this.tieneCoberturaDireccion=='N') {
          Alert.alert(
             'Advertencia',
             'No existe cobertura en el sector donde se encuentra'
@@ -191,22 +235,53 @@ export class ListaProductos extends Component {
       } else {
          console.log('SI existe cobertura');
       }
-      this.obtenerDireccionPedido();
-   };
-   //Obtiene la ultima direccion usada en un pedido
-   //Si no existen direcciones en el pedido, agrega una usando el punto actual
-   obtenerDireccionPedido = () => {
-      let pedido = null;
-      if (!pedido) {
-         new ServicioDirecciones().crear(global.usuario, {
-            descripcion: '',
-            latitud: global.localizacionActual.latitude,
-            longitud: global.localizacionActual.longitude,
-         });
-      }
+
    };
    validarSector = ubicacion => {
       return Math.random() > 0.3;
+   };
+
+   //Guardar Direcciones
+   validar = async(lat, long) => {
+      let lat1 = lat;
+      let log1 = long;
+      for (let i = 0; i < global.coberturas.length; i++) {
+         let distancia = 0;
+         distancia = parseFloat(
+            this.getKilometros(
+               lat1,
+               log1,
+               global.coberturas[i].latitud,
+               global.coberturas[i].longitud
+            )
+         );
+         console.log('Kilomeros' + distancia);
+         if (distancia < global.parametrosGeo.cobertura) {
+            console.log('Ingresa');
+            this.tieneCoberturaDireccion = 'S';
+            break;
+         }
+      }
+   };
+
+   rad = x => {
+      return (x * Math.PI) / 180;
+   };
+
+   getKilometros = (lat1, lon1, lat2, lon2) => {
+      let R = 6378.137; //Radio de la tierra en km
+      let dLat = this.rad(lat2 - lat1);
+      console.log('rad1' + this.rad(lat2 - lat1));
+      let dLong = this.rad(lon2 - lon1);
+      let a =
+         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+         Math.cos(this.rad(lat1)) *
+            Math.cos(this.rad(lat2)) *
+            Math.sin(dLong / 2) *
+            Math.sin(dLong / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+      return d.toFixed(3); //Retorna tres decimales
    };
 
    pintarLista = items => {
@@ -232,6 +307,7 @@ export class ListaProductos extends Component {
       //global.productos = items;
       ///repintarSeleccionProductos();
    };
+
 
    obtenerPedidoCalifica = async mail => {
       //  console.log('mail', mail);

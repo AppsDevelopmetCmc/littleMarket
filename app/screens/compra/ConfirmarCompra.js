@@ -66,6 +66,7 @@ export class ConfirmarCompra extends Component {
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
          mostrarPromociones: false,
+         msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -80,7 +81,9 @@ export class ConfirmarCompra extends Component {
    };
 
    refrescarDireccion = () => {
-      this.setState({ direccion: global.direccionPedido.descripcion });
+      this.setState({ direccion: global.direccionPedido.descripcion,
+                      msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
+                     });
    };
    cargarCombos = (fechas, horarios) => {
       this.setState({ fechas: fechas, horarios: horarios });
@@ -148,7 +151,12 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      } else if (!global.direccionPedido.referencia) {
+      } else if (global.direccionPedido.tieneCoberturaDireccion=='N') {
+         Alert.alert(
+            'Información',
+            'La Direccion de Entrega no tiene cobertura'
+         );
+      }else if (!global.direccionPedido.referencia) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -340,8 +348,11 @@ export class ConfirmarCompra extends Component {
                         </View>
                         <View style={{ flexDirection: 'row' }}>
                            <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <Text style={{ fontSize: 14 }}>
+                              <Text style={{ fontSize: 14, }}>
                                  Dirección: {this.state.direccion}
+                              </Text>
+                              <Text style={{ fontSize: 10,color:'red', marginLeft:10 }}>
+                                 {this.state.msmCoberturaDireccion?'':'La dirección actual no tiene cobertura'}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>
