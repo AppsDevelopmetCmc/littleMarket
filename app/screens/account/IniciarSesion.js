@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
    StyleSheet,
    View,
@@ -18,10 +18,28 @@ import Toast from 'react-native-easy-toast';
 
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
-
+import { Yalert } from '../../components/Yalert';
 export default function IniciaSesion({ navigation }) {
    const toastRef = useRef();
+   const [mostrarYalert, setMostrarYalert] = useState(false);
+   const [titulo, setTitulo] = useState(false);
+   const [mensaje, setMensaje] = useState(false);
 
+   const mostrarError = (titulo, mensaje) => {
+      setMostrarYalert(true);
+      setTitulo(titulo);
+      setMensaje(mensaje);
+   };
+   const cerrarYalert = () => {
+      setMostrarYalert(false);
+   };
+   if (!global.mailVerificado) {
+      global.mailVerificado = true;
+      mostrarError(
+         'Información',
+         'Verifique su correo electrónico ' + global.usuario + ' para continuar'
+      );
+   }
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
@@ -72,7 +90,12 @@ export default function IniciaSesion({ navigation }) {
                </View>
             </ScrollView>
          </View>
-
+         <Yalert
+            titulo={titulo}
+            mensaje={mensaje}
+            visible={mostrarYalert}
+            cerrar={cerrarYalert}
+         ></Yalert>
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast
             ref={toastRef}

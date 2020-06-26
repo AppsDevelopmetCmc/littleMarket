@@ -100,6 +100,8 @@ export default function IniciaSesionForm(props) {
                   iconStyle={styles.iconRight}
                ></Icon>
             }
+            keyboardType="email-address"
+            autoCapitalize="none"
          ></Input>
          <Input
             placeholder="******"
@@ -122,6 +124,7 @@ export default function IniciaSesionForm(props) {
                   }}
                ></Icon>
             }
+            autoCapitalize="none"
          ></Input>
          <TouchableOpacity
             onPress={() => {
