@@ -1,10 +1,17 @@
 // Color Verde
-export const colorPrimarioVerde = '#a7e002';
+//export const colorPrimarioVerde = '#a7e002';
+//export const colorPrimarioVerde = '#6EE002';
+//export const colorPrimarioVerde = '#4AD702';
+//export const colorPrimarioVerde = '#00AA4F';
+export const colorPrimarioVerde = '#00AA02';
+
+//export const colorPrimarioVerde = '#0EE773';
+
 export const colorClaroPrimarioVerde = '#ddff52';
 export const colorOscuroPrimarioVerde = '#72ae00';
 
 // Color Tomate
-export const colorPrimarioTomate = '#FFA500';
+export const colorPrimarioTomate = '#FF9200';
 export const colorClaroPrimarioTomate = '#ffd64a';
 export const colorOscuroPrimarioTomate = '#c67600';
 export const colorPrimarioTomateRgba = '#fdc050';

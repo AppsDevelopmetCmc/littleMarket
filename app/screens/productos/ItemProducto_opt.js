@@ -12,55 +12,37 @@ import {
    agregarDisminuirItemCarro,
    eliminarItemCarro,
 } from '../../servicios/ServicioCarroCompras';
-function FlatListItemSeparator() {
-   return (
-      <View
-         style={{
-            width: '100%',
-            marginVertical: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignContent: 'center',
-            paddingLeft: 20,
-         }}
-      >
-         <View
-            style={{
-               height: 1,
-               width: '100%',
-               backgroundColor: colores.colorClaroPrimario,
-               alignItems: 'center',
-               justifyContent: 'center',
-               alignContent: 'center',
-            }}
-         ></View>
-      </View>
-   );
-}
+
 export class ItemProducto extends Component {
    constructor(props) {
       super(props);
       let itemCarro = this.props.producto.itemCarro;
       if (itemCarro && itemCarro.cantidad > 0) {
          this.state = {
-            checked: this.props.producto.checked,
-            checkedProps: this.props.producto.checked,
+            //checked: this.props.producto.checked,
+            //checkedProps: this.props.producto.checked,
             cantidad: this.props.producto.itemCarro.cantidad,
          };
       } else {
          this.state = {
-            checked: this.props.producto.checked,
-            checkedProps: this.props.producto.checked,
+            //checked: this.props.producto.checked,
+            //checkedProps: this.props.producto.checked,
             cantidad: 1,
          };
       }
+   }
+
+   shouldComponentUpdate(nextProps) {
+      console.log('SHOULD COMPONENT UPDATE', nextProps.seleccionado);
+      const { seleccionado } = this.props;
+      return seleccionado !== nextProps.seleccionado;
    }
 
    componentDidMount() {
       //console.log('--------CHECKED', this.props.producto.checked);
    }
 
-   static getDerivedStateFromProps(nextProps, prevState) {
+   /*static getDerivedStateFromProps(nextProps, prevState) {
       if (nextProps.producto.checked != prevState.checkedProps) {
          return {
             checked: nextProps.producto.checked,
@@ -77,17 +59,48 @@ export class ItemProducto extends Component {
          checkedProps: prevState.checked,
          cantidad: prevState.cantidad,
       };
-   }
-
+   }*/
+   seleccionarProducto = seleccionado => {
+      console.log('-------EJECUTA EL MARCADO------', seleccionado);
+      const { marcarSeleccionado, producto } = this.props;
+      if (!seleccionado) {
+         /*this.setState({
+            cantidad: 1,
+         });*/
+         marcarSeleccionado(producto.id);
+         agregarDisminuirItemCarro(
+            {
+               id: producto.id,
+               nombre: producto.nombre,
+               unidad: producto.unidad,
+               cantidadItem: producto.cantidad,
+               precio: producto.precio,
+            },
+            global.usuario,
+            1
+         );
+      } else {
+         /* this.setState({
+            checked: !this.state.checked,
+            cantidad: 1,
+         });*/
+         marcarSeleccionado(producto.id);
+         eliminarItemCarro(
+            {
+               id: producto.id,
+            },
+            global.usuario
+         );
+      }
+   };
    render() {
-      let producto = this.props.producto;
+      const { seleccionado, producto } = this.props;
+      console.log('*********SELECCIONADO EN RENDER', seleccionado);
       return (
          <View>
             {producto.categoria == global.categoria ? (
                <View
-                  style={
-                     this.state.checked ? styles.filaSeleccionada : styles.fila
-                  }
+                  style={seleccionado ? styles.filaSeleccionada : styles.fila}
                >
                   <View style={styles.colorLinea}></View>
                   <View style={styles.imagenes}>
@@ -159,7 +172,7 @@ export class ItemProducto extends Component {
                      </View>
                   </View>
 
-                  {this.state.checked ? (
+                  {seleccionado ? (
                      <View
                         style={{
                            marginHorizontal: 5,
@@ -172,41 +185,15 @@ export class ItemProducto extends Component {
                         }}
                      >
                         <CheckBox
-                           checked={this.state.checked}
+                           checked={seleccionado}
                            // containerStyle={{ backgroundColor: 'yellow' }}
                            onPress={() => {
-                              if (!this.state.checked) {
-                                 this.setState({
-                                    checked: !this.state.checked,
-                                    cantidad: 1,
-                                 });
-                                 agregarDisminuirItemCarro(
-                                    {
-                                       id: producto.id,
-                                       nombre: producto.nombre,
-                                       unidad: producto.unidad,
-                                       cantidadItem: producto.cantidad,
-                                       precio: producto.precio,
-                                    },
-                                    global.usuario,
-                                    1
-                                 );
-                              } else {
-                                 this.setState({
-                                    checked: !this.state.checked,
-                                    cantidad: 1,
-                                 });
-                                 eliminarItemCarro(
-                                    {
-                                       id: producto.id,
-                                    },
-                                    global.usuario
-                                 );
-                              }
+                              console.log('NUEVA FORMA');
+                              this.seleccionarProducto(producto.id);
                            }}
-                           checkedColor={colores.colorPrimarioVerde}
+                           checkedColor={colores.colorOscuroPrimarioVerde}
                            size={20}
-                           uncheckedColor={colores.colorPrimarioVerde}
+                           uncheckedColor={colores.colorOscuroPrimarioVerde}
                         ></CheckBox>
 
                         <View
@@ -299,9 +286,9 @@ export class ItemProducto extends Component {
                         }}
                      >
                         <CheckBox
-                           checked={this.state.checked}
+                           checked={seleccionado}
                            onPress={() => {
-                              if (!this.state.checked) {
+                              /* if (!this.state.checked) {
                                  agregarDisminuirItemCarro(
                                     {
                                        id: producto.id,
@@ -324,11 +311,12 @@ export class ItemProducto extends Component {
 
                               this.setState({
                                  checked: !this.state.checked,
-                              });
+                              });*/
+                              this.seleccionarProducto(producto.id);
                            }}
-                           checkedColor={colores.colorPrimarioVerde}
+                           checkedColor={colores.colorOscuroPrimarioVerde}
                            size={22}
-                           uncheckedColor={colores.colorPrimarioVerde}
+                           uncheckedColor={colores.colorOscuroPrimarioVerde}
                         ></CheckBox>
                      </View>
                   )}
@@ -364,7 +352,7 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
    },
    botonModificar: {
-      backgroundColor: colores.colorPrimarioVerde,
+      backgroundColor: colores.colorOscuroPrimarioVerde,
    },
    fila: {
       flex: 1,
@@ -372,7 +360,7 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       marginTop: 2,
 
-      borderBottomColor: colores.colorPrimarioVerde,
+      borderBottomColor: colores.colorOscuroPrimarioVerde,
       borderBottomWidth: 1,
 
       // marginLeft: 15,

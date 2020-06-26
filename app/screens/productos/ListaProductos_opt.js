@@ -28,14 +28,13 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
-import { ServicioDirecciones,generarDireccion } from '../../servicios/ServicioDirecciones';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
 import { Numero } from './Numero';
 import { transformDinero } from '../../utils/Validaciones';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
-import { ServicioParametros } from '../../servicios/ServicioParametros';
 
 export class ListaProductos extends Component {
    constructor(props) {
@@ -46,7 +45,6 @@ export class ListaProductos extends Component {
       }*/
       global.categoria = 'V';
       this.sector = '';
-      this.tieneCoberturaDireccion='N';
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -60,25 +58,14 @@ export class ListaProductos extends Component {
          valorMonedero: 0,
          numeroNotificaciones: 0,
          mostrarInstrucciones: true,
+         seleccionados: new Map(),
       };
       global.pintarLista = this.pintarLista;
       //let srvCombos = new ServicioCombos();
       // srvCombos.recuperarItems(this.repintarLista);
       //global.repintarDireccion = this.repintarDireccionPrincipal;
       // global.repintarSeleccionProductos = this.repintarSeleccionProductos;
-      let servCobertura = new ServicioCobertura();
-      servCobertura.getRegistrarCoberturaTodas();
-
-      let servParametros = new ServicioParametros();
-      servParametros.getObtenerParametroId(
-         'geo',
-         this.obtenerParametroCobertura
-      );
    }
-   obtenerParametroCobertura = parametro => {
-      global.parametrosGeo = parametro;
-      console.log('parametrosGeo', global.parametrosGeo.cobertura);
-   };
    repintarDireccionPrincipal = () => {
       if (global.direccionPedido) {
          this.setState({ direccionPedido: global.direccionPedido.descripcion });
@@ -87,9 +74,9 @@ export class ListaProductos extends Component {
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
    };
-   pintarSeleccionProductos = () => {
+   pintarSeleccionProductos = items => {
       console.log('--ListaProductos pintarSeleccionProductos');
-      let productos = this.state.listaProductos;
+      let productos = items;
       let productosSeleccionados = global.items;
       if (productos) {
          for (let i = 0; i < productos.length; i++) {
@@ -106,16 +93,13 @@ export class ListaProductos extends Component {
          }
       }
       let subtotal = 0;
-      let delivery = 1.5;
       for (let i = 0; i < productosSeleccionados.length; i++) {
          subtotal =
             subtotal +
             productosSeleccionados[i].precio *
                productosSeleccionados[i].cantidad;
       }
-      global.total = subtotal + delivery;
-      global.delivery = delivery;
-      global.subtotal = subtotal;
+      console.log('PRODUCTOS SELECCIONADOS ', productos);
       this.setState({ listaProductos: productos, subtotal: subtotal });
    };
 
@@ -130,13 +114,7 @@ export class ListaProductos extends Component {
          global.usuario,
          this.refrescarDireccion
       );*/
-      let srvDirecciones=new ServicioDirecciones()
-     /* if(!global.direccionPedido)*/
-      {
-       srvDirecciones.obtenerDirecciones(global.usuario,this.validarCobertura)
-      }
-      
-     // this.validarCobertura();
+      this.validarCobertura();
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -202,32 +180,8 @@ export class ListaProductos extends Component {
       global.localizacionActual = actualLocation.coords;
       console.log('actual location:', global.localizacionActual);
 
-      generarDireccion(
-         global.localizacionActual.latitude,
-         global.localizacionActual.longitude,
-         this.obtenerDireccionPedido
-      );
-      this.obtenerDireccionPedido();
-   };
-   //Obtiene la ultima direccion usada en un pedido
-   //Si no existen direcciones en el pedido, agrega una usando el punto actual
-   obtenerDireccionPedido = async (direccionNombre,latitud,longitud) => {
-      let pedido = null;
-      await this.validar(latitud, longitud);
-      if (!pedido) {
-         new ServicioDirecciones().crear(global.usuario, {
-            descripcion: direccionNombre,
-            latitud: latitud,
-            longitud: longitud,
-            alias:'',
-            principal:'N',
-            referencia:'',
-            tieneCoberturaDireccion:this.tieneCoberturaDireccion
-
-
-         });
-      }
-      if (this.tieneCoberturaDireccion=='N') {
+      let existeCobertura = this.validarSector(global.localizacionActual);
+      if (!existeCobertura) {
          Alert.alert(
             'Advertencia',
             'No existe cobertura en el sector donde se encuentra'
@@ -235,59 +189,28 @@ export class ListaProductos extends Component {
       } else {
          console.log('SI existe cobertura');
       }
-
+      this.obtenerDireccionPedido();
+   };
+   //Obtiene la ultima direccion usada en un pedido
+   //Si no existen direcciones en el pedido, agrega una usando el punto actual
+   obtenerDireccionPedido = () => {
+      let pedido = null;
+      if (!pedido) {
+         new ServicioDirecciones().crear(global.usuario, {
+            descripcion: '',
+            latitud: global.localizacionActual.latitude,
+            longitud: global.localizacionActual.longitude,
+         });
+      }
    };
    validarSector = ubicacion => {
       return Math.random() > 0.3;
    };
 
-   //Guardar Direcciones
-   validar = async(lat, long) => {
-      let lat1 = lat;
-      let log1 = long;
-      for (let i = 0; i < global.coberturas.length; i++) {
-         let distancia = 0;
-         distancia = parseFloat(
-            this.getKilometros(
-               lat1,
-               log1,
-               global.coberturas[i].latitud,
-               global.coberturas[i].longitud
-            )
-         );
-         console.log('Kilomeros' + distancia);
-         if (distancia < global.parametrosGeo.cobertura) {
-            console.log('Ingresa');
-            this.tieneCoberturaDireccion = 'S';
-            break;
-         }
-      }
-   };
-
-   rad = x => {
-      return (x * Math.PI) / 180;
-   };
-
-   getKilometros = (lat1, lon1, lat2, lon2) => {
-      let R = 6378.137; //Radio de la tierra en km
-      let dLat = this.rad(lat2 - lat1);
-      console.log('rad1' + this.rad(lat2 - lat1));
-      let dLong = this.rad(lon2 - lon1);
-      let a =
-         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
-   };
-
    pintarLista = items => {
       console.log('--ListaProductos pintarLista');
       this.setState({ listaProductos: items });
-      this.pintarSeleccionProductos();
+      this.pintarSeleccionProductos(items);
 
       /*      if (this.montado) {
          let subtotal = 0;
@@ -307,7 +230,6 @@ export class ListaProductos extends Component {
       //global.productos = items;
       ///repintarSeleccionProductos();
    };
-
 
    obtenerPedidoCalifica = async mail => {
       //  console.log('mail', mail);
@@ -457,9 +379,18 @@ export class ListaProductos extends Component {
       Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
    };
 
+   marcarSeleccionado = id => {
+      console.log('MARCAR SELECCIONADO---', id);
+      this.setState(state => {
+         const seleccionados = new Map(state.seleccionados);
+         seleccionados.set(id, !seleccionados.get(id));
+         return { seleccionados };
+      });
+   };
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--ListaProductos render');
+      console.log('-----RENDER DE LISTA------', this.state.seleccionados);
       return (
          <SafeAreaView style={styles.container}>
             <View style={styles.cabeceraContenedor}>
@@ -662,16 +593,20 @@ export class ListaProductos extends Component {
                   <FlatList
                      data={this.state.listaProductos}
                      renderItem={({ item }) => {
+                        const { seleccionados } = this.state;
                         return (
                            <ItemProducto
                               nav={this.props.navigation}
                               producto={item}
+                              marcarSeleccionado={this.marcarSeleccionado}
+                              seleccionado={!!seleccionados.get(item.id)}
                            />
                         );
                      }}
                      keyExtractor={producto => {
                         return producto.id;
                      }}
+                     extraData={this.state}
                      // ItemSeparatorComponent={this.flatListItemSeparator}
                   />
                </View>
@@ -704,29 +639,27 @@ export class ListaProductos extends Component {
                               backgroundColor: colores.colorPrimarioTomate,
                            }}
                         >
-                           <View style={{ flex: 2, alignItems: 'center' }}>
-                              <View style={styles.areaBadge}>
-                                 <View>
-                                    <Icon
-                                       color={colores.colorBlanco}
-                                       type="material"
-                                       name="cart"
-                                       size={28}
+                           <View style={styles.areaBadge}>
+                              <View>
+                                 <Icon
+                                    color={colores.colorBlanco}
+                                    type="material"
+                                    name="cart"
+                                    size={28}
+                                 />
+                                 {global.items && global.items.length > 0 ? (
+                                    <Badge
+                                       value={global.items.length}
+                                       containerStyle={{
+                                          position: 'absolute',
+                                          top: -4,
+                                          right: -4,
+                                       }}
+                                       status="error"
                                     />
-                                    {global.items && global.items.length > 0 ? (
-                                       <Badge
-                                          value={global.items.length}
-                                          containerStyle={{
-                                             position: 'absolute',
-                                             top: -4,
-                                             right: -4,
-                                          }}
-                                          status="error"
-                                       />
-                                    ) : (
-                                       <View></View>
-                                    )}
-                                 </View>
+                                 ) : (
+                                    <View></View>
+                                 )}
                               </View>
                            </View>
                            <View
@@ -748,7 +681,7 @@ export class ListaProductos extends Component {
                            </View>
                            <View
                               style={{
-                                 flex: 3,
+                                 flex: 2,
                                  alignItems: 'flex-end',
                                  justifyContent: 'center',
                               }}
@@ -998,7 +931,6 @@ const styles = StyleSheet.create({
    },
    areaBadge: {
       //  backgroundColor: 'blue',
-      //flex: 1,
       paddingTop: 10,
       paddingBottom: 5,
       paddingHorizontal: 5,

@@ -9,20 +9,10 @@ export default function PaginaIncio(props) {
    return (
       <View style={styles.container}>
          <ImageBackground
-            source={require('../../assets/img/Fondo.png')}
+            source={require('../../assets/NuevoSplash.jpeg')}
             style={styles.imgInicio}
          >
-            <View style={styles.contenedorLogo}>
-               <Image
-                  source={require('../../assets/img/LogoYappando.png')}
-                  width="100%"
-               ></Image>
-               <Image
-                  source={require('../../assets/img/Yappando.png')}
-                  width="100%"
-               ></Image>
-            </View>
-
+            <View style={{ flex: 4 }}></View>
             <View style={styles.containerRow}>
                <Button
                   title="Iniciar Sesión"
@@ -49,19 +39,22 @@ export default function PaginaIncio(props) {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: colores.colorClaroPrimarioVerde,
+      backgroundColor: colores.colorPrimarioVerde,
    },
    containerRow: {
+      flex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginHorizontal: 40,
+      // backgroundColor: 'blue',
+      alignItems: 'center',
    },
    imgInicio: {
       flex: 1,
       resizeMode: 'cover',
       justifyContent: 'flex-end',
       paddingBottom: 100,
-      backgroundColor: colores.colorClaroPrimarioVerde,
+      backgroundColor: colores.colorPrimarioVerde,
    },
    contenedorLogo: {
       width: '100%',
