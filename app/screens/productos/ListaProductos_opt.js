@@ -58,6 +58,7 @@ export class ListaProductos extends Component {
          valorMonedero: 0,
          numeroNotificaciones: 0,
          mostrarInstrucciones: true,
+         seleccionados: new Map(),
       };
       global.pintarLista = this.pintarLista;
       //let srvCombos = new ServicioCombos();
@@ -73,9 +74,9 @@ export class ListaProductos extends Component {
    cambioVisibleCalifica = visible => {
       this.setState({ estadocalifica: visible });
    };
-   pintarSeleccionProductos = () => {
+   pintarSeleccionProductos = items => {
       console.log('--ListaProductos pintarSeleccionProductos');
-      let productos = this.state.listaProductos;
+      let productos = items;
       let productosSeleccionados = global.items;
       if (productos) {
          for (let i = 0; i < productos.length; i++) {
@@ -92,16 +93,13 @@ export class ListaProductos extends Component {
          }
       }
       let subtotal = 0;
-      let delivery = 1.5;
       for (let i = 0; i < productosSeleccionados.length; i++) {
          subtotal =
             subtotal +
             productosSeleccionados[i].precio *
                productosSeleccionados[i].cantidad;
       }
-      global.total = subtotal + delivery;
-      global.delivery = delivery;
-      global.subtotal = subtotal;
+      console.log('PRODUCTOS SELECCIONADOS ', productos);
       this.setState({ listaProductos: productos, subtotal: subtotal });
    };
 
@@ -212,7 +210,7 @@ export class ListaProductos extends Component {
    pintarLista = items => {
       console.log('--ListaProductos pintarLista');
       this.setState({ listaProductos: items });
-      this.pintarSeleccionProductos();
+      this.pintarSeleccionProductos(items);
 
       /*      if (this.montado) {
          let subtotal = 0;
@@ -381,9 +379,18 @@ export class ListaProductos extends Component {
       Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
    };
 
+   marcarSeleccionado = id => {
+      console.log('MARCAR SELECCIONADO---', id);
+      this.setState(state => {
+         const seleccionados = new Map(state.seleccionados);
+         seleccionados.set(id, !seleccionados.get(id));
+         return { seleccionados };
+      });
+   };
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--ListaProductos render');
+      console.log('-----RENDER DE LISTA------', this.state.seleccionados);
       return (
          <SafeAreaView style={styles.container}>
             <View style={styles.cabeceraContenedor}>
@@ -586,16 +593,20 @@ export class ListaProductos extends Component {
                   <FlatList
                      data={this.state.listaProductos}
                      renderItem={({ item }) => {
+                        const { seleccionados } = this.state;
                         return (
                            <ItemProducto
                               nav={this.props.navigation}
                               producto={item}
+                              marcarSeleccionado={this.marcarSeleccionado}
+                              seleccionado={!!seleccionados.get(item.id)}
                            />
                         );
                      }}
                      keyExtractor={producto => {
                         return producto.id;
                      }}
+                     extraData={this.state}
                      // ItemSeparatorComponent={this.flatListItemSeparator}
                   />
                </View>
@@ -628,29 +639,27 @@ export class ListaProductos extends Component {
                               backgroundColor: colores.colorPrimarioTomate,
                            }}
                         >
-                           <View style={{ flex: 2, alignItems: 'center' }}>
-                              <View style={styles.areaBadge}>
-                                 <View>
-                                    <Icon
-                                       color={colores.colorBlanco}
-                                       type="material"
-                                       name="cart"
-                                       size={28}
+                           <View style={styles.areaBadge}>
+                              <View>
+                                 <Icon
+                                    color={colores.colorBlanco}
+                                    type="material"
+                                    name="cart"
+                                    size={28}
+                                 />
+                                 {global.items && global.items.length > 0 ? (
+                                    <Badge
+                                       value={global.items.length}
+                                       containerStyle={{
+                                          position: 'absolute',
+                                          top: -4,
+                                          right: -4,
+                                       }}
+                                       status="error"
                                     />
-                                    {global.items && global.items.length > 0 ? (
-                                       <Badge
-                                          value={global.items.length}
-                                          containerStyle={{
-                                             position: 'absolute',
-                                             top: -4,
-                                             right: -4,
-                                          }}
-                                          status="error"
-                                       />
-                                    ) : (
-                                       <View></View>
-                                    )}
-                                 </View>
+                                 ) : (
+                                    <View></View>
+                                 )}
                               </View>
                            </View>
                            <View
@@ -672,7 +681,7 @@ export class ListaProductos extends Component {
                            </View>
                            <View
                               style={{
-                                 flex: 3,
+                                 flex: 2,
                                  alignItems: 'flex-end',
                                  justifyContent: 'center',
                               }}
@@ -922,7 +931,6 @@ const styles = StyleSheet.create({
    },
    areaBadge: {
       //  backgroundColor: 'blue',
-      //flex: 1,
       paddingTop: 10,
       paddingBottom: 5,
       paddingHorizontal: 5,

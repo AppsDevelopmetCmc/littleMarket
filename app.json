@@ -7,9 +7,9 @@
       "orientation": "portrait",
       "icon": "./assets/LogoYapando.png",
       "splash": {
-         "image": "./assets/splashYappando.png",
+         "image": "./assets/NuevoSplash.jpeg",
          "resizeMode": "contain",
-         "backgroundColor": "#ddff52"
+         "backgroundColor": "#00AA02"
       },
       "updates": {
          "fallbackToCacheTimeout": 0

@@ -73,6 +73,7 @@ export const agregarDisminuirItemCarro = (
    cantidad
    //fnOnSuccess
 ) => {
+   console.log('agregarDisminuirItemCarro', itemCarro);
    //RECUPERA la cantidad actual del ITEM
    global.db
       .collection('carritos')

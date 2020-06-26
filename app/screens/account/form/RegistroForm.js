@@ -25,12 +25,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 // Importacion de colores
 import * as colores from '../../../constants/Colores';
 
+import { Yalert } from '../../../components/Yalert';
+
 export default function RegistroForm(props) {
    /* this.state = {
       numero: 1,
       codigoReferido: '',
    };*/
-   const { nav, toastRef } = props;
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
    const [hideRepetiPassword, setHideRepitPassword] = useState(true);
@@ -43,14 +44,16 @@ export default function RegistroForm(props) {
    const [errorMsgRepetirContraseña, seterrorMsgRepetirContraseña] = useState(
       ''
    );
-
+   const [mostrarYalert, setMostrarYalert] = useState(false);
+   const [titulo, setTitulo] = useState(false);
+   const [mensaje, setMensaje] = useState(false);
    const requerido = 'Campo requerido *';
 
    const register = async () => {
-      setisVisibleLoading(true);
-
       if (!email || !password || !repeatPassword) {
-         toastRef.current.show(err.Err3, 600);
+         // toastRef.current.show(err.Err3, 600);
+         //Alert.alert('Error', err.Err3);
+         mostrarError('Información', err.Err3);
          seterrorMsgCorreo(requerido);
          seterrorMsgContraseña(requerido);
          seterrorMsgRepetirContraseña(requerido);
@@ -59,27 +62,30 @@ export default function RegistroForm(props) {
          seterrorMsgContraseña('');
          seterrorMsgRepetirContraseña('');
          if (!validateEmail(email)) {
-            toastRef.current.show(err.Err1, 600);
+            //toastRef.current.show(err.Err1, 600);
+            mostrarError('Información', err.Err1);
             seterrorMsgCorreo(err.Err1);
          } else {
             if (password.length < 6) {
                seterrorMsgContraseña(err.Err6);
-               toastRef.current.show(err.Err6, 600);
+               // toastRef.current.show(err.Err6, 600);
+               mostrarError('Información', err.Err6);
             } else {
                if (password !== repeatPassword) {
-                  toastRef.current.show(err.Err4, 600);
-                  seterrorMsgRepetirContraseña(err.Err4);
+                  //toastRef.current.show(err.Err4, 600);
+                  mostrarError('Información', err.Err4);
+                  //seterrorMsgRepetirContraseña(err.Err4);
                } else {
                   seterrorMsgCorreo('');
                   seterrorMsgContraseña('');
                   seterrorMsgRepetirContraseña('');
                   //Borra la info del storage
-                  AsyncStorage.removeItem('cobertura_' + email);
+                  //AsyncStorage.removeItem('cobertura_' + email);
+                  setisVisibleLoading(true);
                   await firebase
                      .auth()
                      .createUserWithEmailAndPassword(email, password)
                      .then(user => {
-
                         let usuarioRegistrado = firebase.auth().currentUser;
                         usuarioRegistrado
                            .sendEmailVerification()
@@ -90,13 +96,21 @@ export default function RegistroForm(props) {
                                     usuarioRegistrado.email +
                                     ' para continuar'
                               );*/
+                              mostrarError(
+                                 'Información',
+                                 'Verifique su correo electrónico ' +
+                                    usuarioRegistrado.email +
+                                    ' para continuar'
+                              );
                            });
                      })
                      .catch(error => {
                         console.log(error);
                         //TODO: SMO EMPATAR ERRORES DE FIREBASE AL REGISTRARSE
                         //toastRef.current.show(err.Err5, 600);
-                        toastRef.current.show(error.message, 2000);
+                        // toastRef.current.show(error.message, 2000);
+                        console.log(error.code);
+                        mostrarError('Error', err.obtenerMensaje(error.code));
                      });
                }
             }
@@ -114,7 +128,14 @@ export default function RegistroForm(props) {
             numeroRandom,
       });
    };
-
+   const mostrarError = (titulo, mensaje) => {
+      setMostrarYalert(true);
+      setTitulo(titulo);
+      setMensaje(mensaje);
+   };
+   const cerrarYalert = () => {
+      setMostrarYalert(false);
+   };
    return (
       <View style={styles.container}>
          <Input
@@ -189,6 +210,12 @@ export default function RegistroForm(props) {
             text="Creando Cuenta"
             isVisible={isVisibleLoading}
          ></Cargando>
+         <Yalert
+            titulo={titulo}
+            mensaje={mensaje}
+            visible={mostrarYalert}
+            cerrar={cerrarYalert}
+         ></Yalert>
       </View>
    );
 }
