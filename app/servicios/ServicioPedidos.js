@@ -1,9 +1,9 @@
 import { Alert, Linking } from 'react-native';
 import { ArregloUtil } from '../utils/utils';
-import { ServicioCarroCompras } from './ServicioCarroCompras';
+import { ServicioCarroCompras ,eliminarCarro} from './ServicioCarroCompras';
 import { ServicioMonederos } from './ServicioMonederos';
 
-export const crearPedido = (pedido, items, fnCerrarPantalla) => {
+export const crearPedido = (pedido, items, fnCerrarPantalla,fnPagoRest) => {
    global.db
       .collection('pedidos')
       .add(pedido)
@@ -14,7 +14,8 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
                'Gracias por su compra',
                descripcionALert + '' + pedido.orden
             );
-         } else {
+         }  
+         if (pedido.formaPago === 'TRANSFERENCIA') {
             let text =
                'He realizado el pedido: ' +
                pedido.orden +
@@ -38,16 +39,23 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
                ],
                { cancelable: false }
             );
+            
+         }
+         if (pedido.formaPago === 'TARJETA') {
+            fnPagoRest(doc.id,pedido)
          }
          for (let i = 0; i < items.length; i++) {
+            let itemPedido=items[i]
+            itemPedido.empacado=false;
+            itemPedido.recibido=false;
             global.db
                .collection('pedidos')
                .doc(doc.id)
                .collection('combos')
-               .doc(items[i].id)
-               .set(items[i]);
+               .doc(itemPedido.id)
+               .set(itemPedido);
          }
-         new ServicioCarroCompras().eliminarCarro(global.usuario);
+         eliminarCarro(global.usuario);
          fnCerrarPantalla();
          global.pagoSeleccionado = null;
          global.fechaSeleccionada = null;
@@ -61,7 +69,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla) => {
          }
       })
       .catch(function (error) {
-         Alert.alert('Se ha Producido un error', error);
+         Alert.alert('Se ha Producido un error', error.message);
       });
 };
 
@@ -110,6 +118,23 @@ export class ServicioPedidos {
                   arregloUtil.eliminar(combos, fnRepintar);
                }
             });
+         });
+   };
+
+   actualizarPedidoUrlPago = (idPedido, objeto) => {
+      global
+         .db
+         .collection('pedidos')
+         .doc(idPedido)
+         .update({
+            urlPago: objeto.urlPago,
+            tokerUrlPago: objeto.tokerUrlPago,
+         })
+         .then(function () {
+            console.log("Datos Actualizados")
+         })
+         .catch(function (error) {
+            Alert.alert('error' + error);
          });
    };
 }
