@@ -255,7 +255,7 @@ export class ConfirmarCompra extends Component {
 
 
             Alert.alert(
-               'Gracias Por su Compra',
+               'Gracias por su Compra',
                'Le Redireccionaremos a la Página para que realice su pago',
                [
                   {
