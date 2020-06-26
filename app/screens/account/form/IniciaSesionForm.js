@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de validaciones
@@ -17,6 +17,7 @@ import * as err from '../../../constants/Errores';
 // Importacion de colores
 import * as colores from '../../../constants/Colores';
 
+import { Yalert } from '../../../components/Yalert';
 export default function IniciaSesionForm(props) {
    const { nav, toastRef } = props;
 
@@ -30,21 +31,29 @@ export default function IniciaSesionForm(props) {
 
    const requerido = 'Campo requerido *';
 
+   const [mostrarYalert, setMostrarYalert] = useState(false);
+   const [titulo, setTitulo] = useState(false);
+   const [mensaje, setMensaje] = useState(false);
+
    const iniciarSesion = async () => {
       if (!email || !password) {
-         toastRef.current.show(err.Err3, 600);
+         //toastRef.current.show(err.Err3, 600);
+         //Alert.alert('Error', err.Err3);
+         mostrarError('Información', err.Err3);
          seterrorMsgCorreo(requerido);
          seterrorMsgContraseña(requerido);
       } else {
          seterrorMsgCorreo('');
          seterrorMsgContraseña('');
          if (!validateEmail(email)) {
-            toastRef.current.show(err.Err1, 600);
+            //toastRef.current.show(err.Err1, 600);
+            mostrarError('Información', err.Err1);
             seterrorMsgCorreo(err.Err1);
          } else {
             if (password.length < 6) {
                seterrorMsgContraseña(err.Err6);
-               toastRef.current.show(err.Err6, 600);
+               // toastRef.current.show(err.Err6, 600);
+               mostrarError('Información', err.Err6);
             } else {
                seterrorMsgCorreo('');
                seterrorMsgContraseña('');
@@ -57,12 +66,21 @@ export default function IniciaSesionForm(props) {
                      setisVisibleLoading(false);
                   })
                   .catch(() => {
-                     toastRef.current.show(err.Err2, 600);
+                     mostrarError('Información', err.Err2);
+                     //toastRef.current.show(err.Err2, 600);
                      setisVisibleLoading(false);
                   });
             }
          }
       }
+   };
+   const mostrarError = (titulo, mensaje) => {
+      setMostrarYalert(true);
+      setTitulo(titulo);
+      setMensaje(mensaje);
+   };
+   const cerrarYalert = () => {
+      setMostrarYalert(false);
    };
    return (
       <View style={styles.container}>
@@ -125,6 +143,12 @@ export default function IniciaSesionForm(props) {
             text="Iniciando Sesión"
             isVisible={isVisibleLoading}
          ></Cargando>
+         <Yalert
+            titulo={titulo}
+            mensaje={mensaje}
+            visible={mostrarYalert}
+            cerrar={cerrarYalert}
+         ></Yalert>
       </View>
    );
 }
@@ -171,6 +195,6 @@ const styles = StyleSheet.create({
    estiloTexto: {
       paddingTop: 15,
       alignSelf: 'flex-end',
-      color: colores.colorClaroPrimarioTomate,
+      color: colores.colorPrimarioTomate,
    },
 });
