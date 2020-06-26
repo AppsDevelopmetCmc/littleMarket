@@ -92,12 +92,16 @@ export class ListaProductos extends Component {
          }
       }
       let subtotal = 0;
+      let delivery = 1.5;
       for (let i = 0; i < productosSeleccionados.length; i++) {
          subtotal =
             subtotal +
             productosSeleccionados[i].precio *
                productosSeleccionados[i].cantidad;
       }
+      global.total = subtotal + delivery;
+      global.delivery = delivery;
+      global.subtotal = subtotal;
       this.setState({ listaProductos: productos, subtotal: subtotal });
    };
 

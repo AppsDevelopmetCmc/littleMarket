@@ -31,7 +31,9 @@ import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
-import { MapaDirecciones } from '../map/MapaDirecciones';
+import { MapaDirecciones } from '../map/MapaDirecciones'
+import { PantallaPagos } from '../compra/PantallaPagos'
+
 
 //Componentes
 import Cargando from '../../components/Cargando';
@@ -227,8 +229,22 @@ function ScreensFromTabs() {
                },
                headerTintColor: '#fff',
             }}
-         />
+             />
+         <StackDirection.Screen
+            name="PantallaPagos"
+            component={PantallaPagos}
+            options={{
+               title: 'Pantalla de Pagos',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }} 
+            />
       </StackFromTabs.Navigator>
+
    );
 }
 function LoginStack() {
@@ -536,14 +552,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
