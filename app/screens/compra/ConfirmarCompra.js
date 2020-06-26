@@ -12,7 +12,7 @@ import {
    TextInput,
 } from 'react-native';
 import { Button, Card, Input } from 'react-native-elements';
-import { crearPedido } from '../../servicios/ServicioPedidos';
+import { crearPedido, ServicioPedidos } from '../../servicios/ServicioPedidos';
 import firebase from 'firebase';
 import '@firebase/firestore';
 import { transformDinero } from '../../utils/Validaciones';
@@ -34,6 +34,11 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
 import { Promociones } from './Promociones';
+import { URLPAGOS } from '../../utils/ApiKey'
+import {convertirFormaPago,convertirEstadoPago,convertirRadioPago} from '../../utils/ConvertirFormaPago'
+/* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
+export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
+ */
 
 export class ConfirmarCompra extends Component {
    constructor() {
@@ -41,14 +46,15 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
-  
+
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
          horarios: [],
          direccion: global.direccionPedido.descripcion,
-         pagoSeleccionado: global.pagoSeleccionado == 'TR' ? 1 : 0,
+         pagoSeleccionado: global.pagoSeleccionado == 'TR' ? 1
+            : global.pagoSeleccionado == 'EF' ? 0 : 2,
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -65,6 +71,7 @@ export class ConfirmarCompra extends Component {
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
          { label: 'Transferencia', value: 'TR' },
+         { label: 'Tarjeta', value: 'TA' },
       ];
    }
 
@@ -86,7 +93,6 @@ export class ConfirmarCompra extends Component {
          global.usuario,
          this.repintarMonedero
       );
-      
    }
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
@@ -102,9 +108,8 @@ export class ConfirmarCompra extends Component {
       this.unsubscribe();
    }
    componentWillReceiveProps(next_props) {
-      console.log("next Prop",next_props)
-      if( next_props.route.params.origen=='mapaDirecciones')
-      {
+      console.log("next Prop", next_props)
+      if (next_props.route.params.origen == 'mapaDirecciones') {
          this.refrescarDireccion()
       }
    }
@@ -140,8 +145,8 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      }else if (
-         !global.pedido.referencia
+      } else if (
+         !global.direccionPedido.referencia
       ) {
          Alert.alert(
             'Información',
@@ -212,6 +217,71 @@ export class ConfirmarCompra extends Component {
          direccion: global.direccionPedido,
       });
    }
+   consultarRestPago = async (idPedido, pedido) => {
+      let formData = new FormData();
+      formData.append("companyType", "Persona Natural");
+      formData.append("document", "1715413819");
+      formData.append("documentType", "01");
+      formData.append("fullName", pedido.nombreCliente);
+      formData.append("address", pedido.direccion);
+      formData.append("mobile", pedido.telefono);
+      formData.append("email", global.usuario);
+      formData.append("description", "Compra Insumos Alimenticios");
+      formData.append("amount", pedido.total);
+      formData.append("amountWithTax", 0);
+      formData.append("amountWithoutTax", pedido.total);
+      formData.append("tax", 0);
+      formData.append("gateway", 3);//siempre va tres para que se pueda realizar el pago
+      formData.append("notifyUr", "");
+      formData.append("reference", pedido.orden);
+      formData.append("generateInvoice", 0);
+      console.log("Ingresa a consultar el servicio ")
+      let response = await fetch(
+         URLPAGOS,
+         {
+            method: "POST",
+            body: formData
+         }
+      );
+      let trama = await response.json(); 
+
+      if (trama.code == 1) {
+         console.log("Tarma exitosa")
+        let srvPedidod = new ServicioPedidos();
+         srvPedidod.actualizarPedidoUrlPago(idPedido, {
+            urlPago: trama.data.url,
+            tokerUrlPago: trama.data.token
+         }) 
+
+
+            Alert.alert(
+               'Gracias Por su Compra',
+               'Le Redireccionaremos a la Página para que realice su pago',
+               [
+                  {
+                     text: 'Aceptar',
+                     onPress: () => {
+                        this.props.navigation.navigate('PantallaPagos',
+                        {
+                           url: trama.data.url
+                        }
+                     );
+
+                     },
+                  },
+               ],
+               { cancelable: false }
+            );
+
+
+      } else {
+         console.log("Error al generar Url")
+         Alert.alert("Error al Generar Url de Pago",
+            trama.message)
+      }
+
+   }
+
    render() {
       let fechaActual = new Date();
 
@@ -527,7 +597,7 @@ export class ConfirmarCompra extends Component {
                            radio_props={this.radio_props}
                            buttonColor={colores.colorPrimarioTomate}
                            selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={global.pagoSeleccionado == 'TR' ? 1 : 0}
+                           initial={convertirRadioPago(global.pagoSeleccionado)}
                            formHorizontal={true}
                            buttonSize={15}
                            buttonOuterSize={25}
@@ -548,17 +618,15 @@ export class ConfirmarCompra extends Component {
                         //disabled={this.state.deshabilitado}
                         onPress={() => {
                            let fecha = new Date();
-                           this.generarNumeroOrden(codigo => {
+                           /*this.consultarRestPago(1,{})*/
+                            this.generarNumeroOrden(codigo => {
                               crearPedido(
                                  {
                                     fechaPedido: formatearFechaISO(fecha),
                                     fechaEntrega: this.state.fechaSeleccionada,
                                     horarioEntrega: this.state
                                        .horarioSeleccionado.horario,
-                                    estado:
-                                       global.pagoSeleccionado == 'TR'
-                                          ? 'CT'
-                                          : 'PI',
+                                    estado:convertirEstadoPago(global.pagoSeleccionado),
                                     mail: global.usuario,
                                     nombreCliente:
                                        global.appUsuario.nombreCompleto,
@@ -572,10 +640,7 @@ export class ConfirmarCompra extends Component {
                                        .jornada,
                                     orden: codigo,
                                     horaCreacion: obtenerHoraActual(fecha),
-                                    formaPago:
-                                       global.pagoSeleccionado === 'TR'
-                                          ? 'TRANSFERENCIA'
-                                          : 'EFECTIVO',
+                                    formaPago: convertirFormaPago(global.pagoSeleccionado),
                                     asociado: 'asociado@gmail.com',
                                     nombreAsociado: 'Juan perez',
                                     telefonoAsociado: '1245635',
@@ -585,11 +650,16 @@ export class ConfirmarCompra extends Component {
                                     descuento: parseFloat(
                                        this.state.valorDescuento.toFixed(2)
                                     ),
+                                    empacado: false,
+                                    recibido: false,
+                                    urlPago: '',
+                                    tokerUrlPago: ''
                                  },
                                  items,
-                                 this.cerrarPantalla
+                                 this.cerrarPantalla,
+                                 this.consultarRestPago,
                               );
-                           });
+                           });  
                         }}
                      ></Button>
                   </View>
