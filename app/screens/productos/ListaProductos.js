@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
-import { ItemCombo } from '../combos/componentes/ItemCombo';
 import * as serviciosItem from '../../servicios/ServiciosItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Badge, withBadge, Avatar } from 'react-native-elements';
-import ActionButton from 'react-native-action-button';
+import { Badge, withBadge } from 'react-native-elements';
 
 import { ServiciosItem } from '../../servicios/ServiciosItem';
 
 // Importacion de Cabecera Personalizada
 import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
 import * as serviciosCarrito from '../../servicios/ServicioCarroCompras';
 //Importando los colores
@@ -31,6 +28,7 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
+import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
@@ -46,7 +44,7 @@ export class ListaProductos extends Component {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }*/
       global.categoria = 'V';
-      this.sector="";
+      this.sector = '';
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -110,10 +108,11 @@ export class ListaProductos extends Component {
          global.usuario,
          this.pintarSeleccionProductos
       );
-      new ServicioDirecciones().recuperarPrincipal(
+      /*new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
          this.refrescarDireccion
-      );
+      );*/
+      this.validarCobertura();
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -169,16 +168,41 @@ export class ListaProductos extends Component {
    componentWillUnmount() {
       //  this._unsubscribe();
    }
-   obtenerCoordenadas = async () => {
+   validarCobertura = async () => {
       Geocoder.init(APIKEY);
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
-         setErrorMsg('Error al otorgar el permiso');
+      let response = await Location.requestPermissionsAsync();
+      if (response.status !== 'granted') {
+         Alert.alert('Error', 'no se otorgaron permisos en el dispositivo');
       }
+      let actualLocation = await Location.getCurrentPositionAsync({});
+      global.localizacionActual = actualLocation.coords;
+      console.log('actual location:', global.localizacionActual);
 
-      let location = await Location.getCurrentPositionAsync({});
-      console.log('actual location:', location);
-      this.localizacionActual = location;
+      let existeCobertura = this.validarSector(global.localizacionActual);
+      if (!existeCobertura) {
+         Alert.alert(
+            'Advertencia',
+            'No existe cobertura en el sector donde se encuentra'
+         );
+      } else {
+         console.log('SI existe cobertura');
+      }
+      this.obtenerDireccionPedido();
+   };
+   //Obtiene la ultima direccion usada en un pedido
+   //Si no existen direcciones en el pedido, agrega una usando el punto actual
+   obtenerDireccionPedido = () => {
+      let pedido = null;
+      if (!pedido) {
+         new ServicioDirecciones().crear(global.usuario, {
+            descripcion: '',
+            latitud: global.localizacionActual.latitude,
+            longitud: global.localizacionActual.longitude,
+         });
+      }
+   };
+   validarSector = ubicacion => {
+      return Math.random() > 0.3;
    };
 
    pintarLista = items => {
@@ -337,14 +361,21 @@ export class ListaProductos extends Component {
       this.setState({ mostrarInstrucciones: false });
    };
 
-    asignarSector = async() =>{
+   asignarSector = async () => {
       let srvCobertura = new ServicioCobertura();
-      this.sector = await srvCobertura.consultarCobertura(global.coordenadas.latitude, global.coordenadas.longitude)
-      console.log("LATITUD LONGITUD" + global.coordenadas.latitude +"="+global.coordenadas.longitude);
-      console.log("SECTOR" + this.sector.sector);
+      this.sector = await srvCobertura.consultarCobertura(
+         global.localizacionActual.latitude,
+         global.localizacionActual.longitude
+      );
+      console.log(
+         'LATITUD LONGITUD' +
+            global.localizacionActual.latitude +
+            '=' +
+            global.localizacionActual.longitude
+      );
+      console.log('SECTOR' + this.sector.sector);
       Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
-   }
-   
+   };
 
    render() {
       const BadgedIcon = withBadge(1)(Icon);
@@ -535,17 +566,6 @@ export class ListaProductos extends Component {
                </View>
             )*/}
 
-            <Modal
-               animationType="slide"
-               transparent={true}
-               visible={this.state.mostrarModalDirecciones}
-            >
-               <SeleccionarDireccion
-                  mostrarModal={this.mostrarModal}
-                  fnSeleccionar={this.seleccionarDireccion}
-                  navigation={this.props.navigation}
-               />
-            </Modal>
             {/* <Modal
                //animationType="slide"
                transparent={true}
@@ -590,7 +610,9 @@ export class ListaProductos extends Component {
                      <TouchableHighlight
                         onPress={() => {
                            this.asignarSector();
-                           this.props.navigation.navigate('ConfirmarCompraScreen');
+                           this.props.navigation.navigate(
+                              'ConfirmarCompraScreen'
+                           );
                         }}
                      >
                         <View

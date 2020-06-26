@@ -6,12 +6,17 @@ import {
    Alert,
    Modal,
    useColorScheme,
-   FlatList, TextInput
+   FlatList,
+   TextInput,
+   Image,
+   SafeAreaView,
 } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { Button, CheckBox, Text } from 'react-native-elements';
+import { Button, CheckBox, Text, Avatar } from 'react-native-elements';
 import MapInput from '../../components/MapInput';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import * as serviciosDirecciones from '../../servicios/ServicioDirecciones';
 import { Input } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
@@ -27,18 +32,17 @@ import {
 
 import * as colores from '../../constants/Colores';
 import * as estilos from '../../estilos/estilos';
-import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion'
+import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion';
 import { ScrollView } from 'react-native-gesture-handler';
 
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
-const LATITUDE = -1.831239;
-const LONGITUDE = -78.183403;
-const LATITUDE_DELTA = 0.02/2 ;
-const LONGITUDE_DELTA = LATITUDE_DELTA * (ASPECT_RATIO);
+const LATITUDE_DELTA = 0.02 / 2;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export class MapaDirecciones extends Component {
    constructor(props) {
+      console.log('CONSTRUCTOR MAPA DIRECCIONES');
       super(props);
       //cuando vengo por actualizar direccion obtengo los datos de la
       //direccion seleccionada
@@ -53,9 +57,15 @@ export class MapaDirecciones extends Component {
       this.idDireccion = '';
       this.montado = false;
       let direcciones = [];
-      if (this.origen == 'nuevo' || this.origen == 'actual') {
+      this.actualizarNombre = false;
+      if (
+         this.origen == 'nuevo' ||
+         this.origen == 'actual' ||
+         this.origen == 'busquedaDirecciones'
+      ) {
          this.pintarElemento = true;
       }
+
       this.state = {
          vaciar: false,
          modalVisible: true,
@@ -89,6 +99,7 @@ export class MapaDirecciones extends Component {
    };
 
    obtenerCoordenadas = async () => {
+      console.log('OBTENER COORDENADAS---', this.origen);
       /*Geocoder.init('AIzaSyBeK8BWXsKDTMtwV_bC2FI4GADQklc-nuA');*/
       if (this.origen == 'actual') {
          this.setState({
@@ -103,9 +114,7 @@ export class MapaDirecciones extends Component {
                longitude: global.localizacionActual.coords.longitude,
             },
          });
-      }
-
-      if (this.origen == 'nuevo') {
+      } else if (this.origen == 'nuevo') {
          this.setState({
             region: {
                latitude: this.coordenadasBusqueda.lat,
@@ -117,10 +126,10 @@ export class MapaDirecciones extends Component {
                latitude: this.coordenadasBusqueda.lat,
                longitude: this.coordenadasBusqueda.lng,
             },
+
             // direccion: response.results[0].formatted_address,
          });
-      }
-      if (this.origen == 'actualizar') {
+      } else if (this.origen == 'actualizar') {
          this.setState({
             region: {
                latitude: this.direccion.latitud,
@@ -138,42 +147,27 @@ export class MapaDirecciones extends Component {
             referencia: this.direccion.referencia,
             principal: this.direccion.principal == 'S' ? true : false,
          });
-      }
-   };
-
-   componentWillReceiveProps(next_props) {
-      console.log("props")
-      if (next_props.route.params.origen == 'busquedaDirecciones') {
-         let siguienteMapaActual = this.state.siguienteMapa
-
-         let direccion = next_props.route.params.direccion
+      } else if (this.origen == 'busquedaDirecciones') {
          this.setState({
             region: {
-               latitude: direccion.latitud,
-               longitude: direccion.longitud,
+               latitude: this.direccion.latitud,
+               longitude: this.direccion.longitud,
                latitudeDelta: LATITUDE_DELTA,
                longitudeDelta: LONGITUDE_DELTA,
             },
             coordinate: {
-               latitude: direccion.latitud,
-               longitude: direccion.longitud,
+               latitude: this.direccion.latitud,
+               longitude: this.direccion.longitud,
             },
-            direccion: direccion.descripcion,
-            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
-
-            alias: direccion.alias,
-            referencia: direccion.referencia,
-            principal: direccion.principal == 'S' ? true : false,
-            siguienteMapa: !siguienteMapaActual
+            direccion: this.direccion.descripcion,
+            // direccion: response.results[0].formatted_address,
          });
-         this.repintarLista();
       }
-   }
-
+   };
    componentDidMount() {
       this.obtenerCoordenadas();
       let srvDirecciones = new ServicioDirecciones();
-      srvDirecciones.registrarEscuchaMapaDireccion(
+      this._unsuscribe = srvDirecciones.registrarEscuchaMapaDireccion(
          global.usuario,
          this.repintarLista
       );
@@ -183,17 +177,32 @@ export class MapaDirecciones extends Component {
    repintarLista = () => {
       //  this.validarCoberturaGlobalDireccion();
       const direcciones = global.direcciones;
-
+      console.log('---- seleccionado---> ', global.direccionPedido.id);
+      let existeSeleccionado = false;
+      for (let i = 0; i < direcciones.length; i++) {
+         if (direcciones[i].id == global.direccionPedido.id) {
+            direcciones[i].itemSeleccionado = true;
+            existeSeleccionado = true;
+         } else {
+            direcciones[i].itemSeleccionado = false;
+         }
+      }
+      if (!existeSeleccionado) {
+         //global.direccionPedido = direcciones[0];
+         //global.direccionPedido.itemSeleccionado = true;
+         this.actualizarDireccion(direcciones[0]);
+      }
       this.setState({
-         listaDirecciones: direcciones.map(function (item) {
-            return { ...item, itemSeleccionado: global.direccionPedido.id == item.id ? true : false };
-         }),
+         listaDirecciones: direcciones,
       });
-
+      console.log('---- seleccionado---> ', direcciones);
    };
 
    componentWillUnmount = () => {
-
+      console.log('UNSUSCRIBE!!!');
+      if (this._unsuscribe) {
+         this._unsuscribe();
+      }
    };
    obtenerDireccion = async (latitude, longitude) => {
       let addressComponent = '';
@@ -295,9 +304,9 @@ export class MapaDirecciones extends Component {
       let a =
          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
          Math.cos(this.rad(lat1)) *
-         Math.cos(this.rad(lat2)) *
-         Math.sin(dLong / 2) *
-         Math.sin(dLong / 2);
+            Math.cos(this.rad(lat2)) *
+            Math.sin(dLong / 2) *
+            Math.sin(dLong / 2);
       let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
@@ -370,104 +379,38 @@ export class MapaDirecciones extends Component {
       console.log('popToTop');
       this.props.navigation.popToTop();
    };
-   onRegionChangeComplete = async region => {
-      this.nueva = new Date().getTime();
-      setTimeout(async () => {
-         if (new Date().getTime() - this.nueva > 500) {
-            console.log('DIRECCION', region.latitude, region.longitude);
-            let response = await Geocoder.from(
-               region.latitude,
-               region.longitude
-            );
-            this.generarDireccion(response.results[0]);
-         }
-      }, 500);
-   };
-
-   onRegionChange = region => {
+   asignarDireccion = (nombreDireccion, latitud, longitud) => {
       this.setState({
-         coordinate: { latitude: region.latitude, longitude: region.longitude },
-         /* region: region*/
+         direccion: nombreDireccion,
+         region: {
+            latitude: latitud,
+            longitude: longitud,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+         },
       });
    };
-   generarDireccion = info => {
-      //console.log('info', info.address_components);
-      let componentes = info.address_components;
-      let direccionName = {};
-      if (componentes) {
-         for (let i = 0; i < componentes.length; i++) {
-            let componente = componentes[i];
-            console.log('componente', componente);
-            for (let j = 0; j < componente.types.length; j++) {
-               console.log('route', direccionName.route);
 
-               if (componente.types[j] == 'route') {
-                  if (!direccionName.route) {
-                     direccionName.route = componente.short_name;
-                  }
-                  if (direccionName.route != componente.short_name) {
-                     direccionName.route2 = componente.short_name + '';
-                  }
-               }
-
-               if (componente.types[j] == 'point_of_interest') {
-                  direccionName.point_of_interest = componente.short_name;
-               }
-               if (componente.types[j] == 'street_number') {
-                  direccionName.street_number = componente.short_name;
-               }
-               if (componente.types[j] == 'sublocality') {
-                  direccionName.sublocality = componente.short_name;
-               }
-               if (componente.types[j] == 'locality') {
-                  direccionName.locality = componente.short_name;
-               }
-               if (componente.types[j] == 'country') {
-                  direccionName.country = componente.long_name;
-               }
-            }
-         }
+   onRegionChangeComplete = async region => {
+      if (this.actualizarNombre) {
+         this.nueva = new Date().getTime();
+         console.log('DIRECCION', region.latitude, region.longitude);
+         this.setState({});
+         serviciosDirecciones.generarDireccion(
+            region.latitude,
+            region.longitude,
+            this.asignarDireccion
+         );
+      } else {
+         this.actualizarNombre = true;
       }
-      //point_of_interest, route street_number, sublocality, locality
-      console.log('direccionX===>', direccionName);
-      let nombreDireccion = '';
-
-      if (direccionName) {
-         let numeroCalle =
-            direccionName.route + ' ' + direccionName.street_number;
-         if (direccionName.route2) {
-            numeroCalle =
-               direccionName.route +
-               ' ' +
-               direccionName.street_number +
-               ' ' +
-               direccionName.route2;
-         }
-         let resNumeroCalle = numeroCalle.replace(/undefined/gi, '');
-         let str =
-            direccionName.point_of_interest +
-            ', ' +
-            resNumeroCalle +
-            ', ' +
-            direccionName.sublocality +
-            ', ' +
-            direccionName.locality; /*+
-            '-' +
-            direccionName.country;*/
-         let res = str.replace(/, ,/gi, ',');
-         res = str.replace(/ ,/gi, '');
-         nombreDireccion = res.replace(/undefined,/gi, '');
-      }
-
-      console.log('direccionName===>', nombreDireccion);
-      this.setState({ direccion: nombreDireccion });
    };
-   actualizarDireccion = (direccion) => {
-      Alert.alert("Información", 'Los cambios se realizaran cuando presione el boton \n \"GUARDAR SELECCIONADO\"')
+
+   actualizarDireccion = direccion => {
       this.direccionTmp = direccion;
-      console.log("direccion", direccion)
-      let siguienteMapaActual = this.state.siguienteMapa
-      console.log("mapa Actual", siguienteMapaActual)
+      // console.log('direccion', direccion);
+      let siguienteMapaActual = this.state.siguienteMapa;
+      // console.log('mapa Actual', siguienteMapaActual);
       this.setState({
          region: {
             latitude: direccion.latitud,
@@ -484,22 +427,20 @@ export class MapaDirecciones extends Component {
          alias: direccion.alias,
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
-         siguienteMapa: !siguienteMapaActual
+         siguienteMapa: !siguienteMapaActual,
       });
       global.direccionPedido = direccion;
-      console.log("siguienteMapa", this.state.siguienteMapa)
+      //  console.log('siguienteMapa', this.state.siguienteMapa);
       this.repintarLista();
    };
 
    actualizarDireccionPedido = async () => {
       let validar = true;
       if (!this.state.referencia) {
-         this.setState({ validarReferencia: 'Campo Referencia Obligatorio' });
+         this.setState({ validarReferencia: 'Campo obligatorio' });
          validar = false;
-
       }
       if (validar) {
-
          this.direccionTmp.descripcion = this.state.direccion;
          this.direccionTmp.referencia = this.state.referencia;
          this.direccionTmp.principal = 'S';
@@ -510,155 +451,216 @@ export class MapaDirecciones extends Component {
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
-         await srvDireccion.actualizarPrincipalTodosNo(global.usuario);
-         srvDireccion.guardarDataReferencia(global.usuario, direccionPedido.id, this.direccionTmp);
-         console.log('Envia Confirmar');
-         this.setState({ mostrarModal: false })
-         this.props.navigation.navigate('ConfirmarCompraScreen',
-            {
-               origen: "mapaDirecciones"
-            }
+         // await srvDireccion.actualizarPrincipalTodosNo(global.usuario);
+         srvDireccion.guardarDataReferencia(
+            global.usuario,
+            direccionPedido.id,
+            this.direccionTmp
          );
-      }
-   }
+         console.log('Envia Confirmar');
 
+         this.props.navigation.navigate('ConfirmarCompraScreen', {
+            origen: 'mapaDirecciones',
+         });
+      }
+   };
+   obtenerItemSeleccionado = () => {
+      let direcciones = this.state.listaDirecciones;
+      let indice = 0;
+      for (let i = 0; i < direcciones.length; i++) {
+         if (direcciones[i].itemSeleccionado) {
+            indice = i;
+         }
+      }
+      return indice;
+   };
+
+   eliminar = direccion => {
+      console.log('ELIMINA:', direccion);
+      let servDirecciones = new ServicioDirecciones();
+
+      if (
+         this.state.listaDirecciones &&
+         this.state.listaDirecciones.length == 1
+      ) {
+         Alert.alert('No puede eliminar todas las direcciones');
+      } else {
+         servDirecciones.eliminarDir(global.usuario, direccion.id, () => {});
+      }
+   };
    render() {
+      let indiceSeleccionado = this.obtenerItemSeleccionado();
+      console.log('----RENDER MAPA----', this.state.listaDirecciones);
       const { navigation } = this.props;
       return (
          <View style={[styles.container]}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 5 }}>
                <View
                   style={{
                      backgroundColor: 'white',
-                     height: 30,
+                     //height: 30,
                      borderRadius: 20,
                      marginBottom: 10,
+                     marginHorizontal: 10,
+                     paddingHorizontal: 10,
+                     //paddingHorizontal: 10,
+                     justifyContent: 'center',
+                  }}
+               >
+                  <Input
+                     // style={{ paddingVertical: 5, paddingHorizontal: 15 }}
+                     inputStyle={{ fontSize: 14, borderWidth: 0 }}
+                     containerStyle={{ borderWidth: 0 }}
+                     inputContainerStyle={{
+                        borderWidth: 0,
+                        paddingHorizontal: 10,
+                        // paddingVertical: 10,
+                     }}
+                     multiline={true}
+                     value={this.state.direccion}
+                     onChangeText={text => {
+                        this.setState({ direccion: text });
+                     }}
+                     //label="Dirección"
+                     placeholder="dirección"
+                     //underlineColorAndroid={colores.colorBlanco}
+                  ></Input>
+               </View>
+               <View
+                  style={{
+                     backgroundColor: 'white',
+                     // height: 30,
+                     borderRadius: 20,
+                     marginBottom: 10,
+
                      marginHorizontal: 10,
                      paddingHorizontal: 10,
                      justifyContent: 'center',
                   }}
                >
-                  <Text>{this.state.direccion}</Text>
+                  <Input
+                     //style={{ paddingVertical: 5, paddingHorizontal: 15 }}
+                     inputStyle={{ fontSize: 14, borderWidth: 0 }}
+                     containerStyle={{ borderWidth: 0 }}
+                     inputContainerStyle={{
+                        borderWidth: 0,
+                        paddingHorizontal: 10,
+                        // paddingVertical: 10,
+                     }}
+                     errorMessage={this.state.validarReferencia}
+                     value={this.state.referencia}
+                     multiline={true}
+                     onChangeText={text => {
+                        this.setState({ referencia: text });
+                     }}
+                     //label="Dirección"
+                     placeholder="Edificio/Número Casa/Referencia"
+                  ></Input>
                </View>
                {this.state.region ? (
-                  <View>
+                  <View style={{ flex: 6 }}>
                      {!this.state.siguienteMapa && (
-                  <MapView
-                     style={{ width: width, height: ((height /2) - 50) }}
-                     provider={PROVIDER_GOOGLE}
-                     mapType="standard"
-                     showsScale
-                     showsCompass
-                     showsPointsOfInterest
-                     showsBuildings
-                     showsUserLocation
-                     loadingEnabled={true}
-                     ref={map => (this.map = map)}
-                     onLayout={this.onMapLayout}
-                     initialRegion={this.state.region}
-                     onRegionChangeComplete={region => {
-                        this.onRegionChangeComplete(region);
-                     }}
-                     onRegionChange={region => {
-                        this.onRegionChange(region);
-                     }}
-                  >
-                     <MapView.Marker
-                        title={this.state.direccion}
-                        Key={APIKEY}
-                        ref={marker => {
-                           this.marker = marker;
-                        }}
-                        coordinate={this.state.coordinate}
-                        draggable={true}
-                     />
-                  </MapView>
-                  )}
-                  {this.state.siguienteMapa && (
-                  <MapView
-                     style={{ width: width, height: ((height / 2) - 50) }}
-                     provider={PROVIDER_GOOGLE}
-                     mapType="standard"
-                     showsScale
-                     showsCompass
-                     showsPointsOfInterest
-                     showsBuildings
-                     showsUserLocation
-                     loadingEnabled={true}
-                     ref={map => (this.map = map)}
-                     onLayout={this.onMapLayout}
-                     initialRegion={this.state.region}
-                     onRegionChangeComplete={region => {
-                        this.onRegionChangeComplete(region);
-                     }}
-                     onRegionChange={region => {
-                        this.onRegionChange(region);
-                     }}
-                  >
-                     <MapView.Marker
-                        title={this.state.direccion}
-                        Key={APIKEY}
-                        ref={marker => {
-                           this.marker = marker;
-                        }}
-                        coordinate={this.state.coordinate}
-                        draggable={true}
-                     />
-                  </MapView>
-                  )}
+                        <MapView
+                           style={{ width: width, height: height / 2 }}
+                           provider={PROVIDER_GOOGLE}
+                           mapType="standard"
+                           showsScale
+                           showsCompass
+                           showsPointsOfInterest
+                           showsBuildings
+                           showsUserLocation
+                           loadingEnabled={true}
+                           ref={map => (this.map = map)}
+                           onLayout={this.onMapLayout}
+                           initialRegion={this.state.region}
+                           onRegionChangeComplete={region => {
+                              this.onRegionChangeComplete(region);
+                           }}
+                        >
+                           {/* <MapView.Marker
+                              title={this.state.direccion}
+                              Key={APIKEY}
+                              ref={marker => {
+                                 this.marker = marker;
+                              }}
+                              coordinate={this.state.coordinate}
+                              draggable={true}
+                           />*/}
+                        </MapView>
+                     )}
+                     {this.state.siguienteMapa && (
+                        <MapView
+                           style={{ width: width, height: height / 2 }}
+                           provider={PROVIDER_GOOGLE}
+                           mapType="standard"
+                           showsScale
+                           showsCompass
+                           showsPointsOfInterest
+                           showsBuildings
+                           showsUserLocation
+                           loadingEnabled={true}
+                           ref={map => (this.map = map)}
+                           onLayout={this.onMapLayout}
+                           initialRegion={this.state.region}
+                           onRegionChangeComplete={region => {
+                              this.onRegionChangeComplete(region);
+                           }}
+                        ></MapView>
+                     )}
                   </View>
-
                ) : (
-                     <Text>Cargando</Text>
-                  )}
+                  <Text>Cargando</Text>
+               )}
+               <View
+                  style={{
+                     flex: 1,
+                     //backgroundColor: 'blue',
+                     alignItems: 'center',
+                     justifyContent: 'center',
+                     bottom: 10,
+                  }}
+               >
+                  <Button
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioTomate,
+                     }}
+                     title={this.pintarElemento ? 'GUARDAR' : 'ACEPTAR'}
+                     onPress={() => {
+                        this.actualizarDireccionPedido();
+                     }}
+                  />
+               </View>
+
+               <View
+                  style={{
+                     flex: 1,
+                     position: 'absolute',
+                     left: width / 2 - 20,
+                     top: height / 2 - height * 0.18,
+                  }}
+               >
+                  <Image source={require('../../imagenes/punta.png')} />
+               </View>
             </View>
             <View style={styles.pie}>
-               <Modal
-                  animationType="slide"
-                  transparent={true}
-                  visible={this.state.mostrarModal}
-               >
-                  <View style={styles.centeredView}>
-                     <View style={styles.modalView}>
-
-                        <Input
-                           value={this.state.direccion}
-                           placeholder="Nombre Direccion"
-                           label="Dirección"
-                           multiline={true}
-                           onChangeText={text => {
-                              this.setState({ direccion: text });
-                           }}
-                        />
-                        <Input
-                           errorMessage={this.state.validarReferencia}
-                           value={this.state.referencia}
-                           placeholder="Piso / Color de casa/ N- Oficina/ Indicaciones"
-                           label="Referencia"
-                           multiline={true}
-                           onChangeText={text => {
-                              this.setState({ referencia: text });
-                           }}
-                        />
-                        <Button
-                           title="Guardar"
-                           buttonStyle={{
-                              backgroundColor: colores.colorPrimarioTomate,
-                           }}
-                           onPress={() => {
-                              this.actualizarDireccionPedido();
-
-                           }}
-                        ></Button>
-                     </View>
-                  </View>
-               </Modal>
-               <View>
+               <View style={{ flex: 1, justifyContent: 'center' }}>
                   <Button
                      buttonStyle={estilos.botones.blancoRight}
-                     titleStyle={estilos.textos.botonBlanco}
+                     titleStyle={estilos.textos.botonBlancoTomate}
                      title="Agregar nueva ubicación"
                      onPress={() => {
+                        this.props.navigation.dispatch(state => {
+                           // Remove the home route from the stack
+                           const routes = state.routes.filter(
+                              r => r.name !== 'MapaDirecciones'
+                           );
+
+                           return CommonActions.reset({
+                              ...state,
+                              routes,
+                              index: routes.length - 1,
+                           });
+                        });
                         this.props.navigation.navigate(
                            'BusquedaDireccionesScreen',
                            {
@@ -669,44 +671,70 @@ export class MapaDirecciones extends Component {
                      }}
                      icon={
                         <Icon
-                           name="map-marker"
+                           name="plus-circle"
                            size={20}
                            color={colores.colorPrimarioTomate}
                            style={styles.iconos}
                         />
                      }
                   />
-
-                  <ScrollView style={styles.lista}>
-                     <View>
-                        <FlatList
-                           data={this.state.listaDirecciones}
-                           renderItem={objeto => {
-                              return (
-                                 <ItemMapDireccion
-                                    direccion={objeto.item}
-                                    fnActualizar={this.actualizarDireccion}
-                                 />
-                              );
-                           }}
-                           keyExtractor={objetoCombo => {
-                              return objetoCombo.id;
-                           }}
-                           ItemSeparatorComponent={flatListItemSeparator}
-                        />
-                     </View>
-                  </ScrollView>
-
                </View>
-            </View>
-            <View >
-               <Button
-                  buttonStyle={{ backgroundColor: colores.colorPrimarioTomate }}
-                  title={this.pintarElemento ? 'GUARDAR' : 'GUARDAR SELECCIONADO'}
-                  onPress={() => {
-                     this.setState({ mostrarModal: true })
-                  }}
-               />
+               <View style={{ flex: 4 }}>
+                  <FlatList
+                     contentContainerStyle={{
+                        flexGrow: 1,
+                        marginBottom: 20,
+                     }}
+                     // initialNumToRender={2}
+                     //ref={ref => (this.flatList = ref)}
+                     data={this.state.listaDirecciones}
+                     renderItem={objeto => {
+                        return (
+                           <ItemMapDireccion
+                              direccion={objeto.item}
+                              fnActualizar={this.actualizarDireccion}
+                              fnEliminar={this.eliminar}
+                           ></ItemMapDireccion>
+                        );
+                     }}
+                     keyExtractor={objetoCombo => {
+                        return objetoCombo.id;
+                     }}
+                     ItemSeparatorComponent={flatListItemSeparator}
+                     initialScrollIndex={indiceSeleccionado}
+                     getItemLayout={(data, index) => {
+                        return {
+                           length: 60,
+                           offset: 60 * index,
+                           index,
+                        };
+                     }}
+                     removeClippedSubviews={true}
+                     extraData={this.state}
+                     ListFooterComponent={() => {
+                        return (
+                           <View>
+                              <Text
+                                 style={{
+                                    color: colores.colorBlanco,
+                                    fontSize: 30,
+                                 }}
+                              >
+                                 FIN
+                              </Text>
+                              <Text
+                                 style={{
+                                    color: colores.colorBlanco,
+                                    fontSize: 30,
+                                 }}
+                              >
+                                 FIN
+                              </Text>
+                           </View>
+                        );
+                     }}
+                  />
+               </View>
             </View>
          </View>
       );
@@ -740,7 +768,7 @@ const flatListItemSeparator = () => {
 };
 const styles = StyleSheet.create({
    lista: {
-      marginBottom: 40
+      marginBottom: 40,
    },
    container: {
       flex: 1,
@@ -775,10 +803,10 @@ const styles = StyleSheet.create({
       elevation: 5,
    },
    pie: {
-      flex: 1,
+      flex: 3,
       backgroundColor: colores.colorBlanco,
-      marginTop: 15,
-      paddingTop: 20,
+      // marginTop: 15,
+      //paddingTop: 20,
    },
    textAreaContainer: {
       borderColor: 'grey',
@@ -792,6 +820,6 @@ const styles = StyleSheet.create({
       borderColor: 'gray',
       borderWidth: 1,
       marginLeft: 10,
-      marginRight: 10
-   }
+      marginRight: 10,
+   },
 });

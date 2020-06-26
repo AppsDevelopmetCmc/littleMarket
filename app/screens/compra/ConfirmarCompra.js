@@ -41,7 +41,7 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
-  
+
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -86,7 +86,6 @@ export class ConfirmarCompra extends Component {
          global.usuario,
          this.repintarMonedero
       );
-      
    }
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
@@ -102,10 +101,9 @@ export class ConfirmarCompra extends Component {
       this.unsubscribe();
    }
    componentWillReceiveProps(next_props) {
-      console.log("next Prop",next_props)
-      if( next_props.route.params.origen=='mapaDirecciones')
-      {
-         this.refrescarDireccion()
+      console.log('next Prop', next_props);
+      if (next_props.route.params.origen == 'mapaDirecciones') {
+         this.refrescarDireccion();
       }
    }
 
@@ -120,7 +118,10 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('Información', 'La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert(
+            'Información',
+            'La Dirección Seleccionada no tiene Cobertura'
+         );
       }
       this.setState({ mostrarModalDirecciones: false });
    };
@@ -140,9 +141,7 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      }else if (
-         !global.pedido.referencia
-      ) {
+      } else if (!global.pedido.referencia) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -206,12 +205,12 @@ export class ConfirmarCompra extends Component {
       this.setState({ mostrarCargando: false });
    };
    irMapaDirecciones = () => {
-      console.log("Direccion Actual", global.direccionPedido)
+      console.log('Direccion Actual', global.direccionPedido);
       this.props.navigation.navigate('MapaDirecciones', {
          origen: 'actualizar',
          direccion: global.direccionPedido,
       });
-   }
+   };
    render() {
       let fechaActual = new Date();
 
@@ -224,7 +223,6 @@ export class ConfirmarCompra extends Component {
             </View> */}
 
             <View style={styles.pie}>
-
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
                      <Card

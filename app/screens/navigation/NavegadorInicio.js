@@ -31,7 +31,7 @@ import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
-import { MapaDirecciones } from '../map/MapaDirecciones'
+import { MapaDirecciones } from '../map/MapaDirecciones';
 
 //Componentes
 import Cargando from '../../components/Cargando';
@@ -226,7 +226,8 @@ function ScreensFromTabs() {
                   shadowOpacity: 0, //remove shadow on iOS
                },
                headerTintColor: '#fff',
-            }} />
+            }}
+         />
       </StackFromTabs.Navigator>
    );
 }
@@ -427,8 +428,8 @@ export default function NavegadorInicio() {
                      Alert.alert(
                         'Información',
                         'Verifique su correo electrónico ' +
-                        user.email +
-                        ' para continuar'
+                           user.email +
+                           ' para continuar'
                      );
                      setLogin(false);
                   } else {

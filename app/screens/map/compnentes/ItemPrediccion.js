@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert, Button, CheckBox } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //Importacion de los colores
@@ -14,11 +14,11 @@ export class ItemPrediccion extends Component {
    render() {
       return (
          <View style={styles.container}>
-            <TouchableHighlight
-               underlayColor="white"
+            <TouchableOpacity
                onPress={() => {
                   this.props.fnbuscarCoordenadas(
-                     this.props.prediccionItem.placeId, this.props.prediccionItem.descripcion
+                     this.props.prediccionItem.placeId,
+                     this.props.prediccionItem.descripcion
                   );
                }}
             >
@@ -42,7 +42,7 @@ export class ItemPrediccion extends Component {
                      style={styles.iconos}
                   />
                </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
          </View>
       );
    }
