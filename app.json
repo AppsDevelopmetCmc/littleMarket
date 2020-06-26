@@ -7,7 +7,7 @@
       "orientation": "portrait",
       "icon": "./assets/LogoYapando.png",
       "splash": {
-         "image": "./assets/NuevoSplash.jpeg",
+         "image": "./assets/NuevoSplash.png",
          "resizeMode": "contain",
          "backgroundColor": "#00AA02"
       },

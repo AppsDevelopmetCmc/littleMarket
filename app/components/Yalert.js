@@ -85,10 +85,11 @@ export class Yalert extends Component {
 
 const styles = StyleSheet.create({
    overlay: {
-      height: 150,
-      width: '65%',
+      height: 200,
+      width: '80%',
       backgroundColor: colores.colorBlanco,
       borderRadius: 15,
+      padding: 20,
    },
    view: {
       flex: 1,
