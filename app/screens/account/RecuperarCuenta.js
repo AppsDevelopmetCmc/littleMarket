@@ -1,12 +1,6 @@
 //import liraries
 import React, { useState } from 'react';
-import {
-   View,
-   Text,
-   StyleSheet,
-   SafeAreaView,
-   Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 
 // Importación de los colores
@@ -23,7 +17,7 @@ import * as firebase from 'firebase';
 
 // Importacion de archivo de errores
 import * as err from '../../constants/Errores';
-
+import { Yalert } from '../../components/Yalert';
 export default function RecuperarCuenta(props) {
    // Seteo de variables en el state con hoock de react
    const [correo, setCorreo] = useState('');
@@ -31,8 +25,21 @@ export default function RecuperarCuenta(props) {
    const [errorMsgCorreo, seterrorMsgCorreo] = useState('');
    const { navigation } = props;
 
+   const [mostrarYalert, setMostrarYalert] = useState(false);
+   const [titulo, setTitulo] = useState(false);
+   const [mensaje, setMensaje] = useState(false);
+
    const requerido = 'Campo requerido *';
 
+   const mostrarError = (titulo, mensaje) => {
+      setMostrarYalert(true);
+      setTitulo(titulo);
+      setMensaje(mensaje);
+   };
+   const cerrarYalert = () => {
+      setMostrarYalert(false);
+      props.navigation.navigate('IniciaSesion');
+   };
    //Funcion que envia el correo
    const envioCorreo = async () => {
       setisVisibleLoading(true);
@@ -49,24 +56,15 @@ export default function RecuperarCuenta(props) {
                .sendPasswordResetEmail(correo)
                .then(function (user) {
                   console.log('envio de correo correcto');
-                  Alert.alert(
-                     '',
-                     'Correo Enviado',
-                     [
-                        {
-                           text: 'OK',
-                           onPress: () => navigation.goBack(),
-                        },
-                     ],
-                     { cancelable: false }
+                  mostrarError(
+                     'Información',
+                     'Puede recuperar su contraseña en el link enviado al correo ' +
+                        correo
                   );
                })
                .catch(function (e) {
                   console.log('error envio de correo', e);
-                  Alert.alert(
-                     '',
-                     'Correo Incorrecto o No Registrado'
-                  );
+                  Alert.alert('', 'Correo Incorrecto o No Registrado');
                });
          }
       }
@@ -110,6 +108,12 @@ export default function RecuperarCuenta(props) {
             text="Enviando Correo"
             isVisible={isVisibleLoading}
          ></Cargando>
+         <Yalert
+            titulo={titulo}
+            mensaje={mensaje}
+            visible={mostrarYalert}
+            cerrar={cerrarYalert}
+         ></Yalert>
       </SafeAreaView>
    );
 }

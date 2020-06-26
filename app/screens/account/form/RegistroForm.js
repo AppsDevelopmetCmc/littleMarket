@@ -90,18 +90,13 @@ export default function RegistroForm(props) {
                         usuarioRegistrado
                            .sendEmailVerification()
                            .then(function () {
+                              props.nav.navigate('IniciaSesion');
                               /* Alert.alert(
                                  'Info',
                                  'Verifique su correo electrónico ' +
                                     usuarioRegistrado.email +
                                     ' para continuar'
                               );*/
-                              mostrarError(
-                                 'Información',
-                                 'Verifique su correo electrónico ' +
-                                    usuarioRegistrado.email +
-                                    ' para continuar'
-                              );
                            });
                      })
                      .catch(error => {
@@ -154,6 +149,8 @@ export default function RegistroForm(props) {
                   iconStyle={styles.iconRight}
                ></Icon>
             }
+            keyboardType="email-address"
+            autoCapitalize="none"
          ></Input>
          <Input
             placeholder="******"
@@ -176,6 +173,7 @@ export default function RegistroForm(props) {
                   }}
                ></Icon>
             }
+            autoCapitalize="none"
          ></Input>
          <Input
             placeholder="******"

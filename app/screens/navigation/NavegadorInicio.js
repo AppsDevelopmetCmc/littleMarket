@@ -31,9 +31,8 @@ import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
-import { MapaDirecciones } from '../map/MapaDirecciones'
-import { PantallaPagos } from '../compra/PantallaPagos'
-
+import { MapaDirecciones } from '../map/MapaDirecciones';
+import { PantallaPagos } from '../compra/PantallaPagos';
 
 //Componentes
 import Cargando from '../../components/Cargando';
@@ -229,7 +228,7 @@ function ScreensFromTabs() {
                },
                headerTintColor: '#fff',
             }}
-             />
+         />
          <StackDirection.Screen
             name="PantallaPagos"
             component={PantallaPagos}
@@ -241,10 +240,9 @@ function ScreensFromTabs() {
                   shadowOpacity: 0, //remove shadow on iOS
                },
                headerTintColor: '#fff',
-            }} 
-            />
+            }}
+         />
       </StackFromTabs.Navigator>
-
    );
 }
 function LoginStack() {
@@ -441,14 +439,11 @@ export default function NavegadorInicio() {
                if (global.infoUsuario.providerId == 'password') {
                   console.log('--NavegadorInicio ingresa con usuario/clave');
                   if (!user.emailVerified) {
-                     Alert.alert(
-                        'Información',
-                        'Verifique su correo electrónico ' +
-                           user.email +
-                           ' para continuar'
-                     );
+                     global.mailVerificado = false;
+                     global.usuario = user.email;
                      setLogin(false);
                   } else {
+                     global.mailVerificado = true;
                      if (user) {
                         global.usuario = user.email;
                         global.infoUsuario = user.providerData[0];
@@ -543,7 +538,7 @@ export default function NavegadorInicio() {
          <Cargando
             isVisible={true}
             text="Cargando"
-            color={colores.colorClaroPrimarioVerde}
+            color={colores.colorPrimarioVerde}
          ></Cargando>
       );
    } else {
@@ -552,14 +547,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-                  <StackAuthentication.Navigator>
-                     <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
-                        options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
-                  </StackAuthentication.Navigator>
-               )}
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
