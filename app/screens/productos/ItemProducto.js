@@ -57,7 +57,7 @@ export class ItemProducto extends Component {
    }
 
    componentDidMount() {
-      console.log('--------CHECKED', this.props.producto.checked);
+      //console.log('--------CHECKED', this.props.producto.checked);
    }
 
    static getDerivedStateFromProps(nextProps, prevState) {

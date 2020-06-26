@@ -97,12 +97,12 @@ export class ListCombo extends Component {
       this.obtenerCoordenadas();
       //  this.notienecobertura=this.props.route.params.notienecobertura1
       if (this.notienecobertura == 'N') {
-         Alert.alert('Información','No existe Cobertura para la Direccion ');
+         Alert.alert('Información', 'No existe Cobertura para la Direccion ');
       }
-      new ServicioDirecciones().recuperarPrincipal(
+      /* new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
          this.refrescarDireccion
-      );
+      );*/
       // getToken();
       //global.repintarSeleccionProductos = this.repintarSeleccionProductos;
       /* serviciosCarrito.registrarEscucha(
@@ -255,7 +255,10 @@ export class ListCombo extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('Información','La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert(
+            'Información',
+            'La Dirección Seleccionada no tiene Cobertura'
+         );
       }
       this.setState({ mostrarModalDirecciones: false });
    };

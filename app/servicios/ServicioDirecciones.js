@@ -1,5 +1,80 @@
 import { ArregloUtil } from '../utils/utils';
 import { Alert } from 'react-native';
+import Geocoder from 'react-native-geocoding';
+
+export const generarDireccion = async (latitud, longitud, fnAsignar) => {
+   let response = await Geocoder.from(latitud, longitud);
+   let componentes = response.results[0].address_components;
+   let direccionName = {};
+   if (componentes) {
+      for (let i = 0; i < componentes.length; i++) {
+         let componente = componentes[i];
+         //     console.log('componente', componente);
+         for (let j = 0; j < componente.types.length; j++) {
+            //     console.log('route', direccionName.route);
+
+            if (componente.types[j] == 'route') {
+               if (!direccionName.route) {
+                  direccionName.route = componente.short_name;
+               }
+               if (direccionName.route != componente.short_name) {
+                  direccionName.route2 = componente.short_name + '';
+               }
+            }
+
+            if (componente.types[j] == 'point_of_interest') {
+               direccionName.point_of_interest = componente.short_name;
+            }
+            if (componente.types[j] == 'street_number') {
+               direccionName.street_number = componente.short_name;
+            }
+            if (componente.types[j] == 'sublocality') {
+               direccionName.sublocality = componente.short_name;
+            }
+            if (componente.types[j] == 'locality') {
+               direccionName.locality = componente.short_name;
+            }
+            if (componente.types[j] == 'country') {
+               direccionName.country = componente.long_name;
+            }
+         }
+      }
+   }
+   //point_of_interest, route street_number, sublocality, locality
+   //    console.log('direccionX===>', direccionName);
+   let nombreDireccion = '';
+
+   if (direccionName) {
+      let numeroCalle = direccionName.route + ' ' + direccionName.street_number;
+      if (direccionName.route2) {
+         numeroCalle =
+            direccionName.route +
+            ' ' +
+            direccionName.street_number +
+            ' ' +
+            direccionName.route2;
+      }
+      let resNumeroCalle = numeroCalle.replace(/undefined/gi, '');
+      let str =
+         direccionName.point_of_interest +
+         ', ' +
+         resNumeroCalle +
+         ', ' +
+         direccionName.sublocality +
+         ', ' +
+         direccionName.locality; /*+
+         '-' +
+         direccionName.country;*/
+      let res = str.replace(/, ,/gi, ',');
+      res = str.replace(/ ,/gi, '');
+      nombreDireccion = res.replace(/undefined,/gi, '');
+   }
+
+   console.log('direccionName===>', nombreDireccion);
+   // this.setState({ direccion: nombreDireccion });
+   fnAsignar(nombreDireccion, latitud, longitud);
+};
+
 export class ServicioDirecciones {
    crear = async (idCliente, direccion) => {
       let id = '';
@@ -49,9 +124,7 @@ export class ServicioDirecciones {
          .collection('direcciones')
          .doc(idDireccion)
          .delete()
-         .then(function () {
-            // Alert.alert('Dirección Eliminada');
-         })
+         .then()
          .catch(function (error) {
             Alert.alert('Se ha producido un Error', error);
          });
@@ -114,33 +187,32 @@ export class ServicioDirecciones {
       let actualizarInfo = this.actualizarInfo;
       let eliminar = this.eliminar;
       global.fnRepintarDireccion = fnRepintar;
-      if (!global.direcciones) {
-         global.direcciones = [];
-         global.db
-            .collection('clientes')
-            .doc(idCliente)
-            .collection('direcciones')
-            .onSnapshot(function (snapShot) {
-               snapShot.docChanges().forEach(function (change) {
-                  let direccion = change.doc.data();
-                  direccion.id = change.doc.id;
-                  if (change.type == 'added') {
-                     global.direcciones.push(direccion);
-                  }
-                  if (change.type == 'modified') {
-                     actualizarInfo(direccion);
-                  }
-                  if (change.type == 'removed') {
-                     eliminar(direccion);
-                  }
-               });
-               global.fnRepintarDireccion(); 
-            });   
-             
-      }else{
+      //   if (!global.direcciones) {
+      global.direcciones = [];
+      return global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .onSnapshot(function (snapShot) {
+            snapShot.docChanges().forEach(function (change) {
+               let direccion = change.doc.data();
+               direccion.id = change.doc.id;
+               if (change.type == 'added') {
+                  global.direcciones.push(direccion);
+                  console.log('***********SE AGREGA DIRECCION ', direccion.id);
+               }
+               if (change.type == 'modified') {
+                  actualizarInfo(direccion);
+               }
+               if (change.type == 'removed') {
+                  eliminar(direccion);
+               }
+            });
+            global.fnRepintarDireccion();
+         });
+      /* } else {
          global.fnRepintarDireccion();
-      }
-      
+      }*/
    };
 
    getValidarCoberturaGlobal = async idCliente => {
@@ -189,7 +261,7 @@ export class ServicioDirecciones {
          .get();
       if (respuesta && respuesta.docs && respuesta.docs.length > 0) {
          global.direccionPedido = respuesta.docs[0].data();
-         global.direccionPedido.id=respuesta.docs[0].id
+         global.direccionPedido.id = respuesta.docs[0].id;
          console.log('direccion pedido:', global.direccionPedido);
          fnRefrescarDireccion();
       } else {
@@ -237,10 +309,14 @@ export class ServicioDirecciones {
          });
    };
 
-   guardarDataReferencia = async (idCliente, idDireccion, referenciaDireccion) => {
+   guardarDataReferencia = async (
+      idCliente,
+      idDireccion,
+      referenciaDireccion
+   ) => {
       console.log('Entra a actualizar');
-      console.log(idCliente)
-      console.log(idDireccion)
+      console.log(idCliente);
+      console.log(idDireccion);
       await global.db
          .collection('clientes')
          .doc(idCliente)
@@ -250,9 +326,8 @@ export class ServicioDirecciones {
             descripcion: referenciaDireccion.descripcion,
             referencia: referenciaDireccion.referencia,
             principal: referenciaDireccion.principal,
-            latitud:referenciaDireccion.latitud,
-            longitud:referenciaDireccion.longitud
-
+            latitud: referenciaDireccion.latitud,
+            longitud: referenciaDireccion.longitud,
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');
@@ -260,7 +335,7 @@ export class ServicioDirecciones {
          })
          .catch(function (error) {
             console.log('Error Datos de Referencia Actualizado');
-            Alert.alert('Se ha producido un Error' , error);
+            Alert.alert('Se ha producido un Error', error);
          });
    };
 

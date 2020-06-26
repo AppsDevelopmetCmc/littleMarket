@@ -66,6 +66,7 @@ function Botones() {
    return categoriasCorta.map(categoria => {
       return (
          <View
+            key={categoria.key}
             style={
                categoria.seleccionado
                   ? styles.botonSeleccionado

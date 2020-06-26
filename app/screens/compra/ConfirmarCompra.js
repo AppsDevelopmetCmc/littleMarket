@@ -108,9 +108,9 @@ export class ConfirmarCompra extends Component {
       this.unsubscribe();
    }
    componentWillReceiveProps(next_props) {
-      console.log("next Prop", next_props)
+      console.log('next Prop', next_props);
       if (next_props.route.params.origen == 'mapaDirecciones') {
-         this.refrescarDireccion()
+         this.refrescarDireccion();
       }
    }
 
@@ -125,7 +125,10 @@ export class ConfirmarCompra extends Component {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } else {
-         Alert.alert('Información', 'La Dirección Seleccionada no tiene Cobertura');
+         Alert.alert(
+            'Información',
+            'La Dirección Seleccionada no tiene Cobertura'
+         );
       }
       this.setState({ mostrarModalDirecciones: false });
    };
@@ -145,9 +148,7 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      } else if (
-         !global.direccionPedido.referencia
-      ) {
+      } else if (!global.direccionPedido.referencia) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -211,12 +212,12 @@ export class ConfirmarCompra extends Component {
       this.setState({ mostrarCargando: false });
    };
    irMapaDirecciones = () => {
-      console.log("Direccion Actual", global.direccionPedido)
+      console.log('Direccion Actual', global.direccionPedido);
       this.props.navigation.navigate('MapaDirecciones', {
          origen: 'actualizar',
          direccion: global.direccionPedido,
       });
-   }
+   };
    consultarRestPago = async (idPedido, pedido) => {
       let formData = new FormData();
       formData.append("companyType", "Persona Natural");
@@ -280,8 +281,7 @@ export class ConfirmarCompra extends Component {
             trama.message)
       }
 
-   }
-
+   };
    render() {
       let fechaActual = new Date();
 
@@ -294,7 +294,6 @@ export class ConfirmarCompra extends Component {
             </View> */}
 
             <View style={styles.pie}>
-
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
                      <Card

@@ -16,7 +16,8 @@ import { colorOscuroTexto } from '../../constants/Colores';
 import * as colores from '../../constants/Colores';
 import { color } from 'react-native-reanimated';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
-
+import { CommonActions } from '@react-navigation/native';
+import Cargando from '../../components/Cargando';
 export class BusquedaDirecciones extends Component {
    constructor(props) {
       super(props);
@@ -29,6 +30,7 @@ export class BusquedaDirecciones extends Component {
          search: '',
          listaPredicciones: [],
          cargandoBusqueda: false,
+         creandoPunto: false,
       };
       if (this.sessionToken == 0 || this.sessionToken == undefined) {
          let date = new Date();
@@ -57,28 +59,29 @@ export class BusquedaDirecciones extends Component {
 
       if (search) {
          this.setState({ cargandoBusqueda: true });
-      } else {
-         this.setState({ cargandoBusqueda: false });
       }
+
       console.log('localization', this.localizacionInicial.coords);
       let response = await fetch(
          URLAUTOCOMPLETE +
-         '' +
-         search +
-         '&location=' +
-         this.localizacionInicial.coords.latitude +
-         ',' +
-         this.localizacionInicial.coords.longitude +
-         '&strictbouds&radius=' +
-         RADIO +
-         '&components=country:' +
-         PAIS +
-         '&key=' +
-         APIKEY +
-         '&sessiontoken=' +
-         this.sessionToken
+            '' +
+            search +
+            '&location=' +
+            this.localizacionInicial.coords.latitude +
+            ',' +
+            this.localizacionInicial.coords.longitude +
+            '&strictbouds&radius=' +
+            RADIO +
+            '&components=country:' +
+            PAIS +
+            '&key=' +
+            APIKEY +
+            '&sessiontoken=' +
+            this.sessionToken
       );
       let trama = await response.json();
+      this.setState({ cargandoBusqueda: false });
+
       let tramaPredicciones = trama.predictions;
       let direccionPredicciones = [];
 
@@ -98,7 +101,7 @@ export class BusquedaDirecciones extends Component {
       let coordenadas = await trama.results[0].geometry.location;
       console.log('coordenadas', coordenadas);
       if (this.pantallaOrigen == 'ConfirmarCompra') {
-         this.guardarDireccion(descripcion, coordenadas)
+         this.guardarDireccion(descripcion, coordenadas);
       } else {
          this.props.navigation.navigate('Mapa', {
             origen: 'nuevo',
@@ -109,7 +112,7 @@ export class BusquedaDirecciones extends Component {
       this.sessionToken = 0;
    };
 
-
+   //TODO: MODAL
    guardarDireccion = async (descripcion, coordenadas) => {
       let servDireccion = new ServicioDirecciones();
 
@@ -121,14 +124,15 @@ export class BusquedaDirecciones extends Component {
          tieneCoberturaDireccion: this.tieneCoberturaDireccion,
          alias: '',
          referencia: '',
-         principal: 'N'
-
+         principal: 'N',
       };
-
+      this.setState({ creandoPunto: true });
       let idDireccionCreada = await servDireccion.crear(
          global.usuario,
          nuevaDireccion
       );
+      this.setState({ creandoPunto: false });
+
       // console.log('idDireccionCreada', idDireccionCreada);
       this.idDireccion = idDireccionCreada;
       console.log('idDireccion NME', this.idDireccion);
@@ -136,12 +140,24 @@ export class BusquedaDirecciones extends Component {
          nuevaDireccion.id = this.idDireccion;
          global.direccionPedido = nuevaDireccion;
          if (this.pantallaOrigen == 'ConfirmarCompra') {
+            this.props.navigation.dispatch(state => {
+               // Remove the home route from the stack
+               const routes = state.routes.filter(
+                  r => r.name !== 'BusquedaDireccionesScreen'
+               );
+
+               return CommonActions.reset({
+                  ...state,
+                  routes,
+                  index: routes.length - 1,
+               });
+            });
+
             this.props.navigation.navigate('MapaDirecciones', {
                origen: 'busquedaDirecciones',
                direccion: nuevaDireccion,
             });
          }
-
       }
       //this.props.navigation.navigate('Direcciones');
    };
@@ -180,9 +196,9 @@ export class BusquedaDirecciones extends Component {
       let a =
          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
          Math.cos(this.rad(lat1)) *
-         Math.cos(this.rad(lat2)) *
-         Math.sin(dLong / 2) *
-         Math.sin(dLong / 2);
+            Math.cos(this.rad(lat2)) *
+            Math.sin(dLong / 2) *
+            Math.sin(dLong / 2);
       let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
@@ -193,13 +209,12 @@ export class BusquedaDirecciones extends Component {
          <View style={styles.contenedorPagina}>
             <View style={styles.cabecera}>
                <Text style={textEstilo(colores.colorBlancoTexto, 25, 'normal')}>
-                  Busqueda
+                  Búsqueda
                </Text>
                <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
                   Direcciones
                </Text>
             </View>
-
             <SearchBar
                placeholder="Ingrese la Dirección..."
                onChangeText={this.updateSearch}
@@ -219,33 +234,46 @@ export class BusquedaDirecciones extends Component {
                inputStyle={{ fontSize: 15 }}
             />
             <View style={styles.pie}>
-               {this.state.cargandoBusqueda ? (
-                  <View style={styles.contenderLista}>
-                     <FlatList
-                        data={this.state.listaPredicciones}
-                        renderItem={objeto => {
-                           return (
-                              <ItemPrediccion
-                                 prediccionItem={objeto.item}
-                                 fnbuscarCoordenadas={this.buscarCoordenadas}
-                              />
-                           );
-                        }}
-                        ItemSeparatorComponent={flatListItemSeparator}
-                        keyExtractor={prediccion => {
-                           return prediccion.placeId;
-                        }}
-                     />
-                  </View>
-               ) : (
+               {this.state.search ? (
+                  this.state.listaPredicciones.length > 0 ? (
+                     <View style={styles.contenderLista}>
+                        <FlatList
+                           data={this.state.listaPredicciones}
+                           renderItem={objeto => {
+                              return (
+                                 <ItemPrediccion
+                                    prediccionItem={objeto.item}
+                                    fnbuscarCoordenadas={this.buscarCoordenadas}
+                                 />
+                              );
+                           }}
+                           ItemSeparatorComponent={flatListItemSeparator}
+                           keyExtractor={prediccion => {
+                              return prediccion.placeId;
+                           }}
+                        />
+                     </View>
+                  ) : (
                      <View style={styles.contenedorTextoVacio}>
                         <Text style={{ textAlign: 'center', fontSize: 15 }}>
-                           Coloque en el cuadro de busqueda la dirección que desea
-                           encontrar.
-                     </Text>
+                           No existen coincidencias
+                        </Text>
                      </View>
-                  )}
+                  )
+               ) : (
+                  <View style={styles.contenedorTextoVacio}>
+                     <Text style={{ textAlign: 'center', fontSize: 15 }}>
+                        Coloque en el cuadro de busqueda la dirección que desea
+                        encontrar.
+                     </Text>
+                  </View>
+               )}
             </View>
+            <Cargando
+               isVisible={this.state.creandoPunto}
+               text="Ubicando Coordenadas..."
+               //color={colores.colorOscuroPrimarioTomate}
+            ></Cargando>
          </View>
       );
    }

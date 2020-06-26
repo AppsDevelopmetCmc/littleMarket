@@ -34,6 +34,7 @@ import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
 import { MapaDirecciones } from '../map/MapaDirecciones'
 import { PantallaPagos } from '../compra/PantallaPagos'
 
+
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
@@ -227,7 +228,8 @@ function ScreensFromTabs() {
                   shadowOpacity: 0, //remove shadow on iOS
                },
                headerTintColor: '#fff',
-            }} />
+            }}
+             />
          <StackDirection.Screen
             name="PantallaPagos"
             component={PantallaPagos}
@@ -239,7 +241,8 @@ function ScreensFromTabs() {
                   shadowOpacity: 0, //remove shadow on iOS
                },
                headerTintColor: '#fff',
-            }} />
+            }} 
+            />
       </StackFromTabs.Navigator>
 
    );
@@ -441,8 +444,8 @@ export default function NavegadorInicio() {
                      Alert.alert(
                         'Información',
                         'Verifique su correo electrónico ' +
-                        user.email +
-                        ' para continuar'
+                           user.email +
+                           ' para continuar'
                      );
                      setLogin(false);
                   } else {

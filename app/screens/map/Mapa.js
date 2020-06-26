@@ -267,7 +267,6 @@ export class Mapa extends Component {
             } else {
                this.setState({ mostrarModal: true });
             }
-            
          }
          //this.props.navigation.navigate('Direcciones');
       } else {
@@ -427,7 +426,7 @@ export class Mapa extends Component {
                </View>
                {this.state.region ? (
                   <MapView
-                     style={{ width: width, height: height - 50 }}
+                     style={{ width: width, height: height / 2 - 50 }}
                      provider={PROVIDER_GOOGLE}
                      mapType="standard"
                      showsScale
