@@ -14,7 +14,6 @@ export class ItemMapDireccion extends Component {
       if (this.props.direccion.tieneCobertura == 'S') {
          this.cobertura = true;
       }
-
    }
    render() {
       return (
@@ -26,15 +25,12 @@ export class ItemMapDireccion extends Component {
             }
          >
             <View style={styles.touch}>
-               <TouchableOpacity
-                  onPress={() => {
-                     this.props.fnActualizar(this.props.direccion);
-                     this.setState({
-                        direccionSelecionada:true,
-                     });
-                  }}
-               >
-                  <View style={styles.contenido}>
+               <View style={styles.contenido}>
+                  <TouchableOpacity
+                     onPress={() => {
+                        this.props.fnActualizar(this.props.direccion);
+                     }}
+                  >
                      <View style={styles.subContenido}>
                         <View style={styles.estiloIconoCobertura}>
                            {this.props.direccion.tieneCoberturaDireccion ==
@@ -58,10 +54,25 @@ export class ItemMapDireccion extends Component {
                            </Text>
                         </View>
                      </View>
-                  </View>
-               </TouchableOpacity>
+                  </TouchableOpacity>
+               </View>
             </View>
-           
+            <View style={styles.contenedorEliminar}>
+               <Button
+                  buttonStyle={styles.estiloBotonEliminar}
+                  onPress={() => {
+                     this.props.fnEliminar(this.props.direccion);
+                  }}
+                  icon={
+                     <Icon
+                        name="delete"
+                        size={15}
+                        color={colores.colorBlanco}
+                        style={styles.iconoStilos}
+                     />
+                  }
+               />
+            </View>
          </View>
       );
    }
@@ -77,14 +88,19 @@ const styles = StyleSheet.create({
    },
 
    contenido: {
-      width: '100%',
+      //  width: '100%',
+      // flexDirection: 'row',
+      flex: 6,
+      // backgroundColor: 'purple',
    },
    contenedorEliminar: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'flex-end',
+      alignItems: 'center',
       paddingRight: 10,
+      // backgroundColor: 'blue',
    },
+
    subContenido: {
       flexDirection: 'row',
       paddingLeft: 10,
@@ -100,7 +116,8 @@ const styles = StyleSheet.create({
       flex: 4,
    },
    touch: {
-      flex: 3,
+      flex: 6,
+      flexDirection: 'row',
    },
    estiloIconoCobertura: { marginRight: 15 },
    estiloBotonEliminar: {

@@ -9,6 +9,11 @@ export const textos = StyleSheet.create({
       fontSize: TAMANIO_TEXTO_BOTONES,
       //fontWeight: 'bold',
    },
+   botonBlancoTomate: {
+      color: colores.colorPrimarioTomate,
+      fontSize: TAMANIO_TEXTO_BOTONES,
+      //fontWeight: 'bold',
+   },
    titulo: {
       color: colores.colorBlancoTexto,
       fontSize: TAMANIO_TITULO,
@@ -34,6 +39,6 @@ export const botones = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'flex-end',
       padding: 0,
-      margin: 0,
+      marginRight: 10,
    },
 });
