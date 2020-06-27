@@ -85,4 +85,29 @@ export class ServicioParametros {
             Alert.alert('Se ha producido un error', error);
          });
    };
+
+   getListaCategorias = async (fnRecortarLista) => {
+      let listaRespuestaCat = [];
+      let respuesta = await global.db
+         .collection('parametros')
+         .doc('categorias')
+         .get();
+
+      if (respuesta.exists) {
+         respuesta.data().data.forEach(elemento => {
+            let objetoRespuesta = {};
+            let elemt = elemento.split('|');
+            objetoRespuesta.key = elemt[0];
+            objetoRespuesta.nombre = elemt[1];
+            listaRespuestaCat.push(objetoRespuesta);
+         });
+         fnRecortarLista(global.categoria,listaRespuestaCat)
+      } else {
+         console.log('No existen categorias!');
+      }
+
+
+
+   }
+
 }
