@@ -33,6 +33,7 @@ import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
 import { MapaDirecciones } from '../map/MapaDirecciones';
 import { PantallaPagos } from '../compra/PantallaPagos';
+import { Monedero } from '../monedero/Monedero';
 
 //Componentes
 import Cargando from '../../components/Cargando';
@@ -417,6 +418,7 @@ function HomeDraw() {
             component={ListarDatosFacturacion}
             options={{ drawerLabel: 'Facturas' }}
          />
+         <DrawerHome.Screen name="Monedero" component={Monedero} />
       </DrawerHome.Navigator>
    );
 }
