@@ -547,14 +547,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
