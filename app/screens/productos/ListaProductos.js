@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
 import * as serviciosItem from '../../servicios/ServiciosItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Badge, withBadge } from 'react-native-elements';
+import { Badge, withBadge, Image } from 'react-native-elements';
 
 import { ServiciosItem } from '../../servicios/ServiciosItem';
 
@@ -28,7 +28,10 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
-import { ServicioDirecciones,generarDireccion } from '../../servicios/ServicioDirecciones';
+import {
+   ServicioDirecciones,
+   generarDireccion,
+} from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
@@ -46,7 +49,7 @@ export class ListaProductos extends Component {
       }*/
       global.categoria = 'V';
       this.sector = '';
-      this.tieneCoberturaDireccion='N';
+      this.tieneCoberturaDireccion = 'N';
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -130,13 +133,16 @@ export class ListaProductos extends Component {
          global.usuario,
          this.refrescarDireccion
       );*/
-      let srvDirecciones=new ServicioDirecciones()
-     /* if(!global.direccionPedido)*/
+      let srvDirecciones = new ServicioDirecciones();
+      /* if(!global.direccionPedido)*/
       {
-       srvDirecciones.obtenerDirecciones(global.usuario,this.validarCobertura)
+         srvDirecciones.obtenerDirecciones(
+            global.usuario,
+            this.validarCobertura
+         );
       }
-      
-     // this.validarCobertura();
+
+      // this.validarCobertura();
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -211,7 +217,7 @@ export class ListaProductos extends Component {
    };
    //Obtiene la ultima direccion usada en un pedido
    //Si no existen direcciones en el pedido, agrega una usando el punto actual
-   obtenerDireccionPedido = async (direccionNombre,latitud,longitud) => {
+   obtenerDireccionPedido = async (direccionNombre, latitud, longitud) => {
       let pedido = null;
       await this.validar(latitud, longitud);
       if (!pedido) {
@@ -219,15 +225,13 @@ export class ListaProductos extends Component {
             descripcion: direccionNombre,
             latitud: latitud,
             longitud: longitud,
-            alias:'',
-            principal:'N',
-            referencia:'',
-            tieneCoberturaDireccion:this.tieneCoberturaDireccion
-
-
+            alias: '',
+            principal: 'N',
+            referencia: '',
+            tieneCoberturaDireccion: this.tieneCoberturaDireccion,
          });
       }
-      if (this.tieneCoberturaDireccion=='N') {
+      if (this.tieneCoberturaDireccion == 'N') {
          Alert.alert(
             'Advertencia',
             'No existe cobertura en el sector donde se encuentra'
@@ -235,14 +239,13 @@ export class ListaProductos extends Component {
       } else {
          console.log('SI existe cobertura');
       }
-
    };
    validarSector = ubicacion => {
       return Math.random() > 0.3;
    };
 
    //Guardar Direcciones
-   validar = async(lat, long) => {
+   validar = async (lat, long) => {
       let lat1 = lat;
       let log1 = long;
       for (let i = 0; i < global.coberturas.length; i++) {
@@ -308,7 +311,6 @@ export class ListaProductos extends Component {
       ///repintarSeleccionProductos();
    };
 
-
    obtenerPedidoCalifica = async mail => {
       //  console.log('mail', mail);
       //  console.log('Ingreso a recuperar el pedido');
@@ -349,7 +351,7 @@ export class ListaProductos extends Component {
 
    abrirMonedero = () => {
       //mostrar el valor
-      //this.props.navigation.navigate('CarroComprasScreen');
+      this.props.navigation.navigate('Monedero');
    };
 
    abrirNotificacion = () => {
@@ -478,17 +480,19 @@ export class ListaProductos extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        if (
-                           this.state.valorMonedero &&
-                           this.state.valorMonedero > 0
-                        ) {
-                           Alert.alert(
-                              'Felicidades',
-                              'Usted tiene : $' +
-                                 this.state.valorMonedero.toFixed(2) +
-                                 ' para usar en su próxima compra'
-                           );
-                        }
+                        console.log('---Preciono el monedero');
+                        this.abrirMonedero();
+                        // if (
+                        //    this.state.valorMonedero &&
+                        //    this.state.valorMonedero > 0
+                        // ) {
+                        //    Alert.alert(
+                        //       'Felicidades',
+                        //       'Usted tiene : $' +
+                        //          this.state.valorMonedero.toFixed(2) +
+                        //          ' para usar en su próxima compra'
+                        //    );
+                        // }
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -496,9 +500,9 @@ export class ListaProductos extends Component {
                         <View>
                            <Icon
                               color={colores.colorBlanco}
-                              type="material"
-                              name="square-inc-cash"
-                              size={28}
+                              type="material-community"
+                              name="wallet-giftcard"
+                              size={30}
                            />
                            {this.state.valorMonedero &&
                            this.state.valorMonedero > 0 ? (

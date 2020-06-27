@@ -322,6 +322,7 @@ export class ListCombo extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
+                        console.log('monedero');
                         if (
                            this.state.valorMonedero &&
                            this.state.valorMonedero > 0
