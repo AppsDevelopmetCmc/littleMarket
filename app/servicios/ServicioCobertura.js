@@ -1,7 +1,7 @@
 import { ArregloUtil } from '../utils/utils';
 
 const URLCOBERTURA =
-   'https://us-central1-little-market-dev-377b6.cloudfunctions.net/coberturaSectores?=latitude';
+   'https://us-central1-little-market-dev-377b6.cloudfunctions.net/coberturaSectores?latitude=';
 
 export class ServicioCobertura {
    registrarEscuchaCoberturaTodas = (arreglo, fnObtener) => {

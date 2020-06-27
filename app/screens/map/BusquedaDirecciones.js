@@ -18,13 +18,15 @@ import { color } from 'react-native-reanimated';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { CommonActions } from '@react-navigation/native';
 import Cargando from '../../components/Cargando';
+import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 export class BusquedaDirecciones extends Component {
    constructor(props) {
       super(props);
       this.origen = this.props.route.params.origen;
       this.pantallaOrigen = this.props.route.params.pantallaOrigen;
       this.localizacionInicial = [];
-      this.tieneCoberturaDireccion = 'N';
+      //this.tieneCoberturaDireccion = 'N';
+      this.sector;
       this.idDireccion = '';
       this.state = {
          search: '',
@@ -112,16 +114,33 @@ export class BusquedaDirecciones extends Component {
       this.sessionToken = 0;
    };
 
+      //SI TIENE COBERTURA ASIGNA SECTOR, DE LO CONTRARIO NULL AHU
+      asignarSector = async (latitud, longitud) => {
+         let srvCobertura = new ServicioCobertura();
+         let sectorObj = await srvCobertura.consultarCobertura(latitud, longitud);
+         this.sector = sectorObj.sector;
+         console.log(
+            'LATITUD LONGITUD' +
+              latitud +
+               '=' +
+               longitud
+         );
+         console.log('SECTOR' + this.sector);
+         Alert.alert('SECTOR ASIGNADO' + this.sector);
+      };
+
    //TODO: MODAL
    guardarDireccion = async (descripcion, coordenadas) => {
       let servDireccion = new ServicioDirecciones();
 
-      this.validar(coordenadas.lat, coordenadas.lng);
+      //this.validar(coordenadas.lat, coordenadas.lng);
+      await this.asignarSector(coordenadas.lat, coordenadas.lng);
       let nuevaDireccion = {
          descripcion: descripcion,
          latitud: coordenadas.lat,
          longitud: coordenadas.lng,
-         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         //tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         sector: this.sector,
          alias: '',
          referencia: '',
          principal: 'N',
@@ -162,7 +181,7 @@ export class BusquedaDirecciones extends Component {
       //this.props.navigation.navigate('Direcciones');
    };
    //Guardar Direcciones
-   validar = (lat, long) => {
+/*   validar = (lat, long) => {
       let lat1 = lat;
       let log1 = long;
       for (let i = 0; i < global.coberturas.length; i++) {
@@ -182,9 +201,9 @@ export class BusquedaDirecciones extends Component {
             break;
          }
       }
-   };
+   };*/
 
-   rad = x => {
+   /*rad = x => {
       return (x * Math.PI) / 180;
    };
 
@@ -203,7 +222,7 @@ export class BusquedaDirecciones extends Component {
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
    };
-
+*/
    render() {
       return (
          <View style={styles.contenedorPagina}>

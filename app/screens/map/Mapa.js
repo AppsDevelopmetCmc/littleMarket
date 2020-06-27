@@ -43,7 +43,8 @@ export class Mapa extends Component {
       this.coordenadasActuales = this.props.route.params.coordenadasActuales;
       this.pantallaOrigen = this.props.route.params.pantallaOrigen;
       this.pintarElemento = false;
-      this.tieneCoberturaDireccion = 'N';
+      //this.tieneCoberturaDireccion = 'N';
+      this.sector;
       this.idDireccion = '';
       if (this.origen == 'nuevo' || this.origen == 'actual') {
          this.pintarElemento = true;
@@ -122,7 +123,8 @@ export class Mapa extends Component {
                longitude: this.direccion.longitud,
             },
             direccion: this.direccion.descripcion,
-            tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
+            //tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
+            sector: this.direccion.sector,
             alias: this.direccion.alias,
             referencia: this.direccion.referencia,
             principal: this.direccion.principal == 'S' ? true : false,
@@ -200,7 +202,7 @@ export class Mapa extends Component {
       this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
    };
 
-   validar = () => {
+   /*validar = () => {
       let lat1 = this.state.coordinate.latitude;
       let log1 = this.state.coordinate.longitude;
       for (let i = 0; i < global.coberturas.length; i++) {
@@ -220,9 +222,9 @@ export class Mapa extends Component {
             break;
          }
       }
-   };
+   };*/
 
-   rad = x => {
+ /*  rad = x => {
       return (x * Math.PI) / 180;
    };
 
@@ -241,16 +243,33 @@ export class Mapa extends Component {
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
    };
+*/
 
+   //SI TIENE COBERTURA ASIGNA SECTOR, DE LO CONTRARIO NULL AHU
+   asignarSector = async (latitud, longitud) => {
+      let srvCobertura = new ServicioCobertura();
+      let sectorObj = await srvCobertura.consultarCobertura(latitud, longitud);
+      this.sector = sectorObj.sector;
+      console.log(
+         'LATITUD LONGITUD' +
+           latitud +
+            '=' +
+            longitud
+      );
+      console.log('SECTOR' + this.sector);
+      Alert.alert('SECTOR ASIGNADO' + this.sector);
+   };
    guardarDireccion = async () => {
       let servDireccion = new ServicioDirecciones();
       let operacion = this.pintarElemento ? 'crear' : 'actualizar';
-      this.validar();
+      //this.validar();
+      await this.asignarSector(this.state.coordinate.latitude, this.state.coordinate.longitude);
       let nuevaDireccion = {
          descripcion: this.state.direccion,
          latitud: this.state.coordinate.latitude,
          longitud: this.state.coordinate.longitude,
-         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+        // tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+        sector: this.sector,
       };
       if (operacion === 'crear') {
          let idDireccionCreada = await servDireccion.crear(
@@ -305,7 +324,8 @@ export class Mapa extends Component {
          });
       }
       this.setState({ mostrarModal: false });
-      if (this.tieneCoberturaDireccion == 'S') {
+      //if (this.tieneCoberturaDireccion == 'S') {
+         if (this.sector) {
          if (this.pantallaOrigen == 'Direcciones') {
             global.activarCobertura(true);
          }
@@ -486,7 +506,7 @@ export class Mapa extends Component {
                            this.setState({ referencia: text });
                         }}
                      />
-                     {this.tieneCoberturaDireccion ? (
+                     {this.sector ? (
                         <CheckBox
                            title="Dirección Principal"
                            checked={this.state.principal}

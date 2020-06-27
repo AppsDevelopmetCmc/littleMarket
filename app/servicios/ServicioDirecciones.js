@@ -107,7 +107,8 @@ export class ServicioDirecciones {
             descripcion: direccion.descripcion,
             latitud: direccion.latitud,
             longitud: direccion.longitud,
-            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+            //tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+            sector: direccion.sector,
          })
          .then(function () {
             //Alert.alert('Dirección Actualizada');
@@ -224,12 +225,18 @@ export class ServicioDirecciones {
          .get();
       let documentos = coleccion.docs;
       for (let i = 0; i < documentos.length; i++) {
-         if (documentos[i].data().tieneCoberturaDireccion !== undefined) {
+         /* if (documentos[i].data().tieneCoberturaDireccion !== undefined) {
             if (documentos[i].data().tieneCoberturaDireccion === 'S') {
                coberturaGlobalDireccion = true;
 
                break;
             }
+         }*/
+
+         if (documentos[i].data().sector) {
+            coberturaGlobalDireccion = true;
+
+            break;
          }
       }
       console.log('coberturaGlobalDireccion' + coberturaGlobalDireccion);
@@ -367,7 +374,6 @@ export class ServicioDirecciones {
    };
 
    obtenerDirecciones = async (idCliente,fnValidar) => {
-
       let respuesta = await global.db
          .collection('clientes')
          .doc(idCliente)
@@ -376,27 +382,24 @@ export class ServicioDirecciones {
          let tieneDireccion=false;
       if (respuesta.docs && respuesta.docs.length > 0) {
          for (let i = 0; i <respuesta.docs.length; i++) {
-            if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
-               if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+            if (
+               respuesta.docs[i].data().sector !== undefined
+            ) {
+               if (respuesta.docs[i].data().sector ) {
                   global.direccionPedido=respuesta.docs[i].data();
-                  global.direccionPedido.id=respuesta.docs[i].id
+                  global.direccionPedido.id = respuesta.docs[i].id;
                   let tieneDireccion=true;
                   break;
                }               
             }
          }
 
-         if(tieneDireccion==false)
-         {
+         if (tieneDireccion == false) {
             global.direccionPedido=respuesta.docs[0].data();
-            global.direccionPedido.id=respuesta.docs[0].id
+            global.direccionPedido.id = respuesta.docs[0].id;
          }
-      }else
-      {
-         fnValidar()
+      } else {
+         fnValidar();
       }
-      
-
    };
-
 }

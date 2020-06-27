@@ -48,8 +48,6 @@ export class ListaProductos extends Component {
          this.notienecobertura = this.props.route.params.notienecobertura;
       }*/
       global.categoria = 'V';
-      this.sector = '';
-      this.tieneCoberturaDireccion = 'N';
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -215,11 +213,26 @@ export class ListaProductos extends Component {
       );
       this.obtenerDireccionPedido();
    };
+
+   //SI TIENE COBERTURA ASIGNA SECTOR, DE LO CONTRARIO NULL AHU
+   asignarSector = async (latitud, longitud) => {
+      let srvCobertura = new ServicioCobertura();
+      let sectorObj = await srvCobertura.consultarCobertura(latitud, longitud);
+      global.sector = sectorObj.sector;
+      console.log(
+         'LATITUD LONGITUD' +
+           latitud +
+            '=' +
+            longitud
+      );
+      console.log('SECTOR' + global.sector);
+      Alert.alert('SECTOR ASIGNADO' + global.sector);
+   };
    //Obtiene la ultima direccion usada en un pedido
    //Si no existen direcciones en el pedido, agrega una usando el punto actual
    obtenerDireccionPedido = async (direccionNombre, latitud, longitud) => {
       let pedido = null;
-      await this.validar(latitud, longitud);
+      await this.asignarSector(latitud, longitud); //AHU
       if (!pedido) {
          new ServicioDirecciones().crear(global.usuario, {
             descripcion: direccionNombre,
@@ -228,87 +241,20 @@ export class ListaProductos extends Component {
             alias: '',
             principal: 'N',
             referencia: '',
-            tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+            sector: global.sector //AHU
          });
       }
-      if (this.tieneCoberturaDireccion == 'N') {
-         Alert.alert(
-            'Advertencia',
-            'No existe cobertura en el sector donde se encuentra'
-         );
+      if (!global.sector) {
+         Alert.alert('Lo sentimos', 'Al momento no estamos en tu sector');
       } else {
-         console.log('SI existe cobertura');
-      }
-   };
-   validarSector = ubicacion => {
-      return Math.random() > 0.3;
-   };
-
-   //Guardar Direcciones
-   validar = async (lat, long) => {
-      let lat1 = lat;
-      let log1 = long;
-      for (let i = 0; i < global.coberturas.length; i++) {
-         let distancia = 0;
-         distancia = parseFloat(
-            this.getKilometros(
-               lat1,
-               log1,
-               global.coberturas[i].latitud,
-               global.coberturas[i].longitud
-            )
-         );
-         console.log('Kilomeros' + distancia);
-         if (distancia < global.parametrosGeo.cobertura) {
-            console.log('Ingresa');
-            this.tieneCoberturaDireccion = 'S';
-            break;
+         console.log('SI existe cobertura' + global.sector);
          }
-      }
-   };
-
-   rad = x => {
-      return (x * Math.PI) / 180;
-   };
-
-   getKilometros = (lat1, lon1, lat2, lon2) => {
-      let R = 6378.137; //Radio de la tierra en km
-      let dLat = this.rad(lat2 - lat1);
-      console.log('rad1' + this.rad(lat2 - lat1));
-      let dLong = this.rad(lon2 - lon1);
-      let a =
-         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
    };
 
    pintarLista = items => {
       console.log('--ListaProductos pintarLista');
       this.setState({ listaProductos: items });
       this.pintarSeleccionProductos();
-
-      /*      if (this.montado) {
-         let subtotal = 0;
-         let delivery = 1.5;
-         for (let i = 0; i < global.items.length; i++) {
-            subtotal += Number(global.items[i].subtotal);
-         }
-         global.total = subtotal + delivery;
-         global.delivery = delivery;
-         global.subtotal = subtotal;
-         this.setState({
-            listItems: global.items,
-            subtotal: subtotal,
-            total: subtotal + delivery,
-         });
-      }*/
-      //global.productos = items;
-      ///repintarSeleccionProductos();
    };
 
    obtenerPedidoCalifica = async mail => {
@@ -391,19 +337,6 @@ export class ListaProductos extends Component {
       }
    };
 
-   seleccionarDireccion = direccion => {
-      if (direccion.tieneCoberturaDireccion == 'S') {
-         global.direccionPedido = direccion;
-         this.refrescarDireccion();
-      } else {
-         Alert.alert(
-            'Información',
-            'La Dirección Seleccionada no tiene Cobertura'
-         );
-      }
-      this.setState({ mostrarModalDirecciones: false });
-   };
-
    refrescarDireccion = () => {
       this.setState({
          direccionPedido: global.direccionPedido.descripcion,
@@ -441,22 +374,6 @@ export class ListaProductos extends Component {
    };
    cerrarBienvenida = () => {
       this.setState({ mostrarInstrucciones: false });
-   };
-
-   asignarSector = async () => {
-      let srvCobertura = new ServicioCobertura();
-      this.sector = await srvCobertura.consultarCobertura(
-         global.localizacionActual.latitude,
-         global.localizacionActual.longitude
-      );
-      console.log(
-         'LATITUD LONGITUD' +
-            global.localizacionActual.latitude +
-            '=' +
-            global.localizacionActual.longitude
-      );
-      console.log('SECTOR' + this.sector.sector);
-      Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
    };
 
    render() {
@@ -693,7 +610,6 @@ export class ListaProductos extends Component {
                   <View style={{ flex: 1 }}>
                      <TouchableHighlight
                         onPress={() => {
-                           this.asignarSector();
                            this.props.navigation.navigate(
                               'ConfirmarCompraScreen'
                            );

@@ -33,8 +33,7 @@ export class ItemMapDireccion extends Component {
                   >
                      <View style={styles.subContenido}>
                         <View style={styles.estiloIconoCobertura}>
-                           {this.props.direccion.tieneCoberturaDireccion ==
-                           'S' ? (
+                           {this.props.direccion.sector ? (
                               <Icon
                                  name="access-point-network"
                                  size={25}

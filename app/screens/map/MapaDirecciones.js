@@ -53,7 +53,8 @@ export class MapaDirecciones extends Component {
       this.coordenadasActuales = this.props.route.params.coordenadasActuales;
       this.pantallaOrigen = this.props.route.params.pantallaOrigen;
       this.pintarElemento = false;
-      this.tieneCoberturaDireccion = 'N';
+      //this.tieneCoberturaDireccion = 'N';
+      this.sector;
       this.idDireccion = '';
       this.montado = false;
       let direcciones = [];
@@ -142,7 +143,8 @@ export class MapaDirecciones extends Component {
                longitude: this.direccion.longitud,
             },
             direccion: this.direccion.descripcion,
-            tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
+            //tieneCoberturaDireccion: this.direccion.tieneCoberturaDireccion,
+            sector: this.direccion.sector,
             alias: this.direccion.alias,
             referencia: this.direccion.referencia,
             principal: this.direccion.principal == 'S' ? true : false,
@@ -190,6 +192,7 @@ export class MapaDirecciones extends Component {
       if (!existeSeleccionado) {
          //global.direccionPedido = direcciones[0];
          //global.direccionPedido.itemSeleccionado = true;
+         console.log('EXISTE SELECCIONADO');
          this.actualizarDireccion(direcciones[0]);
       }
       this.setState({
@@ -270,57 +273,30 @@ export class MapaDirecciones extends Component {
       this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
    };
 
-   validar = () => {
-      let lat1 = this.state.coordinate.latitude;
-      let log1 = this.state.coordinate.longitude;
-      for (let i = 0; i < global.coberturas.length; i++) {
-         let distancia = 0;
-         distancia = parseFloat(
-            this.getKilometros(
-               lat1,
-               log1,
-               global.coberturas[i].latitud,
-               global.coberturas[i].longitud
-            )
-         );
-         console.log('Kilomeros' + distancia);
-         if (distancia < global.parametrosGeo.cobertura) {
-            console.log('Ingresa');
-            this.tieneCoberturaDireccion = 'S';
-            break;
-         }
-      }
-   };
-
-   rad = x => {
-      return (x * Math.PI) / 180;
-   };
-
-   getKilometros = (lat1, lon1, lat2, lon2) => {
-      let R = 6378.137; //Radio de la tierra en km
-      let dLat = this.rad(lat2 - lat1);
-      console.log('rad1' + this.rad(lat2 - lat1));
-      let dLong = this.rad(lon2 - lon1);
-      let a =
-         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
+   //SI TIENE COBERTURA ASIGNA SECTOR, DE LO CONTRARIO NULL AHU
+   asignarSector = async (latitud, longitud) => {
+      let srvCobertura = new ServicioCobertura();
+      let sectorObj = await srvCobertura.consultarCobertura(latitud, longitud);
+      this.sector = sectorObj.sector;
+      console.log('LATITUD LONGITUD' + latitud + '=' + longitud);
+      console.log('SECTOR' + this.sector);
+      Alert.alert('SECTOR ASIGNADO' + this.sector);
    };
 
    guardarDireccion = async () => {
       let servDireccion = new ServicioDirecciones();
       let operacion = this.pintarElemento ? 'crear' : 'actualizar';
-      this.validar();
+      //this.validar();
+      await this.asignarSector(
+         this.state.coordinate.latitude,
+         this.state.coordinate.longitude
+      );
       let nuevaDireccion = {
          descripcion: this.state.direccion,
          latitud: this.state.coordinate.latitude,
          longitud: this.state.coordinate.longitude,
-         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         //tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         sector: this.sector,
       };
       if (operacion === 'crear') {
          let idDireccionCreada = await servDireccion.crear(
@@ -370,7 +346,8 @@ export class MapaDirecciones extends Component {
          });
       }
       this.setState({ mostrarModal: false });
-      if (this.tieneCoberturaDireccion == 'S') {
+      // if (this.tieneCoberturaDireccion == 'S') {
+      if (this.sector) {
          if (this.pantallaOrigen == 'Direcciones') {
             global.activarCobertura(true);
          }
@@ -423,14 +400,15 @@ export class MapaDirecciones extends Component {
             longitude: direccion.longitud,
          },
          direccion: direccion.descripcion,
-         tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+         // tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+         sector: direccion.sector,
          alias: direccion.alias,
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
          siguienteMapa: !siguienteMapaActual,
       });
       global.direccionPedido = direccion;
-      //  console.log('siguienteMapa', this.state.siguienteMapa);
+      console.log('DIRECCION AHU', global.direccionPedido);
       this.repintarLista();
    };
 
@@ -441,6 +419,10 @@ export class MapaDirecciones extends Component {
          validar = false;
       }
       if (validar) {
+         await this.asignarSector(
+            this.state.region.latitude,
+            this.state.region.longitude
+         );
          this.direccionTmp.descripcion = this.state.direccion;
          this.direccionTmp.referencia = this.state.referencia;
          this.direccionTmp.principal = 'S';
@@ -448,6 +430,7 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.id = direccionPedido.id;
          this.direccionTmp.latitud = this.state.region.latitude;
          this.direccionTmp.longitud = this.state.region.longitude;
+         this.direccionTmp.sector = this.sector;
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();

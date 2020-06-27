@@ -66,7 +66,8 @@ export class ConfirmarCompra extends Component {
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
          mostrarPromociones: false,
-         msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
+         //msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
+         msmCoberturaDireccion:global.sector
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -82,7 +83,8 @@ export class ConfirmarCompra extends Component {
 
    refrescarDireccion = () => {
       this.setState({ direccion: global.direccionPedido.descripcion,
-                      msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
+                      //msmCoberturaDireccion:global.direccionPedido.tieneCoberturaDireccion=='S'?true:false
+                        msmCoberturaDireccion:global.direccionPedido.sector
                      });
    };
    cargarCombos = (fechas, horarios) => {
@@ -123,7 +125,7 @@ export class ConfirmarCompra extends Component {
    mostrarModal = bandera => {
       this.setState({ mostrarModalDirecciones: bandera });
    };
-   seleccionarDireccion = direccion => {
+   /*seleccionarDireccion = direccion => {
       if (direccion.tieneCoberturaDireccion == 'S') {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
@@ -134,7 +136,7 @@ export class ConfirmarCompra extends Component {
          );
       }
       this.setState({ mostrarModalDirecciones: false });
-   };
+   };*/
    generarNumeroOrden = async fn => {
       let numero, codigo;
       let limite = 10;
@@ -151,7 +153,7 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      } else if (global.direccionPedido.tieneCoberturaDireccion=='N') {
+      } else if (!global.direccionPedido.sector) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene cobertura'

@@ -19,7 +19,7 @@ export class ItemDireccionCrud extends Component {
                <View style={styles.contenido}>
                   <View style={styles.subContenido}>
                      <View style={styles.estiloIconoCobertura}>
-                        {this.props.direccion.tieneCoberturaDireccion == 'S' ? (
+                        {this.props.direccion.sector ? (
                            <Icon
                               name="access-point-network"
                               size={25}
