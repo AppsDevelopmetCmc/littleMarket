@@ -39,6 +39,8 @@ import { Numero } from './Numero';
 import { transformDinero } from '../../utils/Validaciones';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
 import { ServicioParametros } from '../../servicios/ServicioParametros';
+import { SeleccionarYapa } from '../carroCompras/SeleccionarYappa';
+import { ServicioYapas } from '../../servicios/ServicioYapas';
 
 export class ListaProductos extends Component {
    constructor(props) {
@@ -50,6 +52,9 @@ export class ListaProductos extends Component {
       global.categoria = 'V';
       this.sector = '';
       this.tieneCoberturaDireccion = 'N';
+      this.yapas = [];
+      this.tramaYapa = [];
+
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -63,6 +68,7 @@ export class ListaProductos extends Component {
          valorMonedero: 0,
          numeroNotificaciones: 0,
          mostrarInstrucciones: true,
+         mostrarModalYapa: false,
       };
       global.pintarLista = this.pintarLista;
       //let srvCombos = new ServicioCombos();
@@ -183,6 +189,7 @@ export class ListaProductos extends Component {
          global.usuario,
          this.repintarNumeroNotificaciones
       );*/
+      this.todasYapas();
    }
 
    repintarNumeroNotificaciones = notificaciones => {
@@ -414,6 +421,58 @@ export class ListaProductos extends Component {
       this.setState({ mostrarModalDirecciones: bandera });
    };
 
+   todasYapas = async () => {
+      global.db
+         .collection('yapas')
+         .get()
+         .then(querySnapshot => {
+            let documentos = querySnapshot.docs;
+            let yapa = null;
+
+            for (let i = 0; i < documentos.length; i++) {
+               yapa = documentos[i].data();
+               yapa.id = documentos[i].id;
+               this.yapas.push(yapa);
+            }
+            console.log('TODAS YAPAS' + this.yapas);
+         })
+         .catch(error => {
+            response.send('Errorcito' + error);
+         });
+   };
+
+   mostrarModalYapa = async bandera => {
+      ///llamada al servicio de yapas
+      /*console.log('Ingesar a Mostrar Modal');
+      let srvYapas = new ServicioYapas();
+      console.log("SUBTOTAL" + this.state.subtotal.toFixed(2));
+      this.tramaYapa = await srvYapas.conusultarYapas(this.state.subtotal.toFixed(2));*/
+      this.tramaYapa = [];
+      console.log('Ingesar a Mostrar Modal');
+      console.log('SUBTOTAL'+this.state.subtotal.toFixed(2));
+      if (
+         this.state.subtotal.toFixed(2) >= 10 &&
+         this.state.subtotal.toFixed(2) < 20
+      ) {
+         console.log('ENTRE 10 Y 20');
+         for (var i = 0; i < this.yapas.length; i++) {
+            if (this.yapas[i].tipo == 1) {
+               this.tramaYapa.push(this.yapas[i]);
+            }
+         }
+      }
+      
+      if (this.state.subtotal.toFixed(2) >= 20) {
+         console.log('MAS DE 20');
+         for (var i = 0; i < this.yapas.length; i++) {
+            if (this.yapas[i].tipo == 2) {
+               this.tramaYapa.push(this.yapas[i]);
+            }
+         }
+      }
+      this.setState({ mostrarModalYapa: bandera });
+   };
+
    flatListItemSeparator = () => {
       return (
          <View
@@ -457,6 +516,27 @@ export class ListaProductos extends Component {
       );
       console.log('SECTOR' + this.sector.sector);
       Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
+   };
+
+   validarMonto = () => {
+      if(global.montoYapa >= 10 && global.montoYapa < 20 && this.state.subtotal.toFixed(2)>=10 && this.state.subtotal.toFixed(2)<20){
+         console.log("MISMA YAPA de 10");
+      }else if (global.montoYapa >= 20 && this.state.subtotal.toFixed(2)>=20){
+         console.log("MISMA YAPA de 20");
+      }else{
+         global.yapa = undefined;
+      }
+      if (this.state.subtotal.toFixed(2) < 10) {
+         Alert.alert('Información', 'Monto mínimo de compra $10.00');
+         return;
+      } else if (this.state.subtotal.toFixed(2) >= 10 && !global.yapa) {
+         global.montoYapa = this.state.subtotal.toFixed(2);
+         this.mostrarModalYapa(true);
+         return;
+      } else if (global.yapa) {
+         this.props.navigation.navigate('ConfirmarCompraScreen');
+         return;
+      }
    };
 
    render() {
@@ -693,10 +773,7 @@ export class ListaProductos extends Component {
                   <View style={{ flex: 1 }}>
                      <TouchableHighlight
                         onPress={() => {
-                           this.asignarSector();
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
+                           this.validarMonto();
                         }}
                      >
                         <View
@@ -747,7 +824,7 @@ export class ListaProductos extends Component {
                                     color: colores.colorBlancoTexto,
                                  }}
                               >
-                                 Confirmar
+                                 COMPRAR
                               </Text>
                            </View>
                            <View
@@ -814,6 +891,18 @@ export class ListaProductos extends Component {
                   this.abrirCarrito();
                }}
             ></ActionButton> */}
+
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarModalYapa}
+            >
+               <SeleccionarYapa
+                  mostrarModal={this.mostrarModalYapa}
+                  listaYapa={this.tramaYapa}
+                  navigation={this.props.navigation}
+               ></SeleccionarYapa>
+            </Modal>
          </SafeAreaView>
       );
    }

@@ -26,6 +26,7 @@ import * as Location from 'expo-location';
 import { ServicioYapas } from '../../servicios/ServicioYapas';
 import { convertir } from '../../utils/ConvertidorUnidades';
 export class SeleccionarYapa extends Component {
+   
    constructor(props) {
       super(props);
       this.state = {
@@ -44,11 +45,11 @@ export class SeleccionarYapa extends Component {
    };
    componentDidMount = () => {
       this.montado = true;
-      new ServicioDirecciones().registrarEscuchaDireccion(
+      /*new ServicioDirecciones().registrarEscuchaDireccion(
          global.usuario,
          this.repintarLista
       );
-      if (global.direcciones) this.repintarLista();
+      if (global.direcciones) this.repintarLista();*/
       //Lista de data para el radio
       this.consultaItemRadioYapa();
    };
@@ -57,7 +58,7 @@ export class SeleccionarYapa extends Component {
       let listaItemYapa = [];
       //valor quemado para el item Alinambi
       let itemAlinambi = {};
-      itemAlinambi.label = 'Donar su Yapa a la Fundación Aliñambi';
+      itemAlinambi.label = 'Donar su Yappa a Fundación Aliñambi';
       itemAlinambi.value = 'D';
       //continuo con el for
       for (let i = 0; i < this.props.listaYapa.length; i++) {
@@ -122,6 +123,7 @@ export class SeleccionarYapa extends Component {
       }
    };
    render() {
+      
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -131,7 +133,7 @@ export class SeleccionarYapa extends Component {
                         style={{
                            marginBottom: 20,
                            fontWeight: 'bold',
-                           fontSize: 18,
+                           fontSize: 20,
                         }}
                      >
                         Qué Yapa le gustaría llevar?
@@ -143,7 +145,7 @@ export class SeleccionarYapa extends Component {
                         initial={0}
                         formHorizontal={false}
                         buttonSize={10}
-                        buttonOuterSize={20}
+                        buttonOuterSize={25}
                         onPress={value => {
                            this.setState({ yapaSeleccionada: value });
                         }}
@@ -156,8 +158,8 @@ export class SeleccionarYapa extends Component {
                         title="Aceptar"
                         onPress={() => {
                            this.seleccionarYapa(this.state.yapaSeleccionada);
-
                            this.props.mostrarModal(false);
+                         
                         }}
                         buttonStyle={styles.estiloBotonNaranja}
                      />
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       backgroundColor: 'rgba(0,0,0,0.75)',
-      paddingVertical: 50,
+      paddingVertical: 125,
    },
    modalView: {
       flex: 1,
