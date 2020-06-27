@@ -19,6 +19,7 @@ import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
+import { ResponsabilidadSocial } from '../responsabilidadSocial/ResponsabilidadSocial';
 import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
@@ -417,6 +418,11 @@ function HomeDraw() {
             component={ListarDatosFacturacion}
             options={{ drawerLabel: 'Facturas' }}
          />
+         <DrawerHome.Screen
+            name="ResponsabilidadSocial"
+            component={ResponsabilidadSocial}
+            options={{ drawerLabel: 'ResponsabilidadSocial' }}
+         />
       </DrawerHome.Navigator>
    );
 }
@@ -547,14 +553,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
