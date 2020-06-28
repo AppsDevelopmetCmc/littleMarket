@@ -48,6 +48,7 @@ export class TabProductos1 extends Component {
       this.montado = false;
       this.state = {
          listaProductos: [],
+         mostrarInstrucciones: true,
       };
       console.log('CONSTRUCTOR DE TAB 1');
       global.pintarTab1 = this.pintarLista;
@@ -56,13 +57,14 @@ export class TabProductos1 extends Component {
    }
 
    pintarLista = () => {
-      if (this.montado) {
-         this.setState({ listaProductos: global.productos.get('V') });
+      if (global.productos && this.montado) {
+         console.log('PINTANDO LISTA DE FRUTAS');
+         this.setState({ listaProductos: global.productos.get('F') });
       }
    };
    componentDidMount() {
       this.montado = true;
-      console.log('--ListaProductos recuperarItems TABS 1');
+      console.log('--ListaProductos recuperarItems TABS 2');
       serviciosItem.recuperarItems();
    }
    componentWillUnmount() {
@@ -73,6 +75,9 @@ export class TabProductos1 extends Component {
          global.productos = null;
       }
    }
+   cerrarBienvenida = () => {
+      this.setState({ mostrarInstrucciones: false });
+   };
    render() {
       console.log('--ListaProductos render');
       return (
@@ -98,8 +103,8 @@ export class TabProductos1 extends Component {
             </View>
             <View
                style={{
-                  paddingVertical: 20,
-                  paddingHorizontal: 20,
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
                   paddingRight: 12,
                   flexDirection: 'row',
                   borderTopColor: colores.colorPrimarioTomate,
@@ -110,6 +115,13 @@ export class TabProductos1 extends Component {
                   navigation={this.props.navigation}
                ></BotonConfirmar>
             </View>
+            <Modal
+               //animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarInstrucciones}
+            >
+               <Bienvenida cerrar={this.cerrarBienvenida}></Bienvenida>
+            </Modal>
          </SafeAreaProvider>
       );
    }
@@ -197,7 +209,7 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       //borderTopStartRadius: 20,
       // borderTopEndRadius: 20,
-      marginTop: 15,
+      marginTop: 10,
       paddingTop: 10,
    },
    texto: {

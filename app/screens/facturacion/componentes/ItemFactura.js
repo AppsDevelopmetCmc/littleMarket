@@ -35,6 +35,24 @@ export class ItemFactura extends Component {
                   <Button
                      buttonStyle={styles.plusButton}
                      onPress={() => {
+                        this.props.nav.goBack();
+                        global.refrescarFact(this.props.factura);
+                        // global.nom = this.props.factura.nombreCompleto;
+                        /*this.props.nav.navigate(
+                           'ConfirmarCompraScreen',
+                           {
+                              factura: this.props.factura,
+                              refrescar: this.props.refrescar,
+                           }
+                        );*/
+                     }}
+                     icon={<Icon name="check" size={15} color="white" />}
+                  ></Button>
+                  <Separador alto={15}></Separador>
+                  <Button
+                     buttonStyle={styles.plusButton}
+                     onPress={() => {
+
                         this.props.nav.navigate(
                            'EditarDatosFacturacionScreen',
                            {
@@ -45,6 +63,7 @@ export class ItemFactura extends Component {
                      }}
                      icon={<Icon name="pencil" size={15} color="white" />}
                   ></Button>
+
                   <Separador alto={15}></Separador>
                   <Button
                      buttonStyle={styles.plusButton}
@@ -60,7 +79,7 @@ export class ItemFactura extends Component {
                   <View style={styles.subContenido}>
                      <View style={styles.contenido}>
                         <View style={styles.contenedorPares}>
-                           <Text style={styles.textoNegrita}>Alias:</Text>
+                           <Text style={styles.textoNegrita}>Dirección:</Text>
                            <Text style={styles.texto}>
                               {' ' + this.props.factura.alias}
                            </Text>

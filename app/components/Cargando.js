@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
    },
    text: {
-      color: colores.colorClaroPrimarioTomate,
+      color: colores.colorPrimarioTomate,
       fontWeight: '900',
       // textTransform: 'uppercase',
       marginTop: 30,

@@ -53,7 +53,10 @@ export class TabProductos3 extends Component {
    }
 
    pintarLista = () => {
-      this.setState({ listaProductos: global.productos.get('O') });
+      if (global.productos) {
+         console.log('PINTANDO LISTA DE OTROS');
+         this.setState({ listaProductos: global.productos.get('O') });
+      }
    };
    componentDidMount() {
       console.log('--ListaProductos recuperarItems TAB 3');
@@ -83,8 +86,8 @@ export class TabProductos3 extends Component {
             </View>
             <View
                style={{
-                  paddingVertical: 20,
-                  paddingHorizontal: 20,
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
                   paddingRight: 12,
                   flexDirection: 'row',
                   borderTopColor: colores.colorPrimarioTomate,
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       //borderTopStartRadius: 20,
       // borderTopEndRadius: 20,
-      marginTop: 15,
+      marginTop: 10,
       paddingTop: 10,
    },
    texto: {

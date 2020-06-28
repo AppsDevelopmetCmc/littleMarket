@@ -6,7 +6,7 @@ import {
    FlatList,
    Text,
    ImageBackground,
-   TouchableHighlight,
+   TouchableOpacity,
 } from 'react-native';
 import * as colores from '../../constants/Colores';
 import { Button, Avatar } from 'react-native-elements';
@@ -24,6 +24,11 @@ export class Bienvenida extends Component {
    };
 
    render() {
+      /*let imagen =
+         Math.random() > 0.5
+            ? require('../../imagenes/Bienvenida3.jpeg')
+            : require('../../imagenes/Bienvenida5.jpeg');*/
+      let imagen = require('../../imagenes/PopupCodigo.png');
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -33,7 +38,7 @@ export class Bienvenida extends Component {
                      resizeMode: 'cover',
                      justifyContent: 'flex-start',
                   }}
-                  source={require('../../imagenes/Bienvenida3.jpeg')}
+                  source={imagen}
                >
                   <View
                      style={{
@@ -42,7 +47,7 @@ export class Bienvenida extends Component {
                         //marginVertical: 10,
                      }}
                   >
-                     <TouchableHighlight
+                     <TouchableOpacity
                         underlayColor={colores.colorBlanco}
                         onPress={() => {
                            this.props.cerrar();
@@ -51,7 +56,7 @@ export class Bienvenida extends Component {
                         <View
                            style={{
                               backgroundColor: 'rgb(138,221,45,0.8)',
-                              width: 50,
+                              width: 100,
                               height: 50,
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -62,14 +67,15 @@ export class Bienvenida extends Component {
                         >
                            <Text
                               style={{
-                                 color: 'black',
-                                 fontSize: 20,
+                                 color: 'gray',
+                                 fontSize: 16,
+                                 backgroundColor: 'white',
                               }}
                            >
-                              X
+                              X Cerrar
                            </Text>
                         </View>
-                     </TouchableHighlight>
+                     </TouchableOpacity>
                   </View>
                </ImageBackground>
             </View>

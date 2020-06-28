@@ -111,7 +111,7 @@ export class ItemProductoNuevo extends Component {
                         {convertir(producto.unidad, producto.cantidad)}
                      </Text>
                      <Text style={{ color: 'gray', fontSize: 12 }}>
-                        {'20 -50 gr c/u'}
+                        {producto.especificacion}
                      </Text>
                   </View>
                   <View

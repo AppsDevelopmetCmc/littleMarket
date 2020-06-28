@@ -84,9 +84,16 @@ function TabsProductos() {
 
             activeTintColor: colores.colorPrimarioTomate,
          }}
+         initialRouteName="Frutas"
       >
          <TopTab.Screen name="Frutas" component={TabProductos1} />
-         <TopTab.Screen name="Verduras y Legumbres" component={TabProductos2} />
+         <TopTab.Screen
+            name="Verduras"
+            component={TabProductos2}
+            options={{
+               tabBarLabel: 'Verduras y Legumbres',
+            }}
+         />
          <TopTab.Screen name="Otros" component={TabProductos3} />
       </TopTab.Navigator>
    );
@@ -191,6 +198,11 @@ function ScreensFromTabs() {
          <StackDirection.Screen
             name="PerfilUsuarioScreen"
             component={PerfilUsuario}
+            options={navOptionHandler(false)}
+         />
+         <StackDirection.Screen
+            name="ListarDatosFacturacionScreen"
+            component={ListarDatosFacturacion}
             options={navOptionHandler(false)}
          />
 
@@ -471,24 +483,9 @@ function HomeDraw() {
          <DrawerHome.Screen
             name="ResponsabilidadSocial"
             component={ResponsabilidadSocial}
-            options={{ drawerLabel: 'Responsabilidad Social' }}
+            options={{ drawerLabel: 'Fundación Aliñambi' }}
          />
       </DrawerHome.Navigator>
-   );
-}
-function Productos() {
-   return (
-      <RootStack.Navigator>
-         <RootStack.Screen
-            options={{
-               headerTitle: props => (
-                  <CabeceraYappando titulo="YAPPANDO AREA DEL JEFAZO" />
-               ),
-            }}
-            name="Home"
-            component={TabsProductos}
-         />
-      </RootStack.Navigator>
    );
 }
 
@@ -510,9 +507,13 @@ export default function NavegadorInicio() {
                if (global.infoUsuario.providerId == 'password') {
                   console.log('--NavegadorInicio ingresa con usuario/clave');
                   if (!user.emailVerified) {
+                     console.log('----Mail no vefificado---');
                      global.mailVerificado = false;
                      global.usuario = user.email;
                      setLogin(false);
+                     if (global.refrescarInicioSesion) {
+                        global.refrescarInicioSesion();
+                     }
                   } else {
                      global.mailVerificado = true;
                      if (user) {

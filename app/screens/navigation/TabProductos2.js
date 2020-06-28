@@ -54,7 +54,10 @@ export class TabProductos2 extends Component {
    }
 
    pintarLista = () => {
-      this.setState({ listaProductos: global.productos.get('F') });
+      if (global.productos) {
+         console.log('PINTANDO LISTA DE VERDURAS');
+         this.setState({ listaProductos: global.productos.get('V') });
+      }
    };
    componentDidMount() {
       console.log('----------ASIGNANDO DIRECCION----------');
@@ -64,6 +67,7 @@ export class TabProductos2 extends Component {
       );
    }
    crearDireccionPedido = async () => {
+      console.log('---------CREANDO DIRECCION----------');
       Geocoder.init(APIKEY);
       let response = await Location.requestPermissionsAsync();
       if (response.status !== 'granted') {
@@ -76,11 +80,12 @@ export class TabProductos2 extends Component {
       srvDirecciones.generarDireccion(
          global.localizacionActual.latitude,
          global.localizacionActual.longitude,
-         this.crearDireccionPedido
+         this.guardarPedido
       );
    };
 
-   crearDireccionPedido = async (direccionNombre, latitud, longitud) => {
+   guardarPedido = async (direccionNombre, latitud, longitud) => {
+      console.log('---------GUARDANDO DIRECCION----------');
       new ServicioDirecciones().crear(global.usuario, {
          descripcion: direccionNombre,
          latitud: latitud,
@@ -117,8 +122,8 @@ export class TabProductos2 extends Component {
             </View>
             <View
                style={{
-                  paddingVertical: 20,
-                  paddingHorizontal: 20,
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
                   paddingRight: 12,
                   flexDirection: 'row',
                   borderTopColor: colores.colorPrimarioTomate,
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       //borderTopStartRadius: 20,
       // borderTopEndRadius: 20,
-      marginTop: 15,
+      marginTop: 10,
       paddingTop: 10,
    },
    texto: {
