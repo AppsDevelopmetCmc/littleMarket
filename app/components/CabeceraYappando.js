@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button, Avatar, Input, Icon } from 'react-native-elements';
+import {
+   Button,
+   Avatar,
+   Input,
+   Icon,
+   Badge,
+   withBadge,
+} from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as firebase from 'firebase';
 import { useNavigation } from '@react-navigation/native';
@@ -10,18 +17,72 @@ import * as colores from '../constants/Colores';
 
 export function CabeceraYappando() {
    const navigation = useNavigation();
+   const [numeroNotificaciones, setNumeroNotificaciones] = useState(0);
+   const [valorMonedero, setValorMonedero] = useState(0);
+
+   // logs
+   console.log('numeroNotificaciones', numeroNotificaciones);
+   console.log('valorMonedero', valorMonedero);
+
+   useEffect(() => {
+      traeInformacionMonedero();
+      traeInformacionNotificaciones();
+   });
 
    const abrirDrawer = () => {
       navigation.openDrawer();
    };
 
    const abrirMonedero = () => {
+      withBadge;
       navigation.navigate('Monedero');
    };
    const abrirNotificacion = () => {
       navigation.navigate('ListaNotificacionScreen');
    };
 
+   const BadgedIcon = withBadge(numeroNotificaciones)(Icon);
+
+   // funciones para traer información de la base
+   // Monedero
+   const traeInformacionMonedero = async () => {
+      let documento = {};
+      await global.db
+         .collection('monederos')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.data()) {
+               documento = doc.data();
+               setValorMonedero(documento.valor);
+            } else {
+               setValorMonedero(0);
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
+   };
+
+   // Notificaciones
+   const traeInformacionNotificaciones = async () => {
+      let documento = {};
+      await global.db
+         .collection('notificaciones')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.data()) {
+               documento = doc.data();
+               setNumeroNotificaciones(documento.numero);
+            } else {
+               setNumeroNotificaciones(0);
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
+   };
    return (
       <View style={styles.cabeceraContenedor}>
          <View style={{ flexDirection: 'row' }}>
@@ -51,17 +112,40 @@ export function CabeceraYappando() {
                      abrirMonedero();
                   }}
                />
+               {valorMonedero != 0 && (
+                  <Badge
+                     status="warning"
+                     containerStyle={{
+                        position: 'absolute',
+                        top: -0,
+                        right: 3,
+                     }}
+                  />
+               )}
             </View>
+
             <View style={styles.cabeceraNotificaciones}>
-               <Icon
-                  name="bell"
-                  type="material-community"
-                  color={colores.colorBlanco}
-                  size={29.5}
-                  onPress={() => {
-                     abrirNotificacion();
-                  }}
-               />
+               {numeroNotificaciones == 0 ? (
+                  <Icon
+                     name="bell"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={29.5}
+                     onPress={() => {
+                        abrirNotificacion();
+                     }}
+                  />
+               ) : (
+                  <BadgedIcon
+                     name="bell"
+                     type="material-community"
+                     color={colores.colorBlanco}
+                     size={29.5}
+                     onPress={() => {
+                        abrirNotificacion();
+                     }}
+                  />
+               )}
             </View>
          </View>
       </View>
