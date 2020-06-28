@@ -54,13 +54,13 @@ export class ItemPedido extends Component {
                            this.props.pedido.horaCreacion}
                      </Text>
                   </View>
-                  <View style={(styles.estiloFlecha, { flex: 1 })}>
+                  {/* <View style={(styles.estiloFlecha, { flex: 1 })}>
                      <Icon
                         name="arrow-right-bold-circle"
                         size={28}
                         color="white"
                      />
-                  </View>
+                  </View> */}
                </View>
                <View style={styles.contenido}>
                   <View>
@@ -110,6 +110,13 @@ export class ItemPedido extends Component {
                      </View>
                   </View>
                </View>
+               <View style={styles.contenedorVerMas}>
+                  <Text
+                     style={textEstilo(colores.colorPrimarioTomate, 12, 'bold')}
+                  >
+                     Ver más ...
+                  </Text>
+               </View>
             </View>
          </TouchableHighlight>
       );
@@ -127,12 +134,23 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    fila: {
       flex: 1,
-      backgroundColor: colores.colorPrimarioAmarillo,
+      backgroundColor: colores.colorBlanco,
       marginTop: 5,
-      borderTopStartRadius: 30,
-      borderBottomStartRadius: 30,
+      borderTopStartRadius: 10,
+      borderBottomStartRadius: 10,
       paddingHorizontal: 25,
       paddingVertical: 20,
+      borderWidth: 1,
+      borderColor: colores.colorPrimarioAmarillo,
+      shadowColor: colores.colorBlanco,
+      shadowOffset: {
+         width: 0,
+         height: 1,
+      },
+      shadowOpacity: 0.22,
+      shadowRadius: 2.22,
+      elevation: 3,
+      marginBottom: 5,
    },
 
    contenido: {
@@ -159,5 +177,12 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
       alignContent: 'flex-end',
+   },
+   contenedorVerMas: {
+      flex: 1,
+      justifyContent: 'flex-end',
+      alignContent: 'flex-end',
+      alignItems: 'flex-end',
+      paddingVertical: 10,
    },
 });
