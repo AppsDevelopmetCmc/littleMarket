@@ -177,14 +177,14 @@ export class ServicioPedidos {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
-         .orderBy('orden', 'desc')
+         // .orderBy('orden', 'desc')
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
                let itemPedidos = change.doc.data();
                itemPedidos.id = change.doc.id;
 
                if (change.type == 'added') {
-                  arregloUtil.agregar(itemPedidos, fnRepintar);
+                  arregloUtil.agregarAlInicio(itemPedidos, fnRepintar);
                }
                if (change.type == 'modified') {
                   arregloUtil.actualizar(itemPedidos, fnRepintar);
