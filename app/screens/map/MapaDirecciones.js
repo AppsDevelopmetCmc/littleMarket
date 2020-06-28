@@ -428,6 +428,7 @@ export class MapaDirecciones extends Component {
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
          siguienteMapa: !siguienteMapaActual,
+         validarReferencia: ''
       });
       global.direccionPedido = direccion;
       //  console.log('siguienteMapa', this.state.siguienteMapa);
