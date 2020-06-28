@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as firebase from 'firebase';
-import { Alert } from 'react-native';
+import { Alert, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 //NAVEGACION
 import { NavigationContainer } from '@react-navigation/native';
@@ -26,6 +26,7 @@ import { BusquedaDirecciones } from '../map/BusquedaDirecciones';
 import { DireccionesCrud } from '../map/DireccionesCrud';
 import { ListaPedidos } from '../pedidos/ListaPedidos';
 import { ListaProductos } from '../productos/ListaProductos';
+import { ListaProductosNueva } from '../productos/ListaProductosNueva';
 import { CarroCompras } from '../carroCompras/CarroCompras';
 import { DetallePedido } from '../pedidos/DetallePedido';
 import { ConfirmarCompra } from '../compra/ConfirmarCompra';
@@ -33,18 +34,26 @@ import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
 import { MapaDirecciones } from '../map/MapaDirecciones';
 import { PantallaPagos } from '../compra/PantallaPagos';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { TabProductos1 } from './TabProductos1';
+import { TabProductos2 } from './TabProductos2';
+import { TabProductos3 } from './TabProductos3';
 
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
+import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
 const StackDirection = createStackNavigator();
+const StackCabecera = createStackNavigator();
 const StackFromTabs = createStackNavigator();
-//const TabHome = createBottomTabNavigator();
+const TabHome = createBottomTabNavigator();
 const DrawerHome = createDrawerNavigator();
+const TopTab = createMaterialTopTabNavigator();
+const RootStack = createStackNavigator();
 
 if (!global.firebaseRegistrado) {
    cargarConfiguracion();
@@ -60,9 +69,29 @@ if (global.usuario == null) {
       global.infoUsuario = user.providerData[0];
    }
 }
+
+function TabsProductos() {
+   return (
+      <TopTab.Navigator>
+         <TopTab.Screen name="Frutas" component={TabProductos1} />
+         <TopTab.Screen name="Verduras y Legumbres" component={TabProductos2} />
+         <TopTab.Screen name="Otros" component={TabProductos3} />
+      </TopTab.Navigator>
+   );
+}
+
 function ScreensFromTabs() {
    return (
-      <StackFromTabs.Navigator initialRouteName="ListaProductosScreen">
+      <StackFromTabs.Navigator initialRouteName="ListaProductosNueva">
+         <StackFromTabs.Screen
+            options={{
+               headerTitle: props => (
+                  <CabeceraPersonalizada titulo="YAPPANDO AREA DEL JEFAZO" />
+               ),
+            }}
+            name="Home"
+            component={TabsProductos}
+         />
          <StackFromTabs.Screen
             name="ListaProductosScreen"
             component={ListaProductos}
@@ -418,6 +447,21 @@ function HomeDraw() {
             options={{ drawerLabel: 'Facturas' }}
          />
       </DrawerHome.Navigator>
+   );
+}
+function Productos() {
+   return (
+      <RootStack.Navigator>
+         <RootStack.Screen
+            options={{
+               headerTitle: props => (
+                  <CabeceraPersonalizada titulo="YAPPANDO AREA DEL JEFAZO" />
+               ),
+            }}
+            name="Home"
+            component={TabsProductos}
+         />
+      </RootStack.Navigator>
    );
 }
 
