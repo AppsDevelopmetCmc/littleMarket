@@ -53,7 +53,10 @@ export class TabProductos3 extends Component {
    }
 
    pintarLista = () => {
-      this.setState({ listaProductos: global.productos.get('O') });
+      if (global.productos) {
+         console.log('PINTANDO LISTA DE OTROS');
+         this.setState({ listaProductos: global.productos.get('O') });
+      }
    };
    componentDidMount() {
       console.log('--ListaProductos recuperarItems TAB 3');

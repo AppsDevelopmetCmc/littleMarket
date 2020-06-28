@@ -84,9 +84,16 @@ function TabsProductos() {
 
             activeTintColor: colores.colorPrimarioTomate,
          }}
+         initialRouteName="Verduras"
       >
          <TopTab.Screen name="Frutas" component={TabProductos1} />
-         <TopTab.Screen name="Verduras y Legumbres" component={TabProductos2} />
+         <TopTab.Screen
+            name="Verduras"
+            component={TabProductos2}
+            options={{
+               tabBarLabel: 'Verduras y Legumbres',
+            }}
+         />
          <TopTab.Screen name="Otros" component={TabProductos3} />
       </TopTab.Navigator>
    );

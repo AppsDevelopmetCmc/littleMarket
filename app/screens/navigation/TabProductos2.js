@@ -54,9 +54,14 @@ export class TabProductos2 extends Component {
    }
 
    pintarLista = () => {
-      this.setState({ listaProductos: global.productos.get('F') });
+      if (global.productos) {
+         console.log('PINTANDO LISTA DE VERDURAS');
+         this.setState({ listaProductos: global.productos.get('V') });
+      }
    };
    componentDidMount() {
+      console.log('--ListaProductos recuperarItems TABS 2');
+      serviciosItem.recuperarItems();
       console.log('----------ASIGNANDO DIRECCION----------');
       srvDirecciones.asignarDireccionPedido(
          global.usuario,
