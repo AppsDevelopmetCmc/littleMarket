@@ -9,7 +9,7 @@ export default function PaginaIncio(props) {
    return (
       <View style={styles.container}>
          <ImageBackground
-            source={require('../../assets/NuevoSplash.png')}
+            source={require('../../assets/InicioSesion.png')}
             style={styles.imgInicio}
          >
             <View style={{ flex: 4 }}></View>
