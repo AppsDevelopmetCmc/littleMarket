@@ -73,7 +73,7 @@ export function Menu(props) {
                <MenuPersonalizado
                   nombreIcono="store"
                   tituloNombre="Inicio"
-                  navegador={() => props.navigation.navigate('ListaCombos')}
+                  navegador={() => props.navigation.navigate('ScreensFromTabs')}
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
@@ -93,15 +93,18 @@ export function Menu(props) {
                <MenuPersonalizado
                   nombreIcono="deskphone"
                   tituloNombre="Facturas"
-                  navegador={() => props.navigation.navigate('ListarDatosFacturacion')}
+                  navegador={() =>
+                     props.navigation.navigate('ListarDatosFacturacion')
+                  }
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
                   nombreIcono="deskphone"
                   tituloNombre="Responsabilidad Social"
-                  navegador={() => props.navigation.navigate('ResponsabilidadSocial')}
+                  navegador={() =>
+                     props.navigation.navigate('ResponsabilidadSocial')
+                  }
                ></MenuPersonalizado>
-
             </View>
             <View style={styles.contenedorCerrarSesion}>
                <SeparadorMenu></SeparadorMenu>

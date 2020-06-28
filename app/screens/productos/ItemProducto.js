@@ -37,7 +37,7 @@ function FlatListItemSeparator() {
       </View>
    );
 }
-export class ItemProducto extends Component {
+export class ItemProductoNuevo extends Component {
    constructor(props) {
       super(props);
       let itemCarro = this.props.producto.itemCarro;
@@ -58,25 +58,6 @@ export class ItemProducto extends Component {
 
    componentDidMount() {
       //console.log('--------CHECKED', this.props.producto.checked);
-   }
-
-   static getDerivedStateFromProps(nextProps, prevState) {
-      if (nextProps.producto.checked != prevState.checkedProps) {
-         return {
-            checked: nextProps.producto.checked,
-            checkedProps: nextProps.producto.checked,
-            cantidad:
-               nextProps.producto.itemCarro &&
-               nextProps.producto.itemCarro.cantidad > 0
-                  ? nextProps.producto.itemCarro.cantidad
-                  : 1,
-         };
-      }
-      return {
-         checked: prevState.checked,
-         checkedProps: prevState.checked,
-         cantidad: prevState.cantidad,
-      };
    }
 
    render() {
@@ -205,7 +186,7 @@ export class ItemProducto extends Component {
                               }
                            }}
                            checkedColor={colores.colorPrimarioVerde}
-                           size={20}
+                           size={30}
                            uncheckedColor={colores.colorPrimarioVerde}
                         ></CheckBox>
 
@@ -239,7 +220,7 @@ export class ItemProducto extends Component {
                               icon={
                                  <Icon
                                     name="minus-circle"
-                                    size={15}
+                                    size={20}
                                     color="white"
                                  />
                               }
@@ -281,7 +262,7 @@ export class ItemProducto extends Component {
                               icon={
                                  <Icon
                                     name="plus-circle"
-                                    size={15}
+                                    size={20}
                                     color="white"
                                  />
                               }
@@ -327,7 +308,7 @@ export class ItemProducto extends Component {
                               });
                            }}
                            checkedColor={colores.colorPrimarioVerde}
-                           size={22}
+                           size={30}
                            uncheckedColor={colores.colorPrimarioVerde}
                         ></CheckBox>
                      </View>

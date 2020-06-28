@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, FlatList, Alert, Modal } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   FlatList,
+   Alert,
+   Modal,
+   TouchableOpacity,
+} from 'react-native';
 import * as serviciosItem from '../../servicios/ServiciosItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Badge, withBadge, Image } from 'react-native-elements';
@@ -131,10 +139,10 @@ export class ListaProductos extends Component {
    componentDidMount() {
       console.log('--ListaProductos recuperarItems');
       serviciosItem.recuperarItems(this.pintarLista);
-      serviciosCarrito.registrarEscucha(
+      /*serviciosCarrito.registrarEscucha(
          global.usuario,
          this.pintarSeleccionProductos
-      );
+      );*/
       /*new ServicioDirecciones().recuperarPrincipal(
          global.usuario,
          this.refrescarDireccion
@@ -297,7 +305,7 @@ export class ListaProductos extends Component {
    pintarLista = items => {
       console.log('--ListaProductos pintarLista');
       this.setState({ listaProductos: items });
-      this.pintarSeleccionProductos();
+      //this.pintarSeleccionProductos();
 
       /*      if (this.montado) {
          let subtotal = 0;
@@ -771,7 +779,7 @@ export class ListaProductos extends Component {
                   }}
                >
                   <View style={{ flex: 1 }}>
-                     <TouchableHighlight
+                     <TouchableOpacity
                         onPress={() => {
                            this.validarMonto();
                         }}
@@ -845,7 +853,7 @@ export class ListaProductos extends Component {
                               </Text>
                            </View>
                         </View>
-                     </TouchableHighlight>
+                     </TouchableOpacity>
                   </View>
                   {/*} <View
                      style={{

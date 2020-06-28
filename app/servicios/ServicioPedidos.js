@@ -1,9 +1,86 @@
 import { Alert, Linking } from 'react-native';
 import { ArregloUtil } from '../utils/utils';
-import { ServicioCarroCompras ,eliminarCarro} from './ServicioCarroCompras';
+import { ServicioCarroCompras, eliminarCarro } from './ServicioCarroCompras';
 import { ServicioMonederos } from './ServicioMonederos';
 
-export const crearPedido = (pedido, items, fnCerrarPantalla,fnPagoRest) => {
+export const agregarItemPedido = producto => {
+   if (global.items == null) {
+      global.items = new Map();
+      global.subtotal = 0;
+   }
+   let itemProducto = global.items.get(producto.id);
+   if (itemProducto == null) {
+      global.items.set(producto.id, crearItemPedido(producto));
+   } else {
+      modificarItemPedidos(itemProducto, 1);
+   }
+   modificarSubtotal(producto.precio, 1);
+};
+const modificarSubtotal = (precio, cantidad) => {
+   console.log('modificaSubtotal', precio, cantidad);
+   global.subtotal += precio * cantidad;
+   for (let i = 0; i < global.refrescarBotones.length; i++) {
+      global.refrescarBotones[i](global.subtotal);
+   }
+};
+const calcularSubtotal = () => {
+   //console.log('GLOBAL.ITEMS', global.items);
+   global.subtotal = 0;
+   let item = null;
+   /*for (let key of global.items.keys()) {
+      item = global.items.get(key);
+      console.log('item', item);
+      global.subtotal += item.cantidad * item.precio;
+   }*/
+
+   global.refrescarBoton(global.subtotal);
+};
+export const disminuirItemPedido = producto => {
+   let itemProducto = global.items.get(producto.id);
+   if (itemProducto != null) {
+      modificarItemPedidos(itemProducto, -1);
+   } else {
+      console.log(
+         'ERROR se intenta MODIFICAR un item que no existe ',
+         producto.id
+      );
+   }
+   modificarSubtotal(producto.precio, -1);
+};
+
+export const eliminarItemPedido = producto => {
+   let itemProducto = global.items.get(producto.id);
+   if (itemProducto != null) {
+      global.items.delete(producto.id);
+   } else {
+      console.log(
+         'ERROR se intenta eliminar un item que no existe ',
+         producto.id
+      );
+   }
+   modificarSubtotal(producto.precio, -itemProducto.cantidad);
+};
+const crearItemPedido = producto => {
+   let itemProducto = {
+      id: producto.id,
+      nombre: producto.nombre,
+      cantidad: 1,
+      cantidadItem: producto.cantidad,
+      empacado: false,
+      recibido: false,
+      precio: producto.precio,
+      subtotal: producto.precio,
+      unidad: producto.unidad,
+   };
+   return itemProducto;
+};
+
+const modificarItemPedidos = (itemProducto, cantidad) => {
+   itemProducto.cantidad += cantidad;
+   itemProducto.subtotal = itemProducto.cantidad * itemProducto.precio;
+};
+
+export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
    global.db
       .collection('pedidos')
       .add(pedido)
@@ -14,7 +91,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla,fnPagoRest) => {
                'Gracias por su compra',
                descripcionALert + '' + pedido.orden
             );
-         }  
+         }
          if (pedido.formaPago === 'TRANSFERENCIA') {
             let text =
                'He realizado el pedido: ' +
@@ -39,15 +116,14 @@ export const crearPedido = (pedido, items, fnCerrarPantalla,fnPagoRest) => {
                ],
                { cancelable: false }
             );
-            
          }
          if (pedido.formaPago === 'TARJETA') {
-            fnPagoRest(doc.id,pedido)
+            fnPagoRest(doc.id, pedido);
          }
          for (let i = 0; i < items.length; i++) {
-            let itemPedido=items[i]
-            itemPedido.empacado=false;
-            itemPedido.recibido=false;
+            let itemPedido = items[i];
+            itemPedido.empacado = false;
+            itemPedido.recibido = false;
             global.db
                .collection('pedidos')
                .doc(doc.id)
@@ -122,8 +198,7 @@ export class ServicioPedidos {
    };
 
    actualizarPedidoUrlPago = (idPedido, objeto) => {
-      global
-         .db
+      global.db
          .collection('pedidos')
          .doc(idPedido)
          .update({
@@ -131,7 +206,7 @@ export class ServicioPedidos {
             tokerUrlPago: objeto.tokerUrlPago,
          })
          .then(function () {
-            console.log("Datos Actualizados")
+            console.log('Datos Actualizados');
          })
          .catch(function (error) {
             Alert.alert('error' + error);

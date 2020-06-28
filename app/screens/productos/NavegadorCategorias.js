@@ -5,7 +5,7 @@ import {
    StyleSheet,
    Image,
    Alert,
-   TouchableHighlight,
+   TouchableOpacity,
 } from 'react-native';
 import { Avatar, CheckBox, Button } from 'react-native-elements';
 import * as colores from '../../constants/Colores';
@@ -76,28 +76,11 @@ function Botones() {
                   ? styles.botonDerecho
                   : styles.botonNormal
             }
-
-            /*            style={{
-               flex: 1,
-               justifyContent: 'center',
-               alignItems: 'stretch',
-               backgroundColor: categoria.seleccionado
-                  ? colores.colorOscuroPrimarioTomate
-                  : colores.colorClaroPrimarioTomate,
-               borderTopRightRadius: 10,
-               borderTopLeftRadius: 10,
-               marginHorizontal: 2,
-            }}*/
          >
-            <TouchableHighlight
-               underlayColor={
-                  categoria.seleccionado
-                     ? colores.colorOscuroPrimarioTomate
-                     : colores.colorClaroPrimarioTomate
-               }
+            <TouchableOpacity
                onPress={() => {
                   global.categoria = categoria.key;
-                  global.pintarLista();
+                  global.pintarListaPoductos();
                }}
             >
                <View
@@ -110,7 +93,7 @@ function Botones() {
                >
                   <Text style={{ fontSize: 16 }}>{categoria.nombre}</Text>
                </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
          </View>
       );
    });
@@ -126,47 +109,6 @@ export class NavegadorCategorias extends Component {
             </View>
          </View>
       );
-
-      /*<View style={styles.botones}>
-            <View
-               style={{
-                  flex: 1,
-                  justifyContent: 'center',
-                  alignItems: 'stretch',
-                  backgroundColor: 'yellow',
-               }}
-            >
-               <TouchableHighlight
-                  onPress={() => {
-                     global.categoria = 'V';
-                     global.pintarLista();
-                  }}
-               >
-                  <View style={{ alignItems: 'center' }}>
-                     <Text>Legumbres</Text>
-                     <Text>y Verduras</Text>
-                  </View>
-               </TouchableHighlight>
-            </View>
-            <View style={{ flex: 1 }}>
-               <Button
-                  title="Frutas"
-                  onPress={() => {
-                     global.categoria = 'F';
-                     global.pintarLista();
-                  }}
-               ></Button>
-            </View>
-            <View style={{ flex: 1 }}>
-               <Button
-                  title="Otros"
-                  onPress={() => {
-                     global.categoria = 'O';
-                     global.pintarLista();
-                  }}
-               ></Button>
-            </View>
-         </View>*/
    }
 }
 const styles = StyleSheet.create({
