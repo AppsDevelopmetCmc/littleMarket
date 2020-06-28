@@ -611,7 +611,7 @@ export class MapaDirecciones extends Component {
                ) : (
                   <Text>Cargando</Text>
                )}
-               <View
+               {/*<View
                   style={{
                      flex: 1,
                      //backgroundColor: 'blue',
@@ -629,7 +629,7 @@ export class MapaDirecciones extends Component {
                         this.actualizarDireccionPedido();
                      }}
                   />
-               </View>
+               </View>*/}
 
                <View
                   style={{
@@ -643,11 +643,28 @@ export class MapaDirecciones extends Component {
                </View>
             </View>
             <View style={styles.pie}>
-               <View style={{ flex: 1, justifyContent: 'center' }}>
+               <View style={{ flex: 1, justifyContent: 'center' ,flexDirection:"row"}}>
+
+               <Button
+                     buttonStyle={estilos.botones.blancoLeft}
+                     titleStyle={estilos.textos.botonBlancoTomate}
+                     title={this.pintarElemento ? 'Guardar Dirección' : 'Actualizar Dirección'}
+                     onPress={() => {
+                        this.actualizarDireccionPedido();
+                     }}
+                     icon={
+                        <Icon
+                           name="map-marker-check"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
+                        />
+                     }
+                  />
                   <Button
                      buttonStyle={estilos.botones.blancoRight}
                      titleStyle={estilos.textos.botonBlancoTomate}
-                     title="Agregar nueva ubicación"
+                     title="Agregar Nueva Ubicación"
                      onPress={() => {
                         this.props.navigation.dispatch(state => {
                            // Remove the home route from the stack

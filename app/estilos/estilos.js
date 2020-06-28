@@ -35,10 +35,21 @@ export const botones = StyleSheet.create({
    },
    blancoRight: {
       backgroundColor: colores.colorBlanco,
-      height: 40,
+      height: 50,
       alignItems: 'center',
-      justifyContent: 'flex-end',
+      //justifyContent: 'flex-end',
       padding: 0,
-      marginRight: 10,
+     // marginRight: 5,
+     // marginLeft: 5,
+   },
+
+   blancoLeft: {
+      backgroundColor: colores.colorBlanco,
+      height: 50,
+      alignItems: 'center',
+      //justifyContent: 'flex-start',
+      padding: 0,
+     // marginLeft: 5,
+      marginRight: 50,
    },
 });

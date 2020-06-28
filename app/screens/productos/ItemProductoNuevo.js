@@ -49,8 +49,13 @@ export class ItemProductoNuevo extends Component {
       };
    }
 
-   componentDidMount() {
-      //console.log('--------CHECKED', this.props.producto.checked);
+   UNSAFE_componentWillReceiveProps(nextProps) {
+      console.log('componentWillReceiveProps');
+      if (nextProps.producto.limpiar) {
+         //Perform some operation
+         this.setState({ checked: false, cantidad: 0 });
+         nextProps.producto.limpiar = false;
+      }
    }
 
    render() {

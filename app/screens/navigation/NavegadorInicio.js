@@ -451,7 +451,11 @@ function HomeDraw() {
             component={ListarDatosFacturacion}
             options={{ drawerLabel: 'Facturas' }}
          />
-
+         <DrawerHome.Screen
+            name="ListaPedidos"
+            component={ListaPedidos}
+            options={{ drawerLabel: 'ListaPedidos' }}
+         />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
 
          <DrawerHome.Screen
@@ -604,14 +608,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
