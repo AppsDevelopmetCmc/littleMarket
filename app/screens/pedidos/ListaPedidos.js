@@ -33,7 +33,7 @@ export class ListaPedidos extends Component {
    };
 
    abrirDrawer = () => {
-      this.props.navigation.openDrawer();
+      this.props.navigation.goBack();
    };
 
    abrirCarrito = () => {
@@ -48,10 +48,9 @@ export class ListaPedidos extends Component {
       return (
          <SafeAreaView style={styles.container}>
             <CabeceraPersonalizada
-               titulo={'Yappando'}
                iconoComponente={
                   <Icon
-                     name="menu"
+                     name="arrow-left"
                      type="material-community"
                      color={colores.colorBlanco}
                      size={29.5}
@@ -60,8 +59,8 @@ export class ListaPedidos extends Component {
                }
             ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
-                  Lista de pedidos
+               <Text style={textEstilo(colores.colorBlancoTexto, 24, 'bold')}>
+                  Mis pedidos
                </Text>
             </View>
             <View style={styles.pie}>
@@ -109,7 +108,5 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 25,
       paddingVertical: 10,
-      alignItems: 'center',
-      flexDirection: 'row',
    },
 });
