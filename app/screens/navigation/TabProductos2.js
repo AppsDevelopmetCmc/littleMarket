@@ -117,7 +117,6 @@ export class TabProductos2 extends Component {
             </View>
             <View
                style={{
-                  flex: 2,
                   paddingVertical: 20,
                   paddingHorizontal: 20,
                   paddingRight: 12,
