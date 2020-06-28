@@ -365,4 +365,38 @@ export class ServicioDirecciones {
          }
       }
    };
+
+   obtenerDirecciones = async (idCliente,fnValidar) => {
+
+      let respuesta = await global.db
+         .collection('clientes')
+         .doc(idCliente)
+         .collection('direcciones')
+         .get();
+         let tieneDireccion=false;
+      if (respuesta.docs && respuesta.docs.length > 0) {
+         for (let i = 0; i <respuesta.docs.length; i++) {
+            if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
+               if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+                  global.direccionPedido=respuesta.docs[i].data();
+                  global.direccionPedido.id=respuesta.docs[i].id
+                  let tieneDireccion=true;
+                  break;
+               }               
+            }
+         }
+
+         if(tieneDireccion==false)
+         {
+            global.direccionPedido=respuesta.docs[0].data();
+            global.direccionPedido.id=respuesta.docs[0].id
+         }
+      }else
+      {
+         fnValidar()
+      }
+      
+
+   };
+
 }

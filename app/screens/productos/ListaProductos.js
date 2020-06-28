@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import * as serviciosItem from '../../servicios/ServiciosItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Badge, withBadge } from 'react-native-elements';
+import { Badge, withBadge, Image } from 'react-native-elements';
 
 import { ServiciosItem } from '../../servicios/ServiciosItem';
 
@@ -36,13 +36,19 @@ import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import Separador from '../../components/Separador';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
+import {
+   ServicioDirecciones,
+   generarDireccion,
+} from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProducto } from './ItemProducto';
 import { NavegadorCategorias } from './NavegadorCategorias';
 import { Numero } from './Numero';
 import { transformDinero } from '../../utils/Validaciones';
 import { ServicioCobertura } from '../../servicios/ServicioCobertura';
+import { ServicioParametros } from '../../servicios/ServicioParametros';
+import { SeleccionarYapa } from '../carroCompras/SeleccionarYappa';
+import { ServicioYapas } from '../../servicios/ServicioYapas';
 
 export class ListaProductos extends Component {
    constructor(props) {
@@ -53,6 +59,10 @@ export class ListaProductos extends Component {
       }*/
       global.categoria = 'V';
       this.sector = '';
+      this.tieneCoberturaDireccion = 'N';
+      this.yapas = [];
+      this.tramaYapa = [];
+
       this.state = {
          listaProductos: [],
          subtotal: 0,
@@ -66,13 +76,26 @@ export class ListaProductos extends Component {
          valorMonedero: 0,
          numeroNotificaciones: 0,
          mostrarInstrucciones: true,
+         mostrarModalYapa: false,
       };
       global.pintarLista = this.pintarLista;
       //let srvCombos = new ServicioCombos();
       // srvCombos.recuperarItems(this.repintarLista);
       //global.repintarDireccion = this.repintarDireccionPrincipal;
       // global.repintarSeleccionProductos = this.repintarSeleccionProductos;
+      let servCobertura = new ServicioCobertura();
+      servCobertura.getRegistrarCoberturaTodas();
+
+      let servParametros = new ServicioParametros();
+      servParametros.getObtenerParametroId(
+         'geo',
+         this.obtenerParametroCobertura
+      );
    }
+   obtenerParametroCobertura = parametro => {
+      global.parametrosGeo = parametro;
+      console.log('parametrosGeo', global.parametrosGeo.cobertura);
+   };
    repintarDireccionPrincipal = () => {
       if (global.direccionPedido) {
          this.setState({ direccionPedido: global.direccionPedido.descripcion });
@@ -124,7 +147,16 @@ export class ListaProductos extends Component {
          global.usuario,
          this.refrescarDireccion
       );*/
-      this.validarCobertura();
+      let srvDirecciones = new ServicioDirecciones();
+      /* if(!global.direccionPedido)*/
+      {
+         srvDirecciones.obtenerDirecciones(
+            global.usuario,
+            this.validarCobertura
+         );
+      }
+
+      // this.validarCobertura();
       // this.obtenerPedidoCalifica(global.usuario);
 
       //  this.obtenerCoordenadas();
@@ -165,6 +197,7 @@ export class ListaProductos extends Component {
          global.usuario,
          this.repintarNumeroNotificaciones
       );*/
+      this.todasYapas();
    }
 
    repintarNumeroNotificaciones = notificaciones => {
@@ -190,8 +223,30 @@ export class ListaProductos extends Component {
       global.localizacionActual = actualLocation.coords;
       console.log('actual location:', global.localizacionActual);
 
-      let existeCobertura = this.validarSector(global.localizacionActual);
-      if (!existeCobertura) {
+      generarDireccion(
+         global.localizacionActual.latitude,
+         global.localizacionActual.longitude,
+         this.obtenerDireccionPedido
+      );
+      this.obtenerDireccionPedido();
+   };
+   //Obtiene la ultima direccion usada en un pedido
+   //Si no existen direcciones en el pedido, agrega una usando el punto actual
+   obtenerDireccionPedido = async (direccionNombre, latitud, longitud) => {
+      let pedido = null;
+      await this.validar(latitud, longitud);
+      if (!pedido) {
+         new ServicioDirecciones().crear(global.usuario, {
+            descripcion: direccionNombre,
+            latitud: latitud,
+            longitud: longitud,
+            alias: '',
+            principal: 'N',
+            referencia: '',
+            tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         });
+      }
+      if (this.tieneCoberturaDireccion == 'N') {
          Alert.alert(
             'Advertencia',
             'No existe cobertura en el sector donde se encuentra'
@@ -199,22 +254,52 @@ export class ListaProductos extends Component {
       } else {
          console.log('SI existe cobertura');
       }
-      this.obtenerDireccionPedido();
-   };
-   //Obtiene la ultima direccion usada en un pedido
-   //Si no existen direcciones en el pedido, agrega una usando el punto actual
-   obtenerDireccionPedido = () => {
-      let pedido = null;
-      if (!pedido) {
-         new ServicioDirecciones().crear(global.usuario, {
-            descripcion: '',
-            latitud: global.localizacionActual.latitude,
-            longitud: global.localizacionActual.longitude,
-         });
-      }
    };
    validarSector = ubicacion => {
       return Math.random() > 0.3;
+   };
+
+   //Guardar Direcciones
+   validar = async (lat, long) => {
+      let lat1 = lat;
+      let log1 = long;
+      for (let i = 0; i < global.coberturas.length; i++) {
+         let distancia = 0;
+         distancia = parseFloat(
+            this.getKilometros(
+               lat1,
+               log1,
+               global.coberturas[i].latitud,
+               global.coberturas[i].longitud
+            )
+         );
+         console.log('Kilomeros' + distancia);
+         if (distancia < global.parametrosGeo.cobertura) {
+            console.log('Ingresa');
+            this.tieneCoberturaDireccion = 'S';
+            break;
+         }
+      }
+   };
+
+   rad = x => {
+      return (x * Math.PI) / 180;
+   };
+
+   getKilometros = (lat1, lon1, lat2, lon2) => {
+      let R = 6378.137; //Radio de la tierra en km
+      let dLat = this.rad(lat2 - lat1);
+      console.log('rad1' + this.rad(lat2 - lat1));
+      let dLong = this.rad(lon2 - lon1);
+      let a =
+         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+         Math.cos(this.rad(lat1)) *
+            Math.cos(this.rad(lat2)) *
+            Math.sin(dLong / 2) *
+            Math.sin(dLong / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let d = R * c;
+      return d.toFixed(3); //Retorna tres decimales
    };
 
    pintarLista = items => {
@@ -281,7 +366,7 @@ export class ListaProductos extends Component {
 
    abrirMonedero = () => {
       //mostrar el valor
-      //this.props.navigation.navigate('CarroComprasScreen');
+      this.props.navigation.navigate('Monedero');
    };
 
    abrirNotificacion = () => {
@@ -344,6 +429,58 @@ export class ListaProductos extends Component {
       this.setState({ mostrarModalDirecciones: bandera });
    };
 
+   todasYapas = async () => {
+      global.db
+         .collection('yapas')
+         .get()
+         .then(querySnapshot => {
+            let documentos = querySnapshot.docs;
+            let yapa = null;
+
+            for (let i = 0; i < documentos.length; i++) {
+               yapa = documentos[i].data();
+               yapa.id = documentos[i].id;
+               this.yapas.push(yapa);
+            }
+            console.log('TODAS YAPAS' + this.yapas);
+         })
+         .catch(error => {
+            response.send('Errorcito' + error);
+         });
+   };
+
+   mostrarModalYapa = async bandera => {
+      ///llamada al servicio de yapas
+      /*console.log('Ingesar a Mostrar Modal');
+      let srvYapas = new ServicioYapas();
+      console.log("SUBTOTAL" + this.state.subtotal.toFixed(2));
+      this.tramaYapa = await srvYapas.conusultarYapas(this.state.subtotal.toFixed(2));*/
+      this.tramaYapa = [];
+      console.log('Ingesar a Mostrar Modal');
+      console.log('SUBTOTAL'+this.state.subtotal.toFixed(2));
+      if (
+         this.state.subtotal.toFixed(2) >= 10 &&
+         this.state.subtotal.toFixed(2) < 20
+      ) {
+         console.log('ENTRE 10 Y 20');
+         for (var i = 0; i < this.yapas.length; i++) {
+            if (this.yapas[i].tipo == 1) {
+               this.tramaYapa.push(this.yapas[i]);
+            }
+         }
+      }
+      
+      if (this.state.subtotal.toFixed(2) >= 20) {
+         console.log('MAS DE 20');
+         for (var i = 0; i < this.yapas.length; i++) {
+            if (this.yapas[i].tipo == 2) {
+               this.tramaYapa.push(this.yapas[i]);
+            }
+         }
+      }
+      this.setState({ mostrarModalYapa: bandera });
+   };
+
    flatListItemSeparator = () => {
       return (
          <View
@@ -389,6 +526,27 @@ export class ListaProductos extends Component {
       Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
    };
 
+   validarMonto = () => {
+      if(global.montoYapa >= 10 && global.montoYapa < 20 && this.state.subtotal.toFixed(2)>=10 && this.state.subtotal.toFixed(2)<20){
+         console.log("MISMA YAPA de 10");
+      }else if (global.montoYapa >= 20 && this.state.subtotal.toFixed(2)>=20){
+         console.log("MISMA YAPA de 20");
+      }else{
+         global.yapa = undefined;
+      }
+      if (this.state.subtotal.toFixed(2) < 10) {
+         Alert.alert('Información', 'Monto mínimo de compra $10.00');
+         return;
+      } else if (this.state.subtotal.toFixed(2) >= 10 && !global.yapa) {
+         global.montoYapa = this.state.subtotal.toFixed(2);
+         this.mostrarModalYapa(true);
+         return;
+      } else if (global.yapa) {
+         this.props.navigation.navigate('ConfirmarCompraScreen');
+         return;
+      }
+   };
+
    render() {
       const BadgedIcon = withBadge(1)(Icon);
       console.log('--ListaProductos render');
@@ -410,17 +568,19 @@ export class ListaProductos extends Component {
                <View style={styles.iconoBadge}>
                   <TouchableHighlight
                      onPress={() => {
-                        if (
-                           this.state.valorMonedero &&
-                           this.state.valorMonedero > 0
-                        ) {
-                           Alert.alert(
-                              'Felicidades',
-                              'Usted tiene : $' +
-                                 this.state.valorMonedero.toFixed(2) +
-                                 ' para usar en su próxima compra'
-                           );
-                        }
+                        console.log('---Preciono el monedero');
+                        this.abrirMonedero();
+                        // if (
+                        //    this.state.valorMonedero &&
+                        //    this.state.valorMonedero > 0
+                        // ) {
+                        //    Alert.alert(
+                        //       'Felicidades',
+                        //       'Usted tiene : $' +
+                        //          this.state.valorMonedero.toFixed(2) +
+                        //          ' para usar en su próxima compra'
+                        //    );
+                        // }
                      }}
                      underlayColor={colores.colorPrimarioVerde}
                   >
@@ -428,9 +588,9 @@ export class ListaProductos extends Component {
                         <View>
                            <Icon
                               color={colores.colorBlanco}
-                              type="material"
-                              name="square-inc-cash"
-                              size={28}
+                              type="material-community"
+                              name="wallet-giftcard"
+                              size={30}
                            />
                            {this.state.valorMonedero &&
                            this.state.valorMonedero > 0 ? (
@@ -621,10 +781,7 @@ export class ListaProductos extends Component {
                   <View style={{ flex: 1 }}>
                      <TouchableOpacity
                         onPress={() => {
-                           this.asignarSector();
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
+                           this.validarMonto();
                         }}
                      >
                         <View
@@ -675,7 +832,7 @@ export class ListaProductos extends Component {
                                     color: colores.colorBlancoTexto,
                                  }}
                               >
-                                 Confirmar
+                                 COMPRAR
                               </Text>
                            </View>
                            <View
@@ -742,6 +899,18 @@ export class ListaProductos extends Component {
                   this.abrirCarrito();
                }}
             ></ActionButton> */}
+
+            <Modal
+               animationType="slide"
+               transparent={true}
+               visible={this.state.mostrarModalYapa}
+            >
+               <SeleccionarYapa
+                  mostrarModal={this.mostrarModalYapa}
+                  listaYapa={this.tramaYapa}
+                  navigation={this.props.navigation}
+               ></SeleccionarYapa>
+            </Modal>
          </SafeAreaView>
       );
    }

@@ -44,6 +44,7 @@ export class BotonConfirmar extends Component {
                      latitud: 0.0,
                      longitud: 0.0,
                   };
+                  global.yapa = { descripcion: 'PENDIENTE ' };
                   this.navegarConfirmarCompra();
                }}
             >

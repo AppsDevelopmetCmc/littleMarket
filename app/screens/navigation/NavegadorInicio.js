@@ -19,6 +19,7 @@ import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
+import { ResponsabilidadSocial } from '../responsabilidadSocial/ResponsabilidadSocial';
 import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
@@ -38,6 +39,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { TabProductos1 } from './TabProductos1';
 import { TabProductos2 } from './TabProductos2';
 import { TabProductos3 } from './TabProductos3';
+import { Monedero } from '../monedero/Monedero';
 
 //Componentes
 import Cargando from '../../components/Cargando';
@@ -422,7 +424,7 @@ function HomeDraw() {
    return (
       <DrawerHome.Navigator drawerContent={props => <Menu {...props} />}>
          <DrawerHome.Screen
-            name="HomeDrawer"
+            name="ScreensFromTabs"
             component={ScreensFromTabs}
             options={{ drawerLabel: 'Inicio' }}
          />
@@ -445,6 +447,14 @@ function HomeDraw() {
             name="ListarDatosFacturacion"
             component={ListarDatosFacturacion}
             options={{ drawerLabel: 'Facturas' }}
+         />
+
+         <DrawerHome.Screen name="Monedero" component={Monedero} />
+
+         <DrawerHome.Screen
+            name="ResponsabilidadSocial"
+            component={ResponsabilidadSocial}
+            options={{ drawerLabel: 'Responsabilidad Social' }}
          />
       </DrawerHome.Navigator>
    );
