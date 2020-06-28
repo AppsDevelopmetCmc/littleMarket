@@ -45,7 +45,7 @@ export class ResponsabilidadSocial extends Component {
                </View>
             </View>
             <ImageBackground
-               source={require('../../../assets/Splash.png')}
+               source={require('../../../assets/Fundacion.png')}
                style={styles.imgInicio}
             ></ImageBackground>
          </SafeAreaView>
