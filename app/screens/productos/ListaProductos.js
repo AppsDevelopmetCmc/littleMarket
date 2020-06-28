@@ -228,7 +228,6 @@ export class ListaProductos extends Component {
          global.localizacionActual.longitude,
          this.obtenerDireccionPedido
       );
-      this.obtenerDireccionPedido();
    };
    //Obtiene la ultima direccion usada en un pedido
    //Si no existen direcciones en el pedido, agrega una usando el punto actual
@@ -457,7 +456,7 @@ export class ListaProductos extends Component {
       this.tramaYapa = await srvYapas.conusultarYapas(this.state.subtotal.toFixed(2));*/
       this.tramaYapa = [];
       console.log('Ingesar a Mostrar Modal');
-      console.log('SUBTOTAL'+this.state.subtotal.toFixed(2));
+      console.log('SUBTOTAL' + this.state.subtotal.toFixed(2));
       if (
          this.state.subtotal.toFixed(2) >= 10 &&
          this.state.subtotal.toFixed(2) < 20
@@ -469,7 +468,7 @@ export class ListaProductos extends Component {
             }
          }
       }
-      
+
       if (this.state.subtotal.toFixed(2) >= 20) {
          console.log('MAS DE 20');
          for (var i = 0; i < this.yapas.length; i++) {
@@ -527,11 +526,19 @@ export class ListaProductos extends Component {
    };
 
    validarMonto = () => {
-      if(global.montoYapa >= 10 && global.montoYapa < 20 && this.state.subtotal.toFixed(2)>=10 && this.state.subtotal.toFixed(2)<20){
-         console.log("MISMA YAPA de 10");
-      }else if (global.montoYapa >= 20 && this.state.subtotal.toFixed(2)>=20){
-         console.log("MISMA YAPA de 20");
-      }else{
+      if (
+         global.montoYapa >= 10 &&
+         global.montoYapa < 20 &&
+         this.state.subtotal.toFixed(2) >= 10 &&
+         this.state.subtotal.toFixed(2) < 20
+      ) {
+         console.log('MISMA YAPA de 10');
+      } else if (
+         global.montoYapa >= 20 &&
+         this.state.subtotal.toFixed(2) >= 20
+      ) {
+         console.log('MISMA YAPA de 20');
+      } else {
          global.yapa = undefined;
       }
       if (this.state.subtotal.toFixed(2) < 10) {

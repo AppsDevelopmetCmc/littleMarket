@@ -38,14 +38,21 @@ export class BotonConfirmar extends Component {
             <TouchableOpacity
                onPress={() => {
                   //this.asignarSector();
+
                   //TEMPORAL
-                  global.direccionPedido = {
+                  if (!global.direccionPedido) {
+                     Alert.alert(
+                        'aguanta todavía no tengo DIRECCION DEL PEDIDO'
+                     );
+                  } else {
+                     global.yapa = { descripcion: 'PENDIENTE ' };
+                     this.navegarConfirmarCompra();
+                  }
+                  /*global.direccionPedido = {
                      descripcion: 'Cualquier cosa',
                      latitud: 0.0,
                      longitud: 0.0,
-                  };
-                  global.yapa = { descripcion: 'PENDIENTE ' };
-                  this.navegarConfirmarCompra();
+                  };*/
                }}
             >
                <View

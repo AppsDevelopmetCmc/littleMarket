@@ -87,9 +87,9 @@ export class ServicioDirecciones {
             id = dataDireccion.id;
             global.direccionPedido = direccion;
             global.direccionPedido.id = dataDireccion.id;
-            if (global.repintarDireccion) {
+            /*if (global.repintarDireccion) {
                global.repintarDireccion();
-            }
+            }*/
          })
          .catch(function (error) {
             Alert.alert('Se ha producido un Error', error);
@@ -365,38 +365,37 @@ export class ServicioDirecciones {
          }
       }
    };
+}
 
-   obtenerDirecciones = async (idCliente,fnValidar) => {
+export const asignarDireccionPedido = async (idCliente, crearDireccion) => {
+   let respuesta = await global.db
+      .collection('clientes')
+      .doc(idCliente)
+      .collection('direcciones')
+      .get();
+   let tieneDireccion = false;
 
-      let respuesta = await global.db
-         .collection('clientes')
-         .doc(idCliente)
-         .collection('direcciones')
-         .get();
-         let tieneDireccion=false;
-      if (respuesta.docs && respuesta.docs.length > 0) {
-         for (let i = 0; i <respuesta.docs.length; i++) {
-            if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
-               if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
-                  global.direccionPedido=respuesta.docs[i].data();
-                  global.direccionPedido.id=respuesta.docs[i].id
-                  let tieneDireccion=true;
-                  break;
-               }               
+   if (respuesta.docs && respuesta.docs.length > 0) {
+      console.log('Trae direcciones---');
+      for (let i = 0; i < respuesta.docs.length; i++) {
+         if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
+            if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+               global.direccionPedido = respuesta.docs[i].data();
+               global.direccionPedido.id = respuesta.docs[i].id;
+               tieneDireccion = true;
+               break;
             }
          }
-
-         if(tieneDireccion==false)
-         {
-            global.direccionPedido=respuesta.docs[0].data();
-            global.direccionPedido.id=respuesta.docs[0].id
-         }
-      }else
-      {
-         fnValidar()
       }
-      
-
-   };
-
-}
+      //Si ninguna tiene cobertura, toma la primera de la lista
+      if (tieneDireccion == false) {
+         console.log('No tiene ninguna con cobertura---');
+         global.direccionPedido = respuesta.docs[0].data();
+         global.direccionPedido.id = respuesta.docs[0].id;
+      }
+   } else {
+      //SI NO Tiene DIRECCION
+      console.log('NO tiene direcciones---');
+      crearDireccion();
+   }
+};
