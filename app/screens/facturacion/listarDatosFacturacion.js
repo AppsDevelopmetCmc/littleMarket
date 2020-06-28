@@ -103,7 +103,7 @@ export class ListarDatosFacturacion extends Component {
             ></CabeceraPersonalizada>
             <View style={styles.cabecera}>
                <Text style={textEstilo(colores.colorBlancoTexto, 22, 'bold')}>
-                  Mis facturas
+                  Mis Datos de Facturación
                </Text>
             </View>
 
@@ -132,7 +132,7 @@ export class ListarDatosFacturacion extends Component {
                               'bold'
                            )}
                         >
-                           Agregar nueva factura
+                           Agregar nuevos datos de facturación
                         </Text>
                      </View>
                   </TouchableHighlight>
