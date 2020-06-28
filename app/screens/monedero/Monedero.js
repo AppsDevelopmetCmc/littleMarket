@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, Alert } from 'react-native';
+import {
+   StyleSheet,
+   SafeAreaView,
+   View,
+   Text,
+   Alert,
+   ScrollView,
+} from 'react-native';
 
 // Importacion de colores
 import * as colores from '../../constants/Colores';
@@ -96,89 +103,115 @@ export function Monedero(props) {
             </Text>
          </View>
          <View style={styles.pie}>
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}>
-                  Código
-               </Text>
-               <View style={styles.lineaSeparador}></View>
-            </View>
-            <View style={styles.contendedorCodigo}>
-               <Input
-                  ref={input}
-                  placeholder="Ingrese su código promocional"
-                  containerStyle={styles.containerStyle}
-                  inputContainerStyle={styles.inputContainerStyle}
-                  inputStyle={styles.inputStyle}
-                  labelStyle={textEstilo(
-                     colores.colorOscuroTexto,
-                     14,
-                     'normal'
-                  )}
-                  onChange={e => {
-                     setCodigoDesc(e.nativeEvent.text);
-                  }}
-                  autoCapitalize="characters"
-               />
-               <Button
-                  title={'Enviar'}
-                  titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
-                  buttonStyle={styles.buttonStyle}
-                  onPress={enviarCodigo}
-               ></Button>
-            </View>
-            <Separador alto={10}></Separador>
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}>
-                  Ingresa tu código y obten beneficios en tus compras
-               </Text>
-            </View>
-            <Separador alto={disSeparador}></Separador>
-            <View style={styles.contenedorTitulo}>
-               <View style={{ flexDirection: 'row' }}>
-                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                     <Text
-                        style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
-                     >
-                        Beneficio
-                     </Text>
-                  </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                     <Text
-                        style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
-                     >
-                        {'USD ' + transformDinero(valorMonedero)}
-                     </Text>
-                  </View>
+            <ScrollView keyboardShouldPersistTaps="always">
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
+                  >
+                     Código
+                  </Text>
+                  <View style={styles.lineaSeparador}></View>
                </View>
-               <View style={styles.lineaSeparador}></View>
-            </View>
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}>
-                  {'Usted tiene USD ' +
-                     transformDinero(valorMonedero) +
-                     ' para usar en su próxima compra'}
-               </Text>
-            </View>
-            <Separador alto={disSeparador}></Separador>
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}>
-                  Como Obtenerlos
-               </Text>
-               <View style={styles.lineaSeparador}></View>
-            </View>
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}>
-                  Para obtener tus códigos debes:
-               </Text>
-            </View>
+               <View style={styles.contendedorCodigo}>
+                  <Input
+                     ref={input}
+                     placeholder="Ingrese su código promocional"
+                     containerStyle={styles.containerStyle}
+                     inputContainerStyle={styles.inputContainerStyle}
+                     inputStyle={styles.inputStyle}
+                     labelStyle={textEstilo(
+                        colores.colorOscuroTexto,
+                        14,
+                        'normal'
+                     )}
+                     onChange={e => {
+                        setCodigoDesc(e.nativeEvent.text);
+                     }}
+                     autoCapitalize="characters"
+                  />
+                  <Button
+                     title={'Enviar'}
+                     titleStyle={textEstilo(
+                        colores.colorBlancoTexto,
+                        15,
+                        'bold'
+                     )}
+                     buttonStyle={styles.buttonStyle}
+                     onPress={enviarCodigo}
+                  ></Button>
+               </View>
+               <Separador alto={10}></Separador>
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+                  >
+                     Ingresa tu código y obten beneficios en tus compras
+                  </Text>
+               </View>
+               <Separador alto={disSeparador}></Separador>
+               <View style={styles.contenedorTitulo}>
+                  <View style={{ flexDirection: 'row' }}>
+                     <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              18,
+                              'bold'
+                           )}
+                        >
+                           Beneficio
+                        </Text>
+                     </View>
+                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        <Text
+                           style={textEstilo(
+                              colores.colorOscuroTexto,
+                              18,
+                              'bold'
+                           )}
+                        >
+                           {'USD ' + transformDinero(valorMonedero)}
+                        </Text>
+                     </View>
+                  </View>
+                  <View style={styles.lineaSeparador}></View>
+               </View>
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+                  >
+                     {'Usted tiene USD ' +
+                        transformDinero(valorMonedero) +
+                        ' para usar en su próxima compra'}
+                  </Text>
+               </View>
+               <Separador alto={disSeparador}></Separador>
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
+                  >
+                     Como Obtenerlos
+                  </Text>
+                  <View style={styles.lineaSeparador}></View>
+               </View>
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+                  >
+                     Para obtener tus códigos debes:
+                  </Text>
+               </View>
 
-            <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}>
-                  {
-                     '* Realizar compras en nuestra aplicación \n* Seguirnos en nuestras redes sociales \n* Estar atentos a concursos y promociones \n* Revisar sus notificaciones \n* Referir a un amigo'
-                  }
-               </Text>
-            </View>
+               <View style={styles.contenedorTitulo}>
+                  <Text
+                     style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}
+                  >
+                     {
+                        '* Realizar compras en nuestra aplicación \n* Seguirnos en nuestras redes sociales \n* Estar atentos a concursos y promociones \n* Revisar sus notificaciones \n* Referir a un amigo'
+                     }
+                  </Text>
+               </View>
+            </ScrollView>
          </View>
          <Cargando
             text="Validando Código Promocional"
