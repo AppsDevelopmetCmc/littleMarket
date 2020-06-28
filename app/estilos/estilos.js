@@ -35,12 +35,26 @@ export const botones = StyleSheet.create({
    },
    blancoRight: {
       backgroundColor: colores.colorBlanco,
-      height: 50,
+      height: 40,
+
       alignItems: 'center',
       //justifyContent: 'flex-end',
-      padding: 0,
-     // marginRight: 5,
-     // marginLeft: 5,
+      padding: 10,
+      borderWidth: 1,
+      borderColor: colores.colorPrimarioTomate,
+      // marginRight: 5,
+      // marginLeft: 5,
+   },
+   blancoRight2: {
+      backgroundColor: colores.colorBlanco,
+      height: 40,
+
+      alignItems: 'center',
+      //justifyContent: 'flex-end',
+      padding: 10,
+
+      // marginRight: 5,
+      // marginLeft: 5,
    },
 
    blancoLeft: {
@@ -49,7 +63,7 @@ export const botones = StyleSheet.create({
       alignItems: 'center',
       //justifyContent: 'flex-start',
       padding: 0,
-     // marginLeft: 5,
+      // marginLeft: 5,
       marginRight: 50,
    },
 });

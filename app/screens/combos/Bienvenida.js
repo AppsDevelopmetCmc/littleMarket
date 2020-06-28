@@ -24,10 +24,11 @@ export class Bienvenida extends Component {
    };
 
    render() {
-      let imagen =
+      /*let imagen =
          Math.random() > 0.5
             ? require('../../imagenes/Bienvenida3.jpeg')
-            : require('../../imagenes/Bienvenida5.jpeg');
+            : require('../../imagenes/Bienvenida5.jpeg');*/
+      let imagen = require('../../imagenes/Bienvenida5.jpeg');
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
