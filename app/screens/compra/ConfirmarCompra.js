@@ -106,7 +106,8 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
-
+      global.total = 10;
+      global.delivery = 1.5;
       console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
