@@ -36,7 +36,8 @@ export class ItemFactura extends Component {
                      buttonStyle={styles.plusButton}
                      onPress={() => {
                         this.props.nav.goBack();
-
+                        global.refrescarFact(this.props.factura);
+                        // global.nom = this.props.factura.nombreCompleto;
                         /*this.props.nav.navigate(
                            'ConfirmarCompraScreen',
                            {

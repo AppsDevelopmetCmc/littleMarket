@@ -193,6 +193,11 @@ function ScreensFromTabs() {
             component={PerfilUsuario}
             options={navOptionHandler(false)}
          />
+         <StackDirection.Screen
+            name="ListarDatosFacturacionScreen"
+            component={ListarDatosFacturacion}
+            options={navOptionHandler(false)}
+         />
 
          <StackDirection.Screen
             name="ListaNotificacionScreen"
@@ -618,14 +623,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
