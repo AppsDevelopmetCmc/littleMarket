@@ -93,7 +93,7 @@ export default function DatosFacturacion(props) {
             if (validaDocumento == 'S') {
                global.db
                   .collection('clientes')
-                  .doc(correoUsuario)
+                  .doc(global.appUsuario.id)
                   .collection('factura')
                   .add({
                      tipoDocumento: documentoSeleccionado,
@@ -186,40 +186,40 @@ export default function DatosFacturacion(props) {
                      }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   ></Input>
                ) : (
-                  <Input
-                     // TO DO : validar que sean solo numeros
-                     placeholder="Ingrese número de documento"
-                     containerStyle={styles.estiloContenedor1}
-                     inputContainerStyle={styles.estiloInputContenedor}
-                     inputStyle={styles.estiloInput}
-                     label="Número de Documento*"
-                     keyboardType="numeric"
-                     maxLength={10}
-                     errorMessage={cedulaValidacion}
-                     labelStyle={textEstilo(
-                        colores.colorOscuroTexto,
-                        15,
-                        'normal'
-                     )}
-                     onChange={e => {
-                        const ra = /^[0-9]+$/;
-                        if (ra.test(e.nativeEvent.text)) {
-                           setcedulaUsuario(e.nativeEvent.text);
-                           setCedulaValidacion('');
-                        } else {
-                           setCedulaValidacion(fonoInvalido);
-                        }
-                     }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-                  ></Input>
-               )}
+                     <Input
+                        // TO DO : validar que sean solo numeros
+                        placeholder="Ingrese número de documento"
+                        containerStyle={styles.estiloContenedor1}
+                        inputContainerStyle={styles.estiloInputContenedor}
+                        inputStyle={styles.estiloInput}
+                        label="Número de Documento*"
+                        keyboardType="numeric"
+                        maxLength={10}
+                        errorMessage={cedulaValidacion}
+                        labelStyle={textEstilo(
+                           colores.colorOscuroTexto,
+                           15,
+                           'normal'
+                        )}
+                        onChange={e => {
+                           const ra = /^[0-9]+$/;
+                           if (ra.test(e.nativeEvent.text)) {
+                              setcedulaUsuario(e.nativeEvent.text);
+                              setCedulaValidacion('');
+                           } else {
+                              setCedulaValidacion(fonoInvalido);
+                           }
+                        }} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                     ></Input>
+                  )}
 
                <Separador alto={15}></Separador>
                <Input
-                  placeholder="Alias"
+                  placeholder="Dirección"
                   containerStyle={styles.estiloContenedor1}
                   inputContainerStyle={styles.estiloInputContenedor}
                   inputStyle={styles.estiloInput}
-                  label="Alias *"
+                  label="Dirección *"
                   errorMessage={aliasValidacion}
                   labelStyle={textEstilo(
                      colores.colorOscuroTexto,
@@ -260,7 +260,7 @@ export default function DatosFacturacion(props) {
                      'normal'
                   )}
                   onChange={e => setcorreoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-                  disabled={true}
+
                >
                   {correoUsuario}
                </Input>

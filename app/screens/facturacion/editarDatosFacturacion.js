@@ -213,7 +213,7 @@ export default function DatosFacturacion(props) {
                   containerStyle={styles.estiloContenedor1}
                   inputContainerStyle={styles.estiloInputContenedor}
                   inputStyle={styles.estiloInput}
-                  label="Alias *"
+                  label="Direccion *"
                   labelStyle={textEstilo(
                      colores.colorOscuroTexto,
                      15,
@@ -255,7 +255,7 @@ export default function DatosFacturacion(props) {
                      'normal'
                   )}
                   onChange={e => setcorreoUsuario(e.nativeEvent.text)} // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
-                  disabled={true}
+
                >
                   {correoUsuario}
                </Input>

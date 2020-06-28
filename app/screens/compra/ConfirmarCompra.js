@@ -39,6 +39,7 @@ import {
    convertirFormaPago,
    convertirEstadoPago,
    convertirRadioPago,
+   convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
@@ -50,11 +51,9 @@ export class ConfirmarCompra extends Component {
       super();
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
-
       }
-
+      global.factSeleccionado = '0'
       this.state = {
-
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
@@ -88,6 +87,11 @@ export class ConfirmarCompra extends Component {
          { label: 'Transferencia', value: 'TR' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
+      this.radio_props_fac = [
+         { label: 'Consumidor Final   ', value: 'CF' },
+         { label: 'Factura', value: 'FA' },
+         /*{ label: 'Tarjeta', value: 'TA' },*/
+      ];
       let servParametros = new ServicioParametros();
       servParametros.getObtenerParametroId(
          'envio',
@@ -119,7 +123,6 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
-
       console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
@@ -188,12 +191,14 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      }/* else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
+      } /* else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene cobertura'
          );
-         }  */else if (!global.direccionPedido.referencia) {
+         }  */ else if (
+         !global.direccionPedido.referencia
+      ) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -428,6 +433,15 @@ export class ConfirmarCompra extends Component {
                                     });
                                     global.fechaSeleccionada = value;
                                  }}
+                                 Icon={() => {
+                                    return (
+                                       <Icon
+                                          name="arrow-down-drop-circle"
+                                          color={colores.colorPrimarioTomate}
+                                          size={30}
+                                       />
+                                    );
+                                 }}
                               />
                            </View>
                            <Separador alto={5}></Separador>
@@ -446,6 +460,15 @@ export class ConfirmarCompra extends Component {
                                     horarioSeleccionado: value,
                                  });
                                  global.horarioSeleccionado = value;
+                              }}
+                              Icon={() => {
+                                 return (
+                                    <Icon
+                                       name="arrow-down-drop-circle"
+                                       color={colores.colorPrimarioTomate}
+                                       size={30}
+                                    />
+                                 );
                               }}
                            />
                         </View>
@@ -650,10 +673,55 @@ export class ConfirmarCompra extends Component {
                         ></Numero>
 
                         {global.yapa && global.yapa.descripcion == 'D' ? (
-                           <Text style={{marginTop:10}}>
+                           <Text style={{ marginTop: 10 }}>
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
                         ) : null}
+                     </Card>
+                     <Card
+                        title="Datos de Facturación"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <RadioForm
+                           radio_props={this.radio_props_fac}
+                           buttonColor={colores.colorPrimarioTomate}
+                           selectedButtonColor={colores.colorPrimarioTomate}
+                           initial={convertirFactuacion(global.factSeleccionado)}
+                           formHorizontal={true}
+                           buttonSize={15}
+                           buttonOuterSize={25}
+                           onPress={(value) => {
+                              global.factSeleccionado = value;
+                              if (global.factSeleccionado != 'CF') {
+                                 this.props.navigation.navigate(
+                                    'ListarDatosFacturacion'
+                                 );
+                              }
+                           }}
+
+                        />
+                        {global.factSeleccionado == 'FA' ? (
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
+                                 Nombre:
+                             {this.props.route.params.factura.nombreCompleto
+                                    ? '   ' + this.props.route.params.factura.nombreCompleto
+                                    : '_ _ _ _ _ _ _ _ _ _'}
+                              </Text>
+                              <Separador alto={7}></Separador>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
+                                 CI/RUC:{' '}
+                                 {this.props.route.params.factura.numDocumento
+                                    ? '' + this.props.route.params.factura.numDocumento
+                                    : '_ _ _ _ _ _ _ _ _ _'}
+                              </Text>
+                           </View>
+                        ) : (
+                              <View style={{ flex: 6, justifyContent: 'center' }}>
+
+                              </View>
+
+                           )}
                      </Card>
                      <Card
                         title="Forma de Pago"
@@ -820,7 +888,7 @@ const styles = StyleSheet.create({
    },
    estiloTitulo: {
       color: colores.colorBlancoTexto,
-      fontSize: 20
+      fontSize: 20,
    },
    contenedorBoton: {
       alignContent: 'center',
@@ -876,5 +944,9 @@ const pickerSelectStyles = StyleSheet.create({
       borderWidth: 1,
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon
+   },
+   iconContainer: {
+      top: 8,
+      right: 15,
    },
 });
