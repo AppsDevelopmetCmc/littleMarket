@@ -143,9 +143,9 @@ export class DetallePedido extends Component {
          : this.pedido;
       const { navigation } = this.props;
       return (
-         <SafeAreaView style={styles.container}>
+         <View style={styles.container}>
             <View style={styles.cabecera}>
-               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}>
+               <Text style={textEstilo(colores.colorBlancoTexto, 20, 'bold')}>
                   Detalle de Pedido
                </Text>
             </View>
@@ -265,70 +265,82 @@ export class DetallePedido extends Component {
                      {(this.pedido.estado === 'AA' ||
                         this.pedido.estado === 'IE' ||
                         this.pedido.estado === 'PE') && (
-                           <View>
-                              <View style={styles.textoPares}>
-                                 <Text
-                                    style={textEstilo(
-                                       colores.colorOscuroTexto,
-                                       14,
-                                       'bold'
-                                    )}
-                                 >
-                                    Asociado:
+                        <View>
+                           <View style={styles.textoPares}>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'bold'
+                                 )}
+                              >
+                                 Repartidor:
                               </Text>
-                                 <Separador alto={10}></Separador>
-                                 <Text
-                                    style={textEstilo(
-                                       colores.colorOscuroTexto,
-                                       14,
-                                       'normal'
-                                    )}
-                                 >
-                                    {this.pedido.nombreAsociado}
-                                 </Text>
-                              </View>
-
-                              <View style={styles.textoPares}>
-                                 <Text
-                                    style={textEstilo(
-                                       colores.colorOscuroTexto,
-                                       14,
-                                       'bold'
-                                    )}
-                                 >
-                                    Teléfono Asociado:
+                              <Separador alto={10}></Separador>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'normal'
+                                 )}
+                              >
+                                 {this.pedido.nombreAsociado}
                               </Text>
-                                 <Separador alto={10}></Separador>
-                                 <Text
-                                    style={textEstilo(
-                                       colores.colorOscuroTexto,
-                                       14,
-                                       'normal'
-                                    )}
-                                 >
-                                    {this.pedido.telefonoAsociado}
-                                 </Text>
-                                 <Icon
-                                    name="phone-outgoing"
-                                    type="material-community"
-                                    color={colores.colorNegro}
-                                    size={28}
-                                    onPress={() => {
-                                       callNumber(this.pedido.telefonoAsociado);
-                                    }}
-                                 />
-                              </View>
                            </View>
-                        )}
+
+                           <View style={styles.textoPares}>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'bold'
+                                 )}
+                              >
+                                 Teléfono Repartidor:
+                              </Text>
+                              <Separador alto={10}></Separador>
+                              <Text
+                                 style={textEstilo(
+                                    colores.colorOscuroTexto,
+                                    14,
+                                    'normal'
+                                 )}
+                              >
+                                 {this.pedido.telefonoAsociado}
+                              </Text>
+                              <Icon
+                                 name="phone-outgoing"
+                                 type="material-community"
+                                 color={colores.colorNegro}
+                                 size={28}
+                                 onPress={() => {
+                                    callNumber(this.pedido.telefonoAsociado);
+                                 }}
+                              />
+                           </View>
+                        </View>
+                     )}
                   </View>
 
                   <View
                      style={{
                         //paddingLeft: 20,
-                        borderBottomWidth: 1,
-                        borderBottomColor: colores.colorOscuroPrimarioAmarillo,
+                        borderColor: colores.colorOscuroPrimarioAmarillo,
+                        borderRadius: 2,
                         marginHorizontal: 20,
                         paddingBottom: 10,
+                        backgroundColor: colores.colorBlanco,
+                        shadowColor: colores.colorBlanco,
+                        shadowOffset: {
+                           width: 0,
+                           height: 1,
+                        },
+                        shadowOpacity: 0.22,
+                        shadowRadius: 2.22,
+                        elevation: 3,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderWidth: 1,
                      }}
                   >
                      <Text
@@ -344,69 +356,79 @@ export class DetallePedido extends Component {
                            : this.pedido.yapa}
                      </Text>
                   </View>
-
-                  <FlatList
-                     data={this.state.listDetallePedido}
-                     renderItem={objeto => {
-                        return (
-                           <ItemDetallePedido
-                              detallePedido={objeto.item}
-                              nav={this.props.navigation}
-                           />
-                        );
-                     }}
-                     keyExtractor={objeto => {
-                        return objeto.id;
-                     }}
-                     ItemSeparatorComponent={this.flatListItemSeparator}
-                  />
-               </View>
-            </View>
-            {false && (this.pedido.estado == 'PC' ||
-               this.pedido.estado == 'CA' ||
-               this.state.estado == 'Cancelado')? (
                   <View
                      style={{
-                        alignItems: 'center',
-                        backgroundColor: colores.colorBlanco,
+                        borderBottomWidth: 1,
+                        marginVertical: 20,
+                        borderColor: colores.colorOscuroPrimarioAmarillo,
                      }}
-                  >
-                     <Button
-                        title="Repetir"
-                        buttonStyle={{
-                           backgroundColor: colores.colorPrimarioTomate,
+                  ></View>
+                  <View style={{ flex: 1, paddingBottom: 10 }}>
+                     <FlatList
+                        data={this.state.listDetallePedido}
+                        renderItem={objeto => {
+                           return (
+                              <ItemDetallePedido
+                                 detallePedido={objeto.item}
+                                 nav={this.props.navigation}
+                              />
+                           );
                         }}
-                        onPress={() => {
-                           this.repetir();
-                           navigation.navigate('CarroComprasScreen');
+                        keyExtractor={objeto => {
+                           return objeto.id;
                         }}
-                     ></Button>
+                        ItemSeparatorComponent={this.flatListItemSeparator}
+                     />
                   </View>
-               ) : null}
+               </View>
+            </View>
+            {false &&
+            (this.pedido.estado == 'PC' ||
+               this.pedido.estado == 'CA' ||
+               this.state.estado == 'Cancelado') ? (
+               <View
+                  style={{
+                     alignItems: 'center',
+                     backgroundColor: colores.colorBlanco,
+                  }}
+               >
+                  <Button
+                     title="Repetir"
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioTomate,
+                     }}
+                     onPress={() => {
+                        this.repetir();
+                        navigation.navigate('CarroComprasScreen');
+                     }}
+                  ></Button>
+               </View>
+            ) : null}
 
             {(((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
                this.pedido.formaPago == 'EFECTIVO') ||
                (this.pedido.formaPago == 'TRANSFERENCIA' &&
                   this.pedido.estado == 'CT')) &&
-               this.state.estado != 'Cancelado' ? (
-                  <View
-                     style={{
-                        alignItems: 'center',
-                        backgroundColor: colores.colorBlanco,
+            this.state.estado != 'Cancelado' ? (
+               <View
+                  style={{
+                     alignItems: 'center',
+                     backgroundColor: colores.colorBlanco,
+                     paddingBottom: 20,
+                  }}
+               >
+                  <Button
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioTomate,
                      }}
-                  >
-                     <Button
-                        buttonStyle={{
-                           backgroundColor: colores.colorPrimarioTomate,
-                        }}
-                        title="Cancelar Pedido"
-                        onPress={() => {
-                           this.cancelarPedido(this.pedido.id);
-                        }}
-                     ></Button>
-                  </View>
-               ) : null}
-         </SafeAreaView>
+                     title="Cancelar Pedido"
+                     onPress={() => {
+                        this.cancelarPedido(this.pedido.id);
+                     }}
+                  ></Button>
+               </View>
+            ) : null}
+         </View>
       );
    }
 }
@@ -426,11 +448,10 @@ const styles = StyleSheet.create({
    pie: {
       flex: 4,
       backgroundColor: colores.colorBlanco,
-      borderTopStartRadius: 30,
-      borderTopEndRadius: 30,
+      borderTopStartRadius: 10,
+      borderTopEndRadius: 10,
       paddingHorizontal: 20,
       marginTop: 15,
-      paddingTop: 10,
    },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
@@ -438,15 +459,18 @@ const styles = StyleSheet.create({
    },
    contenedorLista: {
       flex: 1,
-      backgroundColor: 'rgba(247,217,30,0.4)',
+      backgroundColor: colores.colorBlanco,
       marginTop: 20,
       marginBottom: 15,
-      borderRadius: 30,
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colores.colorPrimarioAmarillo,
    },
    cabeceraContenedorLista: {
-      backgroundColor: colores.colorPrimarioAmarillo,
-      borderTopStartRadius: 25,
-      borderTopEndRadius: 25,
+      backgroundColor: colores.colorPrimarioAmarilloRgba,
+
+      borderTopStartRadius: 5,
+      borderTopEndRadius: 5,
       paddingVertical: 15,
       alignContent: 'center',
       justifyContent: 'center',

@@ -83,7 +83,13 @@ export class ListaPedidos extends Component {
       );
    }
 }
-
+const divisorLista = () => {
+   return (
+      <View style={{ flex: 1, borderWidth: 1 }}>
+         <View></View>
+      </View>
+   );
+};
 const textEstilo = (color, tamaño, tipo) => {
    return {
       color: color,
@@ -99,8 +105,8 @@ const styles = StyleSheet.create({
    pie: {
       flex: 3,
       backgroundColor: colores.colorBlanco,
-      borderTopStartRadius: 30,
-      paddingLeft: 25,
+      borderTopStartRadius: 10,
+      paddingLeft: 20,
       marginTop: 15,
       paddingTop: 20,
    },

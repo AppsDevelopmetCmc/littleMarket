@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Dimensions } from 'react-native';
 import {
    Button,
    Avatar,
@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 
 // Importación de los colores
 import * as colores from '../constants/Colores';
+let { width } = Dimensions.get('window');
 
 export function CabeceraYappando() {
    const navigation = useNavigation();
@@ -178,7 +179,7 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 const styles = StyleSheet.create({
    cabeceraContenedor: {
-      width: '150%',
+      width: width-20,
       flex: 1,
       // backgroundColor: 'blue',
    },
