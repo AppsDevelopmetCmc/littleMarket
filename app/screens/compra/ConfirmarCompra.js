@@ -39,6 +39,7 @@ import {
    convertirFormaPago,
    convertirEstadoPago,
    convertirRadioPago,
+   convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
@@ -50,7 +51,7 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
-
+      global.factSeleccionado = '0'
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -61,8 +62,8 @@ export class ConfirmarCompra extends Component {
             global.pagoSeleccionado == 'TR'
                ? 1
                : global.pagoSeleccionado == 'EF'
-               ? 0
-               : 2,
+                  ? 0
+                  : 2,
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -83,6 +84,11 @@ export class ConfirmarCompra extends Component {
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
          { label: 'Transferencia', value: 'TR' },
+         /*{ label: 'Tarjeta', value: 'TA' },*/
+      ];
+      this.radio_props_fac = [
+         { label: 'Consumidor Final   ', value: 'CF' },
+         { label: 'Factura', value: 'FA' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
    }
@@ -648,6 +654,51 @@ export class ConfirmarCompra extends Component {
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
                         ) : null}
+                     </Card>
+                     <Card
+                        title="Datos de Facturación"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <RadioForm
+                           radio_props={this.radio_props_fac}
+                           buttonColor={colores.colorPrimarioTomate}
+                           selectedButtonColor={colores.colorPrimarioTomate}
+                           initial={convertirFactuacion(global.factSeleccionado)}
+                           formHorizontal={true}
+                           buttonSize={15}
+                           buttonOuterSize={25}
+                           onPress={(value) => {
+                              global.factSeleccionado = value;
+                              if (global.factSeleccionado != 'CF') {
+                                 this.props.navigation.navigate(
+                                    'ListarDatosFacturacion'
+                                 );
+                              }
+                           }}
+
+                        />
+                        {global.factSeleccionado == 'FA' ? (
+                           <View style={{ flex: 6, justifyContent: 'center' }}>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
+                                 Nombre:
+                             {this.props.route.params.factura.nombreCompleto
+                                    ? '   ' + this.props.route.params.factura.nombreCompleto
+                                    : '_ _ _ _ _ _ _ _ _ _'}
+                              </Text>
+                              <Separador alto={7}></Separador>
+                              <Text style={{ marginBottom: 5, fontSize: 14 }}>
+                                 CI/RUC:{' '}
+                                 {this.props.route.params.factura.numDocumento
+                                    ? '' + this.props.route.params.factura.numDocumento
+                                    : '_ _ _ _ _ _ _ _ _ _'}
+                              </Text>
+                           </View>
+                        ) : (
+                              <View style={{ flex: 6, justifyContent: 'center' }}>
+
+                              </View>
+
+                           )}
                      </Card>
                      <Card
                         title="Forma de Pago"

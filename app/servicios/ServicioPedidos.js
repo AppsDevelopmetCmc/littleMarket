@@ -157,6 +157,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          global.horarioSeleccionado = null;
          global.yapa = undefined;
          global.items = null;
+         limpiarProductosSeleccionados();
          if (pedido.descuento > 0) {
             new ServicioMonederos().actualizarMonedero(
                global.usuario,
