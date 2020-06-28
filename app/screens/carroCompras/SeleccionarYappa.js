@@ -136,7 +136,7 @@ export class SeleccionarYapa extends Component {
                            fontSize: 20,
                         }}
                      >
-                        Qué Yapa le gustaría llevar?
+                        Qué Yappa le gustaría llevar?
                      </Text>
                      <RadioForm
                         buttonColor={colores.colorPrimarioTomate}
