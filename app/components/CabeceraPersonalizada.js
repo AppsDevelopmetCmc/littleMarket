@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
    },
    titulo: {
       fontSize: 18,
-      color: 'white',
+      color: 'black',
       fontWeight: 'bold',
    },
    cabeceraIcon: {
