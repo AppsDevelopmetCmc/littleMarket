@@ -507,9 +507,13 @@ export default function NavegadorInicio() {
                if (global.infoUsuario.providerId == 'password') {
                   console.log('--NavegadorInicio ingresa con usuario/clave');
                   if (!user.emailVerified) {
+                     console.log('----Mail no vefificado---');
                      global.mailVerificado = false;
                      global.usuario = user.email;
                      setLogin(false);
+                     if (global.refrescarInicioSesion) {
+                        global.refrescarInicioSesion();
+                     }
                   } else {
                      global.mailVerificado = true;
                      if (user) {
@@ -615,14 +619,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-                  <StackAuthentication.Navigator>
-                     <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
-                        options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
-                  </StackAuthentication.Navigator>
-               )}
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }

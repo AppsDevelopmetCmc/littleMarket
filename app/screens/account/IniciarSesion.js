@@ -33,13 +33,16 @@ export default function IniciaSesion({ navigation }) {
    const cerrarYalert = () => {
       setMostrarYalert(false);
    };
-   if (!global.mailVerificado) {
+   if (global.mailVerificado === false && global.usuario) {
       global.mailVerificado = true;
       mostrarError(
          'Información',
          'Verifique su correo electrónico ' + global.usuario + ' para continuar'
       );
    }
+   global.refrescarInicioSesion = () => {
+      setMostrarYalert(true);
+   };
    return (
       <SafeAreaView style={styles.contenedorPagina}>
          <View style={styles.cabecera}>
