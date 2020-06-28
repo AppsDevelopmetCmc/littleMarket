@@ -77,26 +77,27 @@ export class TabProductos1 extends Component {
       console.log('--ListaProductos render');
       return (
          <SafeAreaProvider style={styles.container}>
-            <View style={styles.lista}>
-               <FlatList
-                  data={this.state.listaProductos}
-                  renderItem={({ item }) => {
-                     return (
-                        <ItemProductoNuevo
-                           nav={this.props.navigation}
-                           producto={item}
-                        />
-                     );
-                  }}
-                  keyExtractor={producto => {
-                     return producto.id;
-                  }}
-                  // ItemSeparatorComponent={this.flatListItemSeparator}
-               />
+            <View style={styles.pie}>
+               <View style={styles.lista}>
+                  <FlatList
+                     data={this.state.listaProductos}
+                     renderItem={({ item }) => {
+                        return (
+                           <ItemProductoNuevo
+                              nav={this.props.navigation}
+                              producto={item}
+                           />
+                        );
+                     }}
+                     keyExtractor={producto => {
+                        return producto.id;
+                     }}
+                     // ItemSeparatorComponent={this.flatListItemSeparator}
+                  />
+               </View>
             </View>
             <View
                style={{
-                  flex: 2,
                   paddingVertical: 20,
                   paddingHorizontal: 20,
                   paddingRight: 12,
