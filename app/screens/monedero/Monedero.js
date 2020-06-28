@@ -134,9 +134,22 @@ export function Monedero(props) {
             </View>
             <Separador alto={disSeparador}></Separador>
             <View style={styles.contenedorTitulo}>
-               <Text style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}>
-                  Beneficio
-               </Text>
+               <View style={{ flexDirection: 'row' }}>
+                  <View style={{ flex: 1, alignItems: 'flex-start' }}>
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
+                     >
+                        Beneficio
+                     </Text>
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                     <Text
+                        style={textEstilo(colores.colorOscuroTexto, 18, 'bold')}
+                     >
+                        {'USD ' + transformDinero(valorMonedero)}
+                     </Text>
+                  </View>
+               </View>
                <View style={styles.lineaSeparador}></View>
             </View>
             <View style={styles.contenedorTitulo}>
