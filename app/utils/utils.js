@@ -4,6 +4,10 @@ export class ArregloUtil {
       this.arreglo = arreglo;
    }
    agregar = (objeto, fnRepintar) => {
+      this.arreglo.push(objeto);
+      fnRepintar(this.arreglo);
+   };
+   agregarAlInicio = (objeto, fnRepintar) => {
       this.arreglo.unshift(objeto);
       fnRepintar(this.arreglo);
    };

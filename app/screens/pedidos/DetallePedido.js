@@ -362,9 +362,9 @@ export class DetallePedido extends Component {
                   />
                </View>
             </View>
-            {this.pedido.estado == 'PC' ||
+            {false && (this.pedido.estado == 'PC' ||
                this.pedido.estado == 'CA' ||
-               this.state.estado == 'Cancelado' ? (
+               this.state.estado == 'Cancelado')? (
                   <View
                      style={{
                         alignItems: 'center',
@@ -399,7 +399,7 @@ export class DetallePedido extends Component {
                         buttonStyle={{
                            backgroundColor: colores.colorPrimarioTomate,
                         }}
-                        title="Cancelar"
+                        title="Cancelar Pedido"
                         onPress={() => {
                            this.cancelarPedido(this.pedido.id);
                         }}
