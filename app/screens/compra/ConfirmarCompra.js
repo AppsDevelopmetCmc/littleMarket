@@ -39,7 +39,6 @@ import {
    convertirFormaPago,
    convertirEstadoPago,
    convertirRadioPago,
-   convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
@@ -50,13 +49,9 @@ export class ConfirmarCompra extends Component {
       super();
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
-
-
       }
-      global.factSeleccionado = '0'
 
       this.state = {
-
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
@@ -66,9 +61,8 @@ export class ConfirmarCompra extends Component {
             global.pagoSeleccionado == 'TR'
                ? 1
                : global.pagoSeleccionado == 'EF'
-                  ? 0
-                  : 2,
-
+               ? 0
+               : 2,
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -91,11 +85,6 @@ export class ConfirmarCompra extends Component {
          { label: 'Transferencia', value: 'TR' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
-      this.radio_props_fac = [
-         { label: 'Consumidor Final   ', value: 'CF' },
-         { label: 'Factura', value: 'FA' },
-         /*{ label: 'Tarjeta', value: 'TA' },*/
-      ];
    }
 
    cerrarPromociones = () => {
@@ -115,8 +104,6 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
-      global.total = 10;
-      global.delivery = 1.5;
       console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
@@ -179,12 +166,14 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      }/* else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
+      } /* else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene cobertura'
          );
-         }  */else if (!global.direccionPedido.referencia) {
+         }  */ else if (
+         !global.direccionPedido.referencia
+      ) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -419,6 +408,15 @@ export class ConfirmarCompra extends Component {
                                     });
                                     global.fechaSeleccionada = value;
                                  }}
+                                 Icon={() => {
+                                    return (
+                                       <Icon
+                                          name="arrow-down-drop-circle"
+                                          color={colores.colorPrimarioTomate}
+                                          size={30}
+                                       />
+                                    );
+                                 }}
                               />
                            </View>
                            <Separador alto={5}></Separador>
@@ -437,6 +435,15 @@ export class ConfirmarCompra extends Component {
                                     horarioSeleccionado: value,
                                  });
                                  global.horarioSeleccionado = value;
+                              }}
+                              Icon={() => {
+                                 return (
+                                    <Icon
+                                       name="arrow-down-drop-circle"
+                                       color={colores.colorPrimarioTomate}
+                                       size={30}
+                                    />
+                                 );
                               }}
                            />
                         </View>
@@ -643,32 +650,6 @@ export class ConfirmarCompra extends Component {
                         ) : null}
                      </Card>
                      <Card
-                        title="Datos de Facturación"
-                        containerStyle={styles.contenedorTarjetas}
-                     >
-                        <RadioForm
-                           radio_props={this.radio_props_fac}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirFactuacion(global.factSeleccionado)}
-                           formHorizontal={true}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           onPress={(value) => {
-                              global.factSeleccionado = value;
-                              if (global.factSeleccionado != 'CF') {
-                                 this.props.navigation.navigate(
-                                    'ListarDatosFacturacion'
-                                 );
-                              }
-                           }}
-                        /* onPress={value => {
-                            this.setState({ pagoSeleccionado: value });
-                            global.pagoSeleccionado = value;
-                         }}*/
-                        />
-                     </Card>
-                     <Card
                         title="Forma de Pago"
                         containerStyle={styles.contenedorTarjetas}
                      >
@@ -833,7 +814,7 @@ const styles = StyleSheet.create({
    },
    estiloTitulo: {
       color: colores.colorBlancoTexto,
-      fontSize: 20
+      fontSize: 20,
    },
    contenedorBoton: {
       alignContent: 'center',
@@ -889,5 +870,9 @@ const pickerSelectStyles = StyleSheet.create({
       borderWidth: 1,
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon
+   },
+   iconContainer: {
+      top: 8,
+      right: 15,
    },
 });
