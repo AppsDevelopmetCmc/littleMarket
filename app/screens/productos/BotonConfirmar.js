@@ -130,12 +130,13 @@ export class BotonConfirmar extends Component {
                         'aguanta todavía no tengo DIRECCION DEL PEDIDO'
                      );
                   } else {
-                     global.yapa = { descripcion: 'PENDIENTE ' };
-                     this.navegarConfirmarCompra();
+                     // global.yapa = { descripcion: 'PENDIENTE ' };
+                     // this.navegarConfirmarCompra();
                   }
-                  
-                                   //yappa
-                  this.validarMonto();               }}
+
+                  //yappa
+                  this.validarMonto();
+               }}
             >
                <View
                   style={{
