@@ -67,6 +67,7 @@ export class TabProductos2 extends Component {
       );
    }
    crearDireccionPedido = async () => {
+      console.log('---------CREANDO DIRECCION----------');
       Geocoder.init(APIKEY);
       let response = await Location.requestPermissionsAsync();
       if (response.status !== 'granted') {
@@ -79,11 +80,12 @@ export class TabProductos2 extends Component {
       srvDirecciones.generarDireccion(
          global.localizacionActual.latitude,
          global.localizacionActual.longitude,
-         this.crearDireccionPedido
+         this.guardarPedido
       );
    };
 
-   crearDireccionPedido = async (direccionNombre, latitud, longitud) => {
+   guardarPedido = async (direccionNombre, latitud, longitud) => {
+      console.log('---------GUARDANDO DIRECCION----------');
       new ServicioDirecciones().crear(global.usuario, {
          descripcion: direccionNombre,
          latitud: latitud,

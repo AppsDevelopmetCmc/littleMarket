@@ -428,7 +428,7 @@ export class MapaDirecciones extends Component {
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
          siguienteMapa: !siguienteMapaActual,
-         validarReferencia: ''
+         validarReferencia: '',
       });
       global.direccionPedido = direccion;
       //  console.log('siguienteMapa', this.state.siguienteMapa);
@@ -582,7 +582,7 @@ export class MapaDirecciones extends Component {
                               this.onRegionChangeComplete(region);
                            }}
                         >
-                           <MapView.Marker
+                           {/**<MapView.Marker
                               title={this.state.direccion}
                               Key={APIKEY}
                               ref={marker => {
@@ -590,7 +590,7 @@ export class MapaDirecciones extends Component {
                               }}
                               coordinate={this.state.coordinate}
                               draggable={true}
-                           />
+                           />*/}
                         </MapView>
                      )}
                      {this.state.siguienteMapa && (
