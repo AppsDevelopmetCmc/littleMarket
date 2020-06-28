@@ -5,7 +5,7 @@ export const convertirFormaPago = (formaPago) => {
       global.mapFormaPago.set('TR', 'TRANSFERENCIA');
       global.mapFormaPago.set('TA', 'TARJETA');
    }
-      return global.mapFormaPago.get(formaPago);
+   return global.mapFormaPago.get(formaPago);
 };
 
 export const convertirEstadoPago = (formaPago) => {
@@ -15,7 +15,7 @@ export const convertirEstadoPago = (formaPago) => {
       global.mapEstadoPago.set('TR', 'CT');
       global.mapEstadoPago.set('TA', 'CT');
    }
-      return global.mapEstadoPago.get(formaPago);
+   return global.mapEstadoPago.get(formaPago);
 };
 
 export const convertirRadioPago = (formaPago) => {
@@ -25,5 +25,14 @@ export const convertirRadioPago = (formaPago) => {
       global.mapRadioPago.set('TR', 1);
       global.mapRadioPago.set('TA', 2);
    }
-      return global.mapRadioPago.get(formaPago)
+   return global.mapRadioPago.get(formaPago)
+};
+export const convertirFactuacion = (formaPago) => {
+   if (!global.mapFormaFact) {
+      global.mapFormaFact = new Map();
+      global.mapFormaFact.set('CF', '0');
+      global.mapFormaFact.set('FA', '1');
+
+   }
+   return global.mapFormaFact.get(formaPago);
 };

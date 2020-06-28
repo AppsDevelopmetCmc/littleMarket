@@ -265,61 +265,61 @@ export class DetallePedido extends Component {
                      {(this.pedido.estado === 'AA' ||
                         this.pedido.estado === 'IE' ||
                         this.pedido.estado === 'PE') && (
-                        <View>
-                           <View style={styles.textoPares}>
-                              <Text
-                                 style={textEstilo(
-                                    colores.colorOscuroTexto,
-                                    14,
-                                    'bold'
-                                 )}
-                              >
-                                 Asociado:
+                           <View>
+                              <View style={styles.textoPares}>
+                                 <Text
+                                    style={textEstilo(
+                                       colores.colorOscuroTexto,
+                                       14,
+                                       'bold'
+                                    )}
+                                 >
+                                    Asociado:
                               </Text>
-                              <Separador alto={10}></Separador>
-                              <Text
-                                 style={textEstilo(
-                                    colores.colorOscuroTexto,
-                                    14,
-                                    'normal'
-                                 )}
-                              >
-                                 {this.pedido.nombreAsociado}
-                              </Text>
-                           </View>
+                                 <Separador alto={10}></Separador>
+                                 <Text
+                                    style={textEstilo(
+                                       colores.colorOscuroTexto,
+                                       14,
+                                       'normal'
+                                    )}
+                                 >
+                                    {this.pedido.nombreAsociado}
+                                 </Text>
+                              </View>
 
-                           <View style={styles.textoPares}>
-                              <Text
-                                 style={textEstilo(
-                                    colores.colorOscuroTexto,
-                                    14,
-                                    'bold'
-                                 )}
-                              >
-                                 Teléfono Asociado:
+                              <View style={styles.textoPares}>
+                                 <Text
+                                    style={textEstilo(
+                                       colores.colorOscuroTexto,
+                                       14,
+                                       'bold'
+                                    )}
+                                 >
+                                    Teléfono Asociado:
                               </Text>
-                              <Separador alto={10}></Separador>
-                              <Text
-                                 style={textEstilo(
-                                    colores.colorOscuroTexto,
-                                    14,
-                                    'normal'
-                                 )}
-                              >
-                                 {this.pedido.telefonoAsociado}
-                              </Text>
-                              <Icon
-                                 name="phone-outgoing"
-                                 type="material-community"
-                                 color={colores.colorNegro}
-                                 size={28}
-                                 onPress={() => {
-                                    callNumber(this.pedido.telefonoAsociado);
-                                 }}
-                              />
+                                 <Separador alto={10}></Separador>
+                                 <Text
+                                    style={textEstilo(
+                                       colores.colorOscuroTexto,
+                                       14,
+                                       'normal'
+                                    )}
+                                 >
+                                    {this.pedido.telefonoAsociado}
+                                 </Text>
+                                 <Icon
+                                    name="phone-outgoing"
+                                    type="material-community"
+                                    color={colores.colorNegro}
+                                    size={28}
+                                    onPress={() => {
+                                       callNumber(this.pedido.telefonoAsociado);
+                                    }}
+                                 />
+                              </View>
                            </View>
-                        </View>
-                     )}
+                        )}
                   </View>
 
                   <View
@@ -363,49 +363,49 @@ export class DetallePedido extends Component {
                </View>
             </View>
             {this.pedido.estado == 'PC' ||
-            this.pedido.estado == 'CA' ||
-            this.state.estado == 'Cancelado' ? (
-               <View
-                  style={{
-                     alignItems: 'center',
-                     backgroundColor: colores.colorBlanco,
-                  }}
-               >
-                  <Button
-                     title="Repetir"
-                     buttonStyle={{
-                        backgroundColor: colores.colorPrimarioTomate,
+               this.pedido.estado == 'CA' ||
+               this.state.estado == 'Cancelado' ? (
+                  <View
+                     style={{
+                        alignItems: 'center',
+                        backgroundColor: colores.colorBlanco,
                      }}
-                     onPress={() => {
-                        this.repetir();
-                        navigation.navigate('CarroComprasScreen');
-                     }}
-                  ></Button>
-               </View>
-            ) : null}
+                  >
+                     <Button
+                        title="Repetir"
+                        buttonStyle={{
+                           backgroundColor: colores.colorPrimarioTomate,
+                        }}
+                        onPress={() => {
+                           this.repetir();
+                           navigation.navigate('CarroComprasScreen');
+                        }}
+                     ></Button>
+                  </View>
+               ) : null}
 
             {(((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
                this.pedido.formaPago == 'EFECTIVO') ||
                (this.pedido.formaPago == 'TRANSFERENCIA' &&
                   this.pedido.estado == 'CT')) &&
-            this.state.estado != 'Cancelado' ? (
-               <View
-                  style={{
-                     alignItems: 'center',
-                     backgroundColor: colores.colorBlanco,
-                  }}
-               >
-                  <Button
-                     buttonStyle={{
-                        backgroundColor: colores.colorPrimarioTomate,
+               this.state.estado != 'Cancelado' ? (
+                  <View
+                     style={{
+                        alignItems: 'center',
+                        backgroundColor: colores.colorBlanco,
                      }}
-                     title="Cancelar"
-                     onPress={() => {
-                        this.cancelarPedido(this.pedido.id);
-                     }}
-                  ></Button>
-               </View>
-            ) : null}
+                  >
+                     <Button
+                        buttonStyle={{
+                           backgroundColor: colores.colorPrimarioTomate,
+                        }}
+                        title="Cancelar"
+                        onPress={() => {
+                           this.cancelarPedido(this.pedido.id);
+                        }}
+                     ></Button>
+                  </View>
+               ) : null}
          </SafeAreaView>
       );
    }
