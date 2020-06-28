@@ -603,7 +603,7 @@ export class ConfirmarCompra extends Component {
                            titulo="ENVÍO:"
                            valor={transformDinero(global.delivery)}
                         ></Numero>
-                        {global.yapa.descripcion != 'D' ? (
+                        {global.yapa && global.yapa.descripcion != 'D' ? (
                            <Numero
                               titulo={
                                  'YAPPA (' +
@@ -627,8 +627,8 @@ export class ConfirmarCompra extends Component {
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
 
-                        {global.yapa.descripcion == 'D' ? (
-                           <Text>
+                        {global.yapa && global.yapa.descripcion == 'D' ? (
+                           <Text style={{marginTop:10}}>
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
                         ) : null}

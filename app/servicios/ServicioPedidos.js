@@ -80,6 +80,22 @@ const modificarItemPedidos = (itemProducto, cantidad) => {
    itemProducto.subtotal = itemProducto.cantidad * itemProducto.precio;
 };
 
+export const limpiarProductosSeleccionados = () => {
+   global.items = null;
+   for (let key of global.productos.keys()) {
+      let arregloProductos = global.productos.get(key);
+      for (let i = 0; i < arregloProductos.length; i++) {
+         arregloProductos[i].limpiar = true;
+      }
+   }
+   global.subtotal = 0;
+   global.pintarTab1();
+   global.pintarTab2();
+   global.pintarTab3();
+   for (let i = 0; i < global.refrescarBotones.length; i++) {
+      global.refrescarBotones[i](global.subtotal);
+   }
+};
 export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
    global.db
       .collection('pedidos')
@@ -141,6 +157,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          global.horarioSeleccionado = null;
          global.yapa = undefined;
          global.items = null;
+         limpiarProductosSeleccionados();
          if (pedido.descuento > 0) {
             new ServicioMonederos().actualizarMonedero(
                global.usuario,
