@@ -39,6 +39,7 @@ import {
    convertirFormaPago,
    convertirEstadoPago,
    convertirRadioPago,
+   convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
@@ -50,7 +51,9 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
 
+
       }
+      global.factSeleccionado = '0'
 
       this.state = {
 
@@ -65,6 +68,7 @@ export class ConfirmarCompra extends Component {
                : global.pagoSeleccionado == 'EF'
                   ? 0
                   : 2,
+
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -85,6 +89,11 @@ export class ConfirmarCompra extends Component {
       this.radio_props = [
          { label: 'Efectivo   ', value: 'EF' },
          { label: 'Transferencia', value: 'TR' },
+         /*{ label: 'Tarjeta', value: 'TA' },*/
+      ];
+      this.radio_props_fac = [
+         { label: 'Consumidor Final   ', value: 'CF' },
+         { label: 'Factura', value: 'FA' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
    }
@@ -628,10 +637,36 @@ export class ConfirmarCompra extends Component {
                         ></Numero>
 
                         {global.yapa && global.yapa.descripcion == 'D' ? (
-                           <Text style={{marginTop:10}}>
+                           <Text style={{ marginTop: 10 }}>
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
                         ) : null}
+                     </Card>
+                     <Card
+                        title="Datos de Facturación"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <RadioForm
+                           radio_props={this.radio_props_fac}
+                           buttonColor={colores.colorPrimarioTomate}
+                           selectedButtonColor={colores.colorPrimarioTomate}
+                           initial={convertirFactuacion(global.factSeleccionado)}
+                           formHorizontal={true}
+                           buttonSize={15}
+                           buttonOuterSize={25}
+                           onPress={(value) => {
+                              global.factSeleccionado = value;
+                              if (global.factSeleccionado != 'CF') {
+                                 this.props.navigation.navigate(
+                                    'ListarDatosFacturacion'
+                                 );
+                              }
+                           }}
+                        /* onPress={value => {
+                            this.setState({ pagoSeleccionado: value });
+                            global.pagoSeleccionado = value;
+                         }}*/
+                        />
                      </Card>
                      <Card
                         title="Forma de Pago"
