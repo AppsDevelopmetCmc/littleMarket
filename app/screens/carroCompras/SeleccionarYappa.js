@@ -157,6 +157,8 @@ export class SeleccionarYapa extends Component {
                         onPress={() => {
                            this.seleccionarYapa(this.state.yapaSeleccionada);
                            this.props.mostrarModal(false);
+                           this.props.navigation.navigate('ConfirmarCompraScreen');
+                         
                         }}
                         buttonStyle={styles.estiloBotonNaranja}
                      />
