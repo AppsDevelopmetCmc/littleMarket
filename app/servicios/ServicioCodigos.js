@@ -20,7 +20,10 @@ export class ServicioCodigos {
                .doc(idMail)
                .get();
             if (respuestaUsados && respuestaUsados.data()) {
-               Alert.alert('Información', 'No puede usar el código más de una vez');
+               Alert.alert(
+                  'Información',
+                  'No puede usar el código más de una vez'
+               );
                fnFinalizar();
             } else {
                console.log('El código es valido ');
@@ -138,8 +141,7 @@ export class ServicioCodigos {
                );
             }
          } else {
-            Alert.alert('Información',
-               'Código no vigente');
+            Alert.alert('Información', 'Código no vigente');
             fnFinalizar();
          }
       } else {
@@ -160,9 +162,9 @@ export class ServicioCodigos {
          })
          .then(function () {
             finalizar(
-               'Ha ganado USD' +
-               parseFloat(valorGanado).toFixed(2) +
-               ' para usar en su compra'
+               'Ha ganado USD ' +
+                  parseFloat(valorGanado).toFixed(2) +
+                  ' para usar en su compra'
             );
          })
          .catch(function (error) {
@@ -202,7 +204,7 @@ export class ServicioCodigos {
             finalizar();
          })
          .catch(function (error) {
-            Alert.alert('Se ha producido un Error', + error);
+            Alert.alert('Se ha producido un Error', +error);
          });
    };
 

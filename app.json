@@ -7,7 +7,7 @@
       "orientation": "portrait",
       "icon": "./assets/LogoYapando.png",
       "splash": {
-         "image": "./assets/NuevoSplash.png",
+         "image": "./assets/splashYappando.png",
          "resizeMode": "contain",
          "backgroundColor": "#00AA02"
       },
@@ -20,7 +20,7 @@
          "buildNumber": "1.0.0"
       },
       "android": {
-         "versionCode": 4,
+         "versionCode": 5,
          "package": "yappando.com",
          "config": {
             "googleSignIn": {

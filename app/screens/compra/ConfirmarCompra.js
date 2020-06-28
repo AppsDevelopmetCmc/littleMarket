@@ -23,6 +23,7 @@ import RadioForm, {
    RadioButtonLabel,
 } from 'react-native-simple-radio-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import { Numero } from '../carroCompras/componentes/Numero';
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
@@ -53,7 +54,7 @@ export class ConfirmarCompra extends Component {
          global.pagoSeleccionado = 'EF';
       }
       global.refrescarFact = this.refrescarDatosFactura;
-      global.factSeleccionado = '0'
+      global.factSeleccionado = '0';
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -64,8 +65,8 @@ export class ConfirmarCompra extends Component {
             global.pagoSeleccionado == 'TR'
                ? 1
                : global.pagoSeleccionado == 'EF'
-                  ? 0
-                  : 2,
+               ? 0
+               : 2,
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -99,27 +100,22 @@ export class ConfirmarCompra extends Component {
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
       let servParametros = new ServicioParametros();
-      servParametros.getObtenerParametroId(
-         'envio',
-         this.obtenerParametroEnvio
-      );
+      servParametros.getObtenerParametroId('envio', this.obtenerParametroEnvio);
    }
-   refrescarDatosFactura = (factura) => {
-      this.setState(
-         {
-            numDocumentoFact: factura.numDocumento,
-            direccionFact: factura.alias,
-            nombreCompletoFact: factura.nombreCompleto,
-            correoFact: factura.correo,
-            telefonoFact: factura.telefono,
-         }
-      )
-   }
+   refrescarDatosFactura = factura => {
+      this.setState({
+         numDocumentoFact: factura.numDocumento,
+         direccionFact: factura.alias,
+         nombreCompletoFact: factura.nombreCompleto,
+         correoFact: factura.correo,
+         telefonoFact: factura.telefono,
+      });
+   };
    obtenerParametroEnvio = parametro => {
       global.delivery = parametro.precio;
       this.setState({
-         valorDescontado: global.subtotal + global.delivery
-      })
+         valorDescontado: global.subtotal + global.delivery,
+      });
       console.log('global.delivery', global.delivery);
    };
 
@@ -151,14 +147,16 @@ export class ConfirmarCompra extends Component {
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
       if (monedero) {
-         if (global.valorMonedero == null || global.valorMonedero == undefined) {
+         if (
+            global.valorMonedero == null ||
+            global.valorMonedero == undefined
+         ) {
             global.valorMonedero = 0;
          }
          this.setState({
             valorMonedero: monedero.valor - global.valorMonedero,
-            valorDescontado: this.state.valorDescontado - global.valorMonedero
+            valorDescontado: this.state.valorDescontado - global.valorMonedero,
          });
-
       } else {
          this.setState({ valorMonedero: 0 });
          global.valorMonedero = 0;
@@ -354,7 +352,6 @@ export class ConfirmarCompra extends Component {
             <View style={styles.pie}>
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
-
                      <Card
                         title="Datos de Entrega"
                         containerStyle={styles.contenedorTarjetas}
@@ -401,17 +398,6 @@ export class ConfirmarCompra extends Component {
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ fontSize: 14 }}>
                                  Dirección: {this.state.direccion}
-                              </Text>
-                              <Text
-                                 style={{
-                                    fontSize: 10,
-                                    color: 'red',
-                                    marginLeft: 10,
-                                 }}
-                              >
-                                 {/*this.state.msmCoberturaDireccion
-                                    ? ''
-                                    : 'La dirección actual no tiene cobertura'*/}
                               </Text>
                            </View>
                            <View style={{ flex: 1 }}>
@@ -522,7 +508,7 @@ export class ConfirmarCompra extends Component {
                                  borderRadius={8}
                                  placeholder="Ingrese Código Promocional"
                                  onChangeText={text => {
-                                    if (text.length <= 5) {
+                                    if (text.length <= 10) {
                                        this.setState({
                                           codigoPromo: text,
                                        });
@@ -532,7 +518,7 @@ export class ConfirmarCompra extends Component {
                            </View>
                            <View
                               style={{
-                                 flex: 2,
+                                 flex: 1,
                                  alignItems: 'stretch',
                               }}
                            >
@@ -547,7 +533,7 @@ export class ConfirmarCompra extends Component {
                                  icon={
                                     <Icon
                                        name="check-circle"
-                                       size={25}
+                                       size={20}
                                        color={colores.colorBlancoTexto}
                                        style={styles.iconos}
                                     />
@@ -558,31 +544,10 @@ export class ConfirmarCompra extends Component {
 
                         <View
                            style={{ alignItems: 'flex-start', marginLeft: 10 }}
-                        >
-                           {/*<TouchableHighlight
-                              underlayColor={colores.colorBlanco}
-                              onPress={() => {
-                                 this.setState({ mostrarPromociones: true });
-                              }}
-                           >
-                              <View
-                                 height={30}
-                                 paddingHorizontal={10}
-                                 alignItems="stretch"
-                                 justifyContent="center"
-                              >
-                                 <Text
-                                    style={{
-                                       color: colores.colorPrimarioTomate,
-                                    }}
-                                 >
-                                    ¿Cómo obtener Códigos?
-                                 </Text>
-                              </View>
-                           </TouchableHighlight>*/}
-                        </View>
+                        ></View>
                         <View
                            style={{
+                              flex: 1,
                               flexDirection: 'row',
                               justifyContent: 'flex-start',
                            }}
@@ -590,27 +555,26 @@ export class ConfirmarCompra extends Component {
                            <View
                               style={{
                                  flex: 6,
-                                 //  backgroundColor: 'red',
+                                 // backgroundColor: 'red',
                                  justifyContent: 'center',
+                                 marginRight: 10,
                               }}
                            >
-                              <View style={{ flexDirection: 'row' }}>
-                                 <Text>Posee </Text>
-                                 <Text style={{ fontWeight: 'bold' }}>
-                                    ${this.state.valorMonedero.toFixed(2)}
-                                 </Text>
-                                 <Text> para descuentos </Text>
-                              </View>
+                              <Text>
+                                 Usted posee $
+                                 {this.state.valorMonedero.toFixed(2)} para
+                                 descuentos. Presione el Botón para utilizarlos
+                              </Text>
                            </View>
                            <View
                               style={{
-                                 flex: 2,
+                                 flex: 1,
                                  alignItems: 'stretch',
+                                 //backgroundColor: 'blue',
                               }}
                            >
                               <Button
                                  onPress={() => {
-
                                     if (this.state.valorDescontado > 0) {
                                        if (
                                           this.state.valorMonedero >
@@ -620,21 +584,24 @@ export class ConfirmarCompra extends Component {
                                              valorMonedero:
                                                 this.state.valorMonedero -
                                                 this.state.valorDescontado,
-                                             valorDescuento: this.state.valorDescontado,
+                                             valorDescuento: this.state
+                                                .valorDescontado,
                                              valorDescontado: 0,
                                           });
                                        } else {
-                                          let total = this.state.valorDescontado;
+                                          let total = this.state
+                                             .valorDescontado;
                                           if (this.state.valorMonedero != 0) {
                                              global.valorMonedero = this.state.valorMonedero;
-                                             total = total - global.valorMonedero;
+                                             total =
+                                                total - global.valorMonedero;
                                           }
                                           this.setState({
                                              valorMonedero: 0,
-                                             valorDescuento: global.valorMonedero,
+                                             valorDescuento:
+                                                global.valorMonedero,
                                              valorDescontado: total,
                                           });
-
                                        }
                                     }
                                  }}
@@ -642,11 +609,11 @@ export class ConfirmarCompra extends Component {
                                     backgroundColor:
                                        colores.colorPrimarioTomate,
                                  }}
-                                 title="Usar"
+                                 //title="Usar"
                                  icon={
-                                    <Icon
-                                       name="coin"
-                                       size={25}
+                                    <Icon2
+                                       name="local-offer"
+                                       size={20}
                                        color={colores.colorBlancoTexto}
                                        style={styles.iconos}
                                     />
@@ -706,11 +673,13 @@ export class ConfirmarCompra extends Component {
                            radio_props={this.radio_props_fac}
                            buttonColor={colores.colorPrimarioTomate}
                            selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirFactuacion(global.factSeleccionado)}
-                           formHorizontal={true}
+                           initial={convertirFactuacion(
+                              global.factSeleccionado
+                           )}
+                           formHorizontal={false}
                            buttonSize={15}
                            buttonOuterSize={25}
-                           onPress={(value) => {
+                           onPress={value => {
                               global.factSeleccionado = value;
                               if (global.factSeleccionado != 'CF') {
                                  this.props.navigation.navigate(
@@ -718,13 +687,12 @@ export class ConfirmarCompra extends Component {
                                  );
                               }
                            }}
-
                         />
                         {global.factSeleccionado == 'FA' ? (
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ marginBottom: 5, fontSize: 14 }}>
                                  Nombre:
-                             {this.state.nombreCompletoFact
+                                 {this.state.nombreCompletoFact
                                     ? '   ' + this.state.nombreCompletoFact
                                     : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
@@ -737,11 +705,10 @@ export class ConfirmarCompra extends Component {
                               </Text>
                            </View>
                         ) : (
-                              <View style={{ flex: 6, justifyContent: 'center' }}>
-
-                              </View>
-
-                           )}
+                           <View
+                              style={{ flex: 6, justifyContent: 'center' }}
+                           ></View>
+                        )}
                      </Card>
                      <Card
                         title="Forma de Pago"
@@ -755,6 +722,7 @@ export class ConfirmarCompra extends Component {
                            formHorizontal={true}
                            buttonSize={15}
                            buttonOuterSize={25}
+                           formHorizontal={false}
                            onPress={value => {
                               this.setState({ pagoSeleccionado: value });
                               global.pagoSeleccionado = value;

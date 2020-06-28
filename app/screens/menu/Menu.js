@@ -77,36 +77,28 @@ export function Menu(props) {
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
-                  nombreIcono="map-marker"
-                  tituloNombre="Direcciones"
-                  navegador={() =>
-                     props.navigation.navigate('DirectionCrudStack')
-                  }
-               ></MenuPersonalizado>
-               <SeparadorMenu></SeparadorMenu>
-               <MenuPersonalizado
                   nombreIcono="account"
                   tituloNombre="Perfil"
                   navegador={() => props.navigation.navigate('PerfilUsuario')}
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
-                  nombreIcono="account"
+                  nombreIcono="cart"
                   tituloNombre="Mis Pedidos"
                   navegador={() => props.navigation.navigate('ListaPedidos')}
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
                   nombreIcono="deskphone"
-                  tituloNombre="Facturas"
+                  tituloNombre="Datos Facturación"
                   navegador={() =>
                      props.navigation.navigate('ListarDatosFacturacion')
                   }
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
-                  nombreIcono="deskphone"
-                  tituloNombre="Responsabilidad Social"
+                  nombreIcono="hand-peace"
+                  tituloNombre="Fundación Aliñambi"
                   navegador={() =>
                      props.navigation.navigate('ResponsabilidadSocial')
                   }

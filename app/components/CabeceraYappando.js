@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import {
    Button,
    Avatar,
@@ -85,7 +85,7 @@ export function CabeceraYappando() {
    };
    return (
       <View style={styles.cabeceraContenedor}>
-         <View style={{ flexDirection: 'row' }}>
+         <View style={{ flexDirection: 'row', flex: 1 }}>
             <View style={styles.cabeceraIconMenu}>
                <Icon
                   name="menu"
@@ -102,50 +102,67 @@ export function CabeceraYappando() {
                   Yappando
                </Text>
             </View>
-            <View style={styles.cabeceraMonedero}>
-               <Icon
-                  name="cash-100"
-                  type="material-community"
-                  color={colores.colorBlanco}
-                  size={29.5}
+            <View style={styles.iconoBadge}>
+               <TouchableOpacity
                   onPress={() => {
                      abrirMonedero();
                   }}
-               />
-               {valorMonedero != 0 && (
-                  <Badge
-                     status="warning"
-                     containerStyle={{
-                        position: 'absolute',
-                        top: -0,
-                        right: 3,
-                     }}
-                  />
-               )}
+               >
+                  <View style={styles.areaBadge}>
+                     <View>
+                        <Icon
+                           color={colores.colorBlanco}
+                           type="material-community"
+                           name="cash-100"
+                           size={28}
+                        />
+                        {valorMonedero && valorMonedero > 0 ? (
+                           <Badge
+                              containerStyle={{
+                                 position: 'absolute',
+                                 top: -4,
+                                 right: -4,
+                              }}
+                              status="warning"
+                           />
+                        ) : (
+                           <View></View>
+                        )}
+                     </View>
+                  </View>
+               </TouchableOpacity>
             </View>
 
-            <View style={styles.cabeceraNotificaciones}>
-               {numeroNotificaciones == 0 ? (
-                  <Icon
-                     name="bell"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={29.5}
-                     onPress={() => {
-                        abrirNotificacion();
-                     }}
-                  />
-               ) : (
-                  <BadgedIcon
-                     name="bell"
-                     type="material-community"
-                     color={colores.colorBlanco}
-                     size={29.5}
-                     onPress={() => {
-                        abrirNotificacion();
-                     }}
-                  />
-               )}
+            <View style={styles.iconoBadge}>
+               <TouchableOpacity
+                  onPress={() => {
+                     abrirNotificacion();
+                  }}
+               >
+                  <View style={styles.areaBadge}>
+                     <View>
+                        <Icon
+                           color={colores.colorBlanco}
+                           type="material-community"
+                           name="bell"
+                           size={28}
+                        />
+                        {numeroNotificaciones && numeroNotificaciones > 0 ? (
+                           <Badge
+                              value={numeroNotificaciones}
+                              containerStyle={{
+                                 position: 'absolute',
+                                 top: -4,
+                                 right: -4,
+                              }}
+                              status="error"
+                           />
+                        ) : (
+                           <View></View>
+                        )}
+                     </View>
+                  </View>
+               </TouchableOpacity>
             </View>
          </View>
       </View>
@@ -161,16 +178,32 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 const styles = StyleSheet.create({
    cabeceraContenedor: {
-      width: '140%',
+      width: '150%',
+      flex: 1,
+      // backgroundColor: 'blue',
+   },
+   iconoBadge: {
+      // backgroundColor: 'pink',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      flex: 1,
+   },
+   areaBadge: {
+      //  backgroundColor: 'blue',
+      paddingTop: 10,
+      paddingBottom: 5,
+      paddingHorizontal: 5,
    },
    cabeceraIconMenu: {
       paddingRight: 15,
       justifyContent: 'center',
       alignContent: 'center',
       alignItems: 'stretch',
+      flex: 1,
    },
    cabeceraTitulo: {
-      flex: 1,
+      flex: 2,
 
       justifyContent: 'center',
       alignContent: 'center',
@@ -181,6 +214,7 @@ const styles = StyleSheet.create({
       alignContent: 'center',
       alignItems: 'stretch',
       paddingHorizontal: 10,
+      flex: 1,
    },
    cabeceraNotificaciones: {
       justifyContent: 'center',
