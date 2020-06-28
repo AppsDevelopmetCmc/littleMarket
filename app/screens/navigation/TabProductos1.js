@@ -57,13 +57,15 @@ export class TabProductos1 extends Component {
    }
 
    pintarLista = () => {
-      if (global.productos) {
+      if (global.productos && this.montado) {
          console.log('PINTANDO LISTA DE FRUTAS');
          this.setState({ listaProductos: global.productos.get('F') });
       }
    };
    componentDidMount() {
       this.montado = true;
+      console.log('--ListaProductos recuperarItems TABS 2');
+      serviciosItem.recuperarItems();
    }
    componentWillUnmount() {
       this.montado = false;

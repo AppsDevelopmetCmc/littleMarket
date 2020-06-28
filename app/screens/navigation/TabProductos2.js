@@ -60,8 +60,6 @@ export class TabProductos2 extends Component {
       }
    };
    componentDidMount() {
-      console.log('--ListaProductos recuperarItems TABS 2');
-      serviciosItem.recuperarItems();
       console.log('----------ASIGNANDO DIRECCION----------');
       srvDirecciones.asignarDireccionPedido(
          global.usuario,
