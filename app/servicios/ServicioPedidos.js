@@ -183,7 +183,7 @@ export class ServicioPedidos {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
-         // .orderBy('orden', 'desc')
+         .orderBy('orden', 'asc')
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
                let itemPedidos = change.doc.data();
