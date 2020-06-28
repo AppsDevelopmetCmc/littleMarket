@@ -21,28 +21,39 @@ export function Monedero(props) {
    const input = React.createRef();
 
    //Logs
-   //    console.log('valorMonedero', valorMonedero);
+   console.log('valorMonedero', valorMonedero);
    //    console.log('codigoDesc', codigoDesc);
    //    console.log('mostrarCargando', mostrarCargando);
    //    console.log('Props monedero', props);
    useEffect(() => {
-      let srvMonederos = new ServicioMonederos();
-      let unsubscribe = srvMonederos.registarEscuchaMonederoCompra(
-         global.usuario,
-         setValorMonedero
-      );
+      traeInformacionMonedero();
       input.current.clear();
-      return () => {
-         unsubscribe;
-      };
    }, [renderMonedero]);
 
+   const traeInformacionMonedero = async () => {
+      let documento = {};
+      await global.db
+         .collection('monederos')
+         .doc(global.usuario)
+         .get()
+         .then(doc => {
+            if (doc.data()) {
+               documento = doc.data();
+               setValorMonedero(documento.valor);
+            } else {
+               setValorMonedero(0);
+            }
+         })
+         .catch(err => {
+            console.log('Error firebase', err);
+         });
+   };
    const finalizarCodigo = mensaje => {
       console.log('Finaliza Monedero');
 
       if (mensaje) {
          Alert.alert('Información', mensaje);
-         setValorMonedero(valorMonedero);
+         //setValorMonedero(valorMonedero);
          setRenderMonedero(!renderMonedero);
       }
       setMostrarCargando(false);
@@ -131,7 +142,7 @@ export function Monedero(props) {
             <View style={styles.contenedorTitulo}>
                <Text style={textEstilo(colores.colorOscuroTexto, 15, 'normal')}>
                   {'Usted tiene USD ' +
-                     transformDinero(valorMonedero.valor) +
+                     transformDinero(valorMonedero) +
                      ' para usar en su próxima compra'}
                </Text>
             </View>
