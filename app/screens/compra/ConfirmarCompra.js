@@ -866,7 +866,7 @@ export class ConfirmarCompra extends Component {
                                        this.cerrarPantalla,
                                        this.consultarRestPago
                                     );
-                                 } else {
+                                 } else if (global.factSeleccionado == 'FA') {
                                     Alert.alert(
                                        'Ingrese Datos para la Facturación'
                                     );
