@@ -52,6 +52,7 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
+      global.refrescarFact = this.refrescarDatosFactura;
       global.factSeleccionado = '0'
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
@@ -80,6 +81,11 @@ export class ConfirmarCompra extends Component {
             global.direccionPedido.tieneCoberturaDireccion == 'S'
                ? true
                : false,
+         numDocumentoFact: '',
+         direccionFact: '',
+         nombreCompletoFact: '',
+         correoFact: '',
+         telefonoFact: '',
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -97,6 +103,17 @@ export class ConfirmarCompra extends Component {
          'envio',
          this.obtenerParametroEnvio
       );
+   }
+   refrescarDatosFactura = (factura) => {
+      this.setState(
+         {
+            numDocumentoFact: factura.numDocumento,
+            direccionFact: factura.alias,
+            nombreCompletoFact: factura.nombreCompleto,
+            correoFact: factura.correo,
+            telefonoFact: factura.telefono,
+         }
+      )
    }
    obtenerParametroEnvio = parametro => {
       global.delivery = parametro.precio;
@@ -134,12 +151,14 @@ export class ConfirmarCompra extends Component {
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
       if (monedero) {
-         if(global.valorMonedero == null || global.valorMonedero == undefined){
-            global.valorMonedero=0;
+         if (global.valorMonedero == null || global.valorMonedero == undefined) {
+            global.valorMonedero = 0;
          }
-         this.setState({ valorMonedero: monedero.valor - global.valorMonedero,
-            valorDescontado: this.state.valorDescontado - global.valorMonedero});
-         
+         this.setState({
+            valorMonedero: monedero.valor - global.valorMonedero,
+            valorDescontado: this.state.valorDescontado - global.valorMonedero
+         });
+
       } else {
          this.setState({ valorMonedero: 0 });
          global.valorMonedero = 0;
@@ -335,6 +354,7 @@ export class ConfirmarCompra extends Component {
             <View style={styles.pie}>
                <ScrollView keyboardShouldPersistTaps="always">
                   <View style={styles.contenedorCards}>
+
                      <Card
                         title="Datos de Entrega"
                         containerStyle={styles.contenedorTarjetas}
@@ -590,7 +610,7 @@ export class ConfirmarCompra extends Component {
                            >
                               <Button
                                  onPress={() => {
-                                    
+
                                     if (this.state.valorDescontado > 0) {
                                        if (
                                           this.state.valorMonedero >
@@ -605,7 +625,7 @@ export class ConfirmarCompra extends Component {
                                           });
                                        } else {
                                           let total = this.state.valorDescontado;
-                                          if(this.state.valorMonedero != 0){
+                                          if (this.state.valorMonedero != 0) {
                                              global.valorMonedero = this.state.valorMonedero;
                                              total = total - global.valorMonedero;
                                           }
@@ -694,7 +714,7 @@ export class ConfirmarCompra extends Component {
                               global.factSeleccionado = value;
                               if (global.factSeleccionado != 'CF') {
                                  this.props.navigation.navigate(
-                                    'ListarDatosFacturacion'
+                                    'ListarDatosFacturacionScreen'
                                  );
                               }
                            }}
@@ -704,15 +724,15 @@ export class ConfirmarCompra extends Component {
                            <View style={{ flex: 6, justifyContent: 'center' }}>
                               <Text style={{ marginBottom: 5, fontSize: 14 }}>
                                  Nombre:
-                             {this.props.route.params.factura.nombreCompleto
-                                    ? '   ' + this.props.route.params.factura.nombreCompleto
+                             {this.state.nombreCompletoFact
+                                    ? '   ' + this.state.nombreCompletoFact
                                     : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                               <Separador alto={7}></Separador>
                               <Text style={{ marginBottom: 5, fontSize: 14 }}>
                                  CI/RUC:{' '}
-                                 {this.props.route.params.factura.numDocumento
-                                    ? '' + this.props.route.params.factura.numDocumento
+                                 {this.state.numDocumentoFact
+                                    ? '' + this.state.numDocumentoFact
                                     : '_ _ _ _ _ _ _ _ _ _'}
                               </Text>
                            </View>
