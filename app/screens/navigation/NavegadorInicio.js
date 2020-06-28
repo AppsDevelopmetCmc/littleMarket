@@ -74,7 +74,17 @@ if (global.usuario == null) {
 
 function TabsProductos() {
    return (
-      <TopTab.Navigator>
+      <TopTab.Navigator
+         tabBarOptions={{
+            labelStyle: { fontSize: 12 },
+            indicatorStyle: {
+               color: 'red',
+               backgroundColor: colores.colorPrimarioTomate,
+            },
+
+            activeTintColor: colores.colorPrimarioTomate,
+         }}
+      >
          <TopTab.Screen name="Frutas" component={TabProductos1} />
          <TopTab.Screen name="Verduras y Legumbres" component={TabProductos2} />
          <TopTab.Screen name="Otros" component={TabProductos3} />
@@ -608,14 +618,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-                  <StackAuthentication.Navigator>
-                     <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
-                        options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
-                  </StackAuthentication.Navigator>
-               )}
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
