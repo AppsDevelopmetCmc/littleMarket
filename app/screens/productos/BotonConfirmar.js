@@ -123,15 +123,19 @@ export class BotonConfirmar extends Component {
             <TouchableOpacity
                onPress={() => {
                   //this.asignarSector();
+
                   //TEMPORAL
-                  global.direccionPedido = {
-                     descripcion: 'Cualquier cosa',
-                     latitud: 0.0,
-                     longitud: 0.0,
-                  };
-                  //yappa
-                  this.validarMonto();
-               }}
+                  if (!global.direccionPedido) {
+                     Alert.alert(
+                        'aguanta todavía no tengo DIRECCION DEL PEDIDO'
+                     );
+                  } else {
+                     global.yapa = { descripcion: 'PENDIENTE ' };
+                     this.navegarConfirmarCompra();
+                  }
+                  
+                                   //yappa
+                  this.validarMonto();               }}
             >
                <View
                   style={{
