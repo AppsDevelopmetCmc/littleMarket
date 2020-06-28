@@ -26,7 +26,6 @@ import * as Location from 'expo-location';
 import { ServicioYapas } from '../../servicios/ServicioYapas';
 import { convertir } from '../../utils/ConvertidorUnidades';
 export class SeleccionarYapa extends Component {
-   
    constructor(props) {
       super(props);
       this.state = {
@@ -123,7 +122,6 @@ export class SeleccionarYapa extends Component {
       }
    };
    render() {
-      
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -159,6 +157,7 @@ export class SeleccionarYapa extends Component {
                         onPress={() => {
                            this.seleccionarYapa(this.state.yapaSeleccionada);
                            this.props.mostrarModal(false);
+                           this.props.navigation.navigate('ConfirmarCompraScreen');
                          
                         }}
                         buttonStyle={styles.estiloBotonNaranja}
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
    modalView: {
       flex: 1,
       marginHorizontal: 20,
-      marginVertical: 150,
+      marginVertical: 20,
       justifyContent: 'center',
       backgroundColor: colores.colorBlanco,
       borderRadius: 15,

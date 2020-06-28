@@ -91,6 +91,12 @@ export function Menu(props) {
                ></MenuPersonalizado>
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
+                  nombreIcono="account"
+                  tituloNombre="Mis Pedidos"
+                  navegador={() => props.navigation.navigate('ListaPedidos')}
+               ></MenuPersonalizado>
+               <SeparadorMenu></SeparadorMenu>
+               <MenuPersonalizado
                   nombreIcono="deskphone"
                   tituloNombre="Facturas"
                   navegador={() =>

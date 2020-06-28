@@ -45,7 +45,7 @@ import { Monedero } from '../monedero/Monedero';
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
-import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+import { CabeceraYappando } from '../../components/CabeceraYappando';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -87,9 +87,12 @@ function ScreensFromTabs() {
       <StackFromTabs.Navigator initialRouteName="ListaProductosNueva">
          <StackFromTabs.Screen
             options={{
-               headerTitle: props => (
-                  <CabeceraPersonalizada titulo="YAPPANDO AREA DEL JEFAZO" />
-               ),
+               headerTitle: props => <CabeceraYappando />,
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
             }}
             name="Home"
             component={TabsProductos}
@@ -448,7 +451,11 @@ function HomeDraw() {
             component={ListarDatosFacturacion}
             options={{ drawerLabel: 'Facturas' }}
          />
-
+         <DrawerHome.Screen
+            name="ListaPedidos"
+            component={ListaPedidos}
+            options={{ drawerLabel: 'ListaPedidos' }}
+         />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
 
          <DrawerHome.Screen
@@ -465,7 +472,7 @@ function Productos() {
          <RootStack.Screen
             options={{
                headerTitle: props => (
-                  <CabeceraPersonalizada titulo="YAPPANDO AREA DEL JEFAZO" />
+                  <CabeceraYappando titulo="YAPPANDO AREA DEL JEFAZO" />
                ),
             }}
             name="Home"
@@ -601,14 +608,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }

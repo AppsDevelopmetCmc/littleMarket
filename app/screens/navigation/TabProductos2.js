@@ -40,6 +40,7 @@ import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProductoNuevo } from '../productos/ItemProductoNuevo';
 import { BotonConfirmar } from '../productos/BotonConfirmar';
+import * as srvDirecciones from '../../servicios/ServicioDirecciones';
 
 export class TabProductos2 extends Component {
    constructor(props) {
@@ -55,7 +56,42 @@ export class TabProductos2 extends Component {
    pintarLista = () => {
       this.setState({ listaProductos: global.productos.get('F') });
    };
-   componentDidMount() {}
+   componentDidMount() {
+      console.log('----------ASIGNANDO DIRECCION----------');
+      srvDirecciones.asignarDireccionPedido(
+         global.usuario,
+         this.crearDireccionPedido
+      );
+   }
+   crearDireccionPedido = async () => {
+      Geocoder.init(APIKEY);
+      let response = await Location.requestPermissionsAsync();
+      if (response.status !== 'granted') {
+         Alert.alert('Error', 'no se otorgaron permisos en el dispositivo');
+      }
+      let actualLocation = await Location.getCurrentPositionAsync({});
+      global.localizacionActual = actualLocation.coords;
+      console.log('actual location:', global.localizacionActual);
+
+      srvDirecciones.generarDireccion(
+         global.localizacionActual.latitude,
+         global.localizacionActual.longitude,
+         this.crearDireccionPedido
+      );
+   };
+
+   crearDireccionPedido = async (direccionNombre, latitud, longitud) => {
+      new ServicioDirecciones().crear(global.usuario, {
+         descripcion: direccionNombre,
+         latitud: latitud,
+         longitud: longitud,
+         alias: '',
+         principal: 'N',
+         referencia: '',
+         tieneCoberturaDireccion: 'S',
+      });
+   };
+
    render() {
       console.log('--ListaProductos render');
       return (

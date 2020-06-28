@@ -49,9 +49,11 @@ export class ConfirmarCompra extends Component {
       super();
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
+
       }
 
       this.state = {
+
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
@@ -61,8 +63,8 @@ export class ConfirmarCompra extends Component {
             global.pagoSeleccionado == 'TR'
                ? 1
                : global.pagoSeleccionado == 'EF'
-               ? 0
-               : 2,
+                  ? 0
+                  : 2,
          deshabilitado: true,
          mostrarModalDirecciones: false,
          codigoPromo: '',
@@ -113,6 +115,7 @@ export class ConfirmarCompra extends Component {
       this.setState({ fechas: fechas, horarios: horarios });
    };
    componentDidMount() {
+
       console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
@@ -151,12 +154,12 @@ export class ConfirmarCompra extends Component {
       if (direccion.tieneCoberturaDireccion == 'S') {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
-      } else {
+      } /*else {
          Alert.alert(
             'Información',
             'La Dirección Seleccionada no tiene Cobertura'
          );
-      }
+      }*/
       this.setState({ mostrarModalDirecciones: false });
    };
    generarNumeroOrden = async fn => {
@@ -175,12 +178,12 @@ export class ConfirmarCompra extends Component {
             'Información',
             'Debe elegir una fecha y horario de entrega'
          );
-      } else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
+      }/* else if (global.direccionPedido.tieneCoberturaDireccion == 'N') {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene cobertura'
          );
-      } else if (!global.direccionPedido.referencia) {
+         }  */else if (!global.direccionPedido.referencia) {
          Alert.alert(
             'Información',
             'La Direccion de Entrega no tiene una referencia'
@@ -708,7 +711,7 @@ export class ConfirmarCompra extends Component {
                                     urlPago: '',
                                     tokerUrlPago: '',
                                  },
-                                 items,
+                                 global.items,
                                  this.cerrarPantalla,
                                  this.consultarRestPago
                               );
@@ -801,8 +804,10 @@ const styles = StyleSheet.create({
    contenedorEstiloBoton: {
       width: '70%',
    },
-   estiloTitulo: { color: colores.colorBlancoTexto,
-   fontSize:20},
+   estiloTitulo: {
+      color: colores.colorBlancoTexto,
+      fontSize: 20
+   },
    contenedorBoton: {
       alignContent: 'center',
       alignItems: 'center',

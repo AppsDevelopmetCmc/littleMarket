@@ -80,6 +80,22 @@ const modificarItemPedidos = (itemProducto, cantidad) => {
    itemProducto.subtotal = itemProducto.cantidad * itemProducto.precio;
 };
 
+export const limpiarProductosSeleccionados = () => {
+   global.items = null;
+   for (let key of global.productos.keys()) {
+      let arregloProductos = global.productos.get(key);
+      for (let i = 0; i < arregloProductos.length; i++) {
+         arregloProductos[i].limpiar = true;
+      }
+   }
+   global.subtotal = 0;
+   global.pintarTab1();
+   global.pintarTab2();
+   global.pintarTab3();
+   for (let i = 0; i < global.refrescarBotones.length; i++) {
+      global.refrescarBotones[i](global.subtotal);
+   }
+};
 export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
    global.db
       .collection('pedidos')
@@ -120,8 +136,11 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          if (pedido.formaPago === 'TARJETA') {
             fnPagoRest(doc.id, pedido);
          }
-         for (let i = 0; i < items.length; i++) {
-            let itemPedido = items[i];
+         //////////////aqui
+         for (let key of global.items.keys()) {
+            //for (let i = 0; i < items.length; i++) {
+            let itemPedido = global.items.get(key)
+            //let itemPedido = items[i];
             itemPedido.empacado = false;
             itemPedido.recibido = false;
             global.db
@@ -137,6 +156,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          global.fechaSeleccionada = null;
          global.horarioSeleccionado = null;
          global.yapa = undefined;
+         global.items = null;
          if (pedido.descuento > 0) {
             new ServicioMonederos().actualizarMonedero(
                global.usuario,
@@ -147,6 +167,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
       .catch(function (error) {
          Alert.alert('Se ha Producido un error', error.message);
       });
+
 };
 
 export class ServicioPedidos {
