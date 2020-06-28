@@ -40,6 +40,7 @@ import {
    convertirEstadoPago,
    convertirRadioPago,
 } from '../../utils/ConvertirFormaPago';
+import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
  */
@@ -71,7 +72,7 @@ export class ConfirmarCompra extends Component {
          errorCodigoPromo: '',
          valorMonedero: 0,
          valorDescuento: 0,
-         valorDescontado: global.total,
+         valorDescontado: global.subtotal,
          mostrarCargando: false,
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
@@ -95,6 +96,9 @@ export class ConfirmarCompra extends Component {
    }
    obtenerParametroEnvio = parametro => {
       global.delivery = parametro.precio;
+      this.setState({
+         valorDescontado: global.subtotal + global.delivery
+      })
       console.log('global.delivery', global.delivery);
    };
 
@@ -127,9 +131,15 @@ export class ConfirmarCompra extends Component {
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
       if (monedero) {
-         this.setState({ valorMonedero: monedero.valor });
+         if(global.valorMonedero == null || global.valorMonedero == undefined){
+            global.valorMonedero=0;
+         }
+         this.setState({ valorMonedero: monedero.valor - global.valorMonedero,
+            valorDescontado: this.state.valorDescontado - global.valorMonedero});
+         
       } else {
          this.setState({ valorMonedero: 0 });
+         global.valorMonedero = 0;
       }
    };
 
@@ -557,27 +567,31 @@ export class ConfirmarCompra extends Component {
                            >
                               <Button
                                  onPress={() => {
+                                    
                                     if (this.state.valorDescontado > 0) {
                                        if (
                                           this.state.valorMonedero >
-                                          global.total
+                                          this.state.valorDescontado
                                        ) {
                                           this.setState({
                                              valorMonedero:
                                                 this.state.valorMonedero -
-                                                global.total,
-                                             valorDescuento: global.total,
+                                                this.state.valorDescontado,
+                                             valorDescuento: this.state.valorDescontado,
                                              valorDescontado: 0,
                                           });
                                        } else {
+                                          let total = this.state.valorDescontado;
+                                          if(this.state.valorMonedero != 0){
+                                             global.valorMonedero = this.state.valorMonedero;
+                                             total = total - global.valorMonedero;
+                                          }
                                           this.setState({
                                              valorMonedero: 0,
-                                             valorDescuento: this.state
-                                                .valorMonedero,
-                                             valorDescontado:
-                                                global.total -
-                                                this.state.valorMonedero,
+                                             valorDescuento: global.valorMonedero,
+                                             valorDescontado: total,
                                           });
+
                                        }
                                     }
                                  }}
@@ -625,7 +639,7 @@ export class ConfirmarCompra extends Component {
                         <Numero
                            descuento={true}
                            titulo="DESCUENTO:"
-                           valor={transformDinero(this.state.valorDescuento)}
+                           valor={transformDinero(global.valorMonedero)}
                            estiloNumero={{ color: 'red' }}
                         ></Numero>
 
