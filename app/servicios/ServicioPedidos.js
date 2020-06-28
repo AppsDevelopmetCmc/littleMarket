@@ -104,7 +104,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          let descripcionALert = 'Su pedido ha sido procesado, con la orden: ';
          if (pedido.formaPago === 'EFECTIVO') {
             Alert.alert(
-               'Gracias por su compra',
+               'Gracias por comprar en Yappando',
                descripcionALert + '' + pedido.orden
             );
          }
@@ -115,15 +115,21 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                ' por el monto $ ' +
                parseFloat(pedido.total - pedido.descuento) +
                '. Solicito información para realizar la transferencia.';
+               let textAlert =
+               'Ha realizado el pedido: ' +
+               pedido.orden +
+               ' por el monto $ ' +
+               parseFloat(pedido.total - pedido.descuento) +
+               '. Solicite información para realizar la transferencia.';
             Alert.alert(
-               'Gracias por su compra',
-               text,
+               'Gracias por comprar en Yappando',
+               textAlert,
                [
                   {
-                     text: 'Aceptar',
+                     text: 'Solicitar',
                      onPress: () => {
                         console.log('OK Pressed');
-                        let numero = '593992920306';
+                        let numero = '593998668633';
                         Linking.openURL(
                            'whatsapp://send?text=' + text + '&phone=' + numero
                         );
@@ -177,14 +183,14 @@ export class ServicioPedidos {
       global.db
          .collection('pedidos')
          .where('mail', '==', mail)
-         .orderBy('orden', 'desc')
+         .orderBy('orden', 'asc')
          .onSnapshot(function (snapShot) {
             snapShot.docChanges().forEach(function (change) {
                let itemPedidos = change.doc.data();
                itemPedidos.id = change.doc.id;
 
                if (change.type == 'added') {
-                  arregloUtil.agregar(itemPedidos, fnRepintar);
+                  arregloUtil.agregarAlInicio(itemPedidos, fnRepintar);
                }
                if (change.type == 'modified') {
                   arregloUtil.actualizar(itemPedidos, fnRepintar);

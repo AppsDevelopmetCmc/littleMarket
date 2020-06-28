@@ -175,6 +175,7 @@ export class ConfirmarCompra extends Component {
    }
 
    cerrarPantalla = () => {
+      global.valorMonedero = 0;
       this.props.navigation.popToTop();
    };
    mostrarModal = bandera => {
@@ -591,17 +592,24 @@ export class ConfirmarCompra extends Component {
                                        } else {
                                           let total = this.state
                                              .valorDescontado;
+                                             let infoDescuentos = '';
                                           if (this.state.valorMonedero != 0) {
                                              global.valorMonedero = this.state.valorMonedero;
-                                             total =
-                                                total - global.valorMonedero;
-                                          }
+                                             total = total - global.valorMonedero;
+                                             infoDescuentos = 'Su descuento de $'+ global.valorMonedero+' se agregó a su actual compra con éxito.';
+                                          } else {
+                                            infoDescuentos = 'Actualmente no posee monto para descuentos, ingrese un código promocional e intente nuevamente.';
+                                          } 
                                           this.setState({
                                              valorMonedero: 0,
                                              valorDescuento:
                                                 global.valorMonedero,
                                              valorDescontado: total,
                                           });
+                                          Alert.alert(
+                                             'Descuentos',
+                                             infoDescuentos
+                                          );
                                        }
                                     }
                                  }}
