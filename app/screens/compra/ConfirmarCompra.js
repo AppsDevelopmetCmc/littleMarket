@@ -771,7 +771,6 @@ export class ConfirmarCompra extends Component {
                                     latitud: global.direccionPedido.latitud,
                                     longitud: global.direccionPedido.longitud,
                                     telefono: global.appUsuario.telefonoCliente,
-                                    total: global.total,
                                     jornada: this.state.horarioSeleccionado
                                        .jornada,
                                     orden: codigo,
@@ -785,9 +784,12 @@ export class ConfirmarCompra extends Component {
                                     yapa: global.yapa
                                        ? global.yapa.descripcion
                                        : '',
+                                    subtotal: global.subtotal,
+                                    envio: global.delivery,
                                     descuento: parseFloat(
-                                       this.state.valorDescuento.toFixed(2)
+                                       global.valorMonedero.toFixed(2)
                                     ),
+                                    total: this.state.valorDescontado,
                                     empacado: false,
                                     recibido: false,
                                     urlPago: '',
