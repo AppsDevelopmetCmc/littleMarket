@@ -85,7 +85,16 @@ export class ConfirmarCompra extends Component {
          { label: 'Transferencia', value: 'TR' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
+      let servParametros = new ServicioParametros();
+      servParametros.getObtenerParametroId(
+         'envio',
+         this.obtenerParametroEnvio
+      );
    }
+   obtenerParametroEnvio = parametro => {
+      global.delivery = parametro.precio;
+      console.log('global.delivery', global.delivery);
+   };
 
    cerrarPromociones = () => {
       this.setState({ mostrarPromociones: false });
