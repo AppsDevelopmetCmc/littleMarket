@@ -868,6 +868,7 @@ export class ConfirmarCompra extends Component {
                                           nombreCompletoFact: this.state.nombreCompletoFact,
                                           correoFact: this.state.correoFact,
                                           telefonoFact: this.state.telefonoFact,
+
                                        },
                                        global.items,
                                        this.cerrarPantalla,
