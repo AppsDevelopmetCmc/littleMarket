@@ -84,9 +84,16 @@ function TabsProductos() {
 
             activeTintColor: colores.colorPrimarioTomate,
          }}
+         initialRouteName="Frutas"
       >
          <TopTab.Screen name="Frutas" component={TabProductos1} />
-         <TopTab.Screen name="Verduras y Legumbres" component={TabProductos2} />
+         <TopTab.Screen
+            name="Verduras"
+            component={TabProductos2}
+            options={{
+               tabBarLabel: 'Verduras y Legumbres',
+            }}
+         />
          <TopTab.Screen name="Otros" component={TabProductos3} />
       </TopTab.Navigator>
    );
@@ -479,21 +486,6 @@ function HomeDraw() {
             options={{ drawerLabel: 'Responsabilidad Social' }}
          />
       </DrawerHome.Navigator>
-   );
-}
-function Productos() {
-   return (
-      <RootStack.Navigator>
-         <RootStack.Screen
-            options={{
-               headerTitle: props => (
-                  <CabeceraYappando titulo="YAPPANDO AREA DEL JEFAZO" />
-               ),
-            }}
-            name="Home"
-            component={TabsProductos}
-         />
-      </RootStack.Navigator>
    );
 }
 

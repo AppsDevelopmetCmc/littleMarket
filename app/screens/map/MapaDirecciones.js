@@ -428,7 +428,7 @@ export class MapaDirecciones extends Component {
          referencia: direccion.referencia,
          principal: direccion.principal == 'S' ? true : false,
          siguienteMapa: !siguienteMapaActual,
-         validarReferencia: ''
+         validarReferencia: '',
       });
       global.direccionPedido = direccion;
       //  console.log('siguienteMapa', this.state.siguienteMapa);
@@ -438,7 +438,11 @@ export class MapaDirecciones extends Component {
    actualizarDireccionPedido = async () => {
       let validar = true;
       if (!this.state.referencia) {
-         this.setState({ validarReferencia: 'Campo obligatorio' });
+         Alert.alert(
+            'Advertencia',
+            'Debe ingresar información en el Campo Referencia'
+         );
+         this.setState({ validarReferencia: '*Campo obligatorio' });
          validar = false;
       }
       if (validar) {
@@ -495,7 +499,7 @@ export class MapaDirecciones extends Component {
       const { navigation } = this.props;
       return (
          <View style={[styles.container]}>
-            <View style={{ flex: 5 }}>
+            <View style={{ flex: 4 }}>
                <View
                   style={{
                      backgroundColor: 'white',
@@ -559,10 +563,10 @@ export class MapaDirecciones extends Component {
                   ></Input>
                </View>
                {this.state.region ? (
-                  <View style={{ flex: 6 }}>
+                  <View style={{ flex: 5 }}>
                      {!this.state.siguienteMapa && (
                         <MapView
-                           style={{ width: width, height: height / 2 }}
+                           style={{ width: width, height: height / 2.5 }}
                            provider={PROVIDER_GOOGLE}
                            mapType="standard"
                            showsScale
@@ -578,7 +582,7 @@ export class MapaDirecciones extends Component {
                               this.onRegionChangeComplete(region);
                            }}
                         >
-                           {/* <MapView.Marker
+                           {/**<MapView.Marker
                               title={this.state.direccion}
                               Key={APIKEY}
                               ref={marker => {
@@ -591,7 +595,7 @@ export class MapaDirecciones extends Component {
                      )}
                      {this.state.siguienteMapa && (
                         <MapView
-                           style={{ width: width, height: height / 2 }}
+                           style={{ width: width, height: height / 2.5 }}
                            provider={PROVIDER_GOOGLE}
                            mapType="standard"
                            showsScale
@@ -636,34 +640,23 @@ export class MapaDirecciones extends Component {
                   style={{
                      flex: 1,
                      position: 'absolute',
-                     left: width / 2 - 20,
-                     top: height / 2 - height * 0.18,
+                     left: width / 2 - 18,
+                     top: height / 2 - height * 0.23,
                   }}
                >
                   <Image source={require('../../imagenes/punta.png')} />
                </View>
             </View>
             <View style={styles.pie}>
-               <View style={{ flex: 1, justifyContent: 'center' ,flexDirection:"row"}}>
-
-               <Button
-                     buttonStyle={estilos.botones.blancoLeft}
-                     titleStyle={estilos.textos.botonBlancoTomate}
-                     title={this.pintarElemento ? 'Guardar Dirección' : 'Actualizar Dirección'}
-                     onPress={() => {
-                        this.actualizarDireccionPedido();
-                     }}
-                     icon={
-                        <Icon
-                           name="map-marker-check"
-                           size={20}
-                           color={colores.colorPrimarioTomate}
-                           style={styles.iconos}
-                        />
-                     }
-                  />
+               <View
+                  style={{
+                     flex: 1,
+                     justifyContent: 'center',
+                     alignItems: 'flex-end',
+                  }}
+               >
                   <Button
-                     buttonStyle={estilos.botones.blancoRight}
+                     buttonStyle={estilos.botones.blancoRight2}
                      titleStyle={estilos.textos.botonBlancoTomate}
                      title="Agregar Nueva Ubicación"
                      onPress={() => {
@@ -735,7 +728,7 @@ export class MapaDirecciones extends Component {
                               <Text
                                  style={{
                                     color: colores.colorBlanco,
-                                    fontSize: 30,
+                                    fontSize: 20,
                                  }}
                               >
                                  FIN
@@ -743,7 +736,7 @@ export class MapaDirecciones extends Component {
                               <Text
                                  style={{
                                     color: colores.colorBlanco,
-                                    fontSize: 30,
+                                    fontSize: 20,
                                  }}
                               >
                                  FIN
@@ -751,6 +744,30 @@ export class MapaDirecciones extends Component {
                            </View>
                         );
                      }}
+                  />
+               </View>
+               <View
+                  style={{
+                     flex: 1,
+                     justifyContent: 'center',
+                     alignItems: 'center',
+                  }}
+               >
+                  <Button
+                     buttonStyle={estilos.botones.blancoRight}
+                     titleStyle={estilos.textos.botonBlancoTomate}
+                     title="Confirmar Ubicación Seleccionada"
+                     onPress={() => {
+                        this.actualizarDireccionPedido();
+                     }}
+                     icon={
+                        <Icon
+                           name="checkbox-marked-circle"
+                           size={20}
+                           color={colores.colorPrimarioTomate}
+                           style={styles.iconos}
+                        />
+                     }
                   />
                </View>
             </View>
