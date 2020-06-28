@@ -219,7 +219,7 @@ export class ConfirmarCompra extends Component {
       ) {
          Alert.alert(
             'Información',
-            'La Direccion de Entrega no tiene una referencia'
+            'La dirección de entrega no tiene una referencia (Edificio/Número Casa/Color Casa/etc...) \n\nPor favor edite su dirección en la sección datos de entrega. '
          );
       } else {
          numero = await new ServicioParametros().obtenerSecuencial();
@@ -592,14 +592,19 @@ export class ConfirmarCompra extends Component {
                                        } else {
                                           let total = this.state
                                              .valorDescontado;
-                                             let infoDescuentos = '';
+                                          let infoDescuentos = '';
                                           if (this.state.valorMonedero != 0) {
                                              global.valorMonedero = this.state.valorMonedero;
-                                             total = total - global.valorMonedero;
-                                             infoDescuentos = 'Su descuento de $'+ global.valorMonedero+' se agregó a su actual compra con éxito.';
+                                             total =
+                                                total - global.valorMonedero;
+                                             infoDescuentos =
+                                                'Su descuento de $' +
+                                                global.valorMonedero +
+                                                ' se agregó a su actual compra con éxito.';
                                           } else {
-                                            infoDescuentos = 'Actualmente no posee monto para descuentos, ingrese un código promocional e intente nuevamente.';
-                                          } 
+                                             infoDescuentos =
+                                                'Actualmente no posee monto para descuentos, ingrese un código promocional e intente nuevamente.';
+                                          }
                                           this.setState({
                                              valorMonedero: 0,
                                              valorDescuento:
@@ -754,7 +759,8 @@ export class ConfirmarCompra extends Component {
                                  crearPedido(
                                     {
                                        fechaPedido: formatearFechaISO(fecha),
-                                       fechaEntrega: this.state.fechaSeleccionada,
+                                       fechaEntrega: this.state
+                                          .fechaSeleccionada,
                                        horarioEntrega: this.state
                                           .horarioSeleccionado.horario,
                                        estado: convertirEstadoPago(
@@ -766,8 +772,10 @@ export class ConfirmarCompra extends Component {
                                        direccion:
                                           global.direccionPedido.descripcion,
                                        latitud: global.direccionPedido.latitud,
-                                       longitud: global.direccionPedido.longitud,
-                                       telefono: global.appUsuario.telefonoCliente,
+                                       longitud:
+                                          global.direccionPedido.longitud,
+                                       telefono:
+                                          global.appUsuario.telefonoCliente,
                                        jornada: this.state.horarioSeleccionado
                                           .jornada,
                                        orden: codigo,
@@ -802,7 +810,8 @@ export class ConfirmarCompra extends Component {
                                     crearPedido(
                                        {
                                           fechaPedido: formatearFechaISO(fecha),
-                                          fechaEntrega: this.state.fechaSeleccionada,
+                                          fechaEntrega: this.state
+                                             .fechaSeleccionada,
                                           horarioEntrega: this.state
                                              .horarioSeleccionado.horario,
                                           estado: convertirEstadoPago(
@@ -813,13 +822,18 @@ export class ConfirmarCompra extends Component {
                                              global.appUsuario.nombreCompleto,
                                           direccion:
                                              global.direccionPedido.descripcion,
-                                          latitud: global.direccionPedido.latitud,
-                                          longitud: global.direccionPedido.longitud,
-                                          telefono: global.appUsuario.telefonoCliente,
-                                          jornada: this.state.horarioSeleccionado
-                                             .jornada,
+                                          latitud:
+                                             global.direccionPedido.latitud,
+                                          longitud:
+                                             global.direccionPedido.longitud,
+                                          telefono:
+                                             global.appUsuario.telefonoCliente,
+                                          jornada: this.state
+                                             .horarioSeleccionado.jornada,
                                           orden: codigo,
-                                          horaCreacion: obtenerHoraActual(fecha),
+                                          horaCreacion: obtenerHoraActual(
+                                             fecha
+                                          ),
                                           formaPago: convertirFormaPago(
                                              global.pagoSeleccionado
                                           ),
@@ -839,19 +853,23 @@ export class ConfirmarCompra extends Component {
                                           recibido: false,
                                           urlPago: '',
                                           tokerUrlPago: '',
-                                          numDocumentoFact: this.state.numDocumentoFact,
-                                          direccionFact: this.state.direccionFact,
-                                          nombreCompletoFact: this.state.nombreCompletoFact,
+                                          numDocumentoFact: this.state
+                                             .numDocumentoFact,
+                                          direccionFact: this.state
+                                             .direccionFact,
+                                          nombreCompletoFact: this.state
+                                             .nombreCompletoFact,
                                           correoFact: this.state.correoFact,
                                           telefonoFact: this.state.telefonoFact,
-
                                        },
                                        global.items,
                                        this.cerrarPantalla,
                                        this.consultarRestPago
                                     );
-                                 } else {
-                                    Alert.alert("Ingrese Datos para la Facturación")
+                                 } else if (global.factSeleccionado == 'FA') {
+                                    Alert.alert(
+                                       'Ingrese Datos para la Facturación'
+                                    );
                                  }
                               }
                            });
@@ -950,6 +968,7 @@ const styles = StyleSheet.create({
    contenedorBoton: {
       alignContent: 'center',
       alignItems: 'center',
+      paddingBottom: 20,
    },
 });
 
