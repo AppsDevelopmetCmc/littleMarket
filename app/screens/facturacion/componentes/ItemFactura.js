@@ -35,13 +35,15 @@ export class ItemFactura extends Component {
                   <Button
                      buttonStyle={styles.plusButton}
                      onPress={() => {
-                        this.props.nav.navigate(
+                        this.props.nav.goBack();
+
+                        /*this.props.nav.navigate(
                            'ConfirmarCompraScreen',
                            {
                               factura: this.props.factura,
                               refrescar: this.props.refrescar,
                            }
-                        );
+                        );*/
                      }}
                      icon={<Icon name="check" size={15} color="white" />}
                   ></Button>
@@ -49,6 +51,7 @@ export class ItemFactura extends Component {
                   <Button
                      buttonStyle={styles.plusButton}
                      onPress={() => {
+
                         this.props.nav.navigate(
                            'EditarDatosFacturacionScreen',
                            {
