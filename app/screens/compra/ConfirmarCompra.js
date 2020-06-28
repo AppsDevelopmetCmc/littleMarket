@@ -742,51 +742,110 @@ export class ConfirmarCompra extends Component {
                            let fecha = new Date();
                            /*this.consultarRestPago(1,{})*/
                            this.generarNumeroOrden(codigo => {
-                              crearPedido(
-                                 {
-                                    fechaPedido: formatearFechaISO(fecha),
-                                    fechaEntrega: this.state.fechaSeleccionada,
-                                    horarioEntrega: this.state
-                                       .horarioSeleccionado.horario,
-                                    estado: convertirEstadoPago(
-                                       global.pagoSeleccionado
-                                    ),
-                                    mail: global.usuario,
-                                    nombreCliente:
-                                       global.appUsuario.nombreCompleto,
-                                    direccion:
-                                       global.direccionPedido.descripcion,
-                                    latitud: global.direccionPedido.latitud,
-                                    longitud: global.direccionPedido.longitud,
-                                    telefono: global.appUsuario.telefonoCliente,
-                                    jornada: this.state.horarioSeleccionado
-                                       .jornada,
-                                    orden: codigo,
-                                    horaCreacion: obtenerHoraActual(fecha),
-                                    formaPago: convertirFormaPago(
-                                       global.pagoSeleccionado
-                                    ),
-                                    asociado: 'asociado@gmail.com',
-                                    nombreAsociado: 'Juan perez',
-                                    telefonoAsociado: '1245635',
-                                    yapa: global.yapa
-                                       ? global.yapa.descripcion
-                                       : '',
-                                    subtotal: global.subtotal,
-                                    envio: global.delivery,
-                                    descuento: parseFloat(
-                                       global.valorMonedero.toFixed(2)
-                                    ),
-                                    total: this.state.valorDescontado,
-                                    empacado: false,
-                                    recibido: false,
-                                    urlPago: '',
-                                    tokerUrlPago: '',
-                                 },
-                                 global.items,
-                                 this.cerrarPantalla,
-                                 this.consultarRestPago
-                              );
+                              if (global.factSeleccionado == '0') {
+                                 crearPedido(
+                                    {
+                                       fechaPedido: formatearFechaISO(fecha),
+                                       fechaEntrega: this.state.fechaSeleccionada,
+                                       horarioEntrega: this.state
+                                          .horarioSeleccionado.horario,
+                                       estado: convertirEstadoPago(
+                                          global.pagoSeleccionado
+                                       ),
+                                       mail: global.usuario,
+                                       nombreCliente:
+                                          global.appUsuario.nombreCompleto,
+                                       direccion:
+                                          global.direccionPedido.descripcion,
+                                       latitud: global.direccionPedido.latitud,
+                                       longitud: global.direccionPedido.longitud,
+                                       telefono: global.appUsuario.telefonoCliente,
+                                       jornada: this.state.horarioSeleccionado
+                                          .jornada,
+                                       orden: codigo,
+                                       horaCreacion: obtenerHoraActual(fecha),
+                                       formaPago: convertirFormaPago(
+                                          global.pagoSeleccionado
+                                       ),
+                                       asociado: 'asociado@gmail.com',
+                                       nombreAsociado: 'Juan perez',
+                                       telefonoAsociado: '1245635',
+                                       yapa: global.yapa
+                                          ? global.yapa.descripcion
+                                          : '',
+                                       subtotal: global.subtotal,
+                                       envio: global.delivery,
+                                       descuento: parseFloat(
+                                          global.valorMonedero.toFixed(2)
+                                       ),
+                                       total: this.state.valorDescontado,
+                                       empacado: false,
+                                       recibido: false,
+                                       urlPago: '',
+                                       tokerUrlPago: '',
+                                    },
+                                    global.items,
+                                    this.cerrarPantalla,
+                                    this.consultarRestPago
+                                 );
+                              }
+                              if (global.factSeleccionado != '0') {
+                                 if (this.state.numDocumentoFact != '') {
+                                    crearPedido(
+                                       {
+                                          fechaPedido: formatearFechaISO(fecha),
+                                          fechaEntrega: this.state.fechaSeleccionada,
+                                          horarioEntrega: this.state
+                                             .horarioSeleccionado.horario,
+                                          estado: convertirEstadoPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          mail: global.usuario,
+                                          nombreCliente:
+                                             global.appUsuario.nombreCompleto,
+                                          direccion:
+                                             global.direccionPedido.descripcion,
+                                          latitud: global.direccionPedido.latitud,
+                                          longitud: global.direccionPedido.longitud,
+                                          telefono: global.appUsuario.telefonoCliente,
+                                          jornada: this.state.horarioSeleccionado
+                                             .jornada,
+                                          orden: codigo,
+                                          horaCreacion: obtenerHoraActual(fecha),
+                                          formaPago: convertirFormaPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          asociado: 'asociado@gmail.com',
+                                          nombreAsociado: 'Juan perez',
+                                          telefonoAsociado: '1245635',
+                                          yapa: global.yapa
+                                             ? global.yapa.descripcion
+                                             : '',
+                                          subtotal: global.subtotal,
+                                          envio: global.delivery,
+                                          descuento: parseFloat(
+                                             global.valorMonedero.toFixed(2)
+                                          ),
+                                          total: this.state.valorDescontado,
+                                          empacado: false,
+                                          recibido: false,
+                                          urlPago: '',
+                                          tokerUrlPago: '',
+                                          numDocumentoFact: this.state.numDocumentoFact,
+                                          direccionFact: this.state.direccionFact,
+                                          nombreCompletoFact: this.state.nombreCompletoFact,
+                                          correoFact: this.state.correoFact,
+                                          telefonoFact: this.state.telefonoFact,
+
+                                       },
+                                       global.items,
+                                       this.cerrarPantalla,
+                                       this.consultarRestPago
+                                    );
+                                 } else {
+                                    Alert.alert("Ingrese Datos para la Facturación")
+                                 }
+                              }
                            });
                         }}
                      ></Button>
