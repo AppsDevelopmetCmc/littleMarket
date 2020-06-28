@@ -117,8 +117,8 @@ export class TabProductos2 extends Component {
             </View>
             <View
                style={{
-                  paddingVertical: 20,
-                  paddingHorizontal: 20,
+                  paddingVertical: 15,
+                  paddingHorizontal: 15,
                   paddingRight: 12,
                   flexDirection: 'row',
                   borderTopColor: colores.colorPrimarioTomate,
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
       backgroundColor: colores.colorBlanco,
       //borderTopStartRadius: 20,
       // borderTopEndRadius: 20,
-      marginTop: 15,
+      marginTop: 10,
       paddingTop: 10,
    },
    texto: {
