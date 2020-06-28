@@ -483,7 +483,7 @@ function HomeDraw() {
          <DrawerHome.Screen
             name="ResponsabilidadSocial"
             component={ResponsabilidadSocial}
-            options={{ drawerLabel: 'Responsabilidad Social' }}
+            options={{ drawerLabel: 'Fundación Aliñambi' }}
          />
       </DrawerHome.Navigator>
    );

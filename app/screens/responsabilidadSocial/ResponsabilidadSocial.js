@@ -35,17 +35,17 @@ export class ResponsabilidadSocial extends Component {
                   <Text
                      style={textEstilo(colores.colorBlancoTexto, 22, 'bold')}
                   >
-                     Responsabilidad
+                     Apoyando a
                   </Text>
                   <Text
                      style={textEstilo(colores.colorBlancoTexto, 18, 'bold')}
                   >
-                     Social
+                     Fundación Aliñambi
                   </Text>
                </View>
             </View>
             <ImageBackground
-               source={require('../../../assets/InicioSesion.png')}
+               source={require('../../../assets/Splash.png')}
                style={styles.imgInicio}
             ></ImageBackground>
          </SafeAreaView>

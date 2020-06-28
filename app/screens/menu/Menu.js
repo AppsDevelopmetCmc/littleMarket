@@ -98,7 +98,7 @@ export function Menu(props) {
                <SeparadorMenu></SeparadorMenu>
                <MenuPersonalizado
                   nombreIcono="hand-peace"
-                  tituloNombre="Responsabilidad Social"
+                  tituloNombre="Fundación Aliñambi"
                   navegador={() =>
                      props.navigation.navigate('ResponsabilidadSocial')
                   }
