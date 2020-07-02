@@ -79,7 +79,7 @@ export class ServicioParametros {
          .doc('secuencial')
          .set({ siguiente: actual + 1 })
          .then(function () {
-            console.log('agregado');
+            console.log(' actualizarSecuencial agregado');
          })
          .catch(function (error) {
             Alert.alert('Se ha producido un error', error);
