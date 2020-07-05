@@ -827,6 +827,8 @@ export class ConfirmarCompra extends Component {
                                           global.appUsuario.nombreCompleto,
                                        direccion:
                                           global.direccionPedido.descripcion,
+                                       referencia:
+                                          global.direccionPedido.referencia,
                                        latitud: global.direccionPedido.latitud,
                                        longitud:
                                           global.direccionPedido.longitud,
