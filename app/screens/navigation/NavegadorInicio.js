@@ -189,24 +189,24 @@ function ScreensFromTabs() {
             component={CarroCompras}
             options={navOptionHandler(false)}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="NotificacionScreen"
             component={Notificacion}
             options={navOptionHandler(false)}
          />
 
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="PerfilUsuarioScreen"
             component={PerfilUsuario}
             options={navOptionHandler(false)}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="ListarDatosFacturacionScreen"
             component={ListarDatosFacturacion}
             options={navOptionHandler(false)}
          />
 
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="ListaNotificacionScreen"
             component={ListaNotificaciones}
             options={{
@@ -219,7 +219,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="DetallePedidoScreen"
             component={DetallePedido}
             options={{
@@ -232,7 +232,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="ConfirmarCompraScreen"
             component={ConfirmarCompra}
             options={{
@@ -245,7 +245,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="Mapa"
             component={Mapa}
             options={{
@@ -258,8 +258,8 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen name="Direcciones" component={Direcciones} />
-         <StackDirection.Screen
+         <StackFromTabs.Screen name="Direcciones" component={Direcciones} />
+         <StackFromTabs.Screen
             name="BusquedaDireccionesScreen"
             component={BusquedaDirecciones}
             options={{
@@ -272,7 +272,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="MapaDirecciones"
             component={MapaDirecciones}
             options={{
@@ -285,7 +285,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackDirection.Screen
+         <StackFromTabs.Screen
             name="PantallaPagos"
             component={PantallaPagos}
             options={{

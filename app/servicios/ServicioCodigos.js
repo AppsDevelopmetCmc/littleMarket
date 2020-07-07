@@ -188,7 +188,7 @@ export class ServicioCodigos {
          .collection('transacciones')
          .add(transaccion)
          .then(function () {
-            //Alert.alert('transacción agregado');
+            //Alert.alert('transacción ');
          })
          .catch(function (error) {
             Alert.alert('Se ha producido un Error', error);

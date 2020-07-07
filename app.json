@@ -20,7 +20,7 @@
          "buildNumber": "1.0.0"
       },
       "android": {
-         "versionCode": 5,
+         "versionCode": 8,
          "package": "yappando.com",
          "config": {
             "googleSignIn": {

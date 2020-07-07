@@ -113,13 +113,13 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                'He realizado el pedido: ' +
                pedido.orden +
                ' por el monto $ ' +
-               parseFloat(pedido.total - pedido.descuento) +
+               parseFloat(pedido.total).toFixed(2) +
                '. Solicito información para realizar la transferencia.';
-               let textAlert =
+            let textAlert =
                'Ha realizado el pedido: ' +
                pedido.orden +
                ' por el monto $ ' +
-               parseFloat(pedido.total - pedido.descuento) +
+               parseFloat(pedido.total).toFixed(2) +
                '. Solicite información para realizar la transferencia.';
             Alert.alert(
                'Gracias por comprar en Yappando',
@@ -145,7 +145,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          //////////////aqui
          for (let key of global.items.keys()) {
             //for (let i = 0; i < items.length; i++) {
-            let itemPedido = global.items.get(key)
+            let itemPedido = global.items.get(key);
             //let itemPedido = items[i];
             itemPedido.empacado = false;
             itemPedido.recibido = false;
@@ -174,7 +174,6 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
       .catch(function (error) {
          Alert.alert('Se ha Producido un error', error.message);
       });
-
 };
 
 export class ServicioPedidos {
