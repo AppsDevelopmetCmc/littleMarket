@@ -101,7 +101,7 @@ export class ConfirmarCompra extends Component {
          { label: 'Factura', value: 'FA' },
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
-      let servParametros = new ServicioParametros();
+      let serv = new ServicioParametros();
       servParametros.getObtenerParametroId('envio', this.obtenerParametroEnvio);
    }
    refrescarDatosFactura = factura => {
