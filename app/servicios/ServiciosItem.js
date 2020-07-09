@@ -12,7 +12,7 @@ export const recuperarItems = inicial => {
    global.db
       .collection('items')
       .where('estado', '==', 'V')
-      .orderBy('posicion')
+      .orderBy('nombre')
       .get()
       .then(querySnapShot => {
          let documentos = querySnapShot.docs;

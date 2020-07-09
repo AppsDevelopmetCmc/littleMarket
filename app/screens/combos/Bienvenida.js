@@ -11,13 +11,27 @@ import {
 import * as colores from '../../constants/Colores';
 import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as srvParametros from '../../servicios/ServicioParametros';
 
 export class Bienvenida extends Component {
    constructor(props) {
       super(props);
+      // this.imagen = require('../../../app/imagenes/LogoBienvenida.jpeg');
+      this.state = {
+         //  imagen: require('../../../app/imagenes/LogoBienvenida.jpeg'),
+         cerrar: '',
+      };
    }
    componentDidMount = () => {
+      // this.setState({ imagen: this.imagen });
+      //  srvParametros.obtenerImagenBienvenida(this.pintarImagen);
       this.montado = true;
+      setTimeout(() => {
+         this.pintarCerrar();
+      }, 2000);
+   };
+   pintarCerrar = () => {
+      this.setState({ cerrar: 'X Cerrar' });
    };
    componentWillUnmount = () => {
       this.montado = false;
@@ -28,7 +42,7 @@ export class Bienvenida extends Component {
          Math.random() > 0.5
             ? require('../../imagenes/Bienvenida3.jpeg')
             : require('../../imagenes/Bienvenida5.jpeg');*/
-      let imagen = require('../../imagenes/PopupCodigo.png');
+      let imagen = require('../../imagenes/LogoBienvenida.jpeg');
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -45,6 +59,8 @@ export class Bienvenida extends Component {
                         alignItems: 'flex-end',
                         justifyContent: 'flex-start',
                         //marginVertical: 10,
+                        padding: 10,
+                        // backgroundColor: 'blue',
                      }}
                   >
                      <TouchableOpacity
@@ -56,11 +72,12 @@ export class Bienvenida extends Component {
                         <View
                            style={{
                               backgroundColor: 'rgb(138,221,45,0.8)',
-                              width: 100,
-                              height: 50,
+                              //width: 10,
+                              //height: 50,
                               alignItems: 'center',
                               justifyContent: 'center',
                               //borderRadius: 10,
+                              //padding: 30,
                               //borderWidth: 2,
                               //borderColor: 'black',
                            }}
@@ -72,7 +89,7 @@ export class Bienvenida extends Component {
                                  backgroundColor: 'white',
                               }}
                            >
-                              X Cerrar
+                              {this.state.cerrar}
                            </Text>
                         </View>
                      </TouchableOpacity>
