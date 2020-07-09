@@ -11,6 +11,9 @@ import { FormCalificacionesProductos } from './FormCalificacionesProductos';
 import Cargando from '../../components/Cargando';
 
 export function PopupCalificaciones(props) {
+   // Log
+   console.log('Props calificaciones:', props);
+
    //Constantes
    const varItemDefault = -1;
    const varEstrellaDefault = 4;
@@ -40,7 +43,7 @@ export function PopupCalificaciones(props) {
    const validacionSiguiente = () => {
       if (puntuacionPedido < 3.5) {
          if (quejaPedido == -1) {
-            Alert.alert('Información','Debe seleccionar una razón');
+            Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
             setVarPresentacion(1);
          }
@@ -52,7 +55,7 @@ export function PopupCalificaciones(props) {
    const validacionSalir = () => {
       if (puntuacionProducto < 3.5) {
          if (quejaProducto == -1) {
-            Alert.alert('Información','Debe seleccionar una razón');
+            Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
             guardarFirebase();
          }

@@ -17,6 +17,8 @@ export class Bienvenida extends Component {
    constructor(props) {
       super(props);
       // this.imagen = require('../../../app/imagenes/LogoBienvenida.jpeg');
+      console.log('Props Bienvenida', props);
+
       this.state = {
          //  imagen: require('../../../app/imagenes/LogoBienvenida.jpeg'),
          cerrar: '',
@@ -35,6 +37,32 @@ export class Bienvenida extends Component {
    };
    componentWillUnmount = () => {
       this.montado = false;
+   };
+
+   obtenerPedidoCalifica = async mail => {
+      //  console.log('mail', mail);
+      console.log('Ingreso a recuperar el pedido');
+      global.db
+         .collection('pedidos')
+         .where('mail', '==', mail)
+         .where('estado', '==', 'PE')
+         .get()
+         .then(querySnapshot => {
+            let pedido = {};
+            querySnapshot.forEach(doc => {
+               //   console.log('doc', doc);
+               if (doc.exists) {
+                  console.log('Pedido Califica:', doc.data());
+                  pedido = doc.data();
+                  pedido.id = doc.id;
+                  this.props.estadocalifica(true);
+                  this.props.pedidoCalifica(pedido);
+               }
+            });
+         })
+         .catch(error => {
+            console.log(error);
+         });
    };
 
    render() {
@@ -66,6 +94,10 @@ export class Bienvenida extends Component {
                      <TouchableOpacity
                         underlayColor={colores.colorBlanco}
                         onPress={() => {
+                           console.log(
+                              'Ingreso a cerrar la ventana de Bienvenida'
+                           );
+                           this.obtenerPedidoCalifica(global.usuario);
                            this.props.cerrar();
                         }}
                      >
