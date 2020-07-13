@@ -40,12 +40,14 @@ import { TabProductos1 } from './TabProductos1';
 import { TabProductos2 } from './TabProductos2';
 import { TabProductos3 } from './TabProductos3';
 import { Monedero } from '../monedero/Monedero';
+import { AtencionCliente } from '../soporte/AtencionCliente';
 
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
+
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -209,6 +211,19 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="ListaNotificacionScreen"
             component={ListaNotificaciones}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         />
+          <StackFromTabs.Screen
+            name="Soporte"
+            component={AtencionCliente}
             options={{
                title: '',
                headerStyle: {
@@ -479,6 +494,7 @@ function HomeDraw() {
             options={{ drawerLabel: 'ListaPedidos' }}
          />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
+        
 
          <DrawerHome.Screen
             name="ResponsabilidadSocial"
