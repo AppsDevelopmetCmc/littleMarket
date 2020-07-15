@@ -129,7 +129,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                      text: 'Solicitar',
                      onPress: () => {
                         console.log('OK Pressed');
-                        let numero = '593998668633';
+                        let numero = global.numWhatssap;
                         Linking.openURL(
                            'whatsapp://send?text=' + text + '&phone=' + numero
                         );

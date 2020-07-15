@@ -29,6 +29,7 @@ export function FormCalificaciones(props) {
       setQueja,
       puntuacion,
       titulo,
+      subTitulo,
       parrafo,
       placeholderComentario,
       idPedido,
@@ -58,9 +59,11 @@ export function FormCalificaciones(props) {
             <View style={styles.view}>
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoTitulo}>{titulo}</Text>
-                  <Text style={styles.estiloTextoSubTitulo}>{idPedido}</Text>
                </View>
-
+               <View style={styles.contenedorViews}>
+                  <Text style={styles.estiloTextoSubTitulo}>{subTitulo}</Text>
+                  {/* <Text style={styles.estiloTextoSubTitulo}>{idPedido}</Text> */}
+               </View>
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoParrafo}>{parrafo}</Text>
                </View>
@@ -94,8 +97,8 @@ export function FormCalificaciones(props) {
                            labelHorizontal={true}
                            buttonColor={colores.colorPrimarioTomate}
                            selectedButtonColor={colores.colorPrimarioTomate}
-                           buttonSize={15}
-                           buttonOuterSize={25}
+                           buttonSize={10}
+                           buttonOuterSize={20}
                            animation={true}
                            onPress={codigoDetalle}
                            wrapStyle={styles.contenedorWrap}
@@ -124,7 +127,7 @@ export function FormCalificaciones(props) {
                         borderColor: colores.colorClaroTexto,
                      }}
                   >
-                     Comentarios
+                     Comentarios / Observaciones
                   </Text>
                   <TextInput
                      multiline={true}

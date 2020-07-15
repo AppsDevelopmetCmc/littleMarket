@@ -92,4 +92,15 @@ export class ServicioParametros {
             Alert.alert('Se ha producido un error', error);
          });
    };
+
+   obtenerNumeroWhatssap = async () => {
+      global.db
+         .collection('parametros')
+         .doc('general')
+         .get()
+         .then(doc => {
+            console.log('doc', doc.data());
+            global.numWhatssap = doc.data().numero;
+         });
+   };
 }
