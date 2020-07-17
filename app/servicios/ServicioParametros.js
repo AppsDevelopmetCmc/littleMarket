@@ -72,6 +72,14 @@ export class ServicioParametros {
          .get();
       fnObtenerDato(metadata.data());
    };
+
+   obtenerVersion = async fnObtenerDato => {
+      let metadata = await global.db
+         .collection('parametros')
+         .doc('version')
+         .get();
+      fnObtenerDato(metadata.data());
+   };
    obtenerSecuencial = async () => {
       let metadata = await global.db
          .collection('parametros')

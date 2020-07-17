@@ -17,10 +17,12 @@
       "assetBundlePatterns": ["**/*"],
       "ios": {
          "bundleIdentifier": "com.clearminds.yappando",
-         "buildNumber": "1.0.0"
+         "buildNumber": "1.0.0",
+		 
+		 
       },
       "android": {
-         "versionCode": 8,
+         "versionCode": 9,
          "package": "yappando.com",
          "config": {
             "googleSignIn": {

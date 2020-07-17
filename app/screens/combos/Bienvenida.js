@@ -60,6 +60,7 @@ export class Bienvenida extends Component {
                         justifyContent: 'flex-start',
                         //marginVertical: 10,
                         padding: 10,
+                        flex: 10,
                         // backgroundColor: 'blue',
                      }}
                   >
@@ -100,6 +101,7 @@ export class Bienvenida extends Component {
       );
    }
 }
+/*0.0.8.6 - se cambia el link de whatsapp*/
 
 const flatListItemSeparator = () => {
    return (

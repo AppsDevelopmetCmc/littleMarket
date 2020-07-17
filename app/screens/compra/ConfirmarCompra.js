@@ -42,6 +42,8 @@ import {
    convertirRadioPago,
    convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
+
+import { servParametros } from '../../servicios/ServicioParametros';
 import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
@@ -102,7 +104,7 @@ export class ConfirmarCompra extends Component {
          /*{ label: 'Tarjeta', value: 'TA' },*/
       ];
       let serv = new ServicioParametros();
-      servParametros.getObtenerParametroId('envio', this.obtenerParametroEnvio);
+      serv.getObtenerParametroId('envio', this.obtenerParametroEnvio);
    }
    refrescarDatosFactura = factura => {
       this.setState({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ImageBackground, Image } from 'react-native';
+import { View, StyleSheet, ImageBackground, Image, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 import * as colores from '../constants/Colores';
 
@@ -30,6 +30,28 @@ export default function PaginaIncio(props) {
                      navigation.navigate('Registro');
                   }}
                ></Button>
+            </View>
+            <View
+               style={{
+                  //width: 10,
+                  //height: 50,
+                  alignItems: 'flex-end',
+                  justifyContent: 'flex-end',
+                  //borderRadius: 10,
+                  //padding: 30,
+                  //borderWidth: 2,
+                  //borderColor: 'black',
+               }}
+            >
+               <Text
+                  style={{
+                     color: 'gray',
+                     fontSize: 13,
+                     //backgroundColor: 'white',
+                  }}
+               >
+                  Build: {global.version}
+               </Text>
             </View>
          </ImageBackground>
       </View>

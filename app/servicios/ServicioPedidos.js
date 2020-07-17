@@ -103,9 +103,31 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
       .then(function (doc) {
          let descripcionALert = 'Su pedido ha sido procesado, con la orden: ';
          if (pedido.formaPago === 'EFECTIVO') {
+            let text =
+               'He realizado el pedido: ' +
+               pedido.orden +
+               ' por el monto $ ' +
+               parseFloat(pedido.total).toFixed(2);
+
             Alert.alert(
                'Gracias por comprar en Yappando',
-               descripcionALert + '' + pedido.orden
+               descripcionALert +
+                  '' +
+                  pedido.orden +
+                  '. Comunicarse con el canal de ventas',
+               [
+                  {
+                     text: 'Comunicarse',
+                     onPress: () => {
+                        console.log('OK Pressed');
+                        let numero = '593998668633';
+                        Linking.openURL(
+                           'https://wa.me/' + numero + '?text=' + text
+                        );
+                     },
+                  },
+               ],
+               { cancelable: false }
             );
          }
          if (pedido.formaPago === 'TRANSFERENCIA') {
@@ -131,7 +153,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                         console.log('OK Pressed');
                         let numero = '593998668633';
                         Linking.openURL(
-                           'whatsapp://send?text=' + text + '&phone=' + numero
+                           'https://wa.me/' + numero + '?text=' + text
                         );
                      },
                   },
