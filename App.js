@@ -1,9 +1,10 @@
 import React from 'react';
 import NavegadorInicio from './app/screens/navigation/NavegadorInicio';
 import { decode, encode } from 'base-64';
-import { YellowBox } from 'react-native';
+import { YellowBox, Alert } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps } from './app/utils/ApiKey';
+import { ServicioParametros } from './app/servicios/ServicioParametros';
 
 global.crypto = require('@firebase/firestore');
 global.crypto.getRandomValues = byteArray => {
@@ -25,6 +26,23 @@ YellowBox.ignoreWarnings([
    'Warning: componentWillReceiveProps has ',
    'Setting a timer',
 ]);
+global.version = '0.0.9.0';
+
+const validarVersion = version => {
+   if (version.valor != global.version) {
+      Alert.alert(
+         'Problemas de versión',
+         'La versión actual: ' +
+            global.version +
+            ' no corresponde a la versión oficial ' +
+            version.valor +
+            '. Cierre la aplicación y vuelva abrir.'
+      );
+   }
+};
+
+let servParametros = new ServicioParametros();
+servParametros.obtenerVersion(validarVersion);
 
 Geocoder.init(apiKeyMaps, {
    language: 'es-419',
