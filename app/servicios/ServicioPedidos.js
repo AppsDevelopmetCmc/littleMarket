@@ -8,13 +8,19 @@ export const agregarItemPedido = producto => {
       global.items = new Map();
       global.subtotal = 0;
    }
-   let itemProducto = global.items.get(producto.id);
-   if (itemProducto == null) {
+   if(producto.id === 'yapa'){
       global.items.set(producto.id, crearItemPedido(producto));
    } else {
-      modificarItemPedidos(itemProducto, 1);
+      let itemProducto = global.items.get(producto.id);
+      if (itemProducto == null) {
+         global.items.set(producto.id, crearItemPedido(producto));
+      } else {
+         console.log('modificar', itemProducto);
+         modificarItemPedidos(itemProducto, 1);
+      }
+      modificarSubtotal(producto.precio, 1);
    }
-   modificarSubtotal(producto.precio, 1);
+   
 };
 const modificarSubtotal = (precio, cantidad) => {
    console.log('modificaSubtotal', precio, cantidad);
@@ -52,13 +58,14 @@ export const eliminarItemPedido = producto => {
    let itemProducto = global.items.get(producto.id);
    if (itemProducto != null) {
       global.items.delete(producto.id);
+      modificarSubtotal(producto.precio, -itemProducto.cantidad);
    } else {
       console.log(
          'ERROR se intenta eliminar un item que no existe ',
          producto.id
       );
    }
-   modificarSubtotal(producto.precio, -itemProducto.cantidad);
+   
 };
 const crearItemPedido = producto => {
    let itemProducto = {

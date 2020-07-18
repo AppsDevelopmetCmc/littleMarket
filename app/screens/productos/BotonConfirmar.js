@@ -107,7 +107,7 @@ export class BotonConfirmar extends Component {
       if (this.state.subtotal.toFixed(2) < 15) {
          Alert.alert('Información', 'Monto mínimo de compra $15.00');
          return;
-      } else if (this.state.subtotal.toFixed(2) >= 15 && !global.yapa) {
+      } else if (this.state.subtotal.toFixed(2) >= 15) {
          global.montoYapa = this.state.subtotal.toFixed(2);
          this.mostrarModalYapa(true);
          return;
