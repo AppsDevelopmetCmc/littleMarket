@@ -41,10 +41,12 @@ import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProductoNuevo } from '../productos/ItemProductoNuevo';
 import { BotonConfirmar } from '../productos/BotonConfirmar';
 import * as srvDirecciones from '../../servicios/ServicioDirecciones';
+import { ServicioSectores } from '../../servicios/ServicioSectores';
 
 export class TabProductos2 extends Component {
    constructor(props) {
       super(props);
+      this.tramaSectorIni = "";
       this.state = {
          listaProductos: [],
       };
@@ -66,6 +68,16 @@ export class TabProductos2 extends Component {
          this.crearDireccionPedido
       );
    }
+   asignarSector = async () => {
+      let srvSector = new ServicioSectores();
+      console.log("LATITUD INICIAL" + global.latIni);
+      console.log("LONGITUD INICIAL" + global.longIni);
+
+      this.tramaSectorIni = await srvSector.consultarSector(global.latIni, global.longIni);
+      this.setState({ sector: this.tramaSectorIni.sector });
+      global.sector = this.tramaSectorIni.sector;
+      console.log("SECTOR ------->" + this.tramaSectorIni.sector);
+   }
    crearDireccionPedido = async () => {
       console.log('---------CREANDO DIRECCION----------');
       Geocoder.init(APIKEY);
@@ -86,6 +98,14 @@ export class TabProductos2 extends Component {
 
    guardarPedido = async (direccionNombre, latitud, longitud) => {
       console.log('---------GUARDANDO DIRECCION----------');
+      await this.asignarSector(latitud, longitud);
+
+      if(!this.tramaSectorIni.sector){
+         Alert.alert(
+            'Información',
+            'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo'
+         );
+      }
       new ServicioDirecciones().crear(global.usuario, {
          descripcion: direccionNombre,
          latitud: latitud,
@@ -93,7 +113,8 @@ export class TabProductos2 extends Component {
          alias: '',
          principal: 'N',
          referencia: '',
-         tieneCoberturaDireccion: 'S',
+         tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
+         sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : ''
       });
    };
 

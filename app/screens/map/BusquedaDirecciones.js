@@ -18,6 +18,7 @@ import { color } from 'react-native-reanimated';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { CommonActions } from '@react-navigation/native';
 import Cargando from '../../components/Cargando';
+import { ServicioSectores } from '../../servicios/ServicioSectores';
 export class BusquedaDirecciones extends Component {
    constructor(props) {
       super(props);
@@ -26,6 +27,7 @@ export class BusquedaDirecciones extends Component {
       this.localizacionInicial = [];
       this.tieneCoberturaDireccion = 'N';
       this.idDireccion = '';
+      this.tramaSectorNue='';
       this.state = {
          search: '',
          listaPredicciones: [],
@@ -112,19 +114,30 @@ export class BusquedaDirecciones extends Component {
       this.sessionToken = 0;
    };
 
+   asignarSector = async (latAct, longAct) => {
+      let srvSector = new ServicioSectores();
+      console.log("LATITUD NUEVA" + latAct);
+      console.log("LONGITUD NUEVA" + longAct);
+      this.tramaSectorNue = await srvSector.consultarSector(latAct, longAct);
+      global.sector = this.tramaSectorNue.sector;
+      console.log("SECTOR NUEVA------->" +this.tramaSectorNue.sector);
+   }
+
    //TODO: MODAL
    guardarDireccion = async (descripcion, coordenadas) => {
       let servDireccion = new ServicioDirecciones();
-
-      this.validar(coordenadas.lat, coordenadas.lng);
+      //this.validar(coordenadas.lat, coordenadas.lng);
+      await this.asignarSector(coordenadas.lat, coordenadas.lng);
+      
       let nuevaDireccion = {
          descripcion: descripcion,
          latitud: coordenadas.lat,
          longitud: coordenadas.lng,
-         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
+         tieneCoberturaDireccion: this.tramaSectorNue.sector ? 'S' : 'N',
          alias: '',
          referencia: '',
          principal: 'N',
+         sector: this.tramaSectorNue.sector ? this.tramaSectorNue.sector : ''
       };
       this.setState({ creandoPunto: true });
       let idDireccionCreada = await servDireccion.crear(
@@ -158,6 +171,13 @@ export class BusquedaDirecciones extends Component {
                direccion: nuevaDireccion,
             });
          }
+      }
+
+      if (!this.tramaSectorNue.sector) {
+         Alert.alert(
+            'Información',
+            'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+         );
       }
       //this.props.navigation.navigate('Direcciones');
    };

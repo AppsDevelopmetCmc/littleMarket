@@ -1,44 +1,16 @@
 import React, { Component } from 'react';
 import {
    View,
-   Text,
    StyleSheet,
    FlatList,
-   Alert,
    Modal,
-   TouchableOpacity,
-   StatusBar,
 } from 'react-native';
 import * as serviciosItem from '../../servicios/ServiciosItem';
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
-import { Badge, withBadge } from 'react-native-elements';
-
-import { ServiciosItem } from '../../servicios/ServiciosItem';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BotonConfirmar } from '../productos/BotonConfirmar';
-
 // Importacion de Cabecera Personalizada
-import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
-import { ServicioMonederos } from '../../servicios/ServicioMonederos';
-import * as serviciosCarrito from '../../servicios/ServicioCarroCompras';
 //Importando los colores
 import * as colores from '../../constants/Colores';
-import { ItemDireccionSeleccion } from '../map/compnentes/ItemDireccionSeleccion';
-import { Button } from 'react-native-elements';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Icon2 from 'react-native-vector-icons/FontAwesome5';
-import * as Location from 'expo-location';
-import Geocoder from 'react-native-geocoding';
-import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
-
-import * as Permisos from 'expo-permissions';
-import { Notificaciones } from 'expo';
-
-import { PopupCalificaciones } from '../calificacion/PopupCalificaciones';
-import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
-import Separador from '../../components/Separador';
-import { TouchableHighlight } from 'react-native-gesture-handler';
-import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
-import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProductoNuevo } from '../productos/ItemProductoNuevo';
 
@@ -49,6 +21,7 @@ export class TabProductos1 extends Component {
       this.state = {
          listaProductos: [],
          mostrarInstrucciones: true,
+         sector: ""
       };
       console.log('CONSTRUCTOR DE TAB 1');
       global.pintarTab1 = this.pintarLista;
@@ -66,6 +39,7 @@ export class TabProductos1 extends Component {
       this.montado = true;
       console.log('--ListaProductos recuperarItems TABS 2');
       serviciosItem.recuperarItems();
+      //this.asignarSector();
    }
    componentWillUnmount() {
       this.montado = false;
@@ -78,6 +52,8 @@ export class TabProductos1 extends Component {
    cerrarBienvenida = () => {
       this.setState({ mostrarInstrucciones: false });
    };
+
+
    render() {
       console.log('--ListaProductos render');
       return (
@@ -97,7 +73,7 @@ export class TabProductos1 extends Component {
                      keyExtractor={producto => {
                         return producto.id;
                      }}
-                     // ItemSeparatorComponent={this.flatListItemSeparator}
+                  // ItemSeparatorComponent={this.flatListItemSeparator}
                   />
                </View>
             </View>
@@ -122,6 +98,7 @@ export class TabProductos1 extends Component {
             >
                <Bienvenida cerrar={this.cerrarBienvenida}></Bienvenida>
             </Modal>
+
          </SafeAreaProvider>
       );
    }

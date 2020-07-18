@@ -33,10 +33,10 @@ const validarVersion = version => {
       Alert.alert(
          'Problemas de versión',
          'La versión actual: ' +
-            global.version +
-            ' no corresponde a la versión oficial ' +
-            version.valor +
-            '. Cierre la aplicación y vuelva abrir.'
+         global.version +
+         ' no corresponde a la versión oficial ' +
+         version.valor +
+         '. Cierre la aplicación y vuelva abrir.'
       );
    }
 };
@@ -61,6 +61,8 @@ obtenerDireccion = async (latitude, longitude) => {
       .then(json => {
          addressComponent = json.results[0].formatted_address;
          global.direccionActual = addressComponent;
+         global.longIni = longitude;
+         global.latIni = latitude;
       })
       .catch(error => console.warn(error));
 };

@@ -35,6 +35,8 @@ import * as estilos from '../../estilos/estilos';
 import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion';
 import { ScrollView } from 'react-native-gesture-handler';
 
+import { ServicioSectores } from '../../servicios/ServicioSectores';
+
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.02 / 2;
@@ -82,6 +84,7 @@ export class MapaDirecciones extends Component {
          listaDirecciones: direcciones,
          validarReferencia: '',
          siguienteMapa: false,
+         sector: '',
       };
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
@@ -304,9 +307,9 @@ export class MapaDirecciones extends Component {
       let a =
          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
          Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
+         Math.cos(this.rad(lat2)) *
+         Math.sin(dLong / 2) *
+         Math.sin(dLong / 2);
       let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       let d = R * c;
       return d.toFixed(3); //Retorna tres decimales
@@ -406,6 +409,15 @@ export class MapaDirecciones extends Component {
       }
    };
 
+   asignarSector = async (latAct, longAct) => {
+      let srvSector = new ServicioSectores();
+      console.log("LATITUD ACTUAL" + latAct);
+      console.log("LONGITUD ACTUAL" + longAct);
+      this.tramaSectorAct = await srvSector.consultarSector(latAct, longAct);
+      global.sector = this.tramaSectorAct.sector;
+      console.log("SECTOR ACTUAL------->" + global.sector);
+   }
+
    actualizarDireccion = direccion => {
       this.direccionTmp = direccion;
       // console.log('direccion', direccion);
@@ -437,6 +449,7 @@ export class MapaDirecciones extends Component {
 
    actualizarDireccionPedido = async () => {
       let validar = true;
+      await this.asignarSector(this.state.region.latitude, this.state.region.longitude);
       if (!this.state.referencia) {
          Alert.alert(
             'Advertencia',
@@ -445,6 +458,7 @@ export class MapaDirecciones extends Component {
          this.setState({ validarReferencia: '*Campo obligatorio' });
          validar = false;
       }
+
       if (validar) {
          this.direccionTmp.descripcion = this.state.direccion;
          this.direccionTmp.referencia = this.state.referencia;
@@ -453,6 +467,8 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.id = direccionPedido.id;
          this.direccionTmp.latitud = this.state.region.latitude;
          this.direccionTmp.longitud = this.state.region.longitude;
+         this.direccionTmp.sector = this.tramaSectorAct.sector ? this.tramaSectorAct.sector : '';
+         this.direccionTmp.tieneCoberturaDireccion = this.tramaSectorAct.sector ? 'S' : 'N'
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
@@ -463,6 +479,12 @@ export class MapaDirecciones extends Component {
             this.direccionTmp
          );
          console.log('Envia Confirmar');
+         if (!this.tramaSectorAct.sector) {
+            Alert.alert(
+               'Información',
+               'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+            );
+         }
 
          this.props.navigation.navigate('ConfirmarCompraScreen', {
             origen: 'mapaDirecciones',
@@ -490,7 +512,7 @@ export class MapaDirecciones extends Component {
       ) {
          Alert.alert('No puede eliminar todas las direcciones');
       } else {
-         servDirecciones.eliminarDir(global.usuario, direccion.id, () => {});
+         servDirecciones.eliminarDir(global.usuario, direccion.id, () => { });
       }
    };
    render() {
@@ -528,7 +550,7 @@ export class MapaDirecciones extends Component {
                      }}
                      //label="Dirección"
                      placeholder="dirección"
-                     //underlineColorAndroid={colores.colorBlanco}
+                  //underlineColorAndroid={colores.colorBlanco}
                   ></Input>
                </View>
                <View
@@ -614,8 +636,8 @@ export class MapaDirecciones extends Component {
                      )}
                   </View>
                ) : (
-                  <Text>Cargando</Text>
-               )}
+                     <Text>Cargando</Text>
+                  )}
                {/*<View
                   style={{
                      flex: 1,
