@@ -5,7 +5,7 @@
       "platforms": ["ios", "android", "web"],
       "version": "1.0.0",
       "orientation": "portrait",
-      "icon": "./assets/LogoYapando.png",
+      "icon": "./assets/LogoYapandoPruebas.png",
       "splash": {
          "image": "./assets/splashYappando.png",
          "resizeMode": "contain",
