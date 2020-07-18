@@ -3,7 +3,7 @@ import '@firebase/firestore';
 import '@firebase/storage';
 
 export const cargarConfiguracion = () => {
-   const firebaseConfig = obtenerConfiguracionDEV();
+   const firebaseConfig = obtenerConfiguracionPROD();
    firebaseApp = firebase.initializeApp(firebaseConfig);
    global.db = firebase.firestore();
    global.storage = firebase.storage();
