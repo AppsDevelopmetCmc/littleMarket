@@ -660,11 +660,11 @@ export class ConfirmarCompra extends Component {
                            titulo="ENVÍO:"
                            valor={transformDinero(global.delivery)}
                         ></Numero>
-                        {global.yapa && global.yapa.descripcion != 'D' ? (
+                        {global.yapa && global.yapa.unidad != 'D' ? (
                            <Numero
                               titulo={
                                  'YAPPA (' +
-                                 global.yapa.descripcion.split(' -')[0] +
+                                 global.yapa.nombre+
                                  ')'
                               }
                               valor={transformDinero(0.0)}
@@ -684,7 +684,7 @@ export class ConfirmarCompra extends Component {
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
 
-                        {global.yapa && global.yapa.descripcion == 'D' ? (
+                        {global.yapa && global.yapa.unidad == 'D' ? (
                            <Text style={{ marginTop: 10 }}>
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
@@ -846,9 +846,6 @@ export class ConfirmarCompra extends Component {
                                        asociado: 'asociado@gmail.com',
                                        nombreAsociado: 'Juan perez',
                                        telefonoAsociado: '1245635',
-                                       yapa: global.yapa
-                                          ? global.yapa.descripcion
-                                          : '',
                                        subtotal: global.subtotal,
                                        envio: global.delivery,
                                        descuento: parseFloat(
@@ -898,9 +895,6 @@ export class ConfirmarCompra extends Component {
                                        asociado: 'asociado@gmail.com',
                                        nombreAsociado: 'Juan perez',
                                        telefonoAsociado: '1245635',
-                                       yapa: global.yapa
-                                          ? global.yapa.descripcion
-                                          : '',
                                        subtotal: global.subtotal,
                                        envio: global.delivery,
                                        descuento: parseFloat(

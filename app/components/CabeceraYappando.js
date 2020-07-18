@@ -41,6 +41,9 @@ export function CabeceraYappando() {
    const abrirNotificacion = () => {
       navigation.navigate('ListaNotificacionScreen');
    };
+   const abrirSoporte = () => {
+      navigation.navigate('Soporte');
+   };
 
    const BadgedIcon = withBadge(numeroNotificaciones)(Icon);
 
@@ -161,6 +164,24 @@ export function CabeceraYappando() {
                         ) : (
                            <View></View>
                         )}
+                     </View>
+                  </View>
+               </TouchableOpacity>
+            </View>
+            <View style={styles.iconoBadge}>
+               <TouchableOpacity
+                  onPress={() => {
+                     abrirSoporte();
+                  }}
+               >
+                  <View style={styles.areaBadge}>
+                     <View>
+                        <Icon
+                           color={colores.colorBlanco}
+                           type="material-community"
+                           name="face-agent"
+                           size={28}
+                        />
                      </View>
                   </View>
                </TouchableOpacity>
