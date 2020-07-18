@@ -38,7 +38,6 @@ export class SeleccionarYapa extends Component {
       console.log('radio_props', this.radio_props);
    }
    seleccionarYapa = seleccionada => {
-     
       if (seleccionada == 'D') {
          global.yapa = {
             id: 'yapa',
@@ -49,18 +48,20 @@ export class SeleccionarYapa extends Component {
             precio: 0,
             subtotal: 0,
             unidad: 'D',
+            posicionEmpacado: 2000,
          };
       } else {
          console.log('seleccionado', this.props.listaYapa[seleccionada]);
          global.yapa = {
             id: 'yapa',
             nombre: this.props.listaYapa[seleccionada].nombre,
-            cantidad: ''+this.props.listaYapa[seleccionada].cantidad,
+            cantidad: '' + this.props.listaYapa[seleccionada].cantidad,
             empacado: false,
             recibido: false,
             precio: 0,
             subtotal: 0,
             unidad: this.props.listaYapa[seleccionada].unidad,
+            posicionEmpacado: 2000,
          };
       }
    };
@@ -98,9 +99,9 @@ export class SeleccionarYapa extends Component {
                this.props.listaYapa[i].unidad,
                this.props.listaYapa[i].cantidad
             );*/
-            itemYapa.value = i;
-            itemYapa.cantidad = this.props.listaYapa[i].cantidad
-            itemYapa.unidad = this.props.listaYapa[i].unidad
+         itemYapa.value = i;
+         itemYapa.cantidad = this.props.listaYapa[i].cantidad;
+         itemYapa.unidad = this.props.listaYapa[i].unidad;
          console.log('data itemYapa', itemYapa);
          listaItemYapa.push(itemYapa);
       }
