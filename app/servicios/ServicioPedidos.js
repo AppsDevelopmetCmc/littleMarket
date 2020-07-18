@@ -8,7 +8,7 @@ export const agregarItemPedido = producto => {
       global.items = new Map();
       global.subtotal = 0;
    }
-   if(producto.id === 'yapa'){
+   if (producto.id === 'yapa') {
       global.items.set(producto.id, crearItemPedido(producto));
    } else {
       let itemProducto = global.items.get(producto.id);
@@ -20,7 +20,6 @@ export const agregarItemPedido = producto => {
       }
       modificarSubtotal(producto.precio, 1);
    }
-   
 };
 const modificarSubtotal = (precio, cantidad) => {
    console.log('modificaSubtotal', precio, cantidad);
@@ -65,7 +64,6 @@ export const eliminarItemPedido = producto => {
          producto.id
       );
    }
-   
 };
 const crearItemPedido = producto => {
    let itemProducto = {
@@ -78,7 +76,9 @@ const crearItemPedido = producto => {
       precio: producto.precio,
       subtotal: producto.precio,
       unidad: producto.unidad,
+      posicionEmpacado: producto.posicionEmpacado,
    };
+   console.log('--------------- ITEM_PRODUCTO----- ', itemProducto);
    return itemProducto;
 };
 
