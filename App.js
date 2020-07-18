@@ -28,22 +28,6 @@ YellowBox.ignoreWarnings([
 ]);
 global.version = '0.0.9.0';
 
-const validarVersion = version => {
-   if (version.valor != global.version) {
-      Alert.alert(
-         'Problemas de versión',
-         'La versión actual: ' +
-            global.version +
-            ' no corresponde a la versión oficial ' +
-            version.valor +
-            '. Cierre la aplicación y vuelva abrir.'
-      );
-   }
-};
-
-let servParametros = new ServicioParametros();
-servParametros.obtenerVersion(validarVersion);
-
 Geocoder.init(apiKeyMaps, {
    language: 'es-419',
 });
