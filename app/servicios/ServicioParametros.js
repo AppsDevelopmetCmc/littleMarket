@@ -56,10 +56,15 @@ export class ServicioParametros {
          });
       }
       for (const item in horarios) {
+         console.log('label', horarios[item].horario);
+         console.log('value', horarios[item]);
+         console.log('fecha', horarios[item].fecha);
+         console.log('estado', horarios[item].estado);
          comboHorarios.push({
             label: horarios[item].horario,
             value: horarios[item],
-            jornada: horarios[item].jornada,
+            fecha: horarios[item].fecha,
+            estado: horarios[item].estado,
          });
       }
       fnCargarComboFechas(comboFechas, comboHorarios);
