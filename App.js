@@ -4,7 +4,6 @@ import { decode, encode } from 'base-64';
 import { YellowBox, Alert } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps } from './app/utils/ApiKey';
-import { ServicioParametros } from './app/servicios/ServicioParametros';
 
 global.crypto = require('@firebase/firestore');
 global.crypto.getRandomValues = byteArray => {
