@@ -11,9 +11,6 @@ import { FormCalificacionesProductos } from './FormCalificacionesProductos';
 import Cargando from '../../components/Cargando';
 
 export function PopupCalificaciones(props) {
-   // Log
-   console.log('Props calificaciones:', props);
-
    //Constantes
    const varItemDefault = -1;
    const varEstrellaDefault = 4;
@@ -33,10 +30,6 @@ export function PopupCalificaciones(props) {
    const [puntuacionProducto, setPuntuacionProducto] = useState(4);
    const [quejaProducto, setQuejaProducto] = useState(-1);
    const [detalleProducto, setDetalleProducto] = useState('');
-
-   // Log
-   console.log('puntuacionProducto', puntuacionProducto);
-   console.log('puntuacionPedido', puntuacionPedido);
 
    // se utiliza el useEffect
    useEffect(() => {
@@ -71,7 +64,7 @@ export function PopupCalificaciones(props) {
    const enviarWhatssap = () => {
       let numero = global.numWhatssap;
       let text =
-         'Yappando está en cantado de atenderle \n\nPor favor envíar esta respuesta, pronto un asesor se pondrá en contacto\n' +
+         'Yappando está encantado de atenderle \n\nPor favor envíar esta respuesta, pronto un asesor se pondrá en contacto\n' +
          '\n' +
          'Código de pedido: ' +
          pedido.orden +
@@ -82,8 +75,15 @@ export function PopupCalificaciones(props) {
          'Calificación Producto: ' +
          puntuacionProducto;
 
-      if (quejaProducto == -1) {
-         Alert.alert('Información', 'Debe seleccionar una razón');
+      if (puntuacionProducto < 3.5) {
+         if (quejaProducto == -1) {
+            Alert.alert('Información', 'Debe seleccionar una razón');
+         } else {
+            guardarFirebase();
+            Linking.openURL(
+               'whatsapp://send?text=' + text + '&phone=' + numero
+            );
+         }
       } else {
          guardarFirebase();
          Linking.openURL('whatsapp://send?text=' + text + '&phone=' + numero);
@@ -118,11 +118,10 @@ export function PopupCalificaciones(props) {
          .get()
          .then(doc => {
             if (doc.exists) {
-               //  console.log('Document data:', doc.data());
                manejoResp(doc.data().respPedido, doc.data().respProducto);
                setValidacionEstrellas(doc.data().minimo);
             } else {
-               console.log('No such document!');
+               console.log('No se encuentra el documento');
             }
          })
          .catch(error => {
@@ -133,7 +132,7 @@ export function PopupCalificaciones(props) {
    const guardarFirebase = async () => {
       setIsLoading(true);
       await global.db
-         .collection('asociados')
+         .collection('repartidores')
          .doc(pedido.asociado)
          .collection('pedidos')
          .doc(pedido.id)
