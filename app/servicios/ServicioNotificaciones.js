@@ -4,6 +4,11 @@ import { Alert } from 'react-native';
 
 export class ServicioNotificaciones {
    crearNotificaciones = (idMail, notificacion, notificaciones) => {
+      console.log('Parametros de ingreso al método');
+      console.log('idMail', idMail);
+      console.log('notificacion', notificacion);
+      console.log('notificaciones', notificaciones);
+
       global.db
          .collection('notificaciones')
          .doc(idMail)
@@ -23,7 +28,7 @@ export class ServicioNotificaciones {
                });
          })
          .catch(function (error) {
-            Alert.alert('Se ha Producido un Error' , error);
+            Alert.alert('Se ha Producido un Error', error);
          });
    };
 
@@ -35,10 +40,28 @@ export class ServicioNotificaciones {
             numero: objeto.numero,
          })
          .then(function () {
+            console.log('Notificaciones actualizada');
+         })
+         .catch(function (error) {
+            Alert.alert('Se ha Producido un Error', error);
+         });
+   };
+
+   actualizarEstadoNotificacion = (mail, id) => {
+      console.log('ingreso actualizar');
+      console.log(mail);
+      console.log(id);
+      global.db
+         .collection('notificaciones')
+         .doc(mail)
+         .collection('notificaciones')
+         .doc(id)
+         .update({ estado: 'L' })
+         .then(function () {
             console.log('Notificacion actualizada');
          })
          .catch(function (error) {
-            Alert.alert('Se ha Producido un Error' , error);
+            Alert.alert('Se ha Producido un Error', error);
          });
    };
 
@@ -47,7 +70,7 @@ export class ServicioNotificaciones {
          .collection('notificaciones')
          .doc(idMail)
          .collection('notificaciones')
-         .orderBy('fecha', 'desc')
+         .orderBy('estado', 'desc')
          .limit(10)
          .get()
          .then(async function (documentos) {
@@ -62,7 +85,7 @@ export class ServicioNotificaciones {
             fnRepintar(listaNotificaciones);
          })
          .catch(function (error) {
-            Alert.alert('Error catch-->' , error);
+            Alert.alert('Error catch-->', error);
          });
       /*
          .onSnapshot(function (snapShot) {
@@ -103,5 +126,51 @@ export class ServicioNotificaciones {
          valorNumero = notificacion.data().numero;
       }
       return valorNumero;
+   };
+
+   actualizarTotaleNotificaciones = async idMail => {
+      console.log('idMail', idMail);
+      let numeroTotal = 0;
+      let numero = 0;
+      let numeroLeido = 0;
+
+      await global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .collection('notificaciones')
+         .where('estado', '==', 'V')
+         .get()
+         .then(doc => {
+            numero = doc.size;
+            console.log('numero sin leer', numero);
+         });
+
+      await global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .collection('notificaciones')
+         .where('estado', '==', 'L')
+         .get()
+         .then(doc => {
+            numeroLeido = doc.size;
+            console.log('numeroLeido', numeroLeido);
+         });
+
+      numeroTotal = numero + numeroLeido;
+
+      await global.db
+         .collection('notificaciones')
+         .doc(idMail)
+         .update({
+            numero: numero,
+            numeroLeido: numeroLeido,
+            total: numeroTotal,
+         })
+         .then(function () {
+            console.log('Notificaciones actualizada');
+         })
+         .catch(function (error) {
+            Alert.alert('Se ha Producido un Error', error);
+         });
    };
 }

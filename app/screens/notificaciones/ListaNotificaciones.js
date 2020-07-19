@@ -24,7 +24,7 @@ export class ListaNotificaciones extends Component {
    }
 
    repintarNotificaciones = notificaciones => {
-      console.log('------Notificaciones', notificaciones);
+      console.log('Notificaciones', notificaciones);
       console.log('Numero de notificaciones:', notificaciones.length);
 
       let valNumNotif = false;
@@ -52,6 +52,10 @@ export class ListaNotificaciones extends Component {
                         return (
                            <ItemNotificacionGeneral
                               notificacion={objeto.item}
+                              repintarNotificaciones={
+                                 this.repintarNotificaciones
+                              }
+                              correo={global.usuario}
                            />
                         );
                      }}
