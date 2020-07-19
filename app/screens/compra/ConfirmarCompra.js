@@ -674,13 +674,13 @@ export class ConfirmarCompra extends Component {
                         <Numero
                            descuento={true}
                            titulo="DESCUENTO:"
-                           valor={transformDinero(global.valorMonedero)}
+                           valor={global.valorMonedero ? transformDinero(global.valorMonedero) : transformDinero(0.00)}
                            estiloNumero={{ color: 'red' }}
                         ></Numero>
 
                         <Numero
                            titulo="TOTAL:"
-                           valor={transformDinero(this.state.valorDescontado)}
+                           valor={this.state.valorDescontado ? transformDinero(this.state.valorDescontado) : transformDinero(0.00)}
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
 
@@ -806,6 +806,7 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            /*this.consultarRestPago(1,{})*/
+                           if(global.sector){
                            this.generarNumeroOrden(codigo => {
                               console.log(
                                  'Luego de generar numero:',
@@ -920,6 +921,13 @@ export class ConfirmarCompra extends Component {
                                  );
                               }
                            });
+
+                           }else{
+                              Alert.alert(
+                                 'Información',
+                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+                              );
+                           }
                         }}
                      ></Button>
                   </View>

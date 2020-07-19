@@ -24,6 +24,7 @@ import Separador from '../../components/Separador';
 import { ESTADOS } from '../../constants/Estados';
 import { ArregloUtil } from '../../utils/utils';
 import { callNumber } from '../../utils/Contacto';
+import { ServicioParametros } from '../../servicios/ServicioParametros';
 
 export class DetallePedido extends Component {
    constructor(props) {
@@ -35,7 +36,11 @@ export class DetallePedido extends Component {
          listDetallePedido: detallePedido,
          estado: this.pedido.estado,
          indice: null,
+         limiteCancela: true
       };
+
+      let serv = new ServicioParametros();
+      serv.getObtenerParametroId('fechaCorte', this.limiteFecha);
    }
 
    componentDidMount() {
@@ -87,6 +92,18 @@ export class DetallePedido extends Component {
       this.setState({ estado: 'Cancelado' });
    };
 
+   limiteFecha = (fechaCorte) => {
+      console.log("ENTRA LIMITE FECHA");
+      var fechaHoy = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      var fechaLimite = new Date(fechaCorte.fecha.toString().replace(/-/g, "."));
+      console.log("fecha hoy" + fechaHoy);
+      console.log("fecha Limite" + fechaLimite);
+      if (fechaHoy.getTime() > fechaLimite.getTime()) {
+         //this.limiteCancela = false;
+         this.setState({ limiteCancela: false });
+         console.log("PUEDE CANCELAR" + this.state.limiteCancela);
+      }
+   }
    cancelarPedido = idDoc => {
       Alert.alert(
          'Cancelar Pedido',
@@ -138,6 +155,7 @@ export class DetallePedido extends Component {
    };
 
    render() {
+      console.log("boolean permite" + this.state.limiteCancela)
       this.pedido = this.state.indice
          ? global.pedidos[this.state.indice]
          : this.pedido;
@@ -405,11 +423,13 @@ export class DetallePedido extends Component {
                </View>
             ) : null}
 
-            {(((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
+            {
+               ((((this.pedido.estado == 'PI' || this.pedido.estado == 'AA') &&
                this.pedido.formaPago == 'EFECTIVO') ||
                (this.pedido.formaPago == 'TRANSFERENCIA' &&
                   this.pedido.estado == 'CT')) &&
-            this.state.estado != 'Cancelado' ? (
+                  this.state.estado != 'Cancelado') ? (
+
                <View
                   style={{
                      alignItems: 'center',
@@ -418,6 +438,7 @@ export class DetallePedido extends Component {
                   }}
                >
                   <Button
+                           disabled={!this.state.limiteCancela}
                      buttonStyle={{
                         backgroundColor: colores.colorPrimarioTomate,
                      }}
@@ -426,6 +447,10 @@ export class DetallePedido extends Component {
                         this.cancelarPedido(this.pedido.id);
                      }}
                   ></Button>
+                        {
+                           !this.state.limiteCancela ? (<Text>Cancelación deshabilitada, tu pedido ya fue procesado.</Text>) : null
+                        }
+
                </View>
             ) : null}
          </View>

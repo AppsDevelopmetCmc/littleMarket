@@ -35,6 +35,8 @@ import * as estilos from '../../estilos/estilos';
 import { ItemMapDireccion } from '../map/compnentes/ItemMapDireccion';
 import { ScrollView } from 'react-native-gesture-handler';
 
+import { ServicioSectores } from '../../servicios/ServicioSectores';
+
 let { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.02 / 2;
@@ -58,6 +60,7 @@ export class MapaDirecciones extends Component {
       this.montado = false;
       let direcciones = [];
       this.actualizarNombre = false;
+      this.tramaSectorAct = '';
       if (
          this.origen == 'nuevo' ||
          this.origen == 'actual' ||
@@ -406,6 +409,15 @@ export class MapaDirecciones extends Component {
       }
    };
 
+   asignarSector = async (latAct, longAct) => {
+      let srvSector = new ServicioSectores();
+      console.log("LATITUD ACTUAL" + latAct);
+      console.log("LONGITUD ACTUAL" + longAct);
+      this.tramaSectorAct = await srvSector.consultarSector(latAct, longAct);
+      global.sector = this.tramaSectorAct.sector;
+      console.log("SECTOR ACTUAL------->" + global.sector);
+   }
+
    actualizarDireccion = direccion => {
       this.direccionTmp = direccion;
       // console.log('direccion', direccion);
@@ -437,6 +449,7 @@ export class MapaDirecciones extends Component {
 
    actualizarDireccionPedido = async () => {
       let validar = true;
+      await this.asignarSector(this.state.region.latitude, this.state.region.longitude);
       if (!this.state.referencia) {
          Alert.alert(
             'Advertencia',
@@ -453,6 +466,8 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.id = direccionPedido.id;
          this.direccionTmp.latitud = this.state.region.latitude;
          this.direccionTmp.longitud = this.state.region.longitude;
+         this.direccionTmp.sector = this.tramaSectorAct.sector ? this.tramaSectorAct.sector : '';
+         this.direccionTmp.tieneCoberturaDireccion = this.tramaSectorAct.sector ? 'S' : 'N'
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
@@ -463,6 +478,12 @@ export class MapaDirecciones extends Component {
             this.direccionTmp
          );
          console.log('Envia Confirmar');
+         if (!this.tramaSectorAct.sector) {
+            Alert.alert(
+               'Información',
+               'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+            );
+         }
 
          this.props.navigation.navigate('ConfirmarCompraScreen', {
             origen: 'mapaDirecciones',
