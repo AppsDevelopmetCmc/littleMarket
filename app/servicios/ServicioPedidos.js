@@ -24,6 +24,7 @@ export const agregarItemPedido = producto => {
 const modificarSubtotal = (precio, cantidad) => {
    console.log('modificaSubtotal', precio, cantidad);
    global.subtotal += precio * cantidad;
+   global.subtotal = global.subtotal < 0 ? 0 : global.subtotal;
    for (let i = 0; i < global.refrescarBotones.length; i++) {
       global.refrescarBotones[i](global.subtotal);
    }
