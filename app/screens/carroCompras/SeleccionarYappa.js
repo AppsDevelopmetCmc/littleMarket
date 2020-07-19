@@ -25,6 +25,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import * as Location from 'expo-location';
 import { ServicioYapas } from '../../servicios/ServicioYapas';
 import { convertir } from '../../utils/ConvertidorUnidades';
+import * as servPedidos from '../../servicios/ServicioPedidos';
+
 export class SeleccionarYapa extends Component {
    constructor(props) {
       super(props);
@@ -37,9 +39,30 @@ export class SeleccionarYapa extends Component {
    }
    seleccionarYapa = seleccionada => {
       if (seleccionada == 'D') {
-         global.yapa = { tipo: 'D', descripcion: seleccionada };
+         global.yapa = {
+            id: 'yapa',
+            nombre: 'Yappa Donada a Fundación',
+            cantidad: 1,
+            empacado: false,
+            recibido: false,
+            precio: 0,
+            subtotal: 0,
+            unidad: 'D',
+            posicionEmpacado: 2000,
+         };
       } else {
-         global.yapa = { descripcion: seleccionada };
+         console.log('seleccionado', this.props.listaYapa[seleccionada]);
+         global.yapa = {
+            id: 'yapa',
+            nombre: this.props.listaYapa[seleccionada].nombre,
+            cantidad: '' + this.props.listaYapa[seleccionada].cantidad,
+            empacado: false,
+            recibido: false,
+            precio: 0,
+            subtotal: 0,
+            unidad: this.props.listaYapa[seleccionada].unidad,
+            posicionEmpacado: 2000,
+         };
       }
    };
    componentDidMount = () => {
@@ -69,14 +92,16 @@ export class SeleccionarYapa extends Component {
                this.props.listaYapa[i].unidad,
                this.props.listaYapa[i].cantidad
             );
-         itemYapa.value =
+         /* itemYapa.value =
             this.props.listaYapa[i].nombre +
             ' - ' +
             convertir(
                this.props.listaYapa[i].unidad,
                this.props.listaYapa[i].cantidad
-            );
-
+            );*/
+         itemYapa.value = i;
+         itemYapa.cantidad = this.props.listaYapa[i].cantidad;
+         itemYapa.unidad = this.props.listaYapa[i].unidad;
          console.log('data itemYapa', itemYapa);
          listaItemYapa.push(itemYapa);
       }
@@ -157,6 +182,8 @@ export class SeleccionarYapa extends Component {
                         onPress={() => {
                            this.seleccionarYapa(this.state.yapaSeleccionada);
                            this.props.mostrarModal(false);
+                           servPedidos.eliminarItemPedido(global.yapa);
+                           servPedidos.agregarItemPedido(global.yapa);
                            this.props.navigation.navigate(
                               'ConfirmarCompraScreen'
                            );

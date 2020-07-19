@@ -328,6 +328,8 @@ export class ServicioDirecciones {
             principal: referenciaDireccion.principal,
             latitud: referenciaDireccion.latitud,
             longitud: referenciaDireccion.longitud,
+            sector: referenciaDireccion.sector,
+            tieneCoberturaDireccion : referenciaDireccion.tieneCoberturaDireccion,
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');

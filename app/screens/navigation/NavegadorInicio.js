@@ -7,7 +7,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { cargarConfiguracion } from '../../utils/FireBase';
+import {
+   cargarConfiguracion,
+   cargarConfiguracionDev,
+} from '../../utils/FireBase';
+import { ServicioParametros } from '../../servicios/ServicioParametros';
 //PANTALLLAS
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import DatosFacturacion from '../facturacion/datosFacturacion';
@@ -40,12 +44,14 @@ import { TabProductos1 } from './TabProductos1';
 import { TabProductos2 } from './TabProductos2';
 import { TabProductos3 } from './TabProductos3';
 import { Monedero } from '../monedero/Monedero';
+import { AtencionCliente } from '../soporte/AtencionCliente';
 
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
+
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -57,9 +63,41 @@ const DrawerHome = createDrawerNavigator();
 const TopTab = createMaterialTopTabNavigator();
 const RootStack = createStackNavigator();
 
-if (!global.firebaseRegistrado) {
-   cargarConfiguracion();
+//global.ambiente = 'Dev';
+//global.ambiente = 'Prod';
+global.ambiente = 'Dev';
+if (global.ambiente) {
+   if (global.ambiente == 'Dev') {
+      Alert.alert('Aplicación en Modo Desarrollo');
+      global.rutaImagen = 'gs://yappandopruebas.appspot.com/images/';
+      if (!global.firebaseRegistradoDev) {
+         cargarConfiguracionDev();
+      }
+   } else if (global.ambiente == 'Prod') {
+      global.rutaImagen = 'gs://little-market-dev-377b6.appspot.com/images/';
+      if (!global.firebaseRegistrado) {
+         cargarConfiguracion();
+      }
+   } else {
+      Alert.alert('AMBIENTE NO CONFIGURADO');
+   }
 }
+const validarVersion = version => {
+   if (version.valor != global.version) {
+      Alert.alert(
+         'Problemas de versión',
+         'La versión actual: ' +
+            global.version +
+            ' no corresponde a la versión oficial ' +
+            version.valor +
+            '. Cierre la aplicación y vuelva abrir.'
+      );
+   }
+};
+
+let servParametros = new ServicioParametros();
+servParametros.obtenerVersion(validarVersion);
+
 const navOptionHandler = isValue => ({
    headerShown: isValue,
 });
@@ -209,6 +247,19 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="ListaNotificacionScreen"
             component={ListaNotificaciones}
+            options={{
+               title: '',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerTintColor: '#fff',
+            }}
+         />
+          <StackFromTabs.Screen
+            name="Soporte"
+            component={AtencionCliente}
             options={{
                title: '',
                headerStyle: {
@@ -479,6 +530,7 @@ function HomeDraw() {
             options={{ drawerLabel: 'ListaPedidos' }}
          />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
+        
 
          <DrawerHome.Screen
             name="ResponsabilidadSocial"

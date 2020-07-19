@@ -42,6 +42,8 @@ import {
    convertirRadioPago,
    convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
+
+import { servParametros } from '../../servicios/ServicioParametros';
 import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
 export const URLPAGOS = 'https://cloud.abitmedia.com/api/payments/create-payment-request?access-token=' + TOKEN;  
@@ -673,11 +675,11 @@ export class ConfirmarCompra extends Component {
                            titulo="ENVÍO:"
                            valor={transformDinero(global.delivery)}
                         ></Numero>
-                        {global.yapa && global.yapa.descripcion != 'D' ? (
+                        {global.yapa && global.yapa.unidad != 'D' ? (
                            <Numero
                               titulo={
                                  'YAPPA (' +
-                                 global.yapa.descripcion.split(' -')[0] +
+                                 global.yapa.nombre+
                                  ')'
                               }
                               valor={transformDinero(0.0)}
@@ -687,17 +689,17 @@ export class ConfirmarCompra extends Component {
                         <Numero
                            descuento={true}
                            titulo="DESCUENTO:"
-                           valor={transformDinero(global.valorMonedero)}
+                           valor={global.valorMonedero ? transformDinero(global.valorMonedero) : transformDinero(0.00)}
                            estiloNumero={{ color: 'red' }}
                         ></Numero>
 
                         <Numero
                            titulo="TOTAL:"
-                           valor={transformDinero(this.state.valorDescontado)}
+                           valor={this.state.valorDescontado ? transformDinero(this.state.valorDescontado) : transformDinero(0.00)}
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
 
-                        {global.yapa && global.yapa.descripcion == 'D' ? (
+                        {global.yapa && global.yapa.unidad == 'D' ? (
                            <Text style={{ marginTop: 10 }}>
                               Gracias por su Donación a Fundación Aliñambi
                            </Text>
@@ -819,6 +821,7 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            /*this.consultarRestPago(1,{})*/
+                           if(global.sector){
                            this.generarNumeroOrden(codigo => {
                               console.log(
                                  'Luego de generar numero:',
@@ -859,9 +862,6 @@ export class ConfirmarCompra extends Component {
                                        asociado: 'asociado@gmail.com',
                                        nombreAsociado: 'Juan perez',
                                        telefonoAsociado: '1245635',
-                                       yapa: global.yapa
-                                          ? global.yapa.descripcion
-                                          : '',
                                        subtotal: global.subtotal,
                                        envio: global.delivery,
                                        descuento: parseFloat(
@@ -911,9 +911,6 @@ export class ConfirmarCompra extends Component {
                                        asociado: 'asociado@gmail.com',
                                        nombreAsociado: 'Juan perez',
                                        telefonoAsociado: '1245635',
-                                       yapa: global.yapa
-                                          ? global.yapa.descripcion
-                                          : '',
                                        subtotal: global.subtotal,
                                        envio: global.delivery,
                                        descuento: parseFloat(
@@ -939,6 +936,13 @@ export class ConfirmarCompra extends Component {
                                  );
                               }
                            });
+
+                           }else{
+                              Alert.alert(
+                                 'Información',
+                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+                              );
+                           }
                         }}
                      ></Button>
                   </View>

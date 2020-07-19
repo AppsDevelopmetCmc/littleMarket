@@ -8,17 +8,23 @@ export const agregarItemPedido = producto => {
       global.items = new Map();
       global.subtotal = 0;
    }
-   let itemProducto = global.items.get(producto.id);
-   if (itemProducto == null) {
+   if (producto.id === 'yapa') {
       global.items.set(producto.id, crearItemPedido(producto));
    } else {
-      modificarItemPedidos(itemProducto, 1);
+      let itemProducto = global.items.get(producto.id);
+      if (itemProducto == null) {
+         global.items.set(producto.id, crearItemPedido(producto));
+      } else {
+         console.log('modificar', itemProducto);
+         modificarItemPedidos(itemProducto, 1);
+      }
+      modificarSubtotal(producto.precio, 1);
    }
-   modificarSubtotal(producto.precio, 1);
 };
 const modificarSubtotal = (precio, cantidad) => {
    console.log('modificaSubtotal', precio, cantidad);
    global.subtotal += precio * cantidad;
+   global.subtotal = global.subtotal < 0 ? 0 : global.subtotal;
    for (let i = 0; i < global.refrescarBotones.length; i++) {
       global.refrescarBotones[i](global.subtotal);
    }
@@ -52,13 +58,13 @@ export const eliminarItemPedido = producto => {
    let itemProducto = global.items.get(producto.id);
    if (itemProducto != null) {
       global.items.delete(producto.id);
+      modificarSubtotal(producto.precio, -itemProducto.cantidad);
    } else {
       console.log(
          'ERROR se intenta eliminar un item que no existe ',
          producto.id
       );
    }
-   modificarSubtotal(producto.precio, -itemProducto.cantidad);
 };
 const crearItemPedido = producto => {
    let itemProducto = {
@@ -71,7 +77,9 @@ const crearItemPedido = producto => {
       precio: producto.precio,
       subtotal: producto.precio,
       unidad: producto.unidad,
+      posicionEmpacado: producto.posicionEmpacado,
    };
+   console.log('--------------- ITEM_PRODUCTO----- ', itemProducto);
    return itemProducto;
 };
 
@@ -103,9 +111,31 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
       .then(function (doc) {
          let descripcionALert = 'Su pedido ha sido procesado, con la orden: ';
          if (pedido.formaPago === 'EFECTIVO') {
+            let text =
+               'He realizado el pedido: ' +
+               pedido.orden +
+               ' por el monto $ ' +
+               parseFloat(pedido.total).toFixed(2);
+
             Alert.alert(
                'Gracias por comprar en Yappando',
-               descripcionALert + '' + pedido.orden
+               descripcionALert +
+                  '' +
+                  pedido.orden +
+                  '. Comunicarse con el canal de ventas',
+               [
+                  {
+                     text: 'Comunicarse',
+                     onPress: () => {
+                        console.log('OK Pressed');
+                        let numero = '593998668633';
+                        Linking.openURL(
+                           'https://wa.me/' + numero + '?text=' + text
+                        );
+                     },
+                  },
+               ],
+               { cancelable: false }
             );
          }
          if (pedido.formaPago === 'TRANSFERENCIA') {
@@ -131,7 +161,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                         console.log('OK Pressed');
                         let numero = global.numWhatssap;
                         Linking.openURL(
-                           'whatsapp://send?text=' + text + '&phone=' + numero
+                           'https://wa.me/' + numero + '?text=' + text
                         );
                      },
                   },

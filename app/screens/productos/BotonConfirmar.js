@@ -67,10 +67,10 @@ export class BotonConfirmar extends Component {
       console.log('Ingesar a Mostrar Modal');
       console.log('SUBTOTAL' + this.state.subtotal.toFixed(2));
       if (
-         this.state.subtotal.toFixed(2) >= 10 &&
-         this.state.subtotal.toFixed(2) < 20
+         this.state.subtotal.toFixed(2) >= 15 &&
+         this.state.subtotal.toFixed(2) < 25
       ) {
-         console.log('ENTRE 10 Y 20');
+         console.log('ENTRE 15 Y 25');
          for (var i = 0; i < this.yapas.length; i++) {
             if (this.yapas[i].tipo == 1) {
                this.tramaYapa.push(this.yapas[i]);
@@ -78,8 +78,8 @@ export class BotonConfirmar extends Component {
          }
       }
 
-      if (this.state.subtotal.toFixed(2) >= 20) {
-         console.log('MAS DE 20');
+      if (this.state.subtotal.toFixed(2) >= 25) {
+         console.log('MAS DE 25');
          for (var i = 0; i < this.yapas.length; i++) {
             if (this.yapas[i].tipo == 2) {
                this.tramaYapa.push(this.yapas[i]);
@@ -90,24 +90,24 @@ export class BotonConfirmar extends Component {
    };
    validarMonto = () => {
       if (
-         global.montoYapa >= 10 &&
-         global.montoYapa < 20 &&
-         this.state.subtotal.toFixed(2) >= 10 &&
-         this.state.subtotal.toFixed(2) < 20
+         global.montoYapa >= 15 &&
+         global.montoYapa < 25 &&
+         this.state.subtotal.toFixed(2) >= 15 &&
+         this.state.subtotal.toFixed(2) < 25
       ) {
-         console.log('MISMA YAPA de 10');
+         console.log('MISMA YAPA de 15');
       } else if (
-         global.montoYapa >= 20 &&
-         this.state.subtotal.toFixed(2) >= 20
+         global.montoYapa >= 25 &&
+         this.state.subtotal.toFixed(2) >= 25
       ) {
-         console.log('MISMA YAPA de 20');
+         console.log('MISMA YAPA de 25');
       } else {
          global.yapa = undefined;
       }
-      if (this.state.subtotal.toFixed(2) < 10) {
-         Alert.alert('Información', 'Monto mínimo de compra $10.00');
+      if (this.state.subtotal.toFixed(2) < 15) {
+         Alert.alert('Información', 'Monto mínimo de compra $15.00');
          return;
-      } else if (this.state.subtotal.toFixed(2) >= 10 && !global.yapa) {
+      } else if (this.state.subtotal.toFixed(2) >= 15) {
          global.montoYapa = this.state.subtotal.toFixed(2);
          this.mostrarModalYapa(true);
          return;

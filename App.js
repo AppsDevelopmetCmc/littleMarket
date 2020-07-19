@@ -1,7 +1,7 @@
 import React from 'react';
 import NavegadorInicio from './app/screens/navigation/NavegadorInicio';
 import { decode, encode } from 'base-64';
-import { YellowBox } from 'react-native';
+import { YellowBox, Alert } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps } from './app/utils/ApiKey';
 
@@ -25,6 +25,7 @@ YellowBox.ignoreWarnings([
    'Warning: componentWillReceiveProps has ',
    'Setting a timer',
 ]);
+global.version = '0.0.9.0';
 
 Geocoder.init(apiKeyMaps, {
    language: 'es-419',
