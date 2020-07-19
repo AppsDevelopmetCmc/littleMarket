@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
    },
    contenedorViews: { paddingVertical: 10, alignItems: 'center' },
    contenedorWrap: { marginVertical: 5 },
+
    estiloTextoSubTitulo: {
       color: colores.colorOscuroTexto,
       fontWeight: 'bold',
