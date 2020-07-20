@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, Alert, Button } from 'react-native';
+import {
+   View,
+   Text,
+   StyleSheet,
+   Image,
+   Alert,
+   Button,
+   TouchableOpacity,
+} from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as colores from '../../../constants/Colores';
@@ -7,6 +15,7 @@ import { transformDinero } from '../../../utils/Validaciones';
 import Separador from '../../../components/Separador';
 
 import { formatearFechaISO, obtenerHoraActual } from '../../../utils/DateUtil';
+import { ServicioNotificaciones } from '../../../servicios/ServicioNotificaciones';
 
 export class ItemNotificacionGeneral extends Component {
    constructor(props) {
@@ -14,12 +23,27 @@ export class ItemNotificacionGeneral extends Component {
       this.state = {};
    }
 
-   // TO DO: Se debe realizar el desarrollo para categorias y para cambio de iconos,
-   //        el cambio de estado para que solo se muestren las notificaciones pendientes.
+   leerNotificacion = () => {
+      let srvNotificaciones = new ServicioNotificaciones();
+      let { estado, id } = this.props.notificacion;
+      let { repintarNotificaciones, correo } = this.props;
+      srvNotificaciones.actualizarTotaleNotificaciones(correo);
+
+      if (estado === 'V') {
+         console.log('Ingreso a cambiar estado a leida');
+         srvNotificaciones.actualizarEstadoNotificacion(correo, id);
+         srvNotificaciones.registrarEscuchaTodas(
+            correo,
+            repintarNotificaciones
+         );
+      } else {
+         console.log('No se debe realizar ninguna acción');
+      }
+   };
    render() {
       let fecha = this.props.notificacion.fecha.toDate();
       return (
-         <View style={styles.touch}>
+         <TouchableOpacity style={styles.touch} onPress={this.leerNotificacion}>
             <View style={styles.colorLinea}></View>
 
             <View style={styles.contenedorTexto}>
@@ -27,7 +51,7 @@ export class ItemNotificacionGeneral extends Component {
                   <View style={styles.estiloIconoCobertura}>
                      <Text
                         style={
-                           this.props.notificacion.posicion < 3
+                           this.props.notificacion.estado == 'V'
                               ? styles.textoNegrita
                               : styles.texto
                         }
@@ -41,7 +65,7 @@ export class ItemNotificacionGeneral extends Component {
                   <View style={styles.contenedorDireccion}>
                      <Text
                         style={
-                           this.props.notificacion.posicion < 3
+                           this.props.notificacion.estado == 'V'
                               ? styles.textoNegrita
                               : styles.texto
                         }
@@ -55,10 +79,14 @@ export class ItemNotificacionGeneral extends Component {
                <Icon
                   name="bell"
                   size={30}
-                  color={colores.colorPrimarioTomate}
+                  color={
+                     this.props.notificacion.estado == 'V'
+                        ? colores.colorPrimarioTomate
+                        : colores.colorClaroPrimario
+                  }
                />
             </View>
-         </View>
+         </TouchableOpacity>
       );
    }
 }

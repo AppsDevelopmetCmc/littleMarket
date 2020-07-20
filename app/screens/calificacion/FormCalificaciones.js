@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {
-   StyleSheet,
-   View,
-   Text,
-   ActivityIndicator,
-   TextInput,
-   ScrollView,
-} from 'react-native';
-import { Overlay, Button, Input } from 'react-native-elements';
+import React from 'react';
+import { StyleSheet, View, Text, TextInput, ScrollView } from 'react-native';
+
 import { Rating } from 'react-native-elements';
-import RadioForm, {
-   RadioButton,
-   RadioButtonInput,
-   RadioButtonLabel,
-} from 'react-native-simple-radio-button';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import RadioForm from 'react-native-simple-radio-button';
 
 // Importacion de colores
 import * as colores from '../../constants/Colores';
-import * as msg from '../../constants/Mensajes';
 
 export function FormCalificaciones(props) {
    const {
@@ -29,6 +15,7 @@ export function FormCalificaciones(props) {
       setQueja,
       puntuacion,
       titulo,
+      subTitulo,
       parrafo,
       placeholderComentario,
       idPedido,
@@ -58,9 +45,11 @@ export function FormCalificaciones(props) {
             <View style={styles.view}>
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoTitulo}>{titulo}</Text>
-                  <Text style={styles.estiloTextoSubTitulo}>{idPedido}</Text>
                </View>
-
+               <View style={styles.contenedorViews}>
+                  <Text style={styles.estiloTextoSubTitulo}>{subTitulo}</Text>
+                  {/* <Text style={styles.estiloTextoSubTitulo}>{idPedido}</Text> */}
+               </View>
                <View style={styles.contenedorViews}>
                   <Text style={styles.estiloTextoParrafo}>{parrafo}</Text>
                </View>
@@ -94,8 +83,8 @@ export function FormCalificaciones(props) {
                            labelHorizontal={true}
                            buttonColor={colores.colorPrimarioTomate}
                            selectedButtonColor={colores.colorPrimarioTomate}
-                           buttonSize={15}
-                           buttonOuterSize={25}
+                           buttonSize={10}
+                           buttonOuterSize={20}
                            animation={true}
                            onPress={codigoDetalle}
                            wrapStyle={styles.contenedorWrap}
@@ -124,7 +113,7 @@ export function FormCalificaciones(props) {
                         borderColor: colores.colorClaroTexto,
                      }}
                   >
-                     Comentarios
+                     Comentarios / Observaciones
                   </Text>
                   <TextInput
                      multiline={true}
@@ -147,12 +136,6 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
-   overlay: {
-      width: '90%',
-      height: '90%',
-      backgroundColor: colores.colorBlanco,
-      borderRadius: 15,
-   },
    view: {
       alignItems: 'center',
       alignContent: 'center',
@@ -172,17 +155,6 @@ const styles = StyleSheet.create({
    },
    contenedorViews: { paddingVertical: 10, alignItems: 'center' },
    contenedorWrap: { marginVertical: 5 },
-   btnStyles: {
-      marginTop: 50,
-      width: '50%',
-      height: 40,
-      alignItems: 'center',
-   },
-   btnRegistrarse: {
-      padding: 10,
-      backgroundColor: colores.colorBlanco,
-      borderRadius: 25,
-   },
    estiloTextoSubTitulo: {
       color: colores.colorOscuroTexto,
       fontWeight: 'bold',

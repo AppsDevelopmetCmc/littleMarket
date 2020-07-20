@@ -49,6 +49,8 @@ export class TabProductos1 extends Component {
       this.state = {
          listaProductos: [],
          mostrarInstrucciones: true,
+         pedidoCalifica: {},
+         estadocalifica: false,
       };
       console.log('CONSTRUCTOR DE TAB 1');
       global.pintarTab1 = this.pintarLista;
@@ -77,6 +79,17 @@ export class TabProductos1 extends Component {
    }
    cerrarBienvenida = () => {
       this.setState({ mostrarInstrucciones: false });
+   };
+
+   cambioVisibleCalifica = visible => {
+      this.setState({ estadocalifica: visible });
+   };
+
+   seteoPedidoCalifica = pedido => {
+      this.setState({ pedidoCalifica: pedido });
+   };
+   seteoEstadoCalifica = valor => {
+      this.setState({ estadocalifica: valor });
    };
    render() {
       console.log('--ListaProductos render');
@@ -120,8 +133,17 @@ export class TabProductos1 extends Component {
                transparent={true}
                visible={this.state.mostrarInstrucciones}
             >
-               <Bienvenida cerrar={this.cerrarBienvenida}></Bienvenida>
+               <Bienvenida
+                  cerrar={this.cerrarBienvenida}
+                  pedidoCalifica={this.seteoPedidoCalifica}
+                  estadocalifica={this.seteoEstadoCalifica}
+               ></Bienvenida>
             </Modal>
+            <PopupCalificaciones
+               isVisible={this.state.estadocalifica}
+               pedido={this.state.pedidoCalifica}
+               cambioVisibleCalifica={this.cambioVisibleCalifica}
+            ></PopupCalificaciones>
          </SafeAreaProvider>
       );
    }

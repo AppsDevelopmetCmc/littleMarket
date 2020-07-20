@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View, Alert, Linking } from 'react-native';
 import { Overlay, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -40,7 +40,7 @@ export function PopupCalificaciones(props) {
    const validacionSiguiente = () => {
       if (puntuacionPedido < 3.5) {
          if (quejaPedido == -1) {
-            Alert.alert('Información','Debe seleccionar una razón');
+            Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
             setVarPresentacion(1);
          }
@@ -52,12 +52,41 @@ export function PopupCalificaciones(props) {
    const validacionSalir = () => {
       if (puntuacionProducto < 3.5) {
          if (quejaProducto == -1) {
-            Alert.alert('Información','Debe seleccionar una razón');
+            Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
             guardarFirebase();
          }
       } else {
          guardarFirebase();
+      }
+   };
+
+   const enviarWhatssap = () => {
+      let numero = global.numWhatssap;
+      let text =
+         'Yappando está encantado de atenderle \n\nPor favor envíar esta respuesta, pronto un asesor se pondrá en contacto\n' +
+         '\n' +
+         'Código de pedido: ' +
+         pedido.orden +
+         '\n' +
+         'Calificación Entregador: ' +
+         puntuacionPedido +
+         '\n' +
+         'Calificación Producto: ' +
+         puntuacionProducto;
+
+      if (puntuacionProducto < 3.5) {
+         if (quejaProducto == -1) {
+            Alert.alert('Información', 'Debe seleccionar una razón');
+         } else {
+            guardarFirebase();
+            Linking.openURL(
+               'whatsapp://send?text=' + text + '&phone=' + numero
+            );
+         }
+      } else {
+         guardarFirebase();
+         Linking.openURL('whatsapp://send?text=' + text + '&phone=' + numero);
       }
    };
 
@@ -89,11 +118,10 @@ export function PopupCalificaciones(props) {
          .get()
          .then(doc => {
             if (doc.exists) {
-               //  console.log('Document data:', doc.data());
                manejoResp(doc.data().respPedido, doc.data().respProducto);
                setValidacionEstrellas(doc.data().minimo);
             } else {
-               console.log('No such document!');
+               console.log('No se encuentra el documento');
             }
          })
          .catch(error => {
@@ -104,7 +132,7 @@ export function PopupCalificaciones(props) {
    const guardarFirebase = async () => {
       setIsLoading(true);
       await global.db
-         .collection('asociados')
+         .collection('repartidores')
          .doc(pedido.asociado)
          .collection('pedidos')
          .doc(pedido.id)
@@ -166,9 +194,14 @@ export function PopupCalificaciones(props) {
                   setQueja={setQuejaPedido}
                   setDetalle={setDetallePedido}
                   puntuacion={puntuacionPedido}
-                  titulo={'Califica tu Pedido'}
+                  titulo={'Customer Service'}
+                  subTitulo={'Califica tu entregador'}
                   parrafo={msg.msg3}
-                  placeholderComentario={'El pedido estuvo perfecto'}
+                  placeholderComentario={
+                     puntuacionPedido > 3.5
+                        ? 'El pedido estuvo perfecto'
+                        : 'Danos tu opinión'
+                  }
                   itemLista={varItemDefault}
                   numeroEstrellas={varEstrellaDefault}
                   idPedido={pedido.orden}
@@ -177,7 +210,6 @@ export function PopupCalificaciones(props) {
                <View
                   style={{
                      alignItems: 'flex-end',
-                     paddingBottom: 20,
                      flexDirection: 'row',
                   }}
                >
@@ -185,7 +217,7 @@ export function PopupCalificaciones(props) {
                      title="En otro momento"
                      titleStyle={textEstilo(
                         colores.colorPrimarioTomate,
-                        15,
+                        13,
                         'normal'
                      )}
                      containerStyle={styles.btnStyles}
@@ -194,7 +226,7 @@ export function PopupCalificaciones(props) {
                      icon={
                         <Icon
                            name="arrow-left-bold-circle-outline"
-                           size={30}
+                           size={18}
                            color={colores.colorPrimarioTomate}
                         />
                      }
@@ -203,7 +235,7 @@ export function PopupCalificaciones(props) {
                      title="Siguiente"
                      titleStyle={textEstilo(
                         colores.colorPrimarioTomate,
-                        15,
+                        13,
                         'normal'
                      )}
                      containerStyle={styles.btnStyles}
@@ -212,7 +244,7 @@ export function PopupCalificaciones(props) {
                      icon={
                         <Icon
                            name="arrow-right-bold-circle-outline"
-                           size={30}
+                           size={18}
                            color={colores.colorPrimarioTomate}
                         />
                      }
@@ -228,20 +260,47 @@ export function PopupCalificaciones(props) {
                   setQueja={setQuejaProducto}
                   setDetalle={setDetalleProducto}
                   puntuacion={puntuacionProducto}
-                  titulo={'Califica tu Producto'}
+                  titulo={'Customer Service'}
+                  subTitulo={'Califica tu producto'}
                   parrafo={msg.msg4}
-                  placeholderComentario={'El producto estuvo perfecto'}
+                  placeholderComentario={
+                     puntuacionPedido > 3.5
+                        ? 'El pedido estuvo perfecto'
+                        : 'Danos tu opinión'
+                  }
                   itemLista={varItemDefault}
                   numeroEstrellas={varEstrellaDefault}
                   idPedido={pedido.orden}
                   validacionEstrellas={validacionEstrellas}
                />
-               <View style={{ alignItems: 'center', paddingBottom: 20 }}>
+               <View
+                  style={{
+                     alignItems: 'center',
+                     paddingBottom: 20,
+                     flexDirection: 'row',
+                     justifyContent: 'center',
+                     alignContent: 'center',
+                  }}
+               >
+                  {(puntuacionProducto < 3.5 || puntuacionPedido < 3.5) && (
+                     <Button
+                        title="Contactar"
+                        titleStyle={textEstilo(
+                           colores.colorPrimarioTomate,
+                           13,
+                           'normal'
+                        )}
+                        containerStyle={styles.btnStyles}
+                        buttonStyle={styles.btnRegistrarse}
+                        onPress={enviarWhatssap}
+                     ></Button>
+                  )}
+
                   <Button
                      title="Finalizar"
                      titleStyle={textEstilo(
                         colores.colorPrimarioTomate,
-                        15,
+                        13,
                         'normal'
                      )}
                      containerStyle={styles.btnStyles}
@@ -249,10 +308,10 @@ export function PopupCalificaciones(props) {
                      onPress={validacionSalir}
                   ></Button>
                </View>
-               <Cargando
+               {/* <Cargando
                   text="Gracias por su calificación, estamos guardando su respuesta espere un momento"
                   isVisible={isLoading}
-               ></Cargando>
+               ></Cargando> */}
             </View>
          )}
       </Overlay>

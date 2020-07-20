@@ -62,6 +62,7 @@ export class ConfirmarCompra extends Component {
          horarioSeleccionado: global.horarioSeleccionado,
          fechas: [],
          horarios: [],
+         horariosFecha: [],
          direccion: global.direccionPedido.descripcion,
          referencia: global.direccionPedido.referencia,
          pagoSeleccionado:
@@ -139,6 +140,16 @@ export class ConfirmarCompra extends Component {
    };
    cargarCombos = (fechas, horarios) => {
       this.setState({ fechas: fechas, horarios: horarios });
+   };
+   cargarHorarioFecha = (fecha, horarios) => {
+      let horariosTmp = [];
+      horarios.forEach(element => {
+         console.log(element);
+         if (element.estado === 'V' && element.fecha === fecha) {
+            horariosTmp.push(element);
+         }
+         this.setState({ horariosFecha: horariosTmp });
+      });
    };
    componentDidMount() {
       console.log('llega confirmar Compra');
@@ -437,7 +448,6 @@ export class ConfirmarCompra extends Component {
                         <View>
                            <View>
                               <RNPickerSelect
-                                 onValueChange={value => console.log(value)}
                                  items={this.state.fechas}
                                  value={this.state.fechaSeleccionada}
                                  style={pickerSelectStyles}
@@ -447,10 +457,15 @@ export class ConfirmarCompra extends Component {
                                     value: null,
                                  }}
                                  onValueChange={value => {
+                                    console.log('valor', value);
                                     this.setState({
                                        fechaSeleccionada: value,
                                     });
                                     global.fechaSeleccionada = value;
+                                    this.cargarHorarioFecha(
+                                       value,
+                                       this.state.horarios
+                                    );
                                  }}
                                  Icon={() => {
                                     return (
@@ -466,7 +481,7 @@ export class ConfirmarCompra extends Component {
                            <Separador alto={5}></Separador>
                            <RNPickerSelect
                               onValueChange={value => console.log(value)}
-                              items={this.state.horarios}
+                              items={this.state.horariosFecha}
                               value={this.state.horarioSeleccionado}
                               style={pickerSelectStyles}
                               placeholder={{

@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 import { ServicioNotificaciones } from '../servicios/ServicioNotificaciones';
 
 export class ServicioCodigos {
+   // Validacion de codigo promocional
    validarCodigo = async (idCodigo, idMail, fnFinalizar) => {
       let fechaActual = new Date();
 
@@ -79,6 +80,9 @@ export class ServicioCodigos {
                            ' por ingresar el código ' +
                            idCodigo,
                         fecha: new Date(),
+                        estado: 'V',
+                        tipo: 'N',
+                        favorita: 'N',
                      }
                   );
                }
@@ -137,6 +141,9 @@ export class ServicioCodigos {
                         ' por ingresar el código ' +
                         idCodigo,
                      fecha: new Date(),
+                     estado: 'V',
+                     tipo: 'N',
+                     favorita: 'N',
                   }
                );
             }
