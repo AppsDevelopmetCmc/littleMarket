@@ -46,7 +46,7 @@ import { ServicioSectores } from '../../servicios/ServicioSectores';
 export class TabProductos2 extends Component {
    constructor(props) {
       super(props);
-      this.tramaSectorIni = "";
+      this.tramaSectorIni = '';
       this.state = {
          listaProductos: [],
       };
@@ -65,19 +65,20 @@ export class TabProductos2 extends Component {
       console.log('----------ASIGNANDO DIRECCION----------');
       srvDirecciones.asignarDireccionPedido(
          global.usuario,
-         this.crearDireccionPedido
+         this.crearDireccionPedido,
+         this.asignarSector
       );
    }
-   asignarSector = async () => {
+   asignarSector = async (latitud, longitud) => {
       let srvSector = new ServicioSectores();
-      console.log("LATITUD INICIAL" + global.latIni);
-      console.log("LONGITUD INICIAL" + global.longIni);
+      console.log('** ASIGNAR SECTOR ** LATITUD INICIAL' + latitud);
+      console.log('** ASIGNAR SECTOR ** LONGITUD INICIAL' + longitud);
 
-      this.tramaSectorIni = await srvSector.consultarSector(global.latIni, global.longIni);
+      this.tramaSectorIni = await srvSector.consultarSector(latitud, longitud);
       this.setState({ sector: this.tramaSectorIni.sector });
       global.sector = this.tramaSectorIni.sector;
-      console.log("SECTOR ------->" + this.tramaSectorIni.sector);
-   }
+      console.log('SECTOR ------->' + this.tramaSectorIni.sector);
+   };
    crearDireccionPedido = async () => {
       console.log('---------CREANDO DIRECCION----------');
       Geocoder.init(APIKEY);
@@ -100,7 +101,7 @@ export class TabProductos2 extends Component {
       console.log('---------GUARDANDO DIRECCION----------');
       await this.asignarSector(latitud, longitud);
 
-      if(!this.tramaSectorIni.sector){
+      if (!this.tramaSectorIni.sector) {
          Alert.alert(
             'Información',
             'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo'
@@ -114,7 +115,7 @@ export class TabProductos2 extends Component {
          principal: 'N',
          referencia: '',
          tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
-         sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : ''
+         sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : '',
       });
    };
 

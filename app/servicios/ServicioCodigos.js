@@ -51,6 +51,7 @@ export class ServicioCodigos {
                      //Si no existe creo primero el monedero para el beneficiario
                      this.crearMonedero(respuesta.data().beneficiario, {
                         valor: parseFloat(respuesta.data().valor),
+                        valorDescuento: 0,
                      });
                   }
 
@@ -107,6 +108,7 @@ export class ServicioCodigos {
                      global.usuario,
                      {
                         valor: parseFloat(respuesta.data().valor),
+                        valorDescuento: 0,
                      },
                      fnFinalizar
                   );

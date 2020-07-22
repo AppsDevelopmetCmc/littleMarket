@@ -2,14 +2,14 @@ import { ArregloUtil, DateUtil } from '../utils/utils';
 import { formatearFechaCompleta } from '../utils/DateUtil';
 import { Alert } from 'react-native';
 
-export const obtenerImagenBienvenida = async callback => {
-   let metadata = await global.db
-      .collection('parametros')
-      .doc('bienvenida')
-      .get();
-   callback(metadata.data().imagen);
-};
 export class ServicioParametros {
+   obtenerImagenBienvenida = async callback => {
+      let metadata = await global.db
+         .collection('parametros')
+         .doc('bienvenida')
+         .get();
+      callback(metadata.data().imagen);
+   };
    registrarEscuchaParametrosTodas = (arreglo, fnObtener) => {
       let arregloUtil = new ArregloUtil(arreglo);
       global.db.collection('parametros').onSnapshot(function (snapShot) {

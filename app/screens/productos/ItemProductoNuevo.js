@@ -50,7 +50,7 @@ export class ItemProductoNuevo extends Component {
    }
 
    UNSAFE_componentWillReceiveProps(nextProps) {
-      console.log('componentWillReceiveProps');
+      //  console.log('componentWillReceiveProps');
       if (nextProps.producto.limpiar) {
          //Perform some operation
          this.setState({ checked: false, cantidad: 0 });

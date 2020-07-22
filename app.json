@@ -1,11 +1,11 @@
 {
    "expo": {
-      "name": "Yappando_Pruebas",
-      "slug": "Yappando_Pruebas",
+      "name": "Yappando",
+      "slug": "Yappando",
       "platforms": ["ios", "android", "web"],
       "version": "1.0.0",
       "orientation": "portrait",
-      "icon": "./assets/LogoYapandoPruebas.png",
+      "icon": "./assets/LogoYapando.png",
       "splash": {
          "image": "./assets/splashYappando.png",
          "resizeMode": "contain",
@@ -16,14 +16,14 @@
       },
       "assetBundlePatterns": ["**/*"],
       "ios": {
-         "bundleIdentifier": "com.clearminds.yappando.pruebas",
+         "bundleIdentifier": "com.clearminds.yappando",
          "buildNumber": "1.0.0",
 		 
 		 
       },
       "android": {
-         "versionCode": 1,
-         "package": "yappando.pruebas.com",
+         "versionCode": 10,
+         "package": "yappando.com",
          "config": {
             "googleSignIn": {
                "apiKey": "AIzaSyBlbBJcRwgYq2c0R02Vv-4VB7AjejMvUi8",
