@@ -77,7 +77,10 @@ const crearItemPedido = producto => {
       precio: producto.precio,
       subtotal: producto.precio,
       unidad: producto.unidad,
-      posicionEmpacado: producto.posicionEmpacado,
+      posicionEmpacado:
+         producto.posicionEmpacado != undefined
+            ? producto.posicionEmpacado
+            : 1000,
    };
    console.log('--------------- ITEM_PRODUCTO----- ', itemProducto);
    return itemProducto;
@@ -197,6 +200,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
          if (pedido.descuento > 0) {
             new ServicioMonederos().actualizarMonedero(
                global.usuario,
+               parseFloat(0),
                parseFloat(0)
             );
          }

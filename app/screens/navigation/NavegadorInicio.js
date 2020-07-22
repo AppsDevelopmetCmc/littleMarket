@@ -52,7 +52,6 @@ import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
 
-
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
 const StackDirection = createStackNavigator();
@@ -65,7 +64,7 @@ const RootStack = createStackNavigator();
 
 //global.ambiente = 'Dev';
 //global.ambiente = 'Prod';
-global.ambiente = 'Dev';
+global.ambiente = 'Prod';
 if (global.ambiente) {
    if (global.ambiente == 'Dev') {
       Alert.alert('Aplicación en Modo Desarrollo');
@@ -257,7 +256,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-          <StackFromTabs.Screen
+         <StackFromTabs.Screen
             name="Soporte"
             component={AtencionCliente}
             options={{
@@ -530,7 +529,6 @@ function HomeDraw() {
             options={{ drawerLabel: 'ListaPedidos' }}
          />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
-        
 
          <DrawerHome.Screen
             name="ResponsabilidadSocial"

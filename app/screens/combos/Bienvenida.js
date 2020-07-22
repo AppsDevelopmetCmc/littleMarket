@@ -16,22 +16,27 @@ import { ServicioParametros } from '../../servicios/ServicioParametros';
 export class Bienvenida extends Component {
    constructor(props) {
       super(props);
-      // this.imagen = require('../../../app/imagenes/LogoBienvenida.jpeg');
-      console.log('Props Bienvenida', props);
+      this.imagen = require('../../../app/imagenes/LogoBienvenida.jpeg');
+      //  console.log('Props Bienvenida', props);
 
       this.state = {
-         //  imagen: require('../../../app/imagenes/LogoBienvenida.jpeg'),
+         // imagen: require('../../../app/imagenes/LogoBienvenida.jpeg'),
          cerrar: '',
       };
    }
    componentDidMount = () => {
-      // this.setState({ imagen: this.imagen });
-      //  srvParametros.obtenerImagenBienvenida(this.pintarImagen);
-      new ServicioParametros().obtenerNumeroWhatssap();
+      let srvParametros = new ServicioParametros();
+      //     this.setState({ imagen: this.imagen });
+      srvParametros.obtenerImagenBienvenida(this.pintarImagen);
+      new srvParametros.obtenerNumeroWhatssap();
       this.montado = true;
       setTimeout(() => {
          this.pintarCerrar();
       }, 2000);
+   };
+   pintarImagen = imagen => {
+      console.log('IMAGEN:', imagen);
+      this.setState({ imagen: imagen });
    };
    pintarCerrar = () => {
       this.setState({ cerrar: 'X Cerrar' });
@@ -72,67 +77,76 @@ export class Bienvenida extends Component {
             ? require('../../imagenes/Bienvenida3.jpeg')
             : require('../../imagenes/Bienvenida5.jpeg');*/
       let imagen = require('../../imagenes/LogoBienvenida.jpeg');
+      console.log('IMAGEN EN RENDER' + this.state.imagen);
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <ImageBackground
-                  style={{
-                     flex: 1,
-                     resizeMode: 'cover',
-                     justifyContent: 'flex-start',
-                  }}
-                  source={imagen}
-               >
-                  <View
+               {this.state.imagen ? (
+                  <ImageBackground
                      style={{
-                        alignItems: 'flex-end',
+                        flex: 1,
+                        resizeMode: 'cover',
                         justifyContent: 'flex-start',
-                        //marginVertical: 10,
-                        padding: 10,
-                        flex: 10,
-                        // backgroundColor: 'blue',
                      }}
+                     source={
+                        this.state.imagen
+                           ? { uri: this.state.imagen }
+                           : this.imagen
+                     }
                   >
-                     <TouchableOpacity
-                        underlayColor={colores.colorBlanco}
-                        onPress={() => {
-                           console.log(
-                              'Ingreso a cerrar la ventana de Bienvenida'
-                           );
-                           console.log(
-                              'global.numWhatssap',
-                              global.numWhatssap
-                           );
-                           this.obtenerPedidoCalifica(global.usuario);
-                           this.props.cerrar();
+                     <View
+                        style={{
+                           alignItems: 'flex-end',
+                           justifyContent: 'flex-start',
+                           //marginVertical: 10,
+                           padding: 10,
+                           flex: 10,
+                           // backgroundColor: 'blue',
                         }}
                      >
-                        <View
-                           style={{
-                              backgroundColor: 'rgb(138,221,45,0.8)',
-                              //width: 10,
-                              //height: 50,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              //borderRadius: 10,
-                              //padding: 30,
-                              //borderWidth: 2,
-                              //borderColor: 'black',
+                        <TouchableOpacity
+                           underlayColor={colores.colorBlanco}
+                           onPress={() => {
+                              console.log(
+                                 'Ingreso a cerrar la ventana de Bienvenida'
+                              );
+                              console.log(
+                                 'global.numWhatssap',
+                                 global.numWhatssap
+                              );
+                              this.obtenerPedidoCalifica(global.usuario);
+                              this.props.cerrar();
                            }}
                         >
-                           <Text
+                           <View
                               style={{
-                                 color: 'gray',
-                                 fontSize: 16,
-                                 backgroundColor: 'white',
+                                 backgroundColor: 'rgb(138,221,45,0.8)',
+                                 //width: 10,
+                                 //height: 50,
+                                 alignItems: 'center',
+                                 justifyContent: 'center',
+                                 //borderRadius: 10,
+                                 //padding: 30,
+                                 //borderWidth: 2,
+                                 //borderColor: 'black',
                               }}
                            >
-                              {this.state.cerrar}
-                           </Text>
-                        </View>
-                     </TouchableOpacity>
-                  </View>
-               </ImageBackground>
+                              <Text
+                                 style={{
+                                    color: 'gray',
+                                    fontSize: 16,
+                                    backgroundColor: 'white',
+                                 }}
+                              >
+                                 {this.state.cerrar}
+                              </Text>
+                           </View>
+                        </TouchableOpacity>
+                     </View>
+                  </ImageBackground>
+               ) : (
+                  <View></View>
+               )}
             </View>
          </View>
       );
