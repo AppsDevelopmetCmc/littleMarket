@@ -931,7 +931,7 @@ export class ConfirmarCompra extends Component {
                               });
                            } else {
                               Alert.alert(
-                                 'Información',
+                                 'Lo Sentimos',
                                  'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
                               );
                            }

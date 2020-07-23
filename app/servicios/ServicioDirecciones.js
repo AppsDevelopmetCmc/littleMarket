@@ -107,7 +107,7 @@ export class ServicioDirecciones {
             descripcion: direccion.descripcion,
             latitud: direccion.latitud,
             longitud: direccion.longitud,
-            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+            //tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
             //Alert.alert('Dirección Actualizada');
@@ -329,8 +329,6 @@ export class ServicioDirecciones {
             latitud: referenciaDireccion.latitud,
             longitud: referenciaDireccion.longitud,
             sector: referenciaDireccion.sector,
-            tieneCoberturaDireccion:
-               referenciaDireccion.tieneCoberturaDireccion,
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');
@@ -385,15 +383,17 @@ export const asignarDireccionPedido = async (
    if (respuesta.docs && respuesta.docs.length > 0) {
       console.log('Trae direcciones---');
       for (let i = 0; i < respuesta.docs.length; i++) {
-         if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
-            if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+         //if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
+         // if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+         if (respuesta.docs[i].data().sector !== undefined && respuesta.docs[i].data().sector !== '') {
+
                global.direccionPedido = respuesta.docs[i].data();
                global.direccionPedido.id = respuesta.docs[i].id;
                global.sector = global.direccionPedido.sector;
                tieneDireccion = true;
 
                break;
-            }
+            // }
          }
       }
       //Si ninguna tiene cobertura, toma la primera de la lista

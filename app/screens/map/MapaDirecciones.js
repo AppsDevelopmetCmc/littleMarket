@@ -273,115 +273,6 @@ export class MapaDirecciones extends Component {
       this.obtenerDireccion(newRegion.latitude, newRegion.longitude);
    };
 
-   validar = () => {
-      let lat1 = this.state.coordinate.latitude;
-      let log1 = this.state.coordinate.longitude;
-      for (let i = 0; i < global.coberturas.length; i++) {
-         let distancia = 0;
-         distancia = parseFloat(
-            this.getKilometros(
-               lat1,
-               log1,
-               global.coberturas[i].latitud,
-               global.coberturas[i].longitud
-            )
-         );
-         console.log('Kilomeros' + distancia);
-         if (distancia < global.parametrosGeo.cobertura) {
-            console.log('Ingresa');
-            this.tieneCoberturaDireccion = 'S';
-            break;
-         }
-      }
-   };
-
-   rad = x => {
-      return (x * Math.PI) / 180;
-   };
-
-   getKilometros = (lat1, lon1, lat2, lon2) => {
-      let R = 6378.137; //Radio de la tierra en km
-      let dLat = this.rad(lat2 - lat1);
-      console.log('rad1' + this.rad(lat2 - lat1));
-      let dLong = this.rad(lon2 - lon1);
-      let a =
-         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
-   };
-
-   guardarDireccion = async () => {
-      let servDireccion = new ServicioDirecciones();
-      let operacion = this.pintarElemento ? 'crear' : 'actualizar';
-      this.validar();
-      let nuevaDireccion = {
-         descripcion: this.state.direccion,
-         latitud: this.state.coordinate.latitude,
-         longitud: this.state.coordinate.longitude,
-         tieneCoberturaDireccion: this.tieneCoberturaDireccion,
-      };
-      if (operacion === 'crear') {
-         let idDireccionCreada = await servDireccion.crear(
-            global.usuario,
-            nuevaDireccion
-         );
-         console.log('idDireccionCreada', idDireccionCreada);
-         this.idDireccion = idDireccionCreada;
-         console.log('idDireccion', this.idDireccion);
-         if (this.idDireccion != undefined) {
-            this.setState({ mostrarModal: true });
-         }
-         //this.props.navigation.navigate('Direcciones');
-      } else {
-         servDireccion.actualizar(
-            global.usuario,
-            this.direccion.id,
-            nuevaDireccion
-         );
-         this.setState({ mostrarModal: true });
-         //this.props.navigation.goBack();
-      }
-   };
-   guardarDatosReferencia = async () => {
-      let servDireccion = new ServicioDirecciones();
-      let operacion = this.pintarElemento ? 'crear' : 'actualizar';
-      let principal = this.state.principal ? 'S' : 'N';
-      if (global.direcciones && global.direcciones.length == 1) {
-         principal = 'S';
-      }
-      if (principal == 'S') {
-         await servDireccion.actualizarPrincipalTodosNo(global.usuario);
-      }
-      if (operacion === 'crear') {
-         console.log('this.idDireccion', this.idDireccion);
-
-         servDireccion.guardarReferencia(global.usuario, this.idDireccion, {
-            referencia: this.state.referencia,
-            alias: this.state.alias,
-            principal: principal,
-         });
-      } else {
-         servDireccion.guardarReferencia(global.usuario, this.direccion.id, {
-            referencia: this.state.referencia,
-            alias: this.state.alias,
-            principal: principal,
-         });
-      }
-      this.setState({ mostrarModal: false });
-      if (this.tieneCoberturaDireccion == 'S') {
-         if (this.pantallaOrigen == 'Direcciones') {
-            global.activarCobertura(true);
-         }
-         //this.props.navigation.popToTop
-      }
-      console.log('popToTop');
-      this.props.navigation.popToTop();
-   };
    asignarDireccion = (nombreDireccion, latitud, longitud) => {
       this.setState({
          direccion: nombreDireccion,
@@ -416,6 +307,13 @@ export class MapaDirecciones extends Component {
       this.tramaSectorAct = await srvSector.consultarSector(latAct, longAct);
       global.sector = this.tramaSectorAct.sector;
       console.log("SECTOR ACTUAL------->" + global.sector);
+
+      if (!this.tramaSectorAct.sector) {
+         Alert.alert(
+            'Lo Sentimos',
+            'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+         );
+      }
    }
 
    actualizarDireccion = direccion => {
@@ -467,7 +365,7 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.latitud = this.state.region.latitude;
          this.direccionTmp.longitud = this.state.region.longitude;
          this.direccionTmp.sector = this.tramaSectorAct.sector ? this.tramaSectorAct.sector : '';
-         this.direccionTmp.tieneCoberturaDireccion = this.tramaSectorAct.sector ? 'S' : 'N'
+         // this.direccionTmp.tieneCoberturaDireccion = this.tramaSectorAct.sector ? 'S' : 'N'
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
          let srvDireccion = new ServicioDirecciones();
@@ -478,12 +376,6 @@ export class MapaDirecciones extends Component {
             this.direccionTmp
          );
          console.log('Envia Confirmar');
-         if (!this.tramaSectorAct.sector) {
-            Alert.alert(
-               'Información',
-               'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
-            );
-         }
 
          this.props.navigation.navigate('ConfirmarCompraScreen', {
             origen: 'mapaDirecciones',
