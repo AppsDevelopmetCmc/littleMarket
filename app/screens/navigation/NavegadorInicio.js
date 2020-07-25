@@ -24,6 +24,7 @@ import IniciaSesion from '../account/IniciarSesion';
 import PerfilUsuario from '../account/PerfilUsuario';
 import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
 import { ResponsabilidadSocial } from '../responsabilidadSocial/ResponsabilidadSocial';
+import { QuienesSomos } from '../quienesSomos/QuienesSomos';
 import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
@@ -86,10 +87,10 @@ const validarVersion = version => {
       Alert.alert(
          'Problemas de versión',
          'La versión actual: ' +
-            global.version +
-            ' no corresponde a la versión oficial ' +
-            version.valor +
-            '. Cierre la aplicación y vuelva abrir.'
+         global.version +
+         ' no corresponde a la versión oficial ' +
+         version.valor +
+         '. Cierre la aplicación y vuelva abrir.'
       );
    }
 };
@@ -535,6 +536,11 @@ function HomeDraw() {
             component={ResponsabilidadSocial}
             options={{ drawerLabel: 'Fundación Aliñambi' }}
          />
+         <DrawerHome.Screen
+            name="QuienesSomos"
+            component={QuienesSomos}
+            options={{ drawerLabel: 'Quienes Somos' }}
+         />
       </DrawerHome.Navigator>
    );
 }
@@ -669,14 +675,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
+                  <StackAuthentication.Navigator>
+                     <StackAuthentication.Screen
+                        name="LoginStack"
+                        component={LoginStack}
+                        options={navOptionHandler(false)}
+                     ></StackAuthentication.Screen>
+                  </StackAuthentication.Navigator>
+               )}
          </NavigationContainer>
       );
    }
