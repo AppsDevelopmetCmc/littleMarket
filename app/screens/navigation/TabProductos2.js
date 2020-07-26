@@ -78,6 +78,12 @@ export class TabProductos2 extends Component {
       this.setState({ sector: this.tramaSectorIni.sector });
       global.sector = this.tramaSectorIni.sector;
       console.log('SECTOR ------->' + this.tramaSectorIni.sector);
+      if (!this.tramaSectorIni.sector) {
+         Alert.alert(
+            'Lo Sentimos',
+            'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo.'
+         );
+      }
    };
    crearDireccionPedido = async () => {
       console.log('---------CREANDO DIRECCION----------');
@@ -101,12 +107,6 @@ export class TabProductos2 extends Component {
       console.log('---------GUARDANDO DIRECCION----------');
       await this.asignarSector(latitud, longitud);
 
-      if (!this.tramaSectorIni.sector) {
-         Alert.alert(
-            'Información',
-            'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo'
-         );
-      }
       new ServicioDirecciones().crear(global.usuario, {
          descripcion: direccionNombre,
          latitud: latitud,
@@ -114,7 +114,7 @@ export class TabProductos2 extends Component {
          alias: '',
          principal: 'N',
          referencia: '',
-         tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
+         //tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
          sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : '',
       });
    };
