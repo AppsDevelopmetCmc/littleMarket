@@ -103,6 +103,14 @@ export function Menu(props) {
                      props.navigation.navigate('ResponsabilidadSocial')
                   }
                ></MenuPersonalizado>
+               <SeparadorMenu></SeparadorMenu>
+               <MenuPersonalizado
+                  nombreIcono="account-group"
+                  tituloNombre="Quienes Somos"
+                  navegador={() =>
+                     props.navigation.navigate('QuienesSomos')
+                  }
+               ></MenuPersonalizado>
             </View>
             <View style={styles.contenedorCerrarSesion}>
                <SeparadorMenu></SeparadorMenu>
