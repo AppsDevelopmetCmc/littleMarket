@@ -46,12 +46,12 @@ import { TabProductos3 } from './TabProductos3';
 import { Monedero } from '../monedero/Monedero';
 import { AtencionCliente } from '../soporte/AtencionCliente';
 
+import NotificacionesPush from '../notificacionesPush/NotificacionesPush';
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
-
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -257,7 +257,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-          <StackFromTabs.Screen
+         <StackFromTabs.Screen
             name="Soporte"
             component={AtencionCliente}
             options={{
@@ -530,7 +530,6 @@ function HomeDraw() {
             options={{ drawerLabel: 'ListaPedidos' }}
          />
          <DrawerHome.Screen name="Monedero" component={Monedero} />
-        
 
          <DrawerHome.Screen
             name="ResponsabilidadSocial"
@@ -669,7 +668,8 @@ export default function NavegadorInicio() {
       return (
          <NavigationContainer>
             {login ? (
-               HomeDraw()
+               // HomeDraw()
+               <NotificacionesPush></NotificacionesPush>
             ) : (
                <StackAuthentication.Navigator>
                   <StackAuthentication.Screen
