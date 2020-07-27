@@ -44,23 +44,27 @@ export default function IniciaSesion({ navigation }) {
       setMostrarYalert(true);
    };
    return (
-      <SafeAreaView style={styles.contenedorPagina}>
-         <View style={styles.cabecera}>
-            <View>
-               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
-                  Bienvenido
-               </Text>
-               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
-                  Iniciar Sesión
-               </Text>
+      <View style={styles.contenedorPagina}>
+         <ScrollView keyboardShouldPersistTaps="always">
+            <View style={styles.cabecera}>
+               <View>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}
+                  >
+                     Bienvenido
+                  </Text>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}
+                  >
+                     Iniciar Sesión
+                  </Text>
+               </View>
+               <Image
+                  source={require('../../../assets/img/LogoBlanco.png')}
+               ></Image>
             </View>
-            <Image
-               source={require('../../../assets/img/LogoBlanco.png')}
-            ></Image>
-         </View>
 
-         <View style={styles.pie}>
-            <ScrollView keyboardShouldPersistTaps="always">
+            <View style={[styles.pie, { transform: [{ translateY: -30 }] }]}>
                <IniciaSesionForm
                   nav={navigation}
                   toastRef={toastRef}
@@ -91,14 +95,14 @@ export default function IniciaSesion({ navigation }) {
                      toastRef={toastRef}
                   ></IniciaSesionGoogle>
                </View>
-            </ScrollView>
-         </View>
-         <Yalert
-            titulo={titulo}
-            mensaje={mensaje}
-            visible={mostrarYalert}
-            cerrar={cerrarYalert}
-         ></Yalert>
+            </View>
+            <Yalert
+               titulo={titulo}
+               mensaje={mensaje}
+               visible={mostrarYalert}
+               cerrar={cerrarYalert}
+            ></Yalert>
+         </ScrollView>
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast
             ref={toastRef}
@@ -107,7 +111,7 @@ export default function IniciaSesion({ navigation }) {
             fadeInDuration={800}
             fadeOutDuration={1000}
          ></Toast>
-      </SafeAreaView>
+      </View>
    );
 }
 
@@ -120,11 +124,11 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
-   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorBlanco },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
-      paddingTop: 30,
+      paddingBottom: 60,
       justifyContent: 'space-between',
       alignItems: 'center',
       flexDirection: 'row',
@@ -135,7 +139,6 @@ const styles = StyleSheet.create({
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
-      marginTop: 30,
    },
    divide: {
       backgroundColor: colores.colorPrimarioTexto,

@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
    btnRegistrarse: {
       padding: 10,
       backgroundColor: colores.colorPrimarioTomate,
-      borderRadius: 25,
+      borderRadius: 15,
    },
    estiloTexto: {
       paddingTop: 15,
