@@ -23,30 +23,33 @@ export default function Registro({ navigation }) {
    const toastRef = useRef();
 
    return (
-      <SafeAreaView style={styles.contenedorPagina}>
-         <View style={styles.cabecera}>
-            <View>
-               <Text style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}>
-                  Bienvenido
-               </Text>
-               <Text style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}>
-                  Registro
-               </Text>
+      <View style={styles.contenedorPagina}>
+         <ScrollView keyboardShouldPersistTaps="always">
+            <View style={styles.cabecera}>
+               <View>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 18, 'normal')}
+                  >
+                     Bienvenido
+                  </Text>
+                  <Text
+                     style={textEstilo(colores.colorBlancoTexto, 25, 'bold')}
+                  >
+                     Registro
+                  </Text>
+               </View>
+               <Image
+                  source={require('../../../assets/img/LogoBlanco.png')}
+               ></Image>
             </View>
-            <Image
-               source={require('../../../assets/img/LogoBlanco.png')}
-            ></Image>
-         </View>
 
-         <View style={styles.pie}>
-            <ScrollView keyboardShouldPersistTaps="always">
+            <View style={[styles.pie, { transform: [{ translateY: -30 }] }]}>
                <RegistroForm
                   nav={navigation}
                   toastRef={toastRef}
                ></RegistroForm>
-            </ScrollView>
-         </View>
-
+            </View>
+         </ScrollView>
          {/* Creación de toast con utilizacion de hook de react useRef -- (toastRef) */}
          <Toast
             ref={toastRef}
@@ -55,7 +58,7 @@ export default function Registro({ navigation }) {
             fadeInDuration={800}
             fadeOutDuration={1000}
          ></Toast>
-      </SafeAreaView>
+      </View>
    );
 }
 
@@ -69,11 +72,11 @@ const textEstilo = (color, tamaño, tipo) => {
 };
 
 const styles = StyleSheet.create({
-   contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
+   contenedorPagina: { flex: 1, backgroundColor: colores.colorBlanco },
    cabecera: {
       backgroundColor: colores.colorPrimarioVerde,
       paddingHorizontal: 40,
-      paddingTop: 30,
+      paddingBottom: 60,
       justifyContent: 'space-between',
       alignItems: 'center',
       flexDirection: 'row',
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
       borderTopStartRadius: 30,
       borderTopEndRadius: 30,
       paddingHorizontal: 40,
-      marginTop: 30,
+      paddingBottom: 50,
    },
    textRegistro: { marginTop: 15, marginEnd: 10, marginRight: 10 },
    divide: {
