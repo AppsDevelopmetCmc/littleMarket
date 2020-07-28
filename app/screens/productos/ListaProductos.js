@@ -509,22 +509,6 @@ export class ListaProductos extends Component {
       this.setState({ mostrarInstrucciones: false });
    };
 
-   asignarSector = async () => {
-      let srvCobertura = new ServicioCobertura();
-      this.sector = await srvCobertura.consultarCobertura(
-         global.localizacionActual.latitude,
-         global.localizacionActual.longitude
-      );
-      console.log(
-         'LATITUD LONGITUD' +
-            global.localizacionActual.latitude +
-            '=' +
-            global.localizacionActual.longitude
-      );
-      console.log('SECTOR' + this.sector.sector);
-      Alert.alert('SECTOR ASIGNADO' + this.sector.sector);
-   };
-
    validarMonto = () => {
       if (
          global.montoYapa >= 10 &&

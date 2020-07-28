@@ -78,11 +78,11 @@ export class TabProductos2 extends Component {
       this.setState({ sector: this.tramaSectorIni.sector });
       global.sector = this.tramaSectorIni.sector;
       console.log('SECTOR ------->' + this.tramaSectorIni.sector);
-      if (global.sector == '' || global.sector == undefined) {
-         console.log(' ALERT DE NO HAY SECTOR ');
+
+      if (!this.tramaSectorIni.sector) {
          Alert.alert(
-            'Información',
-            'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+            'Lo Sentimos',
+            'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo.'
          );
       }
    };
@@ -115,7 +115,7 @@ export class TabProductos2 extends Component {
          alias: '',
          principal: 'N',
          referencia: '',
-         tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
+         //tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
          sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : '',
       });
    };

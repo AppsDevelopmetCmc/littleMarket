@@ -84,7 +84,8 @@ export class ConfirmarCompra extends Component {
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
          msmCoberturaDireccion:
-            global.direccionPedido.tieneCoberturaDireccion == 'S'
+            //global.direccionPedido.tieneCoberturaDireccion == 'S'
+            global.direccionPedido.sector
                ? true
                : false,
          numDocumentoFact: '',
@@ -130,7 +131,8 @@ export class ConfirmarCompra extends Component {
          direccion: global.direccionPedido.descripcion,
          referencia: global.direccionPedido.referencia,
          msmCoberturaDireccion:
-            global.direccionPedido.tieneCoberturaDireccion == 'S'
+            // global.direccionPedido.tieneCoberturaDireccion == 'S'
+            global.direccionPedido.sector
                ? true
                : false,
       });
@@ -188,7 +190,8 @@ export class ConfirmarCompra extends Component {
       this.setState({ mostrarModalDirecciones: bandera });
    };
    seleccionarDireccion = direccion => {
-      if (direccion.tieneCoberturaDireccion == 'S') {
+      //if (direccion.tieneCoberturaDireccion == 'S') {
+      if (direccion.sector) {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } /*else {
@@ -871,6 +874,7 @@ export class ConfirmarCompra extends Component {
                                           urlPago: '',
                                           tokerUrlPago: '',
                                           factura: 'FA', //FA o CF
+                                          sector: global.sector
                                        },
                                        global.items,
                                        this.cerrarPantalla,
@@ -931,6 +935,7 @@ export class ConfirmarCompra extends Component {
                                           correoFact: this.state.correoFact,
                                           telefonoFact: this.state.telefonoFact,
                                           factura: 'FA', //FA o CF
+                                          sector: global.sector
                                        },
                                        global.items,
                                        this.cerrarPantalla,
@@ -940,8 +945,8 @@ export class ConfirmarCompra extends Component {
                               });
                            } else {
                               Alert.alert(
-                                 'Información',
-                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+                                 'Lo Sentimos',
+                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo.'
                               );
                            }
                         }}

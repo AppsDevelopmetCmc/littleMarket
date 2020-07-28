@@ -143,6 +143,7 @@ export default function DatosFacturacion(props) {
          </View>
          <View style={styles.pie}>
             <KeyboardAwareScrollView>
+               <Text style={{ fontSize : 15.5 }}>  Tipo de Documento*</Text>
                <RNPickerSelect
                   onValueChange={value => console.log(value)}
                   items={tipoDocumento}
