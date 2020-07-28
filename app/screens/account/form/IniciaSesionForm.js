@@ -20,6 +20,7 @@ import * as colores from '../../../constants/Colores';
 import { Yalert } from '../../../components/Yalert';
 export default function IniciaSesionForm(props) {
    const { nav, toastRef } = props;
+   global.aceptaTerminos = false;
 
    // Seteo de variables en el state utilizando hoock de react
    const [hidePassword, setHidePassword] = useState(true);
@@ -58,6 +59,21 @@ export default function IniciaSesionForm(props) {
                seterrorMsgCorreo('');
                seterrorMsgContraseña('');
                firebase.auth().signOut();
+               await global.db
+                  .collection('clientes')
+                  .doc(email)
+                  .get()
+                  .then(doc => {
+                     console.log("--RECUPERA TERMINOS---" + doc.data().terminosCondiciones)
+                     global.aceptaTerminos = doc.data().terminosCondiciones;
+                  })
+                  .catch(error => {
+                     console.log(error);
+                  });
+
+               if (!global.aceptaTerminos) {
+                  nav.navigate('TerminosCondiciones', { ingresar: aceptaTerminos });
+               } else {
                setisVisibleLoading(true);
                await firebase
                   .auth()
@@ -73,6 +89,7 @@ export default function IniciaSesionForm(props) {
             }
          }
       }
+      }
    };
    const mostrarError = (titulo, mensaje) => {
       setMostrarYalert(true);
@@ -82,6 +99,24 @@ export default function IniciaSesionForm(props) {
    const cerrarYalert = () => {
       setMostrarYalert(false);
    };
+
+   const aceptaTerminos = async () => {
+      setisVisibleLoading(true);
+      await firebase
+         .auth()
+         .signInWithEmailAndPassword(email, password)
+         .then(() => {
+            setisVisibleLoading(false);
+            global.aceptaTerminos = true;
+            console.log("-------ACEPTA TERMINOS INGRESA-----------" + email)
+         })
+         .catch(() => {
+            mostrarError('Información', err.Err2);
+            //toastRef.current.show(err.Err2, 600);
+            setisVisibleLoading(false);
+
+         });
+   }
    return (
       <View style={styles.container}>
          <Input

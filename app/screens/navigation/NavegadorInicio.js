@@ -50,6 +50,7 @@ import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
+import { TerminosCondiciones } from '../terminosCondiciones/TerminosCondiciones';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -372,6 +373,11 @@ function LoginStack() {
                headerTintColor: '#fff',
             }}
          ></StackLogin.Screen>
+         <StackLogin.Screen
+            name="TerminosCondiciones"
+            component={TerminosCondiciones}
+            options={navOptionHandler(false)}
+         ></StackLogin.Screen>
       </StackLogin.Navigator>
    );
 }
@@ -568,6 +574,29 @@ export default function NavegadorInicio() {
                      );
                      agregaInfo();
                   }
+
+                  
+                 /* AQUI INTENTE HACER LA VALIDACION PARA LA NAVEGACION SE DEBE
+                 BUSCAR SI EL CLIENTE YA TIENE LA VARIABLE EN TRUE PARA QUE NO SE LE MUESTRE LA 
+                 PANTALLA DE TERMINOS 
+                 await global.db
+                     .collection('clientes')
+                     .doc(global.usuario)
+                     .get()
+                     .then(doc => {
+                        console.log("--RECUPERA TERMINOS---" + doc.data().terminosCondiciones)
+                        global.aceptaTerminos = doc.data().terminosCondiciones;
+                     })
+                     .catch(error => {
+                        console.log(error);
+                     });
+
+                  if (!global.aceptaTerminos) {
+                     nav.navigate('TerminosCondiciones', { ingresar: FUNCION PARA EL BOTON ACEPTAR DE ESTA PANTALLA });
+                  } else {
+                     setLogin(true);
+                  }*/
+
                   setLogin(true);
                }
             }
@@ -590,8 +619,22 @@ export default function NavegadorInicio() {
                documento = doc.data();
                documento.id = doc.id;
                global.appUsuario = documento;
+               if (!doc.data().terminosCondiciones) {
+                  global.db
+                     .collection('clientes')
+                     .doc(global.usuario)
+                     .update({ terminosCondiciones: global.aceptaTerminos })
+                     .then(() => {
+                        console.log('---UPDATE TERMINOS----');
+                     })
+                     .catch(error => {
+                        console.log(error);
+                     });
+               }
             } else {
                let infoUsuarioGuardar = {};
+               console.log("NOMBRE COMPLETO" + global.infoUsuario
+                  .displayName);
                infoUsuarioGuardar.nombreCompleto = global.infoUsuario
                   .displayName
                   ? global.infoUsuario.displayName
@@ -600,6 +643,7 @@ export default function NavegadorInicio() {
                   .phoneNumber
                   ? global.infoUsuario.phoneNumber
                   : '';
+               infoUsuarioGuardar.terminosCondiciones = global.aceptaTerminos;
                global.db
                   .collection('clientes')
                   .doc(global.usuario)
