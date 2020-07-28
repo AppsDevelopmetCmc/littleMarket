@@ -34,7 +34,6 @@ import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
-import { Promociones } from './Promociones';
 import { URLPAGOS } from '../../utils/ApiKey';
 import {
    convertirFormaPago,
@@ -43,6 +42,7 @@ import {
    convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 
+import { Selector } from '../../components/Selector';
 import { servParametros } from '../../servicios/ServicioParametros';
 import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
@@ -55,8 +55,10 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
+      if (!global.factSeleccionado) {
+         global.factSeleccionado = 'CF';
+      }
       global.refrescarFact = this.refrescarDatosFactura;
-      global.factSeleccionado = '0';
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -81,7 +83,6 @@ export class ConfirmarCompra extends Component {
          mostrarCargando: false,
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
-         mostrarPromociones: false,
          msmCoberturaDireccion:
             //global.direccionPedido.tieneCoberturaDireccion == 'S'
             global.direccionPedido.sector
@@ -123,10 +124,6 @@ export class ConfirmarCompra extends Component {
          valorDescontado: global.subtotal + global.delivery,
       });
       console.log('global.delivery', global.delivery);
-   };
-
-   cerrarPromociones = () => {
-      this.setState({ mostrarPromociones: false });
    };
 
    refrescarDireccion = () => {
@@ -256,6 +253,18 @@ export class ConfirmarCompra extends Component {
       }
    };
 
+   seleccionarFacturacion = valor => {
+      global.factSeleccionado = valor;
+      if (global.factSeleccionado != 'CF') {
+         this.setState({ mostrarFacturacion: true });
+      } else {
+         this.setState({ mostrarFacturacion: false });
+      }
+   };
+   seleccionarFormaPago = valor => {
+      this.setState({ pagoSeleccionado: valor });
+      global.pagoSeleccionado = valor;
+   };
    validarCodigoPromo = () => {
       let srvCodigos = new ServicioCodigos();
       this.setState({ mostrarCargando: true });
@@ -698,105 +707,105 @@ export class ConfirmarCompra extends Component {
                         title="Datos de Facturación"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <RadioForm
-                           radio_props={this.radio_props_fac}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirFactuacion(
-                              global.factSeleccionado
-                           )}
-                           formHorizontal={false}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           onPress={value => {
-                              global.factSeleccionado = value;
-                              if (global.factSeleccionado != 'CF') {
-                                 this.setState({ mostrarFacturacion: true });
-                              } else {
-                                 this.setState({ mostrarFacturacion: false });
-                              }
-                           }}
-                        />
-                        {this.state.mostrarFacturacion ? (
-                           <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <View style={{ flexDirection: 'row' }}>
-                                 <View
-                                    style={{
-                                       flex: 6,
-                                       justifyContent: 'center',
-                                    }}
-                                 >
-                                    <Text
-                                       style={{ marginBottom: 5, fontSize: 14 }}
-                                    >
-                                       Nombre:
-                                       {this.state.nombreCompletoFact
-                                          ? '   ' +
-                                            this.state.nombreCompletoFact
-                                          : '_ _ _ _ _ _ _ _ _ _'}
-                                    </Text>
-                                    <Separador alto={7}></Separador>
-                                    <Text
-                                       style={{ marginBottom: 5, fontSize: 14 }}
-                                    >
-                                       CI/RUC:{' '}
-                                       {this.state.numDocumentoFact
-                                          ? '' + this.state.numDocumentoFact
-                                          : '_ _ _ _ _ _ _ _ _ _'}
-                                    </Text>
-                                 </View>
-                                 <View
-                                    style={{
-                                       flex: 1,
-                                       justifyContent: 'center',
-                                    }}
-                                 >
-                                    <Button
-                                       onPress={() => {
-                                          this.props.navigation.navigate(
-                                             'ListarDatosFacturacionScreen'
-                                          );
+                        <View>
+                           <Selector
+                              valor1={{
+                                 contenido: 'Consumidor Final',
+                                 valor: 'CF',
+                              }}
+                              valor2={{
+                                 contenido: 'Factura',
+                                 valor: 'FA',
+                              }}
+                              fnSeleccionar={this.seleccionarFacturacion}
+                              seleccionado={global.factSeleccionado}
+                           ></Selector>
+                           {this.state.mostrarFacturacion ? (
+                              <View
+                                 style={{ flex: 6, justifyContent: 'center' }}
+                              >
+                                 <View style={{ flexDirection: 'row' }}>
+                                    <View
+                                       style={{
+                                          flex: 6,
+                                          justifyContent: 'center',
                                        }}
-                                       buttonStyle={{
-                                          backgroundColor:
-                                             colores.colorPrimarioTomate,
+                                    >
+                                       <Text
+                                          style={{
+                                             marginBottom: 5,
+                                             fontSize: 14,
+                                          }}
+                                       >
+                                          Nombre:
+                                          {this.state.nombreCompletoFact
+                                             ? '   ' +
+                                               this.state.nombreCompletoFact
+                                             : '_ _ _ _ _ _ _ _ _ _'}
+                                       </Text>
+                                       <Separador alto={7}></Separador>
+                                       <Text
+                                          style={{
+                                             marginBottom: 5,
+                                             fontSize: 14,
+                                          }}
+                                       >
+                                          CI/RUC:{' '}
+                                          {this.state.numDocumentoFact
+                                             ? '' + this.state.numDocumentoFact
+                                             : '_ _ _ _ _ _ _ _ _ _'}
+                                       </Text>
+                                    </View>
+                                    <View
+                                       style={{
+                                          flex: 1,
+                                          justifyContent: 'center',
                                        }}
-                                       icon={
-                                          <Icon
-                                             name="pencil"
-                                             size={20}
-                                             color={colores.colorBlanco}
-                                             style={styles.iconos}
-                                          />
-                                       }
-                                    ></Button>
+                                    >
+                                       <Button
+                                          onPress={() => {
+                                             this.props.navigation.navigate(
+                                                'ListarDatosFacturacionScreen'
+                                             );
+                                          }}
+                                          buttonStyle={{
+                                             backgroundColor:
+                                                colores.colorPrimarioTomate,
+                                          }}
+                                          icon={
+                                             <Icon
+                                                name="pencil"
+                                                size={20}
+                                                color={colores.colorBlanco}
+                                                style={styles.iconos}
+                                             />
+                                          }
+                                       ></Button>
+                                    </View>
                                  </View>
                               </View>
-                           </View>
-                        ) : (
-                           <View
-                              style={{ flex: 6, justifyContent: 'center' }}
-                           ></View>
-                        )}
+                           ) : (
+                              <View
+                                 style={{ flex: 6, justifyContent: 'center' }}
+                              ></View>
+                           )}
+                        </View>
                      </Card>
                      <Card
                         title="Forma de Pago"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <RadioForm
-                           radio_props={this.radio_props}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirRadioPago(global.pagoSeleccionado)}
-                           formHorizontal={true}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           formHorizontal={false}
-                           onPress={value => {
-                              this.setState({ pagoSeleccionado: value });
-                              global.pagoSeleccionado = value;
-                           }}
-                        />
+                        <View>
+                           <Selector
+                              valor1={{ contenido: 'Efectivo', valor: 'EF' }}
+                              valor2={{
+                                 contenido: 'Transferencia',
+                                 valor: 'TR',
+                              }}
+                              fnSeleccionar={this.seleccionarFormaPago}
+                              seleccionado={global.pagoSeleccionado}
+                           ></Selector>
+                        </View>
                      </Card>
                   </View>
 
@@ -957,13 +966,6 @@ export class ConfirmarCompra extends Component {
                         fnSeleccionar={this.seleccionarDireccion}
                         navigation={this.props.navigation}
                      />
-                  </Modal>
-                  <Modal
-                     // animationType="slide"
-                     transparent={true}
-                     visible={this.state.mostrarPromociones}
-                  >
-                     <Promociones cerrar={this.cerrarPromociones} />
                   </Modal>
                </ScrollView>
             </View>

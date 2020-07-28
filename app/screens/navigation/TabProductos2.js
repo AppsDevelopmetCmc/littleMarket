@@ -78,6 +78,7 @@ export class TabProductos2 extends Component {
       this.setState({ sector: this.tramaSectorIni.sector });
       global.sector = this.tramaSectorIni.sector;
       console.log('SECTOR ------->' + this.tramaSectorIni.sector);
+
       if (!this.tramaSectorIni.sector) {
          Alert.alert(
             'Lo Sentimos',

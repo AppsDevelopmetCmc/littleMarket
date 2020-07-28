@@ -27,7 +27,7 @@ export class BusquedaDirecciones extends Component {
       this.localizacionInicial = [];
       //this.tieneCoberturaDireccion = 'N';
       this.idDireccion = '';
-      this.tramaSectorNue='';
+      this.tramaSectorNue = '';
       this.state = {
          search: '',
          listaPredicciones: [],
@@ -116,10 +116,11 @@ export class BusquedaDirecciones extends Component {
 
    asignarSector = async (latAct, longAct) => {
       let srvSector = new ServicioSectores();
-      console.log("LATITUD NUEVA" + latAct);
-      console.log("LONGITUD NUEVA" + longAct);
+      console.log('LATITUD NUEVA' + latAct);
+      console.log('LONGITUD NUEVA' + longAct);
       this.tramaSectorNue = await srvSector.consultarSector(latAct, longAct);
       global.sector = this.tramaSectorNue.sector;
+
       console.log("SECTOR NUEVA------->" +this.tramaSectorNue.sector);
       if (!this.tramaSectorNue.sector) {
          Alert.alert(
@@ -129,6 +130,7 @@ export class BusquedaDirecciones extends Component {
       }
 
    }
+
 
    //TODO: MODAL
    guardarDireccion = async (descripcion, coordenadas) => {
@@ -144,7 +146,7 @@ export class BusquedaDirecciones extends Component {
          alias: '',
          referencia: '',
          principal: 'N',
-         sector: this.tramaSectorNue.sector ? this.tramaSectorNue.sector : ''
+         sector: this.tramaSectorNue.sector ? this.tramaSectorNue.sector : '',
       };
       this.setState({ creandoPunto: true });
       let idDireccionCreada = await servDireccion.crear(
@@ -179,6 +181,7 @@ export class BusquedaDirecciones extends Component {
             });
          }
       }
+
       //this.props.navigation.navigate('Direcciones');
    };
 
