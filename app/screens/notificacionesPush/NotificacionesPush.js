@@ -6,15 +6,20 @@ import { Text, View, Button, Platform } from 'react-native';
 
 export default function NotificacionesPush() {
    const [expoPushToken, setExpoPushToken] = useState('');
-   const [notification, setNotification] = useState(false);
-   const notificationListener = useRef();
-   const responseListener = useRef();
+   const [notification, setNotification] = useState(null);
 
    useEffect(() => {
+      console.log('Ingreso al useEffect');
       registerForPushNotificationsAsync().then(token =>
          setExpoPushToken(token)
       );
+      Notifications.addListener(notificacionRecibida => {
+         console.log('notificacionRecibida', notificacionRecibida);
+         setNotification(notificacionRecibida);
+      });
    }, []);
+
+   console.log('expoPushToken', expoPushToken);
 
    return (
       <View
@@ -26,25 +31,17 @@ export default function NotificacionesPush() {
       >
          <Text>Your expo push token: {expoPushToken}</Text>
          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <Text>
-               Title: {notification && notification.request.content.title}{' '}
-            </Text>
-            <Text>
-               Body: {notification && notification.request.content.body}
-            </Text>
-            <Text>
-               Data:{' '}
-               {notification &&
-                  JSON.stringify(notification.request.content.data)}
-            </Text>
+            <Text> {'Title: ' + notification.data.title}</Text>
+            <Text>Body:</Text>
+            <Text>Data: </Text>
          </View>
          <Button
             title="Press to Send Notification"
             onPress={async () => {
-               //wait sendPushNotification(expoPushToken);
-               registerForPushNotificationsAsync().then(token =>
-                  setExpoPushToken(token)
-               );
+               await sendPushNotification(expoPushToken);
+               // registerForPushNotificationsAsync().then(token =>
+               //    setExpoPushToken(token)
+               // );
             }}
          />
       </View>
@@ -53,8 +50,9 @@ export default function NotificacionesPush() {
 
 // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/dashboard/notifications
 async function sendPushNotification(expoPushToken) {
+   console.log('Ingreso a sendPushNotification', expoPushToken);
    const message = {
-      to: expoPushToken,
+      to: 'ExponentPushToken[Hu_kykFb5bhJU9Hvhzzxhz]',
       sound: 'default',
       title: 'Original Title',
       body: 'And here is the body!',
@@ -98,15 +96,6 @@ async function registerForPushNotificationsAsync() {
    } else {
       alert('Must use physical device for Push Notifications');
    }
-
-   //    if (Platform.OS === 'android') {
-   //       Notifications.setNotificationChannelAsync('default', {
-   //          name: 'default',
-   //          importance: Notifications.AndroidImportance.MAX,
-   //          vibrationPattern: [0, 250, 250, 250],
-   //          lightColor: '#FF231F7C',
-   //       });
-   //    }
 
    return token;
 }
