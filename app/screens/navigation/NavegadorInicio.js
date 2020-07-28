@@ -16,8 +16,6 @@ import { ServicioParametros } from '../../servicios/ServicioParametros';
 import { DetalleCombo } from '../../screens/combos/DetalleCombo';
 import DatosFacturacion from '../facturacion/datosFacturacion';
 import EditarDatosFacturacion from '../facturacion/editarDatosFacturacion';
-import { Transferencia } from '../compra/Transferencia';
-import { CargarImagen } from '../compra/CargarImagen';
 import PaginaInicio from '../PaginaInicio';
 import Registro from '../account/Registro';
 import IniciaSesion from '../account/IniciarSesion';
@@ -195,32 +193,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          ></StackFromTabs.Screen>
-         <StackFromTabs.Screen
-            name="TransferenciaScreen"
-            component={Transferencia}
-            options={{
-               title: '',
-               headerStyle: {
-                  backgroundColor: colores.colorPrimarioVerde,
-                  elevation: 0, //remove shadow on Android
-                  shadowOpacity: 0, //remove shadow on iOS
-               },
-               headerTintColor: '#fff',
-            }}
-         ></StackFromTabs.Screen>
-         <StackFromTabs.Screen
-            name="CargarImagenScreen"
-            component={CargarImagen}
-            options={{
-               title: '',
-               headerStyle: {
-                  backgroundColor: colores.colorPrimarioVerde,
-                  elevation: 0, //remove shadow on Android
-                  shadowOpacity: 0, //remove shadow on iOS
-               },
-               headerTintColor: '#fff',
-            }}
-         ></StackFromTabs.Screen>
+
          <StackDirection.Screen
             name="CarroComprasScreen"
             component={CarroCompras}
