@@ -7,6 +7,8 @@ import {
    Alert,
 } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
+import { ServicioReferidos } from '../../../servicios/ServicioCodReferido';
+
 
 // Importación de validaciones
 import { validateEmail } from '../../../utils/Validaciones';
@@ -48,7 +50,16 @@ export default function RegistroForm(props) {
    const [titulo, setTitulo] = useState(false);
    const [mensaje, setMensaje] = useState(false);
    const requerido = 'Campo requerido *';
+   const crearCodigo = () => {
+      let srvCodigos = new ServicioReferidos();
+      let mail = email;
+      let correo = mail.split('@');
+      let codigo = 'CODYPP' + correo[0];
+      if (codigo != '') {
+         srvCodigos.crearCodigo(mail, codigo);
+      }
 
+   };
    const register = async () => {
       if (!email || !password || !repeatPassword) {
          // toastRef.current.show(err.Err3, 600);
@@ -90,6 +101,7 @@ export default function RegistroForm(props) {
                         usuarioRegistrado
                            .sendEmailVerification()
                            .then(function () {
+                              crearCodigo();
                               props.nav.navigate('IniciaSesion');
                               /* Alert.alert(
                                  'Info',
