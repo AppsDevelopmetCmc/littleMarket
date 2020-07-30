@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
-import {
-   View,
-   StyleSheet,
-   ImageBackground,
-   Image,
-   Text,
-   SafeAreaView,
-} from 'react-native';
-import { Button, Icon, CheckBox } from 'react-native-elements';
+import { View, StyleSheet, Text } from 'react-native';
+import { Button, CheckBox } from 'react-native-elements';
 import * as colores from '../../constants/Colores';
-import CabeceraPersonalizada from '../../components/CabeceraPersonalizada';
+
 import WebView from 'react-native-webview';
-import Cargando from '../../components/Cargando';
 
 export class TerminosCondiciones extends Component {
    constructor(props) {
@@ -21,8 +13,6 @@ export class TerminosCondiciones extends Component {
          checked: false,
       };
    }
-   componentDidMount() {}
-
    actualizaEstadoChekeo = () => {
       console.log('Ingreso a chekear');
       this.setState({ checked: !this.state.checked });
@@ -45,7 +35,6 @@ export class TerminosCondiciones extends Component {
    };
 
    render() {
-      const { navigation } = this.props;
       return (
          <View style={styles.container}>
             <View style={styles.cabecera}>
@@ -74,7 +63,7 @@ export class TerminosCondiciones extends Component {
 
                <View style={styles.contenedorCheck}>
                   <CheckBox
-                     title="He leido y acepto los términos y condiciones"
+                     title="He leído y acepto los términos y condiciones"
                      checked={this.state.checked}
                      checkedColor={colores.colorPrimarioTomate}
                      onPress={this.actualizaEstadoChekeo}
@@ -116,34 +105,6 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
    },
-   containerRow: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginHorizontal: 40,
-      // backgroundColor: 'blue',
-      alignItems: 'center',
-   },
-   imgInicio: {
-      flex: 1,
-      resizeMode: 'cover',
-      justifyContent: 'flex-end',
-      paddingBottom: 100,
-      backgroundColor: colores.colorPrimarioVerde,
-   },
-   contenedorLogo: {
-      width: '100%',
-      height: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-   },
-   estiloBoton: {
-      backgroundColor: colores.colorPrimarioTomate,
-      width: 130,
-      height: 45,
-      borderRadius: 10,
-   },
-   estiloTitulo: { color: colores.colorBlancoTexto },
    textTitulos: {
       color: colores.colorBlancoTexto,
       fontSize: 18,
