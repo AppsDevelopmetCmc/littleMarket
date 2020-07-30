@@ -64,7 +64,7 @@ const RootStack = createStackNavigator();
 
 //global.ambiente = 'Dev';
 //global.ambiente = 'Prod';
-global.ambiente = 'Prod';
+global.ambiente = 'Dev';
 if (global.ambiente) {
    if (global.ambiente == 'Dev') {
       Alert.alert('Aplicación en Modo Desarrollo');
@@ -86,10 +86,10 @@ const validarVersion = version => {
       Alert.alert(
          'Problemas de versión',
          'La versión actual: ' +
-         global.version +
-         ' no corresponde a la versión oficial ' +
-         version.valor +
-         '. Cierre la aplicación y vuelva abrir.'
+            global.version +
+            ' no corresponde a la versión oficial ' +
+            version.valor +
+            '. Cierre la aplicación y vuelva abrir.'
       );
    }
 };
@@ -373,11 +373,6 @@ function LoginStack() {
                headerTintColor: '#fff',
             }}
          ></StackLogin.Screen>
-         <StackLogin.Screen
-            name="TerminosCondiciones"
-            component={TerminosCondiciones}
-            options={navOptionHandler(false)}
-         ></StackLogin.Screen>
       </StackLogin.Navigator>
    );
 }
@@ -526,6 +521,7 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
+   const [mostrarPantallaTC, setMostrarPantallaTC] = useState(false);
 
    console.log('--NavegadorInicio render');
    if (!global.empiezaCarga) {
@@ -574,29 +570,6 @@ export default function NavegadorInicio() {
                      );
                      agregaInfo();
                   }
-
-                  
-                 /* AQUI INTENTE HACER LA VALIDACION PARA LA NAVEGACION SE DEBE
-                 BUSCAR SI EL CLIENTE YA TIENE LA VARIABLE EN TRUE PARA QUE NO SE LE MUESTRE LA 
-                 PANTALLA DE TERMINOS 
-                 await global.db
-                     .collection('clientes')
-                     .doc(global.usuario)
-                     .get()
-                     .then(doc => {
-                        console.log("--RECUPERA TERMINOS---" + doc.data().terminosCondiciones)
-                        global.aceptaTerminos = doc.data().terminosCondiciones;
-                     })
-                     .catch(error => {
-                        console.log(error);
-                     });
-
-                  if (!global.aceptaTerminos) {
-                     nav.navigate('TerminosCondiciones', { ingresar: FUNCION PARA EL BOTON ACEPTAR DE ESTA PANTALLA });
-                  } else {
-                     setLogin(true);
-                  }*/
-
                   setLogin(true);
                }
             }
@@ -618,23 +591,35 @@ export default function NavegadorInicio() {
             if (doc.data()) {
                documento = doc.data();
                documento.id = doc.id;
-               global.appUsuario = documento;
-               if (!doc.data().terminosCondiciones) {
+               console.log(!documento.terminosCondiciones);
+               console.log(
+                  'terminos y condiciones',
+                  documento.terminosCondiciones
+               );
+               if (!documento.terminosCondiciones) {
+                  console.log('Ingreso al metodo terminos y condiciones');
+                  setMostrarPantallaTC(false);
+                  documento.terminosCondiciones = false;
                   global.db
                      .collection('clientes')
                      .doc(global.usuario)
-                     .update({ terminosCondiciones: global.aceptaTerminos })
+                     .update({ terminosCondiciones: false })
                      .then(() => {
-                        console.log('---UPDATE TERMINOS----');
+                        console.log(
+                           'Se actualiza los terminos y condiciones para clientes que no tienen el campo'
+                        );
                      })
                      .catch(error => {
                         console.log(error);
                      });
+               } else {
+                  setMostrarPantallaTC(true);
                }
+               global.appUsuario = documento;
+               console.log('appUsuario', global.appUsuario);
             } else {
                let infoUsuarioGuardar = {};
-               console.log("NOMBRE COMPLETO" + global.infoUsuario
-                  .displayName);
+               console.log('NOMBRE COMPLETO' + global.infoUsuario.displayName);
                infoUsuarioGuardar.nombreCompleto = global.infoUsuario
                   .displayName
                   ? global.infoUsuario.displayName
@@ -643,7 +628,7 @@ export default function NavegadorInicio() {
                   .phoneNumber
                   ? global.infoUsuario.phoneNumber
                   : '';
-               infoUsuarioGuardar.terminosCondiciones = global.aceptaTerminos;
+               infoUsuarioGuardar.terminosCondiciones = false;
                global.db
                   .collection('clientes')
                   .doc(global.usuario)
@@ -654,7 +639,7 @@ export default function NavegadorInicio() {
                   .catch(error => {
                      console.log(error);
                   });
-               //llamar a otro global db para guardar el referido x priemra vez
+               //llamar a otro global db para guardar el referido x primera vez
                infoUsuarioGuardar.id = global.usuario;
                global.appUsuario = infoUsuarioGuardar;
             }
@@ -674,6 +659,14 @@ export default function NavegadorInicio() {
       }
    }, [login]);
 
+   if (!mostrarPantallaTC) {
+      return (
+         <TerminosCondiciones
+            setMostrarPantallaTC={setMostrarPantallaTC}
+         ></TerminosCondiciones>
+      );
+   }
+
    if (login === null) {
       console.log(
          '--NavegadorInicio login es null',
@@ -692,14 +685,14 @@ export default function NavegadorInicio() {
             {login ? (
                HomeDraw()
             ) : (
-                  <StackAuthentication.Navigator>
-                     <StackAuthentication.Screen
-                        name="LoginStack"
-                        component={LoginStack}
-                        options={navOptionHandler(false)}
-                     ></StackAuthentication.Screen>
-                  </StackAuthentication.Navigator>
-               )}
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
          </NavigationContainer>
       );
    }
