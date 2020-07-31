@@ -57,30 +57,27 @@ export function Monedero(props) {
    };
    const finalizarCodigo = mensaje => {
       console.log('Finaliza Monedero');
-
+      setMostrarCargando(false);
       if (mensaje) {
-         Alert.alert('Información', mensaje);
+         Alert.alert('Felicidades', mensaje);
          //setValorMonedero(valorMonedero);
          setRenderMonedero(!renderMonedero);
       }
-      setMostrarCargando(false);
    };
 
    const enviarCodigo = () => {
       let srvCodigos = new ServicioCodigos();
       let validar = true;
-      setMostrarCargando(true);
       if (codigoDesc == '' || codigoDesc == undefined) {
          console.log('No ha ingresado ningun codigo');
          Alert.alert('Información', 'No ha ingresado ningún código');
          validar = false;
       }
       if (validar) {
-         srvCodigos.validarCodigo(codigoDesc, global.usuario, finalizarCodigo);
+         srvCodigos.validarPromo(codigoDesc, global.usuario, finalizarCodigo);
+         setMostrarCargando(true);
          input.current.clear();
-      } else {
-         setMostrarCargando(false);
-         input.current.clear();
+         setCodigoDesc('');
       }
    };
 

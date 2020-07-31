@@ -2,6 +2,7 @@ import { Alert, Linking } from 'react-native';
 import { ArregloUtil } from '../utils/utils';
 import { ServicioCarroCompras, eliminarCarro } from './ServicioCarroCompras';
 import { ServicioMonederos } from './ServicioMonederos';
+import { ServicioCodigos } from './ServicioCodigos';
 
 export const agregarItemPedido = producto => {
    if (global.items == null) {
@@ -108,6 +109,8 @@ export const limpiarProductosSeleccionados = () => {
    }
 };
 export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
+   new ServicioCodigos().aplicarDescuentoReferido(global.usuario);
+
    global.db
       .collection('pedidos')
       .add(pedido)
