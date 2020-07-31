@@ -80,6 +80,8 @@ export class TerminosCondiciones extends Component {
                   onPress={() => {
                      this.actualizacionTerminos();
                      this.props.setMostrarPantallaTC(true);
+                     this.props.setContinuarProceso(true);
+                     global.appUsuario.terminosCondiciones = true;
                   }}
                ></Button>
             </View>
