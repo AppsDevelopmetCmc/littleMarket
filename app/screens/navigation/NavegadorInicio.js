@@ -521,7 +521,9 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   const [mostrarPantallaTC, setMostrarPantallaTC] = useState(false);
+   const [mostrarPantallaTC, setMostrarPantallaTC] = useState(true);
+   const [continuarProceso, setContinuarProceso] = useState(false);
+   const [mostrarCargando, setMostrarCargando] = useState(true);
 
    console.log('--NavegadorInicio render');
    if (!global.empiezaCarga) {
@@ -533,6 +535,8 @@ export default function NavegadorInicio() {
          firebase.auth().onAuthStateChanged(async user => {
             if (!user) {
                setLogin(false);
+               setContinuarProceso(true);
+               setMostrarCargando(false);
             } else {
                global.infoUsuario = user.providerData[0];
                if (global.infoUsuario.providerId == 'password') {
@@ -581,6 +585,7 @@ export default function NavegadorInicio() {
 
    const agregaInfo = async () => {
       console.log('--NavegadorInicio ingresa a cargar la info del perfil');
+      setMostrarPantallaTC(true);
 
       let documento = {};
       await global.db
@@ -591,13 +596,7 @@ export default function NavegadorInicio() {
             if (doc.data()) {
                documento = doc.data();
                documento.id = doc.id;
-               console.log(!documento.terminosCondiciones);
-               console.log(
-                  'terminos y condiciones',
-                  documento.terminosCondiciones
-               );
                if (!documento.terminosCondiciones) {
-                  console.log('Ingreso al metodo terminos y condiciones');
                   setMostrarPantallaTC(false);
                   documento.terminosCondiciones = false;
                   global.db
@@ -613,13 +612,11 @@ export default function NavegadorInicio() {
                         console.log(error);
                      });
                } else {
-                  setMostrarPantallaTC(true);
+                  setContinuarProceso(true);
                }
                global.appUsuario = documento;
-               console.log('appUsuario', global.appUsuario);
             } else {
                let infoUsuarioGuardar = {};
-               console.log('NOMBRE COMPLETO' + global.infoUsuario.displayName);
                infoUsuarioGuardar.nombreCompleto = global.infoUsuario
                   .displayName
                   ? global.infoUsuario.displayName
@@ -659,41 +656,44 @@ export default function NavegadorInicio() {
       }
    }, [login]);
 
-   if (!mostrarPantallaTC) {
+   if (!mostrarPantallaTC && login) {
       return (
          <TerminosCondiciones
             setMostrarPantallaTC={setMostrarPantallaTC}
-         ></TerminosCondiciones>
+            setContinuarProceso={setContinuarProceso}
+         />
       );
    }
 
-   if (login === null) {
-      console.log(
-         '--NavegadorInicio login es null',
-         new Date().getTime() - global.empiezaCarga
-      );
-      return (
-         <Cargando
-            isVisible={true}
-            text="Cargando"
-            color={colores.colorPrimarioVerde}
-         ></Cargando>
-      );
-   } else {
-      return (
-         <NavigationContainer>
-            {login ? (
-               HomeDraw()
-            ) : (
-               <StackAuthentication.Navigator>
-                  <StackAuthentication.Screen
-                     name="LoginStack"
-                     component={LoginStack}
-                     options={navOptionHandler(false)}
-                  ></StackAuthentication.Screen>
-               </StackAuthentication.Navigator>
-            )}
-         </NavigationContainer>
-      );
-   }
+   // if (login === null) {
+   //    return (
+   //       <Cargando
+   //          isVisible={true}
+   //          text="Cargando"
+   //          color={colores.colorPrimarioVerde}
+   //       ></Cargando>
+   //    );
+   // } else {
+   return (
+      <NavigationContainer>
+         {login && continuarProceso ? (
+            HomeDraw()
+         ) : continuarProceso ? (
+            <StackAuthentication.Navigator>
+               <StackAuthentication.Screen
+                  name="LoginStack"
+                  component={LoginStack}
+                  options={navOptionHandler(false)}
+               ></StackAuthentication.Screen>
+            </StackAuthentication.Navigator>
+         ) : (
+            <Cargando
+               isVisible={mostrarCargando}
+               text="Cargando"
+               color={colores.colorPrimarioVerde}
+            ></Cargando>
+         )}
+      </NavigationContainer>
+   );
+   // }
 }
