@@ -85,9 +85,7 @@ export class ConfirmarCompra extends Component {
          telefonoCliente: global.appUsuario.telefonoCliente,
          msmCoberturaDireccion:
             //global.direccionPedido.tieneCoberturaDireccion == 'S'
-            global.direccionPedido.sector
-               ? true
-               : false,
+            global.direccionPedido.sector ? true : false,
          numDocumentoFact: '',
          direccionFact: '',
          nombreCompletoFact: '',
@@ -132,9 +130,7 @@ export class ConfirmarCompra extends Component {
          referencia: global.direccionPedido.referencia,
          msmCoberturaDireccion:
             // global.direccionPedido.tieneCoberturaDireccion == 'S'
-            global.direccionPedido.sector
-               ? true
-               : false,
+            global.direccionPedido.sector ? true : false,
       });
    };
    cargarCombos = (fechas, horarios) => {
@@ -267,7 +263,7 @@ export class ConfirmarCompra extends Component {
    };
    validarCodigoPromo = () => {
       let srvCodigos = new ServicioCodigos();
-      this.setState({ mostrarCargando: true });
+
       //Validaciones
       let validar = true;
       this.state.errorCodigoPromo = '';
@@ -281,13 +277,12 @@ export class ConfirmarCompra extends Component {
       }
       //Si pasa todas las validaciones crea el combo
       if (validar === true) {
-         srvCodigos.validarCodigo(
+         this.setState({ mostrarCargando: true });
+         srvCodigos.validarPromo(
             this.state.codigoPromo,
             global.usuario,
             this.finalizarCodigo
          );
-      } else {
-         this.setState({ mostrarCargando: false });
       }
    };
    repintarUsuario = () => {
@@ -300,12 +295,11 @@ export class ConfirmarCompra extends Component {
    };
    finalizarCodigo = mensaje => {
       console.log('Finaliza Monedero');
-
+      this.setState({ mostrarCargando: false });
       if (mensaje) {
          Alert.alert('Información', mensaje);
          //this.setState({ valorDescuento: global.total });
       }
-      this.setState({ mostrarCargando: false });
    };
    irMapaDirecciones = () => {
       console.log('Direccion Actual', global.direccionPedido);
@@ -874,7 +868,7 @@ export class ConfirmarCompra extends Component {
                                           urlPago: '',
                                           tokerUrlPago: '',
                                           factura: 'FA', //FA o CF
-                                          sector: global.sector
+                                          sector: global.sector,
                                        },
                                        global.items,
                                        this.cerrarPantalla,
@@ -935,7 +929,7 @@ export class ConfirmarCompra extends Component {
                                           correoFact: this.state.correoFact,
                                           telefonoFact: this.state.telefonoFact,
                                           factura: 'FA', //FA o CF
-                                          sector: global.sector
+                                          sector: global.sector,
                                        },
                                        global.items,
                                        this.cerrarPantalla,
