@@ -625,6 +625,7 @@ export default function NavegadorInicio() {
                );
                if (!documento.codigo) {
                   let codigo = crearCodigo(global.usuario);
+                  documento.codigo = codigo;
                   global.db
                      .collection('clientes')
                      .doc(global.usuario)
