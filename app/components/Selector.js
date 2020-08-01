@@ -29,7 +29,9 @@ export class Selector extends Component {
       //valor incluye texto, icono
       let { valor1, valor2, valor3, fnSeleccionar } = this.props;
       let { seleccionado1, seleccionado2, seleccionado3 } = this.state;
-      let colorRadio = colores.colorPrimarioTomate;
+      let colorRadio = this.props.color
+         ? this.props.color
+         : colores.colorPrimarioTomate;
       let tamanioRadio = 25;
       return (
          <View style={styles.contenido}>
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
    itemSeleccionado: {
       flexDirection: 'row',
       // backgroundColor: 'yellow',
-      paddingVertical: 5,
+      paddingVertical: 10,
    },
    icono: {
       color: 'red',

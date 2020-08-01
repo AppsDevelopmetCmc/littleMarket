@@ -76,25 +76,7 @@ export default function IniciaSesion({ navigation }) {
                      alignItems: 'center',
                      marginTop: 40,
                   }}
-               >
-                  <Divider style={styles.divide}></Divider>
-                  <Text
-                     style={textEstilo(colores.colorPrimarioTexto, 15, 'bold')}
-                  >
-                     o
-                  </Text>
-                  <Divider style={styles.divide}></Divider>
-               </View>
-               <View style={styles.socialIconos}>
-                  <IniciarSesionFacebook
-                     nav={navigation}
-                     toastRef={toastRef}
-                  ></IniciarSesionFacebook>
-                  <IniciaSesionGoogle
-                     nav={navigation}
-                     toastRef={toastRef}
-                  ></IniciaSesionGoogle>
-               </View>
+               ></View>
             </View>
             <Yalert
                titulo={titulo}

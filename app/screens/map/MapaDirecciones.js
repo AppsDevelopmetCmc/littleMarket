@@ -89,17 +89,17 @@ export class MapaDirecciones extends Component {
       let servCobertura = new ServicioCobertura();
       servCobertura.getRegistrarCoberturaTodas();
 
-      let servParametros = new ServicioParametros();
-      servParametros.getObtenerParametroId(
+      // let servParametros = new ServicioParametros();
+      /*  servParametros.getObtenerParametroId(
          'geo',
          this.obtenerParametroCobertura
-      );
+      );*/
    }
 
-   obtenerParametroCobertura = parametro => {
+   /*obtenerParametroCobertura = parametro => {
       global.parametrosGeo = parametro;
       console.log('parametrosGeo', global.parametrosGeo.cobertura);
-   };
+   };*/
 
    obtenerCoordenadas = async () => {
       console.log('OBTENER COORDENADAS---', this.origen);
@@ -303,11 +303,11 @@ export class MapaDirecciones extends Component {
 
    asignarSector = async (latAct, longAct) => {
       let srvSector = new ServicioSectores();
-      console.log("LATITUD ACTUAL" + latAct);
-      console.log("LONGITUD ACTUAL" + longAct);
+      console.log('LATITUD ACTUAL' + latAct);
+      console.log('LONGITUD ACTUAL' + longAct);
       this.tramaSectorAct = await srvSector.consultarSector(latAct, longAct);
       global.sector = this.tramaSectorAct.sector;
-      console.log("SECTOR ACTUAL------->" + global.sector);
+      console.log('SECTOR ACTUAL------->' + global.sector);
 
       if (!this.tramaSectorAct.sector) {
          Alert.alert(
@@ -315,7 +315,7 @@ export class MapaDirecciones extends Component {
             'Al momento no tenemos cobertura en este sector, pronto estaremos contigo.'
          );
       }
-   }
+   };
 
    actualizarDireccion = direccion => {
       this.direccionTmp = direccion;
@@ -349,7 +349,10 @@ export class MapaDirecciones extends Component {
 
    actualizarDireccionPedido = async () => {
       let validar = true;
-      await this.asignarSector(this.state.region.latitude, this.state.region.longitude);
+      await this.asignarSector(
+         this.state.region.latitude,
+         this.state.region.longitude
+      );
       if (!this.state.referencia) {
          Alert.alert(
             'Advertencia',
@@ -366,7 +369,9 @@ export class MapaDirecciones extends Component {
          this.direccionTmp.id = direccionPedido.id;
          this.direccionTmp.latitud = this.state.region.latitude;
          this.direccionTmp.longitud = this.state.region.longitude;
-         this.direccionTmp.sector = this.tramaSectorAct.sector ? this.tramaSectorAct.sector : '';
+         this.direccionTmp.sector = this.tramaSectorAct.sector
+            ? this.tramaSectorAct.sector
+            : '';
          // this.direccionTmp.tieneCoberturaDireccion = this.tramaSectorAct.sector ? 'S' : 'N'
          global.direccionPedido = this.direccionTmp;
          console.log(this.direccionTmp);
@@ -669,9 +674,10 @@ export class MapaDirecciones extends Component {
                   }}
                >
                   <Button
-                     buttonStyle={estilos.botones.blancoRight}
-                     titleStyle={estilos.textos.botonBlancoTomate}
-                     title="Confirmar Ubicación Seleccionada"
+                     buttonStyle={{
+                        backgroundColor: colores.colorPrimarioVerde,
+                     }}
+                     title="Aceptar"
                      onPress={() => {
                         this.actualizarDireccionPedido();
                      }}
@@ -679,7 +685,7 @@ export class MapaDirecciones extends Component {
                         <Icon
                            name="checkbox-marked-circle"
                            size={20}
-                           color={colores.colorPrimarioTomate}
+                           color={colores.colorBlanco}
                            style={styles.iconos}
                         />
                      }

@@ -125,23 +125,7 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
 
             Alert.alert(
                'Gracias por comprar en Yappando',
-               descripcionALert +
-                  '' +
-                  pedido.orden +
-                  '. Comunicarse con el canal de ventas',
-               [
-                  {
-                     text: 'Comunicarse',
-                     onPress: () => {
-                        console.log('OK Pressed');
-                        let numero = '593998668633';
-                        Linking.openURL(
-                           'https://wa.me/' + numero + '?text=' + text
-                        );
-                     },
-                  },
-               ],
-               { cancelable: false }
+               descripcionALert + '' + pedido.orden + '.'
             );
          }
          if (pedido.formaPago === 'TRANSFERENCIA') {
@@ -149,13 +133,13 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                'He realizado el pedido: ' +
                pedido.orden +
                ' por el monto $ ' +
-               parseFloat(pedido.total).toFixed(2) +
+               parseFloat(pedido.total - pedido.descuento).toFixed(2) +
                '. Solicito información para realizar la transferencia.';
             let textAlert =
                'Ha realizado el pedido: ' +
                pedido.orden +
                ' por el monto $ ' +
-               parseFloat(pedido.total).toFixed(2) +
+               parseFloat(pedido.total - pedido.descuento).toFixed(2) +
                '. Solicite información para realizar la transferencia.';
             Alert.alert(
                'Gracias por comprar en Yappando',
@@ -170,6 +154,9 @@ export const crearPedido = (pedido, items, fnCerrarPantalla, fnPagoRest) => {
                            'https://wa.me/' + numero + '?text=' + text
                         );
                      },
+                  },
+                  {
+                     text: 'Ya tengo los datos',
                   },
                ],
                { cancelable: false }

@@ -92,12 +92,16 @@ export class TabProductos2 extends Component {
       Geocoder.init(APIKEY);
       let response = await Location.requestPermissionsAsync();
       if (response.status !== 'granted') {
-         Alert.alert('Error', 'no se otorgaron permisos en el dispositivo');
+         console.log('No se otorgaron permisos en el dispositivo');
+         global.localizacionActual = {
+            latitude: -0.204896,
+            longitude: -78.490963,
+         };
+      } else {
+         let actualLocation = await Location.getCurrentPositionAsync({});
+         global.localizacionActual = actualLocation.coords;
+         console.log('actual location:', global.localizacionActual);
       }
-      let actualLocation = await Location.getCurrentPositionAsync({});
-      global.localizacionActual = actualLocation.coords;
-      console.log('actual location:', global.localizacionActual);
-
       srvDirecciones.generarDireccion(
          global.localizacionActual.latitude,
          global.localizacionActual.longitude,

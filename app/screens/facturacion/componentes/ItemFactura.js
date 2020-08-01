@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, Alert, CheckBox } from 'react-native';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import {
+   TouchableHighlight,
+   TouchableOpacity,
+} from 'react-native-gesture-handler';
 import { Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-elements';
@@ -32,27 +35,10 @@ export class ItemFactura extends Component {
                   </Text>
                </View>
                <View style={styles.boton}>
-                  <Button
-                     buttonStyle={styles.plusButton}
-                     onPress={() => {
-                        this.props.nav.goBack();
-                        global.refrescarFact(this.props.factura);
-                        // global.nom = this.props.factura.nombreCompleto;
-                        /*this.props.nav.navigate(
-                           'ConfirmarCompraScreen',
-                           {
-                              factura: this.props.factura,
-                              refrescar: this.props.refrescar,
-                           }
-                        );*/
-                     }}
-                     icon={<Icon name="check" size={15} color="white" />}
-                  ></Button>
                   <Separador alto={15}></Separador>
                   <Button
                      buttonStyle={styles.plusButton}
                      onPress={() => {
-
                         this.props.nav.navigate(
                            'EditarDatosFacturacionScreen',
                            {
@@ -76,8 +62,8 @@ export class ItemFactura extends Component {
             </View>
             <View style={styles.fila}>
                <View style={styles.contenido}>
-                  <View style={styles.subContenido}>
-                     <View style={styles.contenido}>
+                  <View style={styles.informacion}>
+                     <View style={styles.datos}>
                         <View style={styles.contenedorPares}>
                            <Text style={styles.textoNegrita}>Dirección:</Text>
                            <Text style={styles.texto}>
@@ -121,6 +107,20 @@ export class ItemFactura extends Component {
                            </Text>
                         </View>
                      </View>
+                     <View style={styles.fondoBotonPrincipal}>
+                        <TouchableOpacity
+                           onPress={() => {
+                              this.props.nav.goBack();
+                              global.refrescarFact(this.props.factura);
+                           }}
+                        >
+                           <Icon
+                              name="checkbox-marked-circle"
+                              size={40}
+                              color={colores.colorPrimarioVerde}
+                           />
+                        </TouchableOpacity>
+                     </View>
                   </View>
                </View>
             </View>
@@ -154,7 +154,29 @@ const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'row',
    },
-   contenido: { paddingVertical: 5, paddingHorizontal: 10 },
+   contenido: {
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      flex: 1,
+      // backgroundColor: 'pink',
+   },
+   informacion: {
+      flexDirection: 'row',
+      flex: 1,
+      // backgroundColor: 'green',
+   },
+   datos: {
+      flex: 4,
+      //backgroundColor: 'red',
+   },
+   fondoBotonPrincipal: {
+      flex: 1,
+      //backgroundColor: 'blue',
+      justifyContent: 'center',
+      alignItems: 'center',
+   },
+   botonPrincipal: {},
+
    checked: {
       flex: 1,
       //backgroundColor: 'yellow',
@@ -166,6 +188,7 @@ const styles = StyleSheet.create({
    subContenido: {
       flex: 1,
       flexDirection: 'row',
+
       //backgroundColor: 'red',
    },
    imagenes: {

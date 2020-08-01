@@ -4,13 +4,22 @@ import { Alert } from 'react-native';
 import { ServicioNotificaciones } from '../servicios/ServicioNotificaciones';
 
 export class ServicioCodigos {
+   ingresarCodigoReferido = (codigo, fechaCaducidad, referido, valor) => {
+      global.db.collection('codigos').doc(codigo).set({
+         fecha_caduca: fechaCaducidad,
+         referido: referido,
+         tipo: 'R',
+         usado: false,
+         valor: valor,
+      });
+   };
    validarPromo = async (codigo, mail, fnFinalizar) => {
       let fechaActual = new Date();
       let respuesta = await global.db.collection('codigos').doc(codigo).get();
       if (respuesta && respuesta.data()) {
          console.log('--CODIGOS-- Código Correcto');
          let { fecha_caduca, tipo, valor, usado, referido } = respuesta.data();
-         let fechaCaducidad = fecha_caduca.toDate();
+         let fechaCaducidad = new Date(fecha_caduca);
          if (fechaActual.getTime() > fechaCaducidad.getTime()) {
             this.comunicarCodigoIncorrecto(
                'El Código ha expirado',
@@ -64,7 +73,12 @@ export class ServicioCodigos {
 
                if (referidoUsado && referidoUsado.data()) {
                   this.comunicarCodigoIncorrecto(
-                     'Solo puede ingresar un código de referido',
+                     'Ya ingresó un Código de Referido antes',
+                     fnFinalizar
+                  );
+               } else if (referido == mail) {
+                  this.comunicarCodigoIncorrecto(
+                     'No puede usar su propio Código de Referido',
                      fnFinalizar
                   );
                } else {
@@ -159,6 +173,13 @@ export class ServicioCodigos {
       } else {
          this.enviarNotificacion(mail, valorPremio, codigo);
       }
+      this.crearMonederoTransaccion(mail, {
+         codigo: codigo,
+         fecha: new Date(),
+         valor: parseFloat(valorPremio),
+         tercero: ingresaReferido ? ingresaReferido : '',
+         tipo: 'I',
+      });
    };
    enviarNotificacion = async (mail, valorPremio, codigo) => {
       console.log('---CODIGOS-- enviaNotificacion');
@@ -211,7 +232,7 @@ export class ServicioCodigos {
                parseFloat(valorPremio) +
                ' gracias al usuario ' +
                ingresaReferido +
-               ' que ha comprado usando su Código ' +
+               ' que ha usado el Código ' +
                codigo,
             fecha: new Date(),
             estado: 'V',
@@ -240,7 +261,7 @@ export class ServicioCodigos {
 
       if (respuesta && respuesta.data()) {
          console.log('Código Correcto');
-         let fechaDoc = respuesta.data().fecha_caduca.toDate();
+         let fechaDoc = new Date(respuesta.data().fecha_caduca);
          if (fechaActual.getTime() <= fechaDoc.getTime()) {
             let respuestaUsados = await global.db
                .collection('codigos')
@@ -396,6 +417,7 @@ export class ServicioCodigos {
    };
 
    crearMonederoTransaccion = (idMail, transaccion) => {
+      console.log('-------CODIGO crea transaccion');
       global.db
          .collection('monederos')
          .doc(idMail)

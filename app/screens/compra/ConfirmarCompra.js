@@ -24,6 +24,7 @@ import RadioForm, {
 } from 'react-native-simple-radio-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import Icon3 from 'react-native-vector-icons/FontAwesome';
 import { Numero } from '../carroCompras/componentes/Numero';
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
@@ -86,12 +87,16 @@ export class ConfirmarCompra extends Component {
          msmCoberturaDireccion:
             //global.direccionPedido.tieneCoberturaDireccion == 'S'
             global.direccionPedido.sector ? true : false,
-         numDocumentoFact: '',
-         direccionFact: '',
-         nombreCompletoFact: '',
-         correoFact: '',
-         mostrarFacturacion: false,
-         telefonoFact: '',
+         numDocumentoFact: global.numDocumentoFact
+            ? global.numDocumentoFact
+            : '',
+         direccionFact: global.direccionFact ? global.direccionFact : '',
+         nombreCompletoFact: global.nombreCompletoFact
+            ? global.nombreCompletoFact
+            : '',
+         correoFact: global.correoFact ? global.correoFact : '',
+         mostrarFacturacion: global.factSeleccionado == 'FA' ? true : false,
+         telefonoFact: global.telefonoFact ? global.telefonoFact : '',
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -115,6 +120,11 @@ export class ConfirmarCompra extends Component {
          correoFact: factura.correo,
          telefonoFact: factura.telefono,
       });
+      global.numDocumentoFact = factura.numDocumento;
+      global.direccionFact = factura.alias;
+      global.nombreCompletoFact = factura.nombreCompleto;
+      global.correoFact = factura.correo;
+      global.telefonoFact = factura.telefono;
    };
    obtenerParametroEnvio = parametro => {
       global.delivery = parametro.precio;
@@ -558,8 +568,8 @@ export class ConfirmarCompra extends Component {
                                        colores.colorPrimarioTomate,
                                  }}
                                  icon={
-                                    <Icon
-                                       name="check-circle"
+                                    <Icon3
+                                       name="search"
                                        size={20}
                                        color={colores.colorBlancoTexto}
                                        style={styles.iconos}
@@ -588,25 +598,26 @@ export class ConfirmarCompra extends Component {
                                     marginRight: 10,
                                  }}
                               >
-                                 <View>
+                                 <View style={{ marginTop: 15 }}>
                                     <Text
                                        style={{
                                           color:
                                              this.state.valorMonedero != 0
                                                 ? 'red'
                                                 : 'black',
+                                          fontWeight: 'bold',
                                        }}
                                     >
-                                       Usted posee $
+                                       Posee $
                                        {this.state.valorMonedero.toFixed(2)}{' '}
-                                       para Descuentos.
+                                       para Descuentos
                                     </Text>
                                     <View style={{ flexDirection: 'row' }}>
-                                       <Text>Presione el Botón</Text>
-                                       <Icon2
-                                          name="local-offer"
+                                       <Text>Presione el Botón </Text>
+                                       <Icon3
+                                          name="check-square"
                                           size={20}
-                                          color="black"
+                                          color={colores.colorPrimarioTomate}
                                           style={styles.iconos}
                                        />
                                        <Text> para utilizarlos</Text>
@@ -617,6 +628,7 @@ export class ConfirmarCompra extends Component {
                                  style={{
                                     flex: 1,
                                     alignItems: 'stretch',
+                                    marginTop: 15,
                                     //backgroundColor: 'blue',
                                  }}
                               >
@@ -635,8 +647,8 @@ export class ConfirmarCompra extends Component {
                                     }}
                                     //title="Usar"
                                     icon={
-                                       <Icon2
-                                          name="local-offer"
+                                       <Icon3
+                                          name="check"
                                           size={20}
                                           color={colores.colorBlancoTexto}
                                           style={styles.iconos}

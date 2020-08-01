@@ -25,7 +25,7 @@ YellowBox.ignoreWarnings([
    'Warning: componentWillReceiveProps has ',
    'Setting a timer',
 ]);
-global.version = '0.1.0.0';
+global.version = '1.0.0.2';
 
 Geocoder.init(apiKeyMaps, {
    language: 'es-419',

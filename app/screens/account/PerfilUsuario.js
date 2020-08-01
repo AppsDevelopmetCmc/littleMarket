@@ -15,6 +15,7 @@ import Separador from '../../components/Separador';
 
 // Importacion de Toas
 import Toast from 'react-native-easy-toast';
+import { reduce } from 'lodash';
 
 export default function PerfilUsuario(props) {
    const toastRef = useRef();
@@ -27,7 +28,9 @@ export default function PerfilUsuario(props) {
    const [telefonoUsuario, settelefonoUsuario] = useState(
       global.appUsuario.telefonoCliente
    );
-
+   const [codigoReferido, setCodigoReferido] = useState(
+      global.appUsuario.codigo
+   );
    // Variables de validacion
    const [nombreValidacion, setnombreValidacion] = useState('');
    const [telefonoValidacion, setTelefonoValidacion] = useState('');
@@ -145,6 +148,9 @@ export default function PerfilUsuario(props) {
          <View style={styles.pie}>
             <ScrollView keyboardShouldPersistTaps="always">
                <View style={styles.container}>
+                  <Text style={styles.referido}>
+                     CÓDIGO REFERIDO: {global.appUsuario.codigo}
+                  </Text>
                   <Input
                      placeholder="yappando@mail.com"
                      containerStyle={styles.estiloContenedor1}
@@ -240,7 +246,11 @@ const textEstilo = (color, tamaño, tipo) => {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      paddingTop: 50,
+      paddingTop: 40,
+   },
+   referido: {
+      color: 'red',
+      marginBottom: 20,
    },
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {

@@ -18,22 +18,6 @@ export class TerminosCondiciones extends Component {
       this.setState({ checked: !this.state.checked });
    };
 
-   actualizacionTerminos = async () => {
-      console.log('ingreso a actualizar');
-      await global.db
-         .collection('clientes')
-         .doc(global.usuario)
-         .update({ terminosCondiciones: true })
-         .then(() => {
-            console.log(
-               'Se actualiza los terminos y condiciones para clientes que no tienen el campo'
-            );
-         })
-         .catch(error => {
-            console.log(error);
-         });
-   };
-
    render() {
       return (
          <View style={styles.container}>
@@ -78,10 +62,8 @@ export class TerminosCondiciones extends Component {
                   containerStyle={styles.btnStyles}
                   buttonStyle={styles.btnRegistrarse}
                   onPress={() => {
-                     this.actualizacionTerminos();
-                     this.props.setMostrarPantallaTC(true);
-                     this.props.setContinuarProceso(true);
-                     global.appUsuario.terminosCondiciones = true;
+                     this.props.route.params.fnAceptar();
+                     this.props.navigation.goBack();
                   }}
                ></Button>
             </View>
