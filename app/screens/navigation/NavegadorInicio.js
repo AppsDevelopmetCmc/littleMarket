@@ -45,6 +45,7 @@ import { TabProductos3 } from './TabProductos3';
 import { Monedero } from '../monedero/Monedero';
 import { AtencionCliente } from '../soporte/AtencionCliente';
 
+import NotificacionesPush from '../notificacionesPush/NotificacionesPush';
 //Componentes
 import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
@@ -251,7 +252,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-         <StackFromTabs.Screen
+          <StackFromTabs.Screen
             name="Soporte"
             component={AtencionCliente}
             options={{

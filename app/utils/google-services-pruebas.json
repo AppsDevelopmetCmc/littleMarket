@@ -1,0 +1,48 @@
+{
+   "project_info": {
+      "project_number": "649687098639",
+      "firebase_url": "https://yappandopruebas.firebaseio.com",
+      "project_id": "yappandopruebas",
+      "storage_bucket": "yappandopruebas.appspot.com"
+   },
+   "client": [
+      {
+         "client_info": {
+            "mobilesdk_app_id": "1:649687098639:android:eaf9778af65c18a9e8ca7a",
+            "android_client_info": {
+               "package_name": "yappando.pruebas.com"
+            }
+         },
+         "oauth_client": [
+            {
+               "client_id": "649687098639-t85gnbl6sa4dvrjlsf3dh4imvq4u99s3.apps.googleusercontent.com",
+               "client_type": 1,
+               "android_info": {
+                  "package_name": "yappando.pruebas.com",
+                  "certificate_hash": "a858e1533d9c9a5fb150b01610d7c629e873ed60"
+               }
+            },
+            {
+               "client_id": "649687098639-ks88tti846mcokv39s1j8gbcp8ggv3ra.apps.googleusercontent.com",
+               "client_type": 3
+            }
+         ],
+         "api_key": [
+            {
+               "current_key": "AIzaSyApw254iR_KSf9c_inQg-r6NG1sXr1IH50"
+            }
+         ],
+         "services": {
+            "appinvite_service": {
+               "other_platform_oauth_client": [
+                  {
+                     "client_id": "649687098639-ks88tti846mcokv39s1j8gbcp8ggv3ra.apps.googleusercontent.com",
+                     "client_type": 3
+                  }
+               ]
+            }
+         }
+      }
+   ],
+   "configuration_version": "1"
+}

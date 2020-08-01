@@ -17,9 +17,7 @@
       "assetBundlePatterns": ["**/*"],
       "ios": {
          "bundleIdentifier": "com.clearminds.yappando",
-         "buildNumber": "1.0.0",
-		 
-		 
+         "buildNumber": "1.0.0"
       },
       "android": {
          "versionCode": 9,
@@ -32,7 +30,8 @@
             "googleMaps": {
                "apiKey": "AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
             }
-         }
+         },
+         "googleServicesFile": "./app/utils/google-services.json"
       }
    }
 }

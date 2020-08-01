@@ -41,6 +41,7 @@ import { ServicioNotificaciones } from '../../servicios/ServicioNotificaciones';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import { Bienvenida } from '../combos/Bienvenida';
 import { ItemProductoNuevo } from '../productos/ItemProductoNuevo';
+import { NotificacionesPush } from '../notificacionesPush/NotificacionesPush';
 
 export class TabProductos1 extends Component {
    constructor(props) {
@@ -68,6 +69,8 @@ export class TabProductos1 extends Component {
       this.montado = true;
       console.log('--ListaProductos recuperarItems TABS 2');
       serviciosItem.recuperarItems();
+      let notifPush = new NotificacionesPush();
+      notifPush.registerForPushNotificationsAsync();
    }
    componentWillUnmount() {
       this.montado = false;

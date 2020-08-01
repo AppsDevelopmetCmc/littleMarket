@@ -17,9 +17,7 @@
       "assetBundlePatterns": ["**/*"],
       "ios": {
          "bundleIdentifier": "com.clearminds.yappando.pruebas",
-         "buildNumber": "1.0.0",
-		 
-		 
+         "buildNumber": "1.0.0"
       },
       "android": {
          "versionCode": 1,
