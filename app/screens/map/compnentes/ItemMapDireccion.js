@@ -7,14 +7,8 @@ import * as colores from '../../../constants/Colores';
 export class ItemMapDireccion extends Component {
    constructor(props) {
       super(props);
-
-      this.cobertura = false;
    }
-   componentDidMount() {
-      if (this.props.direccion.tieneCobertura == 'S') {
-         this.cobertura = true;
-      }
-   }
+   componentDidMount() {}
    render() {
       return (
          <View
@@ -32,22 +26,6 @@ export class ItemMapDireccion extends Component {
                      }}
                   >
                      <View style={styles.subContenido}>
-                        <View style={styles.estiloIconoCobertura}>
-                           {this.props.direccion.tieneCoberturaDireccion ==
-                           'S' ? (
-                              <Icon
-                                 name="access-point-network"
-                                 size={25}
-                                 color={colores.colorOscuroPrimarioTomate}
-                              />
-                           ) : (
-                              <Icon
-                                 name="access-point-network-off"
-                                 size={25}
-                                 color={colores.colorClaroTexto}
-                              />
-                           )}
-                        </View>
                         <View style={styles.descripcion}>
                            <Text style={styles.texto}>
                               {this.props.direccion.descripcion}

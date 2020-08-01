@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SocialIcon } from 'react-native-elements';
+import { View, StyleSheet, Alert } from 'react-native';
+import { SocialIcon, Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import { FacebookApi } from '../../utils/Social';
 import Cargando from '../../components/Cargando';
 
 export default function IniciarSesionFacebook(props) {
-   const { nav, toastRef } = props;
+   const { nav, toastRef, aceptaTerminos } = props;
    const [isVisibleLoading, setIsVisibleLoading] = useState(false);
 
    const iniciaSesionFacebook = async () => {
@@ -45,7 +46,16 @@ export default function IniciarSesionFacebook(props) {
       <View style={styles.container}>
          <SocialIcon
             type="facebook"
-            onPress={iniciaSesionFacebook}
+            onPress={() => {
+               if (aceptaTerminos) {
+                  iniciaSesionFacebook();
+               } else {
+                  Alert.alert(
+                     'Información',
+                     'Debe aceptar Términos y Condiciones'
+                  );
+               }
+            }}
          ></SocialIcon>
          <Cargando
             text="Iniciando Sesión con Facebook"

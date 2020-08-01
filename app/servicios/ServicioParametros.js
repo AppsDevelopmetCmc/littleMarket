@@ -10,6 +10,13 @@ export class ServicioParametros {
          .get();
       callback(metadata.data().imagen);
    };
+   obtenerPremioReferido = async () => {
+      let metadata = await global.db
+         .collection('parametros')
+         .doc('premioReferido')
+         .get();
+      return metadata.data().valor;
+   };
    registrarEscuchaParametrosTodas = (arreglo, fnObtener) => {
       let arregloUtil = new ArregloUtil(arreglo);
       global.db.collection('parametros').onSnapshot(function (snapShot) {

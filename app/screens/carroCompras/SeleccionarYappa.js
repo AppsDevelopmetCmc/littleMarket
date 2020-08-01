@@ -9,7 +9,7 @@ import {
    Dimensions,
 } from 'react-native';
 import * as colores from '../../constants/Colores';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import Geocoder from 'react-native-geocoding';
@@ -160,61 +160,73 @@ export class SeleccionarYapa extends Component {
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <View
-                  style={{
-                     flex: 1,
-                     width: anchoModal,
-                     justifyContent: 'center',
-                     alignItems: 'stretch',
-                  }}
-               >
-                  <View>
-                     <Text
+               <View style={{ alignItems: 'center' }}>
+                  <Avatar
+                     source={require('../../../assets/Yappa.jpeg')}
+                     width={width - 40}
+                     height={width / 3}
+                  ></Avatar>
+
+                  <View
+                     style={{
+                        flex: 1,
+                        width: anchoModal,
+                        justifyContent: 'center',
+                        alignItems: 'stretch',
+                     }}
+                  >
+                     <View>
+                        {this.listaItemYapa.length > 0 ? (
+                           <Selector
+                              valor1={{
+                                 contenido: this.listaItemYapa[0].label,
+                                 valor: this.listaItemYapa[0].value,
+                              }}
+                              valor2={{
+                                 contenido: this.listaItemYapa[1].label,
+                                 valor: this.listaItemYapa[1].value,
+                              }}
+                              valor3={{
+                                 contenido: this.listaItemYapa[2].label,
+                                 valor: this.listaItemYapa[2].value,
+                              }}
+                              seleccionado={this.listaItemYapa[0].value}
+                              fnSeleccionar={this.seleccionarYappa}
+                              color={colores.colorPrimarioVerde}
+                           ></Selector>
+                        ) : (
+                           <View></View>
+                        )}
+                     </View>
+
+                     <View
                         style={{
-                           marginBottom: 20,
-                           fontWeight: 'bold',
-                           fontSize: 20,
+                           marginTop: 20,
+                           flexDirection: 'row',
+                           justifyContent: 'space-around',
                         }}
                      >
-                        {this.state.mensaje}
-                     </Text>
-
-                     {this.listaItemYapa.length > 0 ? (
-                        <Selector
-                           valor1={{
-                              contenido: this.listaItemYapa[0].label,
-                              valor: this.listaItemYapa[0].value,
+                        <Button
+                           title="Aceptar"
+                           onPress={() => {
+                              this.seleccionarYapa(this.state.yapaSeleccionada);
+                              this.props.mostrarModal(false);
+                              servPedidos.eliminarItemPedido(global.yapa);
+                              servPedidos.agregarItemPedido(global.yapa);
+                              this.props.navigation.navigate(
+                                 'ConfirmarCompraScreen'
+                              );
                            }}
-                           valor2={{
-                              contenido: this.listaItemYapa[1].label,
-                              valor: this.listaItemYapa[1].value,
+                           buttonStyle={styles.estiloBotonVerde}
+                        />
+                        <Button
+                           title="Regresar"
+                           onPress={() => {
+                              this.props.mostrarModal(false);
                            }}
-                           valor3={{
-                              contenido: this.listaItemYapa[2].label,
-                              valor: this.listaItemYapa[2].value,
-                           }}
-                           seleccionado={this.listaItemYapa[0].value}
-                           fnSeleccionar={this.seleccionarYappa}
-                        ></Selector>
-                     ) : (
-                        <View></View>
-                     )}
-                  </View>
-
-                  <View style={{ marginTop: 20 }}>
-                     <Button
-                        title="Aceptar"
-                        onPress={() => {
-                           this.seleccionarYapa(this.state.yapaSeleccionada);
-                           this.props.mostrarModal(false);
-                           servPedidos.eliminarItemPedido(global.yapa);
-                           servPedidos.agregarItemPedido(global.yapa);
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
-                        }}
-                        buttonStyle={styles.estiloBotonNaranja}
-                     />
+                           buttonStyle={styles.estiloBotonVerde}
+                        />
+                     </View>
                   </View>
                </View>
             </View>
@@ -236,7 +248,7 @@ const styles = StyleSheet.create({
       marginVertical: 20,
       justifyContent: 'center',
       backgroundColor: colores.colorBlanco,
-      borderRadius: 15,
+      //borderRadius: 15,
       paddingHorizontal: 30,
       //paddingVertical: 10,
       alignItems: 'center',
@@ -326,21 +338,15 @@ const styles = StyleSheet.create({
       padding: 0,
       margin: 0,
    },
+
    estiloBotonVerde: {
       backgroundColor: colores.colorPrimarioVerde,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      padding: 0,
-      margin: 0,
-   },
-   estiloBotonNaranja: {
-      backgroundColor: colores.colorPrimarioTomate,
       height: 40,
       alignItems: 'center',
       justifyContent: 'center',
       padding: 0,
       margin: 0,
+      width: 100,
    },
    estiloContenedor: {
       width: '100%',

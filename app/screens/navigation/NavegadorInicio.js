@@ -51,6 +51,8 @@ import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
 import { TerminosCondiciones } from '../terminosCondiciones/TerminosCondiciones';
+import { ServicioReferidos } from '../../servicios/ServicioCodReferido';
+import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -81,6 +83,23 @@ if (global.ambiente) {
       Alert.alert('AMBIENTE NO CONFIGURADO');
    }
 }
+
+const registrarCodigo = async (email, codigo) => {
+   let premio = await new ServicioParametros().obtenerPremioReferido();
+   new ServicioCodigos().ingresarCodigoReferido(
+      codigo,
+      '2022-07-29',
+      email,
+      premio
+   );
+};
+const crearCodigo = email => {
+   console.log('.............CREA CODIGO.......');
+   let numeroRandom = Math.floor(Math.random() * 1000) + 1;
+   let codigoReferido = email.substring(0, 3).toUpperCase() + numeroRandom;
+   registrarCodigo(email, codigoReferido);
+   return codigoReferido;
+};
 const validarVersion = version => {
    if (version.valor != global.version) {
       Alert.alert(
@@ -91,6 +110,7 @@ const validarVersion = version => {
             version.valor +
             '. Cierre la aplicación y vuelva abrir.'
       );
+      firebase.auth().signOut();
    }
 };
 
@@ -307,6 +327,7 @@ function ScreensFromTabs() {
                   elevation: 0, //remove shadow on Android
                   shadowOpacity: 0, //remove shadow on iOS
                },
+               headerLeft: null,
                headerTintColor: '#fff',
             }}
          />
@@ -359,6 +380,11 @@ function LoginStack() {
                },
                headerTintColor: '#fff',
             }}
+         ></StackLogin.Screen>
+         <StackLogin.Screen
+            name="TerminosCondiciones"
+            component={TerminosCondiciones}
+            options={navOptionHandler(false)}
          ></StackLogin.Screen>
          <StackLogin.Screen
             name="RecuperarCuenta"
@@ -521,8 +547,6 @@ function HomeDraw() {
 
 export default function NavegadorInicio() {
    const [login, setLogin] = useState(null);
-   const [mostrarPantallaTC, setMostrarPantallaTC] = useState(true);
-   const [continuarProceso, setContinuarProceso] = useState(false);
    const [mostrarCargando, setMostrarCargando] = useState(true);
 
    console.log('--NavegadorInicio render');
@@ -535,7 +559,6 @@ export default function NavegadorInicio() {
          firebase.auth().onAuthStateChanged(async user => {
             if (!user) {
                setLogin(false);
-               setContinuarProceso(true);
                setMostrarCargando(false);
             } else {
                global.infoUsuario = user.providerData[0];
@@ -546,6 +569,7 @@ export default function NavegadorInicio() {
                      global.mailVerificado = false;
                      global.usuario = user.email;
                      setLogin(false);
+                     setContinuarProceso(true);
                      if (global.refrescarInicioSesion) {
                         global.refrescarInicioSesion();
                      }
@@ -585,7 +609,6 @@ export default function NavegadorInicio() {
 
    const agregaInfo = async () => {
       console.log('--NavegadorInicio ingresa a cargar la info del perfil');
-      setMostrarPantallaTC(true);
 
       let documento = {};
       await global.db
@@ -596,24 +619,24 @@ export default function NavegadorInicio() {
             if (doc.data()) {
                documento = doc.data();
                documento.id = doc.id;
-               if (!documento.terminosCondiciones) {
-                  setMostrarPantallaTC(false);
-                  documento.terminosCondiciones = false;
+               console.log(
+                  '**********RECUPERA CODIGO REFERIDO****',
+                  documento.codigo
+               );
+               if (!documento.codigo) {
+                  let codigo = crearCodigo(global.usuario);
                   global.db
                      .collection('clientes')
                      .doc(global.usuario)
-                     .update({ terminosCondiciones: false })
+                     .update({ codigo: codigo })
                      .then(() => {
-                        console.log(
-                           'Se actualiza los terminos y condiciones para clientes que no tienen el campo'
-                        );
+                        console.log('Se agrega codigo referido');
                      })
                      .catch(error => {
                         console.log(error);
                      });
-               } else {
-                  setContinuarProceso(true);
                }
+
                global.appUsuario = documento;
             } else {
                let infoUsuarioGuardar = {};
@@ -626,6 +649,7 @@ export default function NavegadorInicio() {
                   ? global.infoUsuario.phoneNumber
                   : '';
                infoUsuarioGuardar.terminosCondiciones = false;
+               infoUsuarioGuardar.codigo = crearCodigo(global.usuario);
                global.db
                   .collection('clientes')
                   .doc(global.usuario)
@@ -656,44 +680,33 @@ export default function NavegadorInicio() {
       }
    }, [login]);
 
-   if (!mostrarPantallaTC && login) {
+   if (login === null) {
+      console.log(
+         '--NavegadorInicio login es null',
+         new Date().getTime() - global.empiezaCarga
+      );
       return (
-         <TerminosCondiciones
-            setMostrarPantallaTC={setMostrarPantallaTC}
-            setContinuarProceso={setContinuarProceso}
-         />
+         <Cargando
+            isVisible={true}
+            text="Cargando"
+            color={colores.colorPrimarioVerde}
+         ></Cargando>
+      );
+   } else {
+      return (
+         <NavigationContainer>
+            {login ? (
+               HomeDraw()
+            ) : (
+               <StackAuthentication.Navigator>
+                  <StackAuthentication.Screen
+                     name="LoginStack"
+                     component={LoginStack}
+                     options={navOptionHandler(false)}
+                  ></StackAuthentication.Screen>
+               </StackAuthentication.Navigator>
+            )}
+         </NavigationContainer>
       );
    }
-
-   // if (login === null) {
-   //    return (
-   //       <Cargando
-   //          isVisible={true}
-   //          text="Cargando"
-   //          color={colores.colorPrimarioVerde}
-   //       ></Cargando>
-   //    );
-   // } else {
-   return (
-      <NavigationContainer>
-         {login && continuarProceso ? (
-            HomeDraw()
-         ) : continuarProceso ? (
-            <StackAuthentication.Navigator>
-               <StackAuthentication.Screen
-                  name="LoginStack"
-                  component={LoginStack}
-                  options={navOptionHandler(false)}
-               ></StackAuthentication.Screen>
-            </StackAuthentication.Navigator>
-         ) : (
-            <Cargando
-               isVisible={mostrarCargando}
-               text="Cargando"
-               color={colores.colorPrimarioVerde}
-            ></Cargando>
-         )}
-      </NavigationContainer>
-   );
-   // }
 }

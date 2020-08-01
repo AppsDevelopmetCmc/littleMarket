@@ -122,18 +122,6 @@ export class BotonConfirmar extends Component {
          <View style={{ flex: 1 }}>
             <TouchableOpacity
                onPress={() => {
-                  //this.asignarSector();
-
-                  //TEMPORAL
-                  if (!global.direccionPedido) {
-                     Alert.alert(
-                        'aguanta todavía no tengo DIRECCION DEL PEDIDO'
-                     );
-                  } else {
-                     // global.yapa = { descripcion: 'PENDIENTE ' };
-                     // this.navegarConfirmarCompra();
-                  }
-
                   //yappa
                   this.validarMonto();
                }}
