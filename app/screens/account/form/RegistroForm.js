@@ -7,6 +7,7 @@ import {
    Alert,
 } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
+import { ServicioReferidos } from '../../../servicios/ServicioCodReferido';
 
 // Importación de validaciones
 import { validateEmail } from '../../../utils/Validaciones';
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
    btnRegistrarse: {
       padding: 10,
       backgroundColor: colores.colorPrimarioTomate,
-      borderRadius: 25,
+      borderRadius: 12,
    },
    estiloTexto: {
       paddingTop: 15,

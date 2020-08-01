@@ -76,8 +76,15 @@ export default class IniciarSesionGoogle extends Component {
             <SocialIcon
                type="google"
                onPress={() => {
-                  this.setState({ cargadorVisible: true });
-                  this.signInAsync();
+                  if (this.props.aceptaTerminos) {
+                     this.setState({ cargadorVisible: true });
+                     this.signInAsync();
+                  } else {
+                     Alert.alert(
+                        'Información',
+                        'Debe aceptar Términos y Condiciones'
+                     );
+                  }
                }}
             ></SocialIcon>
             <Cargando

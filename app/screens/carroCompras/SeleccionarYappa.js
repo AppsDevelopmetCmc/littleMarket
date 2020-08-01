@@ -6,14 +6,16 @@ import {
    FlatList,
    Text,
    SafeAreaView,
+   Dimensions,
 } from 'react-native';
 import * as colores from '../../constants/Colores';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ServicioDirecciones } from '../../servicios/ServicioDirecciones';
 import Geocoder from 'react-native-geocoding';
 import { apiKeyMaps, APIKEY } from '../../utils/ApiKey';
 
+import { Selector } from '../../components/Selector';
 import RadioForm, {
    RadioButton,
    RadioButtonInput,
@@ -27,15 +29,18 @@ import { ServicioYapas } from '../../servicios/ServicioYapas';
 import { convertir } from '../../utils/ConvertidorUnidades';
 import * as servPedidos from '../../servicios/ServicioPedidos';
 
+let { width, height } = Dimensions.get('window');
+let anchoModal = parseInt(width * 0.7);
+console.log('ANCHO MODAL', anchoModal);
 export class SeleccionarYapa extends Component {
    constructor(props) {
       super(props);
+      this.listaItemYapa = [];
       this.state = {
          yapaSeleccionada: null,
+         mensaje: '',
       };
       this.montado = false;
-      this.radio_props = [];
-      console.log('radio_props', this.radio_props);
    }
    seleccionarYapa = seleccionada => {
       if (seleccionada == 'D') {
@@ -77,7 +82,7 @@ export class SeleccionarYapa extends Component {
    };
 
    consultaItemRadioYapa = () => {
-      let listaItemYapa = [];
+      this.listaItemYapa = [];
       //valor quemado para el item Alinambi
       let itemAlinambi = {};
       itemAlinambi.label = 'Donar su Yappa a Fundación Aliñambi';
@@ -103,12 +108,14 @@ export class SeleccionarYapa extends Component {
          itemYapa.cantidad = this.props.listaYapa[i].cantidad;
          itemYapa.unidad = this.props.listaYapa[i].unidad;
          console.log('data itemYapa', itemYapa);
-         listaItemYapa.push(itemYapa);
+         this.listaItemYapa.push(itemYapa);
       }
-      listaItemYapa.push(itemAlinambi);
-      this.radio_props = listaItemYapa;
-      console.log('listaItemYapa', listaItemYapa);
-      this.setState({ yapaSeleccionada: this.radio_props[0].value });
+      this.listaItemYapa.push(itemAlinambi);
+      console.log('listaItemYapa', this.listaItemYapa);
+      this.setState({
+         yapaSeleccionada: this.listaItemYapa[0].value,
+         mensaje: 'Qué Yappa desea llevar?',
+      });
    };
    componentWillUnmount = () => {
       this.montado = false;
@@ -146,50 +153,80 @@ export class SeleccionarYapa extends Component {
          this.setState({ listaDireccionesCobertura: global.direcciones });
       }
    };
+   seleccionarYappa = valor => {
+      this.setState({ yapaSeleccionada: valor });
+   };
    render() {
       return (
          <View style={styles.centeredView}>
             <View style={styles.modalView}>
-               <View style={styles.contenido}>
-                  <View>
-                     <Text
+               <View style={{ alignItems: 'center' }}>
+                  <Avatar
+                     source={require('../../../assets/Yappa.jpeg')}
+                     width={width - 40}
+                     height={width / 3}
+                  ></Avatar>
+
+                  <View
+                     style={{
+                        flex: 1,
+                        width: anchoModal,
+                        justifyContent: 'center',
+                        alignItems: 'stretch',
+                     }}
+                  >
+                     <View>
+                        {this.listaItemYapa.length > 0 ? (
+                           <Selector
+                              valor1={{
+                                 contenido: this.listaItemYapa[0].label,
+                                 valor: this.listaItemYapa[0].value,
+                              }}
+                              valor2={{
+                                 contenido: this.listaItemYapa[1].label,
+                                 valor: this.listaItemYapa[1].value,
+                              }}
+                              valor3={{
+                                 contenido: this.listaItemYapa[2].label,
+                                 valor: this.listaItemYapa[2].value,
+                              }}
+                              seleccionado={this.listaItemYapa[0].value}
+                              fnSeleccionar={this.seleccionarYappa}
+                              color={colores.colorPrimarioVerde}
+                           ></Selector>
+                        ) : (
+                           <View></View>
+                        )}
+                     </View>
+
+                     <View
                         style={{
-                           marginBottom: 20,
-                           fontWeight: 'bold',
-                           fontSize: 20,
+                           marginTop: 20,
+                           flexDirection: 'row',
+                           justifyContent: 'space-around',
                         }}
                      >
-                        Qué Yappa le gustaría llevar?
-                     </Text>
-                     <RadioForm
-                        buttonColor={colores.colorPrimarioTomate}
-                        selectedButtonColor={colores.colorPrimarioTomate}
-                        radio_props={this.radio_props}
-                        initial={0}
-                        formHorizontal={false}
-                        buttonSize={10}
-                        buttonOuterSize={25}
-                        onPress={value => {
-                           this.setState({ yapaSeleccionada: value });
-                        }}
-                        wrapStyle={{ fontSize: 20 }}
-                     />
-                  </View>
-
-                  <View style={{ marginTop: 20 }}>
-                     <Button
-                        title="Aceptar"
-                        onPress={() => {
-                           this.seleccionarYapa(this.state.yapaSeleccionada);
-                           this.props.mostrarModal(false);
-                           servPedidos.eliminarItemPedido(global.yapa);
-                           servPedidos.agregarItemPedido(global.yapa);
-                           this.props.navigation.navigate(
-                              'ConfirmarCompraScreen'
-                           );
-                        }}
-                        buttonStyle={styles.estiloBotonNaranja}
-                     />
+                        <Button
+                           title="Aceptar"
+                           onPress={() => {
+                              this.seleccionarYapa(this.state.yapaSeleccionada);
+                              this.props.mostrarModal(false);
+                              servPedidos.eliminarItemPedido(global.yapa);
+                              servPedidos.agregarItemPedido(global.yapa);
+                              this.props.navigation.navigate(
+                                 'ConfirmarCompraScreen'
+                              );
+                           }}
+                           buttonStyle={styles.estiloBotonVerde}
+                        />
+                        <Button
+                           title="Regresar"
+                           onPress={() => {
+                              this.props.mostrarModal(false);
+                           }}
+                           buttonStyle={styles.estiloBotonVerde}
+                        />
+                     </View>
                   </View>
                </View>
             </View>
@@ -211,7 +248,7 @@ const styles = StyleSheet.create({
       marginVertical: 20,
       justifyContent: 'center',
       backgroundColor: colores.colorBlanco,
-      borderRadius: 15,
+      //borderRadius: 15,
       paddingHorizontal: 30,
       //paddingVertical: 10,
       alignItems: 'center',
@@ -229,6 +266,7 @@ const styles = StyleSheet.create({
       flex: 1,
       //paddingVertical: 50,
       justifyContent: 'center',
+      // width: anchoModal,
    },
    fondo: {
       fontWeight: 'bold',
@@ -300,21 +338,15 @@ const styles = StyleSheet.create({
       padding: 0,
       margin: 0,
    },
+
    estiloBotonVerde: {
       backgroundColor: colores.colorPrimarioVerde,
-      height: 40,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      padding: 0,
-      margin: 0,
-   },
-   estiloBotonNaranja: {
-      backgroundColor: colores.colorPrimarioTomate,
       height: 40,
       alignItems: 'center',
       justifyContent: 'center',
       padding: 0,
       margin: 0,
+      width: 100,
    },
    estiloContenedor: {
       width: '100%',

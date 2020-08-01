@@ -46,7 +46,7 @@ import { ServicioSectores } from '../../servicios/ServicioSectores';
 export class TabProductos2 extends Component {
    constructor(props) {
       super(props);
-      this.tramaSectorIni = "";
+      this.tramaSectorIni = '';
       this.state = {
          listaProductos: [],
       };
@@ -65,30 +65,43 @@ export class TabProductos2 extends Component {
       console.log('----------ASIGNANDO DIRECCION----------');
       srvDirecciones.asignarDireccionPedido(
          global.usuario,
-         this.crearDireccionPedido
+         this.crearDireccionPedido,
+         this.asignarSector
       );
    }
-   asignarSector = async () => {
+   asignarSector = async (latitud, longitud) => {
       let srvSector = new ServicioSectores();
-      console.log("LATITUD INICIAL" + global.latIni);
-      console.log("LONGITUD INICIAL" + global.longIni);
+      console.log('** ASIGNAR SECTOR ** LATITUD INICIAL' + latitud);
+      console.log('** ASIGNAR SECTOR ** LONGITUD INICIAL' + longitud);
 
-      this.tramaSectorIni = await srvSector.consultarSector(global.latIni, global.longIni);
+      this.tramaSectorIni = await srvSector.consultarSector(latitud, longitud);
       this.setState({ sector: this.tramaSectorIni.sector });
       global.sector = this.tramaSectorIni.sector;
-      console.log("SECTOR ------->" + this.tramaSectorIni.sector);
-   }
+      console.log('SECTOR ------->' + this.tramaSectorIni.sector);
+
+      if (!this.tramaSectorIni.sector) {
+         if (global.appUsuario.terminosCondiciones)
+            Alert.alert(
+               'Lo Sentimos',
+               'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo.'
+            );
+      }
+   };
    crearDireccionPedido = async () => {
       console.log('---------CREANDO DIRECCION----------');
       Geocoder.init(APIKEY);
       let response = await Location.requestPermissionsAsync();
       if (response.status !== 'granted') {
-         Alert.alert('Error', 'no se otorgaron permisos en el dispositivo');
+         console.log('No se otorgaron permisos en el dispositivo');
+         global.localizacionActual = {
+            latitude: -0.204896,
+            longitude: -78.490963,
+         };
+      } else {
+         let actualLocation = await Location.getCurrentPositionAsync({});
+         global.localizacionActual = actualLocation.coords;
+         console.log('actual location:', global.localizacionActual);
       }
-      let actualLocation = await Location.getCurrentPositionAsync({});
-      global.localizacionActual = actualLocation.coords;
-      console.log('actual location:', global.localizacionActual);
-
       srvDirecciones.generarDireccion(
          global.localizacionActual.latitude,
          global.localizacionActual.longitude,
@@ -100,12 +113,6 @@ export class TabProductos2 extends Component {
       console.log('---------GUARDANDO DIRECCION----------');
       await this.asignarSector(latitud, longitud);
 
-      if(!this.tramaSectorIni.sector){
-         Alert.alert(
-            'Información',
-            'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo'
-         );
-      }
       new ServicioDirecciones().crear(global.usuario, {
          descripcion: direccionNombre,
          latitud: latitud,
@@ -113,8 +120,8 @@ export class TabProductos2 extends Component {
          alias: '',
          principal: 'N',
          referencia: '',
-         tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
-         sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : ''
+         //tieneCoberturaDireccion: this.tramaSectorIni.sector ? 'S' : 'N',
+         sector: this.tramaSectorIni.sector ? this.tramaSectorIni.sector : '',
       });
    };
 

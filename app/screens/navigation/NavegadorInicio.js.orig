@@ -51,9 +51,12 @@ import Cargando from '../../components/Cargando';
 import * as colores from '../../constants/Colores';
 import { Menu } from '../menu/Menu';
 import { CabeceraYappando } from '../../components/CabeceraYappando';
+<<<<<<< HEAD
+=======
 import { TerminosCondiciones } from '../terminosCondiciones/TerminosCondiciones';
 import { ServicioReferidos } from '../../servicios/ServicioCodReferido';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
+>>>>>>> master
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -252,7 +255,7 @@ function ScreensFromTabs() {
                headerTintColor: '#fff',
             }}
          />
-          <StackFromTabs.Screen
+         <StackFromTabs.Screen
             name="Soporte"
             component={AtencionCliente}
             options={{

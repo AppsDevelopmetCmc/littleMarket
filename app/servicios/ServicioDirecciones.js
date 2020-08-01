@@ -107,7 +107,8 @@ export class ServicioDirecciones {
             descripcion: direccion.descripcion,
             latitud: direccion.latitud,
             longitud: direccion.longitud,
-            tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
+            sector: direccion.sector,
+            //tieneCoberturaDireccion: direccion.tieneCoberturaDireccion,
          })
          .then(function () {
             //Alert.alert('Dirección Actualizada');
@@ -329,7 +330,6 @@ export class ServicioDirecciones {
             latitud: referenciaDireccion.latitud,
             longitud: referenciaDireccion.longitud,
             sector: referenciaDireccion.sector,
-            tieneCoberturaDireccion : referenciaDireccion.tieneCoberturaDireccion,
          })
          .then(function () {
             // Alert.alert('Datos de Referencia Actualizado');
@@ -369,7 +369,11 @@ export class ServicioDirecciones {
    };
 }
 
-export const asignarDireccionPedido = async (idCliente, crearDireccion) => {
+export const asignarDireccionPedido = async (
+   idCliente,
+   crearDireccion,
+   asignarSector
+) => {
    let respuesta = await global.db
       .collection('clientes')
       .doc(idCliente)
@@ -380,20 +384,34 @@ export const asignarDireccionPedido = async (idCliente, crearDireccion) => {
    if (respuesta.docs && respuesta.docs.length > 0) {
       console.log('Trae direcciones---');
       for (let i = 0; i < respuesta.docs.length; i++) {
-         if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
-            if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+         console.log("----SECTOR GUARDADO------" + respuesta.docs[i].data().sector + "----SECTOR---");
+
+         //if (respuesta.docs[i].data().tieneCoberturaDireccion !== undefined) {
+         // if (respuesta.docs[i].data().tieneCoberturaDireccion === 'S') {
+         if (respuesta.docs[i].data().sector != undefined && respuesta.docs[i].data().sector.trim().length > 0) {
+
                global.direccionPedido = respuesta.docs[i].data();
                global.direccionPedido.id = respuesta.docs[i].id;
+               global.sector = global.direccionPedido.sector;
                tieneDireccion = true;
+
                break;
-            }
+            // }
          }
       }
       //Si ninguna tiene cobertura, toma la primera de la lista
       if (tieneDireccion == false) {
-         console.log('No tiene ninguna con cobertura---');
+         console.log('****No tiene ninguna con cobertura---');
          global.direccionPedido = respuesta.docs[0].data();
          global.direccionPedido.id = respuesta.docs[0].id;
+         await asignarSector(
+            global.direccionPedido.latitud,
+            global.direccionPedido.longitud
+         );
+         global.direccionPedido.sector = global.sector;
+         console.log("--ACTUALIZAR AHU----" + idCliente + global.direccionPedido.id+ global.direccionPedido);
+         new ServicioDirecciones().actualizar(idCliente, global.direccionPedido.id, global.direccionPedido);
+
       }
    } else {
       //SI NO Tiene DIRECCION

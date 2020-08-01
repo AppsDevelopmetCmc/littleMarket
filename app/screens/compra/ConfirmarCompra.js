@@ -24,6 +24,7 @@ import RadioForm, {
 } from 'react-native-simple-radio-button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import Icon3 from 'react-native-vector-icons/FontAwesome';
 import { Numero } from '../carroCompras/componentes/Numero';
 //Importacion de los colores
 import * as colores from '../../constants/Colores';
@@ -34,7 +35,6 @@ import { formatearFechaISO, obtenerHoraActual } from '../../utils/DateUtil';
 import { SeleccionarDireccion } from '../direcciones/SeleccionarDireccion';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
 import { ServicioMonederos } from '../../servicios/ServicioMonederos';
-import { Promociones } from './Promociones';
 import { URLPAGOS } from '../../utils/ApiKey';
 import {
    convertirFormaPago,
@@ -43,6 +43,7 @@ import {
    convertirFactuacion,
 } from '../../utils/ConvertirFormaPago';
 
+import { Selector } from '../../components/Selector';
 import { servParametros } from '../../servicios/ServicioParametros';
 import { isNill } from 'lodash';
 /* export const TOKEN = '2y-13-tx-zsjtggeehkmygjbtsf-51z5-armmnw-ihbuspjufwubv4vxok6ery7wozao3wmggnxjgyg'
@@ -55,8 +56,10 @@ export class ConfirmarCompra extends Component {
       if (!global.pagoSeleccionado) {
          global.pagoSeleccionado = 'EF';
       }
+      if (!global.factSeleccionado) {
+         global.factSeleccionado = 'CF';
+      }
       global.refrescarFact = this.refrescarDatosFactura;
-      global.factSeleccionado = '0';
       this.state = {
          fechaSeleccionada: global.fechaSeleccionada,
          horarioSeleccionado: global.horarioSeleccionado,
@@ -81,17 +84,19 @@ export class ConfirmarCompra extends Component {
          mostrarCargando: false,
          nombreCliente: global.appUsuario.nombreCompleto,
          telefonoCliente: global.appUsuario.telefonoCliente,
-         mostrarPromociones: false,
          msmCoberturaDireccion:
-            global.direccionPedido.tieneCoberturaDireccion == 'S'
-               ? true
-               : false,
-         numDocumentoFact: '',
-         direccionFact: '',
-         nombreCompletoFact: '',
-         correoFact: '',
-         mostrarFacturacion: false,
-         telefonoFact: '',
+            //global.direccionPedido.tieneCoberturaDireccion == 'S'
+            global.direccionPedido.sector ? true : false,
+         numDocumentoFact: global.numDocumentoFact
+            ? global.numDocumentoFact
+            : '',
+         direccionFact: global.direccionFact ? global.direccionFact : '',
+         nombreCompletoFact: global.nombreCompletoFact
+            ? global.nombreCompletoFact
+            : '',
+         correoFact: global.correoFact ? global.correoFact : '',
+         mostrarFacturacion: global.factSeleccionado == 'FA' ? true : false,
+         telefonoFact: global.telefonoFact ? global.telefonoFact : '',
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -115,6 +120,11 @@ export class ConfirmarCompra extends Component {
          correoFact: factura.correo,
          telefonoFact: factura.telefono,
       });
+      global.numDocumentoFact = factura.numDocumento;
+      global.direccionFact = factura.alias;
+      global.nombreCompletoFact = factura.nombreCompleto;
+      global.correoFact = factura.correo;
+      global.telefonoFact = factura.telefono;
    };
    obtenerParametroEnvio = parametro => {
       global.delivery = parametro.precio;
@@ -124,18 +134,13 @@ export class ConfirmarCompra extends Component {
       console.log('global.delivery', global.delivery);
    };
 
-   cerrarPromociones = () => {
-      this.setState({ mostrarPromociones: false });
-   };
-
    refrescarDireccion = () => {
       this.setState({
          direccion: global.direccionPedido.descripcion,
          referencia: global.direccionPedido.referencia,
          msmCoberturaDireccion:
-            global.direccionPedido.tieneCoberturaDireccion == 'S'
-               ? true
-               : false,
+            // global.direccionPedido.tieneCoberturaDireccion == 'S'
+            global.direccionPedido.sector ? true : false,
       });
    };
    cargarCombos = (fechas, horarios) => {
@@ -155,6 +160,7 @@ export class ConfirmarCompra extends Component {
       console.log('llega confirmar Compra');
       new ServicioParametros().obtenerParamsFechas(this.cargarCombos);
       let srvMonederos = new ServicioMonederos();
+      this.setState({ valorMonedero: 0, valorDescuento: 0 });
       this.unsubscribe = srvMonederos.registarEscuchaMonederoCompra(
          global.usuario,
          this.repintarMonedero
@@ -163,19 +169,12 @@ export class ConfirmarCompra extends Component {
    repintarMonedero = monedero => {
       console.log('mondero en confirmar Compra', monedero);
       if (monedero) {
-         if (
-            global.valorMonedero == null ||
-            global.valorMonedero == undefined
-         ) {
-            global.valorMonedero = 0;
-         }
          this.setState({
-            valorMonedero: monedero.valor - global.valorMonedero,
-            valorDescontado: this.state.valorDescontado - global.valorMonedero,
+            valorMonedero: monedero.valor,
+            valorDescuento: monedero.valorDescuento,
          });
       } else {
-         this.setState({ valorMonedero: 0 });
-         global.valorMonedero = 0;
+         this.setState({ valorMonedero: 0, valorDescuento: 0 });
       }
    };
 
@@ -191,14 +190,14 @@ export class ConfirmarCompra extends Component {
    }
 
    cerrarPantalla = () => {
-      global.valorMonedero = 0;
       this.props.navigation.popToTop();
    };
    mostrarModal = bandera => {
       this.setState({ mostrarModalDirecciones: bandera });
    };
    seleccionarDireccion = direccion => {
-      if (direccion.tieneCoberturaDireccion == 'S') {
+      //if (direccion.tieneCoberturaDireccion == 'S') {
+      if (direccion.sector) {
          global.direccionPedido = direccion;
          this.refrescarDireccion();
       } /*else {
@@ -260,9 +259,21 @@ export class ConfirmarCompra extends Component {
       }
    };
 
+   seleccionarFacturacion = valor => {
+      global.factSeleccionado = valor;
+      if (global.factSeleccionado != 'CF') {
+         this.setState({ mostrarFacturacion: true });
+      } else {
+         this.setState({ mostrarFacturacion: false });
+      }
+   };
+   seleccionarFormaPago = valor => {
+      this.setState({ pagoSeleccionado: valor });
+      global.pagoSeleccionado = valor;
+   };
    validarCodigoPromo = () => {
       let srvCodigos = new ServicioCodigos();
-      this.setState({ mostrarCargando: true });
+
       //Validaciones
       let validar = true;
       this.state.errorCodigoPromo = '';
@@ -276,13 +287,12 @@ export class ConfirmarCompra extends Component {
       }
       //Si pasa todas las validaciones crea el combo
       if (validar === true) {
-         srvCodigos.validarCodigo(
+         this.setState({ mostrarCargando: true });
+         srvCodigos.validarPromo(
             this.state.codigoPromo,
             global.usuario,
             this.finalizarCodigo
          );
-      } else {
-         this.setState({ mostrarCargando: false });
       }
    };
    repintarUsuario = () => {
@@ -295,12 +305,11 @@ export class ConfirmarCompra extends Component {
    };
    finalizarCodigo = mensaje => {
       console.log('Finaliza Monedero');
-
+      this.setState({ mostrarCargando: false });
       if (mensaje) {
          Alert.alert('Información', mensaje);
-         this.setState({ valorDescontado: global.total });
+         //this.setState({ valorDescuento: global.total });
       }
-      this.setState({ mostrarCargando: false });
    };
    irMapaDirecciones = () => {
       console.log('Direccion Actual', global.direccionPedido);
@@ -559,8 +568,8 @@ export class ConfirmarCompra extends Component {
                                        colores.colorPrimarioTomate,
                                  }}
                                  icon={
-                                    <Icon
-                                       name="check-circle"
+                                    <Icon3
+                                       name="search"
                                        size={20}
                                        color={colores.colorBlancoTexto}
                                        style={styles.iconos}
@@ -573,94 +582,84 @@ export class ConfirmarCompra extends Component {
                         <View
                            style={{ alignItems: 'flex-start', marginLeft: 10 }}
                         ></View>
-                        <View
-                           style={{
-                              flex: 1,
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                           }}
-                        >
-                           <View
-                              style={{
-                                 flex: 6,
-                                 // backgroundColor: 'red',
-                                 justifyContent: 'center',
-                                 marginRight: 10,
-                              }}
-                           >
-                              <Text>
-                                 Usted posee $
-                                 {this.state.valorMonedero.toFixed(2)} para
-                                 descuentos. Presione el Botón para utilizarlos
-                              </Text>
-                           </View>
+                        {this.state.valorMonedero ? (
                            <View
                               style={{
                                  flex: 1,
-                                 alignItems: 'stretch',
-                                 //backgroundColor: 'blue',
+                                 flexDirection: 'row',
+                                 justifyContent: 'flex-start',
                               }}
                            >
-                              <Button
-                                 onPress={() => {
-                                    if (this.state.valorDescontado > 0) {
-                                       if (
-                                          this.state.valorMonedero >
-                                          this.state.valorDescontado
-                                       ) {
-                                          this.setState({
-                                             valorMonedero:
-                                                this.state.valorMonedero -
-                                                this.state.valorDescontado,
-                                             valorDescuento: this.state
-                                                .valorDescontado,
-                                             valorDescontado: 0,
-                                          });
-                                       } else {
-                                          let total = this.state
-                                             .valorDescontado;
-                                          let infoDescuentos = '';
-                                          if (this.state.valorMonedero != 0) {
-                                             global.valorMonedero = this.state.valorMonedero;
-                                             total =
-                                                total - global.valorMonedero;
-                                             infoDescuentos =
-                                                'Su descuento de $' +
-                                                global.valorMonedero +
-                                                ' se agregó a su actual compra con éxito.';
-                                          } else {
-                                             infoDescuentos =
-                                                'Actualmente no posee monto para descuentos, ingrese un código promocional e intente nuevamente.';
-                                          }
-                                          this.setState({
-                                             valorMonedero: 0,
-                                             valorDescuento:
-                                                global.valorMonedero,
-                                             valorDescontado: total,
-                                          });
-                                          Alert.alert(
-                                             'Descuentos',
-                                             infoDescuentos
-                                          );
-                                       }
+                              <View
+                                 style={{
+                                    flex: 6,
+                                    // backgroundColor: 'red',
+                                    justifyContent: 'center',
+                                    marginRight: 10,
+                                 }}
+                              >
+                                 <View style={{ marginTop: 15 }}>
+                                    <Text
+                                       style={{
+                                          color:
+                                             this.state.valorMonedero != 0
+                                                ? 'red'
+                                                : 'black',
+                                          fontWeight: 'bold',
+                                       }}
+                                    >
+                                       Posee $
+                                       {this.state.valorMonedero.toFixed(2)}{' '}
+                                       para Descuentos
+                                    </Text>
+                                    <View style={{ flexDirection: 'row' }}>
+                                       <Text>Presione el Botón </Text>
+                                       <Icon3
+                                          name="check-square"
+                                          size={20}
+                                          color={colores.colorPrimarioTomate}
+                                          style={styles.iconos}
+                                       />
+                                       <Text> para utilizarlos</Text>
+                                    </View>
+                                 </View>
+                              </View>
+                              <View
+                                 style={{
+                                    flex: 1,
+                                    alignItems: 'stretch',
+                                    marginTop: 15,
+                                    //backgroundColor: 'blue',
+                                 }}
+                              >
+                                 <Button
+                                    onPress={() => {
+                                       new ServicioMonederos().actualizarMonedero(
+                                          global.usuario,
+                                          0,
+                                          this.state.valorMonedero +
+                                             this.state.valorDescuento
+                                       );
+                                    }}
+                                    buttonStyle={{
+                                       backgroundColor:
+                                          colores.colorPrimarioTomate,
+                                    }}
+                                    //title="Usar"
+                                    icon={
+                                       <Icon3
+                                          name="check"
+                                          size={20}
+                                          color={colores.colorBlancoTexto}
+                                          style={styles.iconos}
+                                       />
                                     }
-                                 }}
-                                 buttonStyle={{
-                                    backgroundColor:
-                                       colores.colorPrimarioTomate,
-                                 }}
-                                 //title="Usar"
-                                 icon={
-                                    <Icon2
-                                       name="local-offer"
-                                       size={20}
-                                       color={colores.colorBlancoTexto}
-                                       style={styles.iconos}
-                                    />
-                                 }
-                              ></Button>
+                                 ></Button>
+                              </View>
                            </View>
-                        </View>
+                        ) : (
+                           <View></View>
+                        )}
                      </Card>
 
                      <Card
@@ -677,11 +676,7 @@ export class ConfirmarCompra extends Component {
                         ></Numero>
                         {global.yapa && global.yapa.unidad != 'D' ? (
                            <Numero
-                              titulo={
-                                 'YAPPA (' +
-                                 global.yapa.nombre+
-                                 ')'
-                              }
+                              titulo={'YAPPA (' + global.yapa.nombre + ')'}
                               valor={transformDinero(0.0)}
                               estiloNumero={{ color: 'red' }}
                            ></Numero>
@@ -689,13 +684,22 @@ export class ConfirmarCompra extends Component {
                         <Numero
                            descuento={true}
                            titulo="DESCUENTO:"
-                           valor={global.valorMonedero ? transformDinero(global.valorMonedero) : transformDinero(0.00)}
+                           /*valor={
+                              global.valorMonedero
+                                 ? transformDinero(global.valorMonedero)
+                                 : transformDinero(0.0)
+                           }*/
+                           valor={transformDinero(this.state.valorDescuento)}
                            estiloNumero={{ color: 'red' }}
                         ></Numero>
 
                         <Numero
                            titulo="TOTAL:"
-                           valor={this.state.valorDescontado ? transformDinero(this.state.valorDescontado) : transformDinero(0.00)}
+                           valor={transformDinero(
+                              global.subtotal +
+                                 global.delivery -
+                                 this.state.valorDescuento
+                           )}
                            estiloNumero={{ fontWeight: 'bold', fontSize: 18 }}
                         ></Numero>
 
@@ -709,105 +713,105 @@ export class ConfirmarCompra extends Component {
                         title="Datos de Facturación"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <RadioForm
-                           radio_props={this.radio_props_fac}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirFactuacion(
-                              global.factSeleccionado
-                           )}
-                           formHorizontal={false}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           onPress={value => {
-                              global.factSeleccionado = value;
-                              if (global.factSeleccionado != 'CF') {
-                                 this.setState({ mostrarFacturacion: true });
-                              } else {
-                                 this.setState({ mostrarFacturacion: false });
-                              }
-                           }}
-                        />
-                        {this.state.mostrarFacturacion ? (
-                           <View style={{ flex: 6, justifyContent: 'center' }}>
-                              <View style={{ flexDirection: 'row' }}>
-                                 <View
-                                    style={{
-                                       flex: 6,
-                                       justifyContent: 'center',
-                                    }}
-                                 >
-                                    <Text
-                                       style={{ marginBottom: 5, fontSize: 14 }}
-                                    >
-                                       Nombre:
-                                       {this.state.nombreCompletoFact
-                                          ? '   ' +
-                                            this.state.nombreCompletoFact
-                                          : '_ _ _ _ _ _ _ _ _ _'}
-                                    </Text>
-                                    <Separador alto={7}></Separador>
-                                    <Text
-                                       style={{ marginBottom: 5, fontSize: 14 }}
-                                    >
-                                       CI/RUC:{' '}
-                                       {this.state.numDocumentoFact
-                                          ? '' + this.state.numDocumentoFact
-                                          : '_ _ _ _ _ _ _ _ _ _'}
-                                    </Text>
-                                 </View>
-                                 <View
-                                    style={{
-                                       flex: 1,
-                                       justifyContent: 'center',
-                                    }}
-                                 >
-                                    <Button
-                                       onPress={() => {
-                                          this.props.navigation.navigate(
-                                             'ListarDatosFacturacionScreen'
-                                          );
+                        <View>
+                           <Selector
+                              valor1={{
+                                 contenido: 'Consumidor Final',
+                                 valor: 'CF',
+                              }}
+                              valor2={{
+                                 contenido: 'Factura',
+                                 valor: 'FA',
+                              }}
+                              fnSeleccionar={this.seleccionarFacturacion}
+                              seleccionado={global.factSeleccionado}
+                           ></Selector>
+                           {this.state.mostrarFacturacion ? (
+                              <View
+                                 style={{ flex: 6, justifyContent: 'center' }}
+                              >
+                                 <View style={{ flexDirection: 'row' }}>
+                                    <View
+                                       style={{
+                                          flex: 6,
+                                          justifyContent: 'center',
                                        }}
-                                       buttonStyle={{
-                                          backgroundColor:
-                                             colores.colorPrimarioTomate,
+                                    >
+                                       <Text
+                                          style={{
+                                             marginBottom: 5,
+                                             fontSize: 14,
+                                          }}
+                                       >
+                                          Nombre:
+                                          {this.state.nombreCompletoFact
+                                             ? '   ' +
+                                               this.state.nombreCompletoFact
+                                             : '_ _ _ _ _ _ _ _ _ _'}
+                                       </Text>
+                                       <Separador alto={7}></Separador>
+                                       <Text
+                                          style={{
+                                             marginBottom: 5,
+                                             fontSize: 14,
+                                          }}
+                                       >
+                                          CI/RUC:{' '}
+                                          {this.state.numDocumentoFact
+                                             ? '' + this.state.numDocumentoFact
+                                             : '_ _ _ _ _ _ _ _ _ _'}
+                                       </Text>
+                                    </View>
+                                    <View
+                                       style={{
+                                          flex: 1,
+                                          justifyContent: 'center',
                                        }}
-                                       icon={
-                                          <Icon
-                                             name="pencil"
-                                             size={20}
-                                             color={colores.colorBlanco}
-                                             style={styles.iconos}
-                                          />
-                                       }
-                                    ></Button>
+                                    >
+                                       <Button
+                                          onPress={() => {
+                                             this.props.navigation.navigate(
+                                                'ListarDatosFacturacionScreen'
+                                             );
+                                          }}
+                                          buttonStyle={{
+                                             backgroundColor:
+                                                colores.colorPrimarioTomate,
+                                          }}
+                                          icon={
+                                             <Icon
+                                                name="pencil"
+                                                size={20}
+                                                color={colores.colorBlanco}
+                                                style={styles.iconos}
+                                             />
+                                          }
+                                       ></Button>
+                                    </View>
                                  </View>
                               </View>
-                           </View>
-                        ) : (
-                           <View
-                              style={{ flex: 6, justifyContent: 'center' }}
-                           ></View>
-                        )}
+                           ) : (
+                              <View
+                                 style={{ flex: 6, justifyContent: 'center' }}
+                              ></View>
+                           )}
+                        </View>
                      </Card>
                      <Card
                         title="Forma de Pago"
                         containerStyle={styles.contenedorTarjetas}
                      >
-                        <RadioForm
-                           radio_props={this.radio_props}
-                           buttonColor={colores.colorPrimarioTomate}
-                           selectedButtonColor={colores.colorPrimarioTomate}
-                           initial={convertirRadioPago(global.pagoSeleccionado)}
-                           formHorizontal={true}
-                           buttonSize={15}
-                           buttonOuterSize={25}
-                           formHorizontal={false}
-                           onPress={value => {
-                              this.setState({ pagoSeleccionado: value });
-                              global.pagoSeleccionado = value;
-                           }}
-                        />
+                        <View>
+                           <Selector
+                              valor1={{ contenido: 'Efectivo', valor: 'EF' }}
+                              valor2={{
+                                 contenido: 'Transferencia',
+                                 valor: 'TR',
+                              }}
+                              fnSeleccionar={this.seleccionarFormaPago}
+                              seleccionado={global.pagoSeleccionado}
+                           ></Selector>
+                        </View>
                      </Card>
                   </View>
 
@@ -821,126 +825,134 @@ export class ConfirmarCompra extends Component {
                         onPress={() => {
                            let fecha = new Date();
                            /*this.consultarRestPago(1,{})*/
-                           if(global.sector){
-                           this.generarNumeroOrden(codigo => {
-                              console.log(
-                                 'Luego de generar numero:',
-                                 global.factSeleccionado,
-                                 codigo
-                              );
-                              if (global.factSeleccionado == '0') {
-                                 console.log('CreaPedido opcion 1');
-                                 crearPedido(
-                                    {
-                                       fechaPedido: formatearFechaISO(fecha),
-                                       fechaEntrega: this.state
-                                          .fechaSeleccionada,
-                                       horarioEntrega: this.state
-                                          .horarioSeleccionado.horario,
-                                       estado: convertirEstadoPago(
-                                          global.pagoSeleccionado
-                                       ),
-                                       mail: global.usuario,
-                                       nombreCliente:
-                                          global.appUsuario.nombreCompleto,
-                                       direccion:
-                                          global.direccionPedido.descripcion,
-                                       referencia:
-                                          global.direccionPedido.referencia,
-                                       latitud: global.direccionPedido.latitud,
-                                       longitud:
-                                          global.direccionPedido.longitud,
-                                       telefono:
-                                          global.appUsuario.telefonoCliente,
-                                       jornada: this.state.horarioSeleccionado
-                                          .jornada,
-                                       orden: codigo,
-                                       horaCreacion: obtenerHoraActual(fecha),
-                                       formaPago: convertirFormaPago(
-                                          global.pagoSeleccionado
-                                       ),
-                                       asociado: 'asociado@gmail.com',
-                                       nombreAsociado: 'Juan perez',
-                                       telefonoAsociado: '1245635',
-                                       subtotal: global.subtotal,
-                                       envio: global.delivery,
-                                       descuento: parseFloat(
-                                          global.valorMonedero.toFixed(2)
-                                       ),
-                                       total: this.state.valorDescontado,
-                                       empacado: false,
-                                       recibido: false,
-                                       urlPago: '',
-                                       tokerUrlPago: '',
-                                       factura: 'FA', //FA o CF
-                                    },
-                                    global.items,
-                                    this.cerrarPantalla,
-                                    this.consultarRestPago
+                           if (global.sector) {
+                              this.generarNumeroOrden(codigo => {
+                                 console.log(
+                                    'Luego de generar numero:',
+                                    global.factSeleccionado,
+                                    codigo
                                  );
-                              }
-                              if (global.factSeleccionado != '0') {
-                                 console.log('CreaPedido opcion 2');
-                                 crearPedido(
-                                    {
-                                       fechaPedido: formatearFechaISO(fecha),
-                                       fechaEntrega: this.state
-                                          .fechaSeleccionada,
-                                       horarioEntrega: this.state
-                                          .horarioSeleccionado.horario,
-                                       estado: convertirEstadoPago(
-                                          global.pagoSeleccionado
-                                       ),
-                                       mail: global.usuario,
-                                       nombreCliente:
-                                          global.appUsuario.nombreCompleto,
-                                       direccion:
-                                          global.direccionPedido.descripcion,
-                                       latitud: global.direccionPedido.latitud,
-                                       longitud:
-                                          global.direccionPedido.longitud,
-                                       telefono:
-                                          global.appUsuario.telefonoCliente,
-                                       jornada: this.state.horarioSeleccionado
-                                          .jornada,
-                                       orden: codigo,
-                                       horaCreacion: obtenerHoraActual(fecha),
-                                       formaPago: convertirFormaPago(
-                                          global.pagoSeleccionado
-                                       ),
-                                       asociado: 'asociado@gmail.com',
-                                       nombreAsociado: 'Juan perez',
-                                       telefonoAsociado: '1245635',
-                                       subtotal: global.subtotal,
-                                       envio: global.delivery,
-                                       descuento: parseFloat(
-                                          global.valorMonedero.toFixed(2)
-                                       ),
-                                       total: this.state.valorDescontado,
-                                       empacado: false,
-                                       recibido: false,
-                                       urlPago: '',
-                                       tokerUrlPago: '',
-                                       numDocumentoFact: this.state
-                                          .numDocumentoFact,
-                                       direccionFact: this.state.direccionFact,
-                                       nombreCompletoFact: this.state
-                                          .nombreCompletoFact,
-                                       correoFact: this.state.correoFact,
-                                       telefonoFact: this.state.telefonoFact,
-                                       factura: 'FA', //FA o CF
-                                    },
-                                    global.items,
-                                    this.cerrarPantalla,
-                                    this.consultarRestPago
-                                 );
-                              }
-                           });
-
-                           }else{
+                                 if (global.factSeleccionado == '0') {
+                                    console.log('CreaPedido opcion 1');
+                                    crearPedido(
+                                       {
+                                          fechaPedido: formatearFechaISO(fecha),
+                                          fechaEntrega: this.state
+                                             .fechaSeleccionada,
+                                          horarioEntrega: this.state
+                                             .horarioSeleccionado.horario,
+                                          estado: convertirEstadoPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          mail: global.usuario,
+                                          nombreCliente:
+                                             global.appUsuario.nombreCompleto,
+                                          direccion:
+                                             global.direccionPedido.descripcion,
+                                          referencia:
+                                             global.direccionPedido.referencia,
+                                          latitud:
+                                             global.direccionPedido.latitud,
+                                          longitud:
+                                             global.direccionPedido.longitud,
+                                          telefono:
+                                             global.appUsuario.telefonoCliente,
+                                          jornada: this.state
+                                             .horarioSeleccionado.jornada,
+                                          orden: codigo,
+                                          horaCreacion: obtenerHoraActual(
+                                             fecha
+                                          ),
+                                          formaPago: convertirFormaPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          asociado: 'asociado@gmail.com',
+                                          nombreAsociado: 'Juan perez',
+                                          telefonoAsociado: '1245635',
+                                          subtotal: global.subtotal,
+                                          envio: global.delivery,
+                                          descuento: parseFloat(
+                                             this.state.valorDescuento
+                                          ),
+                                          total: this.state.valorDescontado,
+                                          empacado: false,
+                                          recibido: false,
+                                          urlPago: '',
+                                          tokerUrlPago: '',
+                                          factura: 'FA', //FA o CF
+                                          sector: global.sector,
+                                       },
+                                       global.items,
+                                       this.cerrarPantalla,
+                                       this.consultarRestPago
+                                    );
+                                 }
+                                 if (global.factSeleccionado != '0') {
+                                    console.log('CreaPedido opcion 2');
+                                    crearPedido(
+                                       {
+                                          fechaPedido: formatearFechaISO(fecha),
+                                          fechaEntrega: this.state
+                                             .fechaSeleccionada,
+                                          horarioEntrega: this.state
+                                             .horarioSeleccionado.horario,
+                                          estado: convertirEstadoPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          mail: global.usuario,
+                                          nombreCliente:
+                                             global.appUsuario.nombreCompleto,
+                                          direccion:
+                                             global.direccionPedido.descripcion,
+                                          latitud:
+                                             global.direccionPedido.latitud,
+                                          longitud:
+                                             global.direccionPedido.longitud,
+                                          telefono:
+                                             global.appUsuario.telefonoCliente,
+                                          jornada: this.state
+                                             .horarioSeleccionado.jornada,
+                                          orden: codigo,
+                                          horaCreacion: obtenerHoraActual(
+                                             fecha
+                                          ),
+                                          formaPago: convertirFormaPago(
+                                             global.pagoSeleccionado
+                                          ),
+                                          asociado: 'asociado@gmail.com',
+                                          nombreAsociado: 'Juan perez',
+                                          telefonoAsociado: '1245635',
+                                          subtotal: global.subtotal,
+                                          envio: global.delivery,
+                                          descuento: parseFloat(
+                                             this.state.valorDescuento
+                                          ),
+                                          total: this.state.valorDescontado,
+                                          empacado: false,
+                                          recibido: false,
+                                          urlPago: '',
+                                          tokerUrlPago: '',
+                                          numDocumentoFact: this.state
+                                             .numDocumentoFact,
+                                          direccionFact: this.state
+                                             .direccionFact,
+                                          nombreCompletoFact: this.state
+                                             .nombreCompletoFact,
+                                          correoFact: this.state.correoFact,
+                                          telefonoFact: this.state.telefonoFact,
+                                          factura: 'FA', //FA o CF
+                                          sector: global.sector,
+                                       },
+                                       global.items,
+                                       this.cerrarPantalla,
+                                       this.consultarRestPago
+                                    );
+                                 }
+                              });
+                           } else {
                               Alert.alert(
-                                 'Información',
-                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
+                                 'Lo Sentimos',
+                                 'Al momento no tenemos cobertura en este sector, pronto estaremos contigo.'
                               );
                            }
                         }}
@@ -960,13 +972,6 @@ export class ConfirmarCompra extends Component {
                         fnSeleccionar={this.seleccionarDireccion}
                         navigation={this.props.navigation}
                      />
-                  </Modal>
-                  <Modal
-                     // animationType="slide"
-                     transparent={true}
-                     visible={this.state.mostrarPromociones}
-                  >
-                     <Promociones cerrar={this.cerrarPromociones} />
                   </Modal>
                </ScrollView>
             </View>

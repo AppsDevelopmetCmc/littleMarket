@@ -25,9 +25,9 @@ export class BusquedaDirecciones extends Component {
       this.origen = this.props.route.params.origen;
       this.pantallaOrigen = this.props.route.params.pantallaOrigen;
       this.localizacionInicial = [];
-      this.tieneCoberturaDireccion = 'N';
+      //this.tieneCoberturaDireccion = 'N';
       this.idDireccion = '';
-      this.tramaSectorNue='';
+      this.tramaSectorNue = '';
       this.state = {
          search: '',
          listaPredicciones: [],
@@ -116,12 +116,21 @@ export class BusquedaDirecciones extends Component {
 
    asignarSector = async (latAct, longAct) => {
       let srvSector = new ServicioSectores();
-      console.log("LATITUD NUEVA" + latAct);
-      console.log("LONGITUD NUEVA" + longAct);
+      console.log('LATITUD NUEVA' + latAct);
+      console.log('LONGITUD NUEVA' + longAct);
       this.tramaSectorNue = await srvSector.consultarSector(latAct, longAct);
       global.sector = this.tramaSectorNue.sector;
+
       console.log("SECTOR NUEVA------->" +this.tramaSectorNue.sector);
+      if (!this.tramaSectorNue.sector) {
+         Alert.alert(
+            'Lo Sentimos',
+            'Al momento no tenemos cobertura en este sector, pronto estaremos contigo.'
+         );
+      }
+
    }
+
 
    //TODO: MODAL
    guardarDireccion = async (descripcion, coordenadas) => {
@@ -133,11 +142,11 @@ export class BusquedaDirecciones extends Component {
          descripcion: descripcion,
          latitud: coordenadas.lat,
          longitud: coordenadas.lng,
-         tieneCoberturaDireccion: this.tramaSectorNue.sector ? 'S' : 'N',
+         //tieneCoberturaDireccion: this.tramaSectorNue.sector ? 'S' : 'N',
          alias: '',
          referencia: '',
          principal: 'N',
-         sector: this.tramaSectorNue.sector ? this.tramaSectorNue.sector : ''
+         sector: this.tramaSectorNue.sector ? this.tramaSectorNue.sector : '',
       };
       this.setState({ creandoPunto: true });
       let idDireccionCreada = await servDireccion.crear(
@@ -173,55 +182,7 @@ export class BusquedaDirecciones extends Component {
          }
       }
 
-      if (!this.tramaSectorNue.sector) {
-         Alert.alert(
-            'Información',
-            'Al momento no tenemos cobertura en este sector, pronto estaremos contigo'
-         );
-      }
       //this.props.navigation.navigate('Direcciones');
-   };
-   //Guardar Direcciones
-   validar = (lat, long) => {
-      let lat1 = lat;
-      let log1 = long;
-      for (let i = 0; i < global.coberturas.length; i++) {
-         let distancia = 0;
-         distancia = parseFloat(
-            this.getKilometros(
-               lat1,
-               log1,
-               global.coberturas[i].latitud,
-               global.coberturas[i].longitud
-            )
-         );
-         console.log('Kilomeros' + distancia);
-         if (distancia < global.parametrosGeo.cobertura) {
-            console.log('Ingresa');
-            this.tieneCoberturaDireccion = 'S';
-            break;
-         }
-      }
-   };
-
-   rad = x => {
-      return (x * Math.PI) / 180;
-   };
-
-   getKilometros = (lat1, lon1, lat2, lon2) => {
-      let R = 6378.137; //Radio de la tierra en km
-      let dLat = this.rad(lat2 - lat1);
-      console.log('rad1' + this.rad(lat2 - lat1));
-      let dLong = this.rad(lon2 - lon1);
-      let a =
-         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-         Math.cos(this.rad(lat1)) *
-            Math.cos(this.rad(lat2)) *
-            Math.sin(dLong / 2) *
-            Math.sin(dLong / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let d = R * c;
-      return d.toFixed(3); //Retorna tres decimales
    };
 
    render() {

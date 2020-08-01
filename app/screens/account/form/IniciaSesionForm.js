@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import { Input, Icon, Button } from 'react-native-elements';
+import { Input, Icon, Button, CheckBox } from 'react-native-elements';
 
 // Importación de validaciones
 import { validateEmail } from '../../../utils/Validaciones';
-
+import { Divider } from 'react-native-elements';
 // Importacion a Firebase
 import * as firebase from 'firebase';
-
+import IniciarSesionFacebook from '../IniciarSesionFacebook';
+import IniciaSesionGoogle from '../IniciaSesionGoogle';
 // Imnportación del componente creado Cargando
 import Cargando from '../../../components/Cargando';
 
@@ -35,6 +36,10 @@ export default function IniciaSesionForm(props) {
    const [titulo, setTitulo] = useState(false);
    const [mensaje, setMensaje] = useState(false);
 
+   const [aceptaTerminos, setAceptaTerminos] = useState(false);
+   const [desHabilitarBotones, setDesHabilitarBotones] = useState(true);
+
+   console.log('----------ACEPTA TERMINOS-------', aceptaTerminos);
    const iniciarSesion = async () => {
       if (!email || !password) {
          //toastRef.current.show(err.Err3, 600);
@@ -81,6 +86,9 @@ export default function IniciaSesionForm(props) {
    };
    const cerrarYalert = () => {
       setMostrarYalert(false);
+   };
+   const aceptarTerminos = () => {
+      setDesHabilitarBotones(false);
    };
    return (
       <View style={styles.container}>
@@ -133,15 +141,54 @@ export default function IniciaSesionForm(props) {
          >
             <Text style={styles.estiloTexto}>Olvidaste tu contraseña?</Text>
          </TouchableOpacity>
-
+         <View style={{ marginTop: 10 }}>
+            <CheckBox
+               checkedColor={colores.colorPrimarioVerde}
+               textStyle={{
+                  color: aceptaTerminos ? colores.colorPrimarioVerde : 'gray',
+               }}
+               title="Acepto Términos y Condiciones"
+               checked={aceptaTerminos}
+               onPress={() => {
+                  if (!aceptaTerminos) {
+                     nav.navigate('TerminosCondiciones', {
+                        fnAceptar: aceptarTerminos,
+                     });
+                     setAceptaTerminos(true);
+                  } else {
+                     setAceptaTerminos(false);
+                  }
+               }}
+            ></CheckBox>
+         </View>
          <Button
+            disabled={desHabilitarBotones}
             title="Iniciar Sesión"
             titleStyle={textEstilo(colores.colorBlancoTexto, 15, 'bold')}
             containerStyle={styles.btnStyles}
             buttonStyle={styles.btnRegistrarse}
             onPress={iniciarSesion}
          ></Button>
+         <View style={{ flexDirection: 'row', marginTop: 30 }}>
+            <Divider style={styles.divide}></Divider>
+            <Text style={textEstilo(colores.colorPrimarioTexto, 15, 'bold')}>
+               o
+            </Text>
+            <Divider style={styles.divide}></Divider>
+         </View>
 
+         <View style={styles.socialIconos}>
+            <IniciarSesionFacebook
+               nav={nav}
+               toastRef={toastRef}
+               aceptaTerminos={aceptaTerminos}
+            ></IniciarSesionFacebook>
+            <IniciaSesionGoogle
+               nav={nav}
+               toastRef={toastRef}
+               aceptaTerminos={aceptaTerminos}
+            ></IniciaSesionGoogle>
+         </View>
          <Cargando
             text="Iniciando Sesión"
             isVisible={isVisibleLoading}
@@ -186,18 +233,30 @@ const styles = StyleSheet.create({
    estiloInput: { fontSize: 15 },
    iconRight: { color: colores.colorClaroTexto },
    btnStyles: {
-      marginTop: 50,
+      marginTop: 20,
       width: '100%',
       height: 40,
    },
    btnRegistrarse: {
       padding: 10,
       backgroundColor: colores.colorPrimarioTomate,
-      borderRadius: 25,
+      borderRadius: 15,
    },
    estiloTexto: {
       paddingTop: 15,
       alignSelf: 'flex-end',
       color: colores.colorPrimarioTomate,
+   },
+   divide: {
+      backgroundColor: colores.colorPrimarioTexto,
+      width: '42%',
+      height: 1,
+   },
+   socialIconos: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignContent: 'center',
    },
 });

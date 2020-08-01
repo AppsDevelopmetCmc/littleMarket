@@ -54,18 +54,19 @@ export class ServicioMonederos {
       return escucha;
    };
 
-   actualizarMonedero = (idMail, datoValor) => {
+   actualizarMonedero = (idMail, valorMonedero, valorDescuento) => {
       global.db
          .collection('monederos')
          .doc(idMail)
          .update({
-            valor: datoValor,
+            valor: valorMonedero,
+            valorDescuento: valorDescuento,
          })
          .then(function () {
-            console.log('monedero actualizado', datoValor);
+            console.log('monedero actualizado', valorMonedero);
          })
          .catch(function (error) {
-            Alert.alert('Se ha Produciodo un Error', error);
+            Alert.alert('Se ha Produciodo un Error', error.message);
          });
    };
 }
