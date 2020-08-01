@@ -30,7 +30,8 @@
             "googleMaps": {
                "apiKey": "AIzaSyATppG_lbMSBkBrTI1_T5plpQXhDNuz5mc"
             }
-         }
+         },
+         "googleServicesFile": "./app/utils/google-services.json"
       }
    }
 }

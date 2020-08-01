@@ -668,8 +668,7 @@ export default function NavegadorInicio() {
       return (
          <NavigationContainer>
             {login ? (
-               // HomeDraw()
-               <NotificacionesPush></NotificacionesPush>
+               HomeDraw()
             ) : (
                <StackAuthentication.Navigator>
                   <StackAuthentication.Screen
