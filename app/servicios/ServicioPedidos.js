@@ -225,7 +225,7 @@ export class ServicioPedidos {
          });
    };
 
-   recuperarDetallePedido = (arreglo, fnRepintar, pedido) => {
+   recuperarDetallePedido = (arreglo, fnRepintar, fnPintarYapa, pedido) => {
       let arregloUtil = new ArregloUtil(arreglo);
       global.db
          .collection('pedidos')
@@ -236,7 +236,12 @@ export class ServicioPedidos {
                let combos = change.doc.data();
                combos.id = change.doc.id;
                if (change.type == 'added') {
-                  arregloUtil.agregar(combos, fnRepintar);
+                  if(combos.id != 'yapa'){
+                     arregloUtil.agregar(combos, fnRepintar);
+                  } else {
+                     fnPintarYapa(combos);
+                  }
+                  
                }
                if (change.type == 'modified') {
                   arregloUtil.actualizar(combos, fnRepintar);

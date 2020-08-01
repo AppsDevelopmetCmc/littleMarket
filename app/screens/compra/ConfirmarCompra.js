@@ -97,6 +97,7 @@ export class ConfirmarCompra extends Component {
          correoFact: global.correoFact ? global.correoFact : '',
          mostrarFacturacion: global.factSeleccionado == 'FA' ? true : false,
          telefonoFact: global.telefonoFact ? global.telefonoFact : '',
+         observacion: global.observacionPedido ? global.observacionPedido : ''
       };
       global.repintarUsuario = this.repintarUsuario;
       this.radio_props = [
@@ -516,7 +517,43 @@ export class ConfirmarCompra extends Component {
                            />
                         </View>
                      </Card>
-
+                     <Card
+                        title="¿Cómo quieres tu pedido?"
+                        containerStyle={styles.contenedorTarjetas}
+                     >
+                        <View
+                           style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                           }}
+                        >
+                           <View
+                              style={{
+                                 flex: 6,
+                                 justifyContent: 'center',
+                                 marginRight: 10,
+                              }}
+                           >
+                              <TextInput
+                                 borderColor={colores.colorPrimarioTomate}
+                                 padding={10}
+                                 borderWidth={1}
+                                 fontSize={14}
+                                 multiline={true}
+                                 numberOfLines={2}
+                                 value={this.state.observacion}
+                                 borderRadius={8}
+                                 maxLength={100}
+                                 placeholder="Ejemplo: Aguacates maduros"
+                                 onChangeText={text => {
+                                    global.observacionPedido = text;
+                                    this.setState({observacion:text})
+                                 }}
+                              />
+                           </View>
+                        </View>
+                        
+                     </Card>
                      <Card
                         title="Descuentos"
                         containerStyle={styles.contenedorTarjetas}
@@ -942,6 +979,7 @@ export class ConfirmarCompra extends Component {
                                           telefonoFact: this.state.telefonoFact,
                                           factura: 'FA', //FA o CF
                                           sector: global.sector,
+                                          observacion:this.state.observacion
                                        },
                                        global.items,
                                        this.cerrarPantalla,
