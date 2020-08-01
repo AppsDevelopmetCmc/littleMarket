@@ -918,6 +918,7 @@ export class ConfirmarCompra extends Component {
                                           tokerUrlPago: '',
                                           factura: 'FA', //FA o CF
                                           sector: global.sector,
+                                          observacion:this.state.observacion
                                        },
                                        global.items,
                                        this.cerrarPantalla,
