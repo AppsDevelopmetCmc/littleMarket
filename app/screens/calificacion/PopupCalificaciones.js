@@ -38,7 +38,7 @@ export function PopupCalificaciones(props) {
 
    // Metodo que valida el cambio de pantalla
    const validacionSiguiente = () => {
-      if (puntuacionPedido < 3.5) {
+      if (puntuacionPedido < 3) {
          if (quejaPedido == -1) {
             Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
@@ -50,7 +50,7 @@ export function PopupCalificaciones(props) {
    };
 
    const validacionSalir = () => {
-      if (puntuacionProducto < 3.5) {
+      if (puntuacionProducto < 3) {
          if (quejaProducto == -1) {
             Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
@@ -75,7 +75,7 @@ export function PopupCalificaciones(props) {
          'Calificación Producto: ' +
          puntuacionProducto;
 
-      if (puntuacionProducto < 3.5) {
+      if (puntuacionProducto < 3) {
          if (quejaProducto == -1) {
             Alert.alert('Información', 'Debe seleccionar una razón');
          } else {
@@ -198,7 +198,7 @@ export function PopupCalificaciones(props) {
                   subTitulo={'Califica tu entregador'}
                   parrafo={msg.msg3}
                   placeholderComentario={
-                     puntuacionPedido > 3.5
+                     puntuacionPedido > 3
                         ? 'El pedido estuvo perfecto'
                         : 'Danos tu opinión'
                   }
@@ -264,7 +264,7 @@ export function PopupCalificaciones(props) {
                   subTitulo={'Califica tu producto'}
                   parrafo={msg.msg4}
                   placeholderComentario={
-                     puntuacionPedido > 3.5
+                     puntuacionPedido > 3
                         ? 'El pedido estuvo perfecto'
                         : 'Danos tu opinión'
                   }
@@ -282,7 +282,7 @@ export function PopupCalificaciones(props) {
                      alignContent: 'center',
                   }}
                >
-                  {(puntuacionProducto < 3.5 || puntuacionPedido < 3.5) && (
+                  {(puntuacionProducto < 3 || puntuacionPedido < 3) && (
                      <Button
                         title="Contactar"
                         titleStyle={textEstilo(

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, ScrollView } from 'react-native';
 
-import { Rating } from 'react-native-elements';
+import { Rating, AirbnbRating } from 'react-native-ratings';
 import RadioForm from 'react-native-simple-radio-button';
 
 // Importacion de colores
@@ -54,15 +54,13 @@ export function FormCalificaciones(props) {
                   <Text style={styles.estiloTextoParrafo}>{parrafo}</Text>
                </View>
                <View style={styles.contenedorViews}>
-                  <Rating
-                     type="custom"
-                     styles={styles.puntuacionEstilo}
-                     imageSize={30}
-                     startingValue={numeroEstrellas}
-                     fractions={2}
-                     ratingColor={colores.colorPrimarioAmarillo}
+                  <AirbnbRating
+                     count={5}
+                     reviews={[]}
+                     size={30}
+                     defaultRating={numeroEstrellas}
                      onFinishRating={ratingCompleted}
-                  ></Rating>
+                  ></AirbnbRating>
                </View>
 
                <View style={{ paddingVertical: 25 }}>
@@ -153,7 +151,7 @@ const styles = StyleSheet.create({
       fontWeight: 'normal',
       fontSize: 13,
    },
-   contenedorViews: { paddingVertical: 10, alignItems: 'center' },
+   contenedorViews: { paddingVertical: 7, alignItems: 'center' },
    contenedorWrap: { marginVertical: 5 },
    estiloTextoSubTitulo: {
       color: colores.colorOscuroTexto,
