@@ -13,6 +13,7 @@ import * as colores from '../../constants/Colores';
 import { Badge } from 'react-native-elements';
 import * as servPedidos from '../../servicios/ServicioPedidos';
 import { SeleccionarYapa } from '../carroCompras/SeleccionarYappa';
+import { YalertDibujo } from '../../components/YalertDibujo';
 export class BotonConfirmar extends Component {
    constructor(props) {
       super(props);
@@ -22,6 +23,7 @@ export class BotonConfirmar extends Component {
       this.state = {
          subtotal: 0,
          mostrarModalYapa: false,
+         mostrarYalert: false,
       };
       if (global.refrescarBotones == null) {
          global.refrescarBotones = [];
@@ -29,6 +31,9 @@ export class BotonConfirmar extends Component {
       global.refrescarBotones.push(this.refrescarBoton);
    }
 
+   cerrarYalert = () => {
+      this.setState({ mostrarYalert: false });
+   };
    refrescarBoton = valor => {
       this.setState({
          subtotal: valor,
@@ -105,7 +110,8 @@ export class BotonConfirmar extends Component {
          global.yapa = undefined;
       }
       if (this.state.subtotal.toFixed(2) < 15) {
-         Alert.alert('Información', 'Monto mínimo de compra $15.00');
+         //Alert.alert('Información', 'Monto mínimo de compra $15.00');
+         this.setState({ mostrarYalert: true });
          return;
       } else if (this.state.subtotal.toFixed(2) >= 15) {
          global.montoYapa = this.state.subtotal.toFixed(2);
@@ -207,6 +213,13 @@ export class BotonConfirmar extends Component {
                   navigation={this.props.navigation}
                ></SeleccionarYapa>
             </Modal>
+            <YalertDibujo
+               titulo="Advertencia"
+               mensaje="Monto mínimo de compra $15.00"
+               visible={this.state.mostrarYalert}
+               cerrar={this.cerrarYalert}
+               imagen="mail"
+            ></YalertDibujo>
          </View>
       );
    }
