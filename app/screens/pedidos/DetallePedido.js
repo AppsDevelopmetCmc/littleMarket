@@ -31,12 +31,14 @@ export class DetallePedido extends Component {
       super(props);
       this.pedido = this.props.route.params.pedido;
       let detallePedido = [];
+
       this.state = {
          cantidad: '0',
          listDetallePedido: detallePedido,
          estado: this.pedido.estado,
          indice: null,
-         limiteCancela: true
+         limiteCancela: true,
+         yapa: ''
       };
 
       let serv = new ServicioParametros();
@@ -61,6 +63,7 @@ export class DetallePedido extends Component {
       srvDetallePedido.recuperarDetallePedido(
          detallePedido,
          this.repintarLista,
+         this.pintarYapa,
          this.pedido
       );
    }
@@ -75,6 +78,11 @@ export class DetallePedido extends Component {
       this.setState({
          listDetallePedido: detallePedido,
       });
+   };
+   pintarYapa = (yapa) => {
+      console.log('yapa'+yapa)
+      console.log(yapa)
+        this.setState({yapa: ''+yapa.cantidadItem+' '+yapa.nombre});
    };
 
    repetir = () => {
@@ -369,9 +377,7 @@ export class DetallePedido extends Component {
                      <Text
                         style={textEstilo(colores.colorOscuroTexto, 15, 'bold')}
                      >
-                        {this.pedido.yapa == 'D'
-                           ? 'Donado a la Fundación Aliñambi'
-                           : this.pedido.yapa}
+                        {this.state.yapa}
                      </Text>
                   </View>
                   <View
