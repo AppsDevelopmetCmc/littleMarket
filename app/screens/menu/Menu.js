@@ -111,6 +111,14 @@ export function Menu(props) {
                      props.navigation.navigate('QuienesSomos')
                   }
                ></MenuPersonalizado>
+               <SeparadorMenu></SeparadorMenu>
+               <MenuPersonalizado
+                  nombreIcono="map-marker-radius"
+                  tituloNombre="Cobertura"
+                  navegador={() =>
+                     props.navigation.navigate('MapaCobertura')
+                  }
+               ></MenuPersonalizado>
             </View>
             <View style={styles.contenedorCerrarSesion}>
                <SeparadorMenu></SeparadorMenu>

@@ -80,7 +80,6 @@ export class TabProductos2 extends Component {
       console.log('SECTOR ------->' + this.tramaSectorIni.sector);
 
       if (!this.tramaSectorIni.sector) {
-         if (global.appUsuario.terminosCondiciones)
             Alert.alert(
                'Lo Sentimos',
                'Al momento no tenemos cobertura en tu sector, pronto estaremos contigo.'

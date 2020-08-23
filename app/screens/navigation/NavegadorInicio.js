@@ -23,6 +23,7 @@ import PerfilUsuario from '../account/PerfilUsuario';
 import { ListarDatosFacturacion } from '../facturacion/listarDatosFacturacion';
 import { ResponsabilidadSocial } from '../responsabilidadSocial/ResponsabilidadSocial';
 import { QuienesSomos } from '../quienesSomos/QuienesSomos';
+import { MapaCobertura } from '../map/MapaCobertura'
 import RecuperarCuenta from '../account/RecuperarCuenta';
 import { Mapa } from '../map/Mapa';
 import { Direcciones } from '../map/Direcciones';
@@ -54,6 +55,7 @@ import { CabeceraYappando } from '../../components/CabeceraYappando';
 import { TerminosCondiciones } from '../terminosCondiciones/TerminosCondiciones';
 import { ServicioReferidos } from '../../servicios/ServicioCodReferido';
 import { ServicioCodigos } from '../../servicios/ServicioCodigos';
+import { fromPairs } from 'lodash';
 
 const StackAuthentication = createStackNavigator();
 const StackLogin = createStackNavigator();
@@ -276,7 +278,7 @@ function ScreensFromTabs() {
                   shadowOpacity: 0, //remove shadow on iOS
                },
                headerTintColor: '#fff',
-            }}
+            }}            
          />
          <StackFromTabs.Screen
             name="ConfirmarCompraScreen"
@@ -541,6 +543,11 @@ function HomeDraw() {
             name="QuienesSomos"
             component={QuienesSomos}
             options={{ drawerLabel: 'Quienes Somos' }}
+         />
+             <DrawerHome.Screen
+            name="MapaCobertura"
+            component={MapaCobertura}
+            options={{ drawerLabel: 'Mapa Cobertura' }}
          />
       </DrawerHome.Navigator>
    );

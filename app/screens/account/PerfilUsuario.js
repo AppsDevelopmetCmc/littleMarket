@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, Clipboard, ToastAndroid } from 'react-native';
 import { Button, Input, Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
@@ -148,9 +148,21 @@ export default function PerfilUsuario(props) {
          <View style={styles.pie}>
             <ScrollView keyboardShouldPersistTaps="always">
                <View style={styles.container}>
+                  <View style={{ flex: 1, flexDirection: 'row' }}>
                   <Text style={styles.referido}>
-                     CÓDIGO REFERIDO: {global.appUsuario.codigo}
-                  </Text>
+                        CÓDIGO REFERIDO: {global.appUsuario.codigo}
+                     </Text>    
+                        <Icon
+                           name="content-copy"
+                           type="material-community"
+                           color="red"
+                           size={25}
+                           onPress={() => {
+                              Clipboard.setString(global.appUsuario.codigo);
+                              ToastAndroid.showWithGravityAndOffset("Código Copiado", ToastAndroid.SHORT,  ToastAndroid.TOP,150,250 );
+                           }}
+                        />
+                  </View>
                   <Input
                      placeholder="yappando@mail.com"
                      containerStyle={styles.estiloContenedor1}
@@ -210,7 +222,7 @@ export default function PerfilUsuario(props) {
                            setTelefonoValidacion(fonoInvalido);
                         }
                      }}
-                     // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
+                  // Con nativeEvent se ingresa a obtener el elemento del texto por SyntheticEvent
                   >
                      {telefonoUsuario}
                   </Input>
@@ -251,6 +263,7 @@ const styles = StyleSheet.create({
    referido: {
       color: 'red',
       marginBottom: 20,
+      marginHorizontal:10
    },
    contenedorPagina: { flex: 1, backgroundColor: colores.colorPrimarioVerde },
    cabecera: {
