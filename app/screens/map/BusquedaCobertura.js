@@ -44,14 +44,14 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.02 / 2;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-export class MapaCobertura extends Component {
+export class BusquedaCobertura extends Component {
    constructor(props) {
       super(props);
       //cuando vengo por actualizar direccion obtengo los datos de la
       //direccion seleccionada
-      this.origen = 'actualizar';
-      this.direccion = { latitud: global.direccionPedido.latitud, longitud: global.direccionPedido.longitud };
-      this.direccionTmp = { latitud: global.direccionPedido.latitud, longitud: global.direccionPedido.longitud };
+      this.origen = this.props.route.params.origen;
+      this.direccion = this.props.route.params.direccion;
+      this.direccionTmp = this.props.route.params.direccion;
       this.pintarElemento = false;
       //this.tieneCoberturaDireccion = 'N';
       this.idDireccion = '';
@@ -406,9 +406,9 @@ export class MapaCobertura extends Component {
          );
          console.log('Envia Confirmar');
 
-         /* this.props.navigation.navigate('ConfirmarCompraScreen', {
+          this.props.navigation.navigate('MapaCobertura', {
              origen: 'mapaDirecciones',
-          });*/
+          });
       }
    };
    obtenerItemSeleccionado = () => {
@@ -742,7 +742,7 @@ const flatListItemSeparator = () => {
    );
 };
 
-MapaCobertura.propTypes = {
+BusquedaCobertura.propTypes = {
    provider: ProviderPropType,
 };
 const styles = StyleSheet.create({

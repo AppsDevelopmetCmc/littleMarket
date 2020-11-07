@@ -66,20 +66,20 @@ export class BusquedaDirecciones extends Component {
       console.log('localization', this.localizacionInicial.coords);
       let response = await fetch(
          URLAUTOCOMPLETE +
-            '' +
-            search +
-            '&location=' +
-            this.localizacionInicial.coords.latitude +
-            ',' +
-            this.localizacionInicial.coords.longitude +
-            '&strictbouds&radius=' +
-            RADIO +
-            '&components=country:' +
-            PAIS +
-            '&key=' +
-            APIKEY +
-            '&sessiontoken=' +
-            this.sessionToken
+         '' +
+         search +
+         '&location=' +
+         this.localizacionInicial.coords.latitude +
+         ',' +
+         this.localizacionInicial.coords.longitude +
+         '&strictbouds&radius=' +
+         RADIO +
+         '&components=country:' +
+         PAIS +
+         '&key=' +
+         APIKEY +
+         '&sessiontoken=' +
+         this.sessionToken
       );
       let trama = await response.json();
       this.setState({ cargandoBusqueda: false });
@@ -102,7 +102,7 @@ export class BusquedaDirecciones extends Component {
       let trama = await response.json();
       let coordenadas = await trama.results[0].geometry.location;
       console.log('coordenadas', coordenadas);
-      if (this.pantallaOrigen == 'ConfirmarCompra') {
+      if (this.pantallaOrigen == 'ConfirmarCompra' || this.pantallaOrigen == 'Cobertura') {
          this.guardarDireccion(descripcion, coordenadas);
       } else {
          this.props.navigation.navigate('Mapa', {
@@ -121,7 +121,7 @@ export class BusquedaDirecciones extends Component {
       this.tramaSectorNue = await srvSector.consultarSector(latAct, longAct);
       global.sector = this.tramaSectorNue.sector;
 
-      console.log("SECTOR NUEVA------->" +this.tramaSectorNue.sector);
+      console.log("SECTOR NUEVA------->" + this.tramaSectorNue.sector);
       if (!this.tramaSectorNue.sector) {
          Alert.alert(
             'Lo Sentimos',
@@ -162,6 +162,7 @@ export class BusquedaDirecciones extends Component {
          nuevaDireccion.id = this.idDireccion;
          global.direccionPedido = nuevaDireccion;
          if (this.pantallaOrigen == 'ConfirmarCompra') {
+
             this.props.navigation.dispatch(state => {
                // Remove the home route from the stack
                const routes = state.routes.filter(
@@ -176,6 +177,27 @@ export class BusquedaDirecciones extends Component {
             });
 
             this.props.navigation.navigate('MapaDirecciones', {
+               origen: 'busquedaDirecciones',
+               direccion: nuevaDireccion,
+            });
+         }
+
+         if (this.pantallaOrigen == 'Cobertura') {
+
+            this.props.navigation.dispatch(state => {
+               // Remove the home route from the stack
+               const routes = state.routes.filter(
+                  r => r.name !== 'BusquedaDireccionesScreen'
+               );
+
+               return CommonActions.reset({
+                  ...state,
+                  routes,
+                  index: routes.length - 1,
+               });
+            });
+
+            this.props.navigation.navigate('BusquedaCobertura', {
                origen: 'busquedaDirecciones',
                direccion: nuevaDireccion,
             });
@@ -235,25 +257,25 @@ export class BusquedaDirecciones extends Component {
                         />
                      </View>
                   ) : (
+                        <View style={styles.contenedorTextoVacio}>
+                           <Text style={{ textAlign: 'center', fontSize: 15 }}>
+                              No existen coincidencias
+                        </Text>
+                        </View>
+                     )
+               ) : (
                      <View style={styles.contenedorTextoVacio}>
                         <Text style={{ textAlign: 'center', fontSize: 15 }}>
-                           No existen coincidencias
-                        </Text>
-                     </View>
-                  )
-               ) : (
-                  <View style={styles.contenedorTextoVacio}>
-                     <Text style={{ textAlign: 'center', fontSize: 15 }}>
-                        Coloque en el cuadro de busqueda la dirección que desea
-                        encontrar.
+                           Coloque en el cuadro de busqueda la dirección que desea
+                           encontrar.
                      </Text>
-                  </View>
-               )}
+                     </View>
+                  )}
             </View>
             <Cargando
                isVisible={this.state.creandoPunto}
                text="Ubicando Coordenadas..."
-               //color={colores.colorOscuroPrimarioTomate}
+            //color={colores.colorOscuroPrimarioTomate}
             ></Cargando>
          </View>
       );

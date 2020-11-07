@@ -63,12 +63,32 @@ export class TabProductos2 extends Component {
    };
    componentDidMount() {
       console.log('----------ASIGNANDO DIRECCION----------');
+      //this.obtenerPuntosSectores();
       srvDirecciones.asignarDireccionPedido(
          global.usuario,
          this.crearDireccionPedido,
          this.asignarSector
       );
    }
+
+  /*- obtenerPuntosSectores = async () => {
+      var ptos = [];
+      var puntos = [];
+      console.log('-----OBTENER PUNTOS SECOTRES-----');
+      let coleccion = await db.collection("sectores").get();
+      let docSectores = await coleccion.docs;
+      for (let i = 0; i < docSectores.length; i++) {
+         puntos.push(docSectores[i].data());
+      }
+
+      console.log('*******PUNTOS CONSULTA**********', puntos);
+      for (let j = 0; j < puntos.length; j++) {
+         var coord = puntos[j].puntos;
+         ptos.push(coord);
+      }
+      global.coordSect = ptos;
+   }*/
+
    asignarSector = async (latitud, longitud) => {
       let srvSector = new ServicioSectores();
       console.log('** ASIGNAR SECTOR ** LATITUD INICIAL' + latitud);

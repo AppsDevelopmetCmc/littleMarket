@@ -38,6 +38,7 @@ import { ConfirmarCompra } from '../compra/ConfirmarCompra';
 import { Notificacion } from '../notificaciones/Notificacion';
 import { ListaNotificaciones } from '../notificaciones/ListaNotificaciones';
 import { MapaDirecciones } from '../map/MapaDirecciones';
+import { BusquedaCobertura } from '../map/BusquedaCobertura';
 import { PantallaPagos } from '../compra/PantallaPagos';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { TabProductos1 } from './TabProductos1';
@@ -323,6 +324,20 @@ function ScreensFromTabs() {
          <StackFromTabs.Screen
             name="MapaDirecciones"
             component={MapaDirecciones}
+            options={{
+               title: 'Seleccionar Ubicación',
+               headerStyle: {
+                  backgroundColor: colores.colorPrimarioVerde,
+                  elevation: 0, //remove shadow on Android
+                  shadowOpacity: 0, //remove shadow on iOS
+               },
+               headerLeft: null,
+               headerTintColor: '#fff',
+            }}
+         />
+                  <StackFromTabs.Screen
+            name="BusquedaCobertura"
+            component={BusquedaCobertura}
             options={{
                title: 'Seleccionar Ubicación',
                headerStyle: {
